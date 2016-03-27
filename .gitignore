@@ -4,3 +4,5 @@ node_modules
 jspm_packages
 npm-debug.log
 typings
+src/admin/app/*.js
+src/admin/app/*.js.map

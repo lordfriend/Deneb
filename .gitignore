@@ -3,3 +3,4 @@ node_modules
 .DStore
 jspm_packages
 npm-debug.log
+typings

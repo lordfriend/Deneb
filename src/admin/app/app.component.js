@@ -26,7 +26,8 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                 }
                 App = __decorate([
                     core_1.Component({
-                        selector: 'app'
+                        selector: 'deneb-admin',
+                        template: '<div>Hello world</div>'
                     }), 
                     __metadata('design:paramtypes', [])
                 ], App);

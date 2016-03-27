@@ -5,7 +5,8 @@
 import {Component} from 'angular2/core';
 
 @Component({
-    selector: 'app'
+    selector: 'deneb-admin',
+    template: '<div>Hello world</div>'
 })
 export class App {
     // nothing need here

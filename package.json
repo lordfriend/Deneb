@@ -9,18 +9,31 @@
     "typings": "typings",
     "postinstall": "typings install"
   },
-  "dependencies": {
-    "angular2": "2.0.0-beta.12",
-    "systemjs": "0.19.24",
-    "es6-shim": "^0.35.0",
-    "reflect-metadata": "0.1.2",
-    "rxjs": "5.0.0-beta.2",
-    "zone.js": "0.6.6"
-  },
+  "dependencies": {},
   "devDependencies": {
     "concurrently": "^2.0.0",
+    "jspm": "^0.16.31",
     "lite-server": "^2.1.0",
     "typescript": "^1.8.9",
     "typings": "^0.7.9"
+  },
+  "jspm": {
+    "directories": {
+      "baseURL": "src"
+    },
+    "dependencies": {
+      "@angular2-material/core": "npm:@angular2-material/core@^2.0.0-alpha.1",
+      "@angular2-material/toolbar": "npm:@angular2-material/toolbar@^2.0.0-alpha.1",
+      "angular2": "npm:angular2@2.0.0-beta.12",
+      "es6-shim": "npm:es6-shim@^0.35.0",
+      "reflect-metadata": "npm:reflect-metadata@0.1.2",
+      "rxjs": "npm:rxjs@5.0.0-beta.2",
+      "zone.js": "npm:zone.js@0.6.6"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
   }
 }

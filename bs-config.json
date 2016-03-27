@@ -1,6 +1,6 @@
 {
   "server": {
-    "baseDir": ["src", "."]
+    "baseDir": ["src"]
   },
   "open": false,
   "startPath": "/admin"

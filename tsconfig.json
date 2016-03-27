@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "system",
+    "module": "commonjs",
     "target": "es5",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
@@ -12,6 +12,7 @@
   "exclude": [
     "node_modules",
     "typings/main",
-    "typings/main.d.ts"
+    "typings/main.d.ts",
+    "src/jspm_packages"
   ]
 }

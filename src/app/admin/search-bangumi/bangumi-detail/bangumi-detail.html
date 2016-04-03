@@ -1,0 +1,17 @@
+<md-card>
+  <md-card-title>
+    {{bangumi.name}}
+  </md-card-title>
+  <md-card-content>
+    <form (ngSubmit)="onSubmit()">
+      <img src="{{bangumi.image}}" alt="image">
+      <md-input placeholder="中文名" [(ngModel)]="bangumi.name_cn"></md-input>
+      <md-input placeholder="放送开始" [(ngModel)]="bangumi.air_date"></md-input>
+      <md-input placeholder="放送星期" [(ngModel)]="bangumi.air_weekday"></md-input>
+      <md-input placeholder="话数" [(ngModel)]="bangumi.eps"></md-input>
+      <md-input placeholder="rss" [(ngModel)]="bangumi.rss"></md-input>
+      <md-input placeholder="regex" [(ngModel)]="bangumi.regex"></md-input>
+      <button md-button type="submit">Save</button>
+    </form>
+  </md-card-content>
+</md-card>

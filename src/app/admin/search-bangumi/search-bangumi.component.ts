@@ -4,15 +4,12 @@ import {Bangumi} from "../../entity";
 
 @Component({
   selector: 'search-bangumi',
-  template: require('./search-bangumi.html')
+  template: require('./search-bangumi.html'),
+  providers: [BangumiService]
 })
-export class searchBangumi {
+export class SearchBangumi {
 
-  @Output
   public bangumiList = [];
-
-  @Output
-  public selectedBangumi;
 
   constructor(
     private _bangumiApi: BangumiService

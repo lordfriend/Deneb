@@ -4,11 +4,11 @@ import {Bangumi} from '../../../entity';
 
 @Component({
   selector: 'bangumi-detail',
-  template: require('./bangumi-detail.html')
+  template: require('./bangumi-detail.html'),
+  providers: [BangumiService]
 })
 export class BangumiDetail implements OnInit {
 
-  @Input
   public bgm_id: number;
 
   public bangumi: Bangumi;
@@ -19,7 +19,7 @@ export class BangumiDetail implements OnInit {
     private _bangumiApi: BangumiService
   ){}
 
-  protected ngOnInit() {
+  ngOnInit() {
     this._bangumiApi.queryBangumi(this.bgm_id)
       .subscribe(
         bangumi => this.bangumi = bangumi,

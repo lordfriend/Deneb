@@ -18,17 +18,15 @@ export class BangumiService {
     return Observable.throw(error.json().error || 'Server Error');
   }
 
-  queryBangumi(bgmId: number): Observable {
+  queryBangumi(bgmId: number): Observable<Bangumi> {
     let queryUrl = this.baseUrl + '/query/' + bgmId;
     return this.http.get(queryUrl)
-      .map(res => <Bangumi> res.json().data)
-      .catch(this.handleError);
+      .map(res => <Bangumi> res.json().data);
   }
 
-  searchBangumi(name: string): Observable {
+  searchBangumi(name: string): Observable<Bangumi[]> {
     let queryUrl = this.baseUrl + '/query?name=' + name;
     return this.http.get(queryUrl)
-      .map(res => <Bangumi[]> res.json().data)
-      .catch(this.handleError);
+      .map(res => <Bangumi[]> res.json().data);
   }
 }

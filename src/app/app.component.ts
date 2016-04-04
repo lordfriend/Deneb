@@ -7,7 +7,6 @@ import {RouteConfig, Router} from 'angular2/router';
 import {Home} from './home';
 import {AppState} from './app.service';
 import {Admin} from "./admin";
-// import {RouterActive} from './router-active';
 
 /*
  * App Component
@@ -17,52 +16,15 @@ import {Admin} from "./admin";
   selector: 'app',
   pipes: [ ],
   providers: [ ],
-  // directives: [ RouterActive ],
-  styles: [`
-    h1 {
-      font-family: Arial, Helvetica, sans-serif
-    }
-    nav ul {
-      display: inline;
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      width: 60px;
-    }
-    nav li {
-      display: inline;
-    }
-    nav li.active {
-      background-color: lightgray;
-    }
-  `],
+  directives: [ ],
   template: `
-    <header>
-      <nav>
-        <h1>Hello {{ name }}</h1>
-        <ul>
-          <li router-active>
-            <a [routerLink]=" ['Index'] ">Index</a>
-          </li>
-          <li router-active>
-            <a [routerLink]=" ['Home'] ">Home</a>
-          </li>
-          <li router-active>
-            <a [routerLink]=" ['About'] ">About</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
 
     <main>
       <router-outlet></router-outlet>
     </main>
 
     <footer>
-      WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a>
-      <div>
-        <img [src]="angularclassLogo" width="10%">
-      </div>
+      Nyasoft
     </footer>
 
     <pre>this.appState.state = {{ appState.state | json }}</pre>

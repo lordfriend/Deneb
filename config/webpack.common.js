@@ -144,6 +144,13 @@ module.exports = {
         exclude: [helpers.root('src/index.html')]
       },
 
+      // SCSS loader support for *.scss
+      // Returns compiled css as string
+      {
+        test: /\.scss$/,
+        loader: 'raw-loader!sass-loader',
+        exclude: /node_modules/
+      }
     ]
 
   },

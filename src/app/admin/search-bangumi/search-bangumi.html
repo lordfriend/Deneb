@@ -1,6 +1,6 @@
 <md-toolbar color="primary">
   <span>Search Bangumi</span>
-  <md-input placeholder="输入番组名称搜索" #searchBox (change)="searchBangumi(searchBox.value)"></md-input>
+  <input placeholder="输入番组名称搜索" #searchBox (change)="searchBangumi(searchBox.value)" />
 </md-toolbar>
 <md-list>
   <md-list-item *ngFor="#bangumi of bangumiList" (click)="addBangumi(bangumi)">

@@ -22,12 +22,6 @@ import {Admin} from "./admin";
     <main>
       <router-outlet></router-outlet>
     </main>
-
-    <footer>
-      Nyasoft
-    </footer>
-
-    <pre>this.appState.state = {{ appState.state | json }}</pre>
   `
 })
 @RouteConfig([

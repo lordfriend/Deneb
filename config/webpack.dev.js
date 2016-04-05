@@ -108,6 +108,11 @@ module.exports = webpackMerge(commonConfig, {
     watchOptions: {
       aggregateTimeout: 300,
       poll: 1000
+    },
+    proxy: {
+      '/api/*': {
+        target: 'http://192.168.1.6:5000'
+      }
     }
   },
 

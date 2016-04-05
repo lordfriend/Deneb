@@ -13,12 +13,7 @@ import {HTTP_PROVIDERS} from 'angular2/http';
 // Angular 2 Router
 import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from 'angular2/router';
 
-// Angular 2 Material
-// import {MdRadioDispatcher} from '@angular2-material/radio/radio_dispatcher';
-// const MATERIAL_PROVIDERS = [
-//   MdRadioDispatcher
-// ];
-
+import {MATERIAL_PROVIDERS} from 'ng2-material/all';
 /*
 * Application Providers/Directives/Pipes
 * providers/directives/pipes that only live in our browser environment
@@ -26,8 +21,8 @@ import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from 'angular2
 export const APPLICATION_PROVIDERS = [
   ...FORM_PROVIDERS,
   ...HTTP_PROVIDERS,
-  // ...MATERIAL_PROVIDERS,
   ...ROUTER_PROVIDERS,
+  ...MATERIAL_PROVIDERS,
   provide(LocationStrategy, { useClass: HashLocationStrategy }),
 ];
 

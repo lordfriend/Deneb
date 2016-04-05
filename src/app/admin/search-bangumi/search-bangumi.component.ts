@@ -1,24 +1,32 @@
 import {Component, Output} from 'angular2/core';
 import {BangumiService} from "../api";
 import {Bangumi} from "../../entity";
-// import {MdToolbar} from '@angular2-material/toolbar';
 
 @Component({
   selector: 'search-bangumi',
   template: require('./search-bangumi.html'),
-  providers: [BangumiService],
-  // directives: [MdToolbar]
+  providers: [BangumiService]
 })
 export class SearchBangumi {
 
   public bangumiList = [];
+
+  private searchValue = {
+    name: ''
+  };
 
   constructor(
     private _bangumiApi: BangumiService
   ){}
 
   searchBangumi(name: string) {
-    this._bangumiApi.searchBangumi(name)
+    if(name) {
+      this._bangumiApi.searchBangumi(name)
+        .subscribe(
+          bangumiList => this.bangumiList = bangumiList,
+          error => console.log(error)
+        );
+    }
   }
 
   addBangumi(bangumi: Bangumi) {

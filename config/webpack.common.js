@@ -94,7 +94,7 @@ module.exports = {
         exclude: [
           // these packages have problems with their sourcemaps
           helpers.root('node_modules/rxjs'),
-          helpers.root('node_modules/@angular2-material')
+          helpers.root('node_modules/ng2-material')
         ]
       }
 
@@ -148,7 +148,7 @@ module.exports = {
       // Returns compiled css as string
       {
         test: /\.scss$/,
-        loader: 'raw-loader!sass-loader',
+        loader: 'style-loader!css-loader!sass-loader',
         exclude: /node_modules/
       }
     ]

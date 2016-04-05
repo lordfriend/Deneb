@@ -1,10 +1,25 @@
-<md-toolbar color="primary">
-  <span>Search Bangumi</span>
-  <input placeholder="输入番组名称搜索" #searchBox (change)="searchBangumi(searchBox.value)" />
+<md-toolbar>
+  <div class="md-toolbar-tools">
+    <h2>
+      <span>Search Bangumi</span>
+    </h2>
+  </div>
 </md-toolbar>
+<div layout="row" layout-align="center">
+  <md-content layout="column" flex="100" flex-gt-md="70">
+    <section layout="row" layout-align="center stretch">
+      <md-input-container class="md-block" flex-gt-sm>
+        <input placeholder="输入番组名称搜索" md-input #searchBox (keyup.enter)="searchBangumi(searchBox.value)"/>
+      </md-input-container>
+    </section>
+  </md-content>
+</div>
 <md-list>
-  <md-list-item *ngFor="#bangumi of bangumiList" (click)="addBangumi(bangumi)">
-    <img src="{{bangumi.image}}" alt="image">
-    <h3>{{bangumi.name}}</h3>
+  <md-list-item *ngFor="#bangumi of bangumiList" (click)="addBangumi(bangumi)" class="md-3-line">
+    <img [src]="bangumi.image" alt="image" class="md-avatar">
+    <div class="md-list-item-text" layout="column">
+      <h3>{{bangumi.name_cn}}</h3>
+      <h4>{{bangumi.name}}</h4>
+    </div>
   </md-list-item>
 </md-list>

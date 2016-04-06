@@ -1,6 +1,7 @@
 import {Component, Output} from 'angular2/core';
 import {BangumiService} from "../api";
 import {Bangumi} from "../../entity";
+import {Router} from "angular2/router";
 
 @Component({
   selector: 'search-bangumi',
@@ -11,11 +12,8 @@ export class SearchBangumi {
 
   public bangumiList = [];
 
-  private searchValue = {
-    name: ''
-  };
-
   constructor(
+    private _router: Router,
     private _bangumiApi: BangumiService
   ){}
 
@@ -30,6 +28,6 @@ export class SearchBangumi {
   }
 
   addBangumi(bangumi: Bangumi) {
-
+    this._router.navigate(['BangumiDetail', {bgm_id: bangumi.bgm_id}]);
   }
 }

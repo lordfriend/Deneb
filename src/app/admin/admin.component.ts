@@ -1,7 +1,7 @@
 import {Component} from 'angular2/core';
 import {RouteConfig} from "angular2/router";
 import {SearchBangumi} from "./search-bangumi";
-import {BangumiDetail} from "./search-bangumi/bangumi-detail";
+import {BangumiDetail} from "./bangumi-detail";
 
 require('./admin.scss');
 
@@ -11,7 +11,7 @@ require('./admin.scss');
 })
 @RouteConfig([
   {path: '/search', name: 'SearchBangumi', component: SearchBangumi},
-  {path: '/search/:id', name: 'BangumiDetail', component: BangumiDetail}
+  {path: '/search/:bgm_id', name: 'BangumiDetail', component: BangumiDetail}
 ])
 export class Admin {
 

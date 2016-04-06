@@ -2,6 +2,14 @@ $md-font-url: "/node_modules/ng2-material/dist/";
 @import "~ng2-material/source/all";
 @import "~ng2-material/dist/font";
 
-.green {
-  color: green;
+.bangumi-list-item {
+  margin: 5px;
+  .bangumi-image {
+    margin: 10px 25px 20px 5px;
+    width: 150px;
+  }
+
+  .exist-indicator {
+    color: md-color($md-warn, 900, 0.6) !important;
+  }
 }

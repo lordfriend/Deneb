@@ -1,6 +1,6 @@
 import {Injectable} from 'angular2/core';
 import {Http, Response} from 'angular2/http';
-import {Bangumi} from '../../entity';
+import {Bangumi, BangumiRaw} from '../../entity';
 import {Observable} from 'rxjs/Observable';
 
 
@@ -18,10 +18,10 @@ export class BangumiService {
     return Observable.throw(error.json().error || 'Server Error');
   }
 
-  queryBangumi(bgmId: number): Observable<Bangumi> {
+  queryBangumi(bgmId: number): Observable<BangumiRaw> {
     let queryUrl = this.baseUrl + '/query/' + bgmId;
     return this.http.get(queryUrl)
-      .map(res => <Bangumi> res.json().data);
+      .map(res => new BangumiRaw(res.json()));
   }
 
   searchBangumi(name: string): Observable<Bangumi[]> {

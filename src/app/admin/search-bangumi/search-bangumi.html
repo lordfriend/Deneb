@@ -9,17 +9,23 @@
   <md-content layout="column" flex="100" flex-gt-md="70">
     <section layout="row" layout-align="center stretch">
       <md-input-container class="md-block" flex-gt-sm>
-        <input placeholder="输入番组名称搜索" md-input #searchBox (keyup.enter)="searchBangumi(searchBox.value)"/>
+        <input placeholder="输入番组名称搜索" #searchBox (keyup.enter)="searchBangumi(searchBox.value)"/>
       </md-input-container>
     </section>
   </md-content>
 </div>
-<md-list>
-  <md-list-item *ngFor="#bangumi of bangumiList" (click)="addBangumi(bangumi)" class="md-3-line">
-    <img [src]="bangumi.image" alt="image" class="md-avatar">
-    <div class="md-list-item-text" layout="column">
-      <h3>{{bangumi.name_cn}}</h3>
-      <h4>{{bangumi.name}}</h4>
-    </div>
-  </md-list-item>
-</md-list>
+<div layout="row" layout-align="center">
+  <md-content layout="column" flex="100" flex-gt-md="70">
+    <md-list>
+      <md-list-item *ngFor="#bangumi of bangumiList" (click)="addBangumi(bangumi)" class="md-3-line bangumi-list-item md-whiteframe-1dp">
+        <img [src]="bangumi.image" alt="image" class="bangumi-image">
+        <div class="md-list-item-text" layout="column">
+          <h3>{{bangumi.name_cn}}</h3>
+          <h4>{{bangumi.name}}</h4>
+          <p class="exist-indicator" [hidden]="!bangumi.id">已添加</p>
+        </div>
+      </md-list-item>
+    </md-list>
+  </md-content>
+</div>
+

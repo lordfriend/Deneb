@@ -13,3 +13,47 @@ $md-font-url: "/node_modules/ng2-material/dist/";
     color: md-color($md-warn, 900, 0.6) !important;
   }
 }
+
+.material-input {
+  /* remove default appearance from all input/textarea */
+  -moz-appearance: none;
+  -webkit-appearance: none;
+
+  display: block;
+  margin-top: 0;
+  background: none;
+  padding: 2px 2px 1px;
+  line-height: 26px;
+  height: 30px;
+  -ms-flex-preferred-size: 26px;
+  border-radius: 0;
+  width: 100%;
+  box-sizing: border-box;
+  float: left;
+  color: rgba(0, 0, 0, 0.87);
+  border: 0 solid rgba(0, 0, 0, 0.12);
+  border-bottom-width: 1px;
+
+  &:focus {
+    border-color: md-color($md-primary, 500);
+    outline: none;
+  }
+  &:invalid {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &[disabled],
+  [disabled] & {
+    background-position: 0 bottom;
+    // This background-size is coordinated with a linear-gradient set in input-theme.scss
+    // to create a dotted line under the input.
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+    margin-bottom: -1px; // Shift downward so dotted line is positioned the same as other bottom borders
+  }
+
+  @include input-placeholder-color(md-color($md-foreground, hint-text));
+  color: md-color($md-foreground, text) !important;
+  border-color: md-color($md-foreground, divider);
+}

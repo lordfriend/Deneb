@@ -1,3 +1,3 @@
-export * from './bangumi';
-export * from './episode';
-export * from './bangumi-raw';
+export {Bangumi} from './bangumi';
+export {Episode} from './episode';
+export {BangumiRaw} from './bangumi-raw';

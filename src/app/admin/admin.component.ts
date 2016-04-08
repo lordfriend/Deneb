@@ -11,7 +11,9 @@ require('./admin.scss');
 })
 @RouteConfig([
   {path: '/search', name: 'SearchBangumi', component: SearchBangumi},
-  {path: '/search/:bgm_id', name: 'BangumiDetail', component: BangumiDetail}
+  {path: '/search/:bgm_id', name: 'BangumiDetail', component: BangumiDetail},
+  // {path: '/bangumi', name: 'ListBangumi', component: ListBangumi},
+  {path: '/bangumi/:id', name: 'EditBangumiDetail', component: BangumiDetail}
 ])
 export class Admin {
 

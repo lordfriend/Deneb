@@ -1,5 +1,5 @@
 import {Injectable} from 'angular2/core';
-import {Http, Response} from 'angular2/http';
+import {Http, Response, Headers, RequestOptions} from 'angular2/http';
 import {Bangumi, BangumiRaw} from '../../entity';
 import {Observable} from 'rxjs/Observable';
 
@@ -28,5 +28,14 @@ export class BangumiService {
     let queryUrl = this.baseUrl + '/query?name=' + name;
     return this.http.get(queryUrl)
       .map(res => <Bangumi[]> res.json().data);
+  }
+
+  addBangumi(bangumiRaw: BangumiRaw): Observable<string> {
+    let queryUrl = this.baseUrl + '/bangumi';
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify(bangumiRaw);
+    return this.http.post(queryUrl, body, options)
+      .map(res => res.json().data.id);
   }
 }

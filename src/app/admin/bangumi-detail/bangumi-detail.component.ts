@@ -45,6 +45,9 @@ export class BangumiDetail implements OnInit {
           (bangumiRaw: BangumiRaw) => {
             console.log(bangumiRaw);
             this.bangumi = bangumiRaw;
+            if(Array.isArray(bangumiRaw.episodes) && bangumiRaw.episodes.length > 0) {
+              this.episodeList = bangumiRaw.episodes;
+            }
           },
           error => this.errorMessage = <any>error
         );
@@ -55,7 +58,20 @@ export class BangumiDetail implements OnInit {
   }
 
   public onSubmit() {
-
+    if(!this.bangumi.id) {
+      // add bangumi
+      this._bangumiApi.addBangumi(<BangumiRaw>this.bangumi)
+        .subscribe(
+          (id: string) => {
+            if(id) {
+              this._router.navigate(['EditBangumiDetail', {id: id}]);
+            } else {
+              this.errorMessage = 'No id return';
+            }
+          },
+          error => this.errorMessage = <any>error
+        )
+    }
   }
 
   public back() {

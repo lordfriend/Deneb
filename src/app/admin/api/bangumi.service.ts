@@ -38,4 +38,29 @@ export class BangumiService {
     return this.http.post(queryUrl, body, options)
       .map(res => res.json().data.id);
   }
+
+  listBangumi(page: number, count: number, name?: string): Observable<{data: Bangumi[], total: number}> {
+    let queryUrl = this.baseUrl + '/bangumi?page' + page + '&count=' + count;
+    if(name) {
+      queryUrl += '&name=' + name;
+    }
+    return this.http.get(queryUrl)
+      .map(res => res.json());
+  }
+
+  getBangumi(id: string): Observable<Bangumi> {
+    let queryUrl = this.baseUrl + '/bangumi/' + id;
+    return this.http.get(queryUrl)
+      .map(res => res.json().data);
+  }
+
+  updateBangumi(bangumi: Bangumi): Observable<any> {
+    let id = bangumi.id;
+    let queryUrl = this.baseUrl + '/bangumi/' + id;
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify(bangumi);
+    return this.http.put(queryUrl, body, options)
+      .map(res => res.json());
+  }
 }

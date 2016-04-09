@@ -23,9 +23,9 @@ export class BangumiDetail implements OnInit {
 
   public episodeList: Episode[] = [];
 
-  public errorMessage;
+  public errorMessage: any;
 
-  private from;
+  private from: string;
 
   constructor(
     private _router: Router,
@@ -33,7 +33,7 @@ export class BangumiDetail implements OnInit {
     private _bangumiApi: BangumiService
   ){}
 
-  ngOnInit() {
+  ngOnInit(): any {
     let id = this._routeParams.get('id');
     let bgm_id = Number(this._routeParams.get('bgm_id'));
     console.log(id);
@@ -52,14 +52,20 @@ export class BangumiDetail implements OnInit {
           error => this.errorMessage = <any>error
         );
     } else if(id) {
-
+      this._bangumiApi.getBangumi(id)
+        .subscribe(
+          (bangumi: Bangumi) => {
+            this.bangumi = bangumi;
+          },
+          error => this.errorMessage = <any>error
+        );
     }
 
+    return undefined;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if(!this.bangumi.id) {
-      // add bangumi
       this._bangumiApi.addBangumi(<BangumiRaw>this.bangumi)
         .subscribe(
           (id: string) => {
@@ -71,12 +77,20 @@ export class BangumiDetail implements OnInit {
           },
           error => this.errorMessage = <any>error
         )
+    } else {
+      this._bangumiApi.updateBangumi(this.bangumi)
+        .subscribe(
+          result => console.log(result),
+          error => this.errorMessage = <any> error
+        );
     }
   }
 
-  public back() {
+  public back(): void {
     if(this.from === 'search') {
       this._router.navigate(['SearchBangumi']);
+    } else if(this.from === 'list') {
+      this._router.navigate(['ListBangumi']);
     }
   }
 }

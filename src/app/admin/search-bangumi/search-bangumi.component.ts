@@ -17,7 +17,7 @@ export class SearchBangumi {
     private _bangumiApi: BangumiService
   ){}
 
-  searchBangumi(name: string) {
+  searchBangumi(name: string):void {
     if(name) {
       this._bangumiApi.searchBangumi(name)
         .subscribe(
@@ -27,7 +27,7 @@ export class SearchBangumi {
     }
   }
 
-  addBangumi(bangumi: Bangumi) {
+  addBangumi(bangumi: Bangumi):void {
     this._router.navigate(['BangumiDetail', {bgm_id: bangumi.bgm_id}]);
   }
 }

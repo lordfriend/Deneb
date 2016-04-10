@@ -14,7 +14,7 @@ export class BangumiRaw extends Bangumi{
     this.air_weekday = rawData.air_weekday;
 
     if(Array.isArray(rawData.eps) && rawData.eps.length > 0) {
-      this.episodes = rawData.eps.filter(item => item.type === 2).map(item => Episode.fromRawData(item, item.sort));
+      this.episodes = rawData.eps.filter(item => item.type === Episode.EPISODE_TYPE_NORMAL).map(item => Episode.fromRawData(item, item.sort));
       this.eps = this.episodes.length;
     } else {
       this.episodes = [];

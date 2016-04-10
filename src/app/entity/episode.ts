@@ -1,4 +1,8 @@
 export class Episode {
+
+  public static EPISODE_TYPE_NORMAL: number = 0;
+  public static EPISODE_TYPE_SPECIAL: number = 1;
+
   public id: string;
   public bangumi_id: string;
   public bgm_eps_id: number;
@@ -20,5 +24,6 @@ export class Episode {
     episode.name_cn = rawData.name_cn;
     episode.duration = rawData.duration;
     episode.airdate = rawData.airdate;
+    return episode;
   }
 }

@@ -18,6 +18,10 @@ export class Register {
   }
 
   registerUser() {
-
+    this._userService.register(this.user)
+      .subscribe(
+        result => console.log(result),
+        error => console.log(error)
+      );
   }
 }

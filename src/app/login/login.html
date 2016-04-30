@@ -29,7 +29,7 @@
         <button md-raised-button class="md-raised md-primary" type="submit" [disabled]="!loginForm.valid">登录</button>
       </form>
       <div flex="100">
-        <a md-button class="md-disabled" href="">忘记密码</a>
+        <button md-button class="md-disabled" [routerLink]="['Forget']">忘记密码</button>
       </div>
       <div flex="100">
         <a md-button class="md-primary" [routerLink]="['Register']">创建新用户</a>

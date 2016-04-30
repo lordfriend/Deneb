@@ -35,6 +35,7 @@ require('./app.scss');
   { path: '/about', name: 'About', loader: () => require('es6-promise!./about')('About') },
   { path: '/admin/...', name: 'Admin', component: Admin},
   { path: '/register', name: 'Register', component: Register},
+  { path: '/forget', name: 'Forget', component: Register},
   { path: '/login', name: 'Login', component: Login}
 ])
 export class App {

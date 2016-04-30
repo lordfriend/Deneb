@@ -3,12 +3,12 @@
     <md-toolbar>
       <div class="md-toolbar-tools">
         <h1>
-          <span>注册</span>
+          <span>{{title}}</span>
         </h1>
       </div>
     </md-toolbar>
     <md-content layout-padding="">
-      <form (ngSubmit)="registerUser()" [ngFormModel]="registerForm">
+      <form (ngSubmit)="onSubmit()" [ngFormModel]="registerForm">
         <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.name}">
           <label>用户名</label>
           <input class="material-input" type="text" [(ngModel)]="user.name" ngControl="name" required/>
@@ -40,7 +40,8 @@
             <div md-message="required">邀请码不能为空</div>
           </div>
         </md-input-container>
-        <button md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">保存</button>
+        <button *ngIf="urlPath === 'forget'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">重置密码</button>
+        <button *ngIf="urlPath === 'register'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">注册</button>
       </form>
     </md-content>
   </md-content>

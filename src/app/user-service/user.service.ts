@@ -21,6 +21,15 @@ export class UserService {
       .map(res => res.json());
   }
 
+  resetPassword(user: User): Observable<any> {
+    let queryUrl = this.baseUrl + '/reset_pass';
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify(user);
+    return this._http.post(queryUrl, body, options)
+      .map(res => res.json());
+  }
+
   login(user: User): Observable<any> {
     let queryUrl = this.baseUrl + '/login';
     let headers = new Headers({'Content-Type': 'application/json'});

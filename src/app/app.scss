@@ -1,0 +1,22 @@
+/* work around for md-messages which does not support nested controlGroup */
+form {
+  .md-messages {
+    position: relative;
+    order: 4;
+    overflow: hidden;
+    clear: left;
+  }
+
+  .md-message {
+    overflow: hidden;
+  }
+}
+
+md-input-container {
+  .md-messages {
+    color: #f44336;
+    font-size: 12px;
+    line-height: 14px;
+    padding-top: 5px;
+  }
+}

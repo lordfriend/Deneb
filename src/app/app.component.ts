@@ -9,6 +9,8 @@ import {AppState} from './app.service';
 import {Admin} from "./admin";
 import {Register} from "./register/register.component";
 
+require('./app.scss');
+
 /*
  * App Component
  * Top Level Component

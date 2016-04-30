@@ -5,4 +5,5 @@ export class User {
   password_repeat: string;
   level: number;
   invite_code: string;
+  remember: boolean;
 }

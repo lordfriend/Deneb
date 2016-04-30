@@ -8,6 +8,7 @@ import {Home} from './home';
 import {AppState} from './app.service';
 import {Admin} from "./admin";
 import {Register} from "./register/register.component";
+import {Login} from "./login/login.component";
 
 require('./app.scss');
 
@@ -33,7 +34,8 @@ require('./app.scss');
   // Async load a component using Webpack's require with es6-promise-loader and webpack `require`
   { path: '/about', name: 'About', loader: () => require('es6-promise!./about')('About') },
   { path: '/admin/...', name: 'Admin', component: Admin},
-  { path: '/register', name: 'Register', component: Register}
+  { path: '/register', name: 'Register', component: Register},
+  { path: '/login', name: 'Login', component: Login}
 ])
 export class App {
   angularclassLogo = 'assets/img/angularclass-avatar.png';

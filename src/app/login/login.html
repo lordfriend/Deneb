@@ -1,0 +1,41 @@
+<div layout="row" layout-align="center">
+  <md-content layout="column" flex="100">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h1>
+          <span>登录</span>
+        </h1>
+      </div>
+    </md-toolbar>
+    <md-content layout-padding="">
+      <form (ngSubmit)="login()" [ngFormModel]="loginForm">
+        <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.name}">
+          <label>用户名</label>
+          <input class="material-input" type="text" [(ngModel)]="user.name" ngControl="name" required/>
+          <div md-messages="name">
+            <div md-message="required">用户名不能为空</div>
+          </div>
+        </md-input-container>
+        <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.password}">
+          <label>密码</label>
+          <input class="material-input" type="password" [(ngModel)]="user.password" ngControl="password" required/>
+          <div md-messages="password">
+            <div md-message="required">密码不能为空</div>
+          </div>
+        </md-input-container>
+        <div flex="100">
+          <md-checkbox [(checked)]="user.remember">保存登录状态</md-checkbox>
+        </div>
+        <button md-raised-button class="md-raised md-primary" type="submit" [disabled]="!loginForm.valid">登录</button>
+      </form>
+      <div flex="100">
+        <a md-button class="md-disabled" href="">忘记密码</a>
+      </div>
+      <div flex="100">
+        <a md-button class="md-primary" [routerLink]="['Register']">创建新用户</a>
+      </div>
+    </md-content>
+  </md-content>
+</div>
+
+

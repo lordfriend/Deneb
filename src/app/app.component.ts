@@ -5,10 +5,11 @@ import {Component} from 'angular2/core';
 import {RouteConfig, Router} from 'angular2/router';
 
 import {Home} from './home';
-import {AppState} from './app.service';
 import {Admin} from "./admin";
 import {Register} from "./register/register.component";
 import {Login} from "./login/login.component";
+import {UserService} from "./user-service";
+import {User} from "./entity";
 
 require('./app.scss');
 
@@ -19,7 +20,7 @@ require('./app.scss');
 @Component({
   selector: 'app',
   pipes: [ ],
-  providers: [ ],
+  providers: [UserService],
   directives: [ ],
   template: `
 
@@ -31,24 +32,12 @@ require('./app.scss');
 @RouteConfig([
   { path: '/',      name: 'Index', component: Home, useAsDefault: true },
   { path: '/home',  name: 'Home',  component: Home },
-  // Async load a component using Webpack's require with es6-promise-loader and webpack `require`
-  { path: '/about', name: 'About', loader: () => require('es6-promise!./about')('About') },
   { path: '/admin/...', name: 'Admin', component: Admin},
   { path: '/register', name: 'Register', component: Register},
   { path: '/forget', name: 'Forget', component: Register},
   { path: '/login', name: 'Login', component: Login}
 ])
 export class App {
-  angularclassLogo = 'assets/img/angularclass-avatar.png';
-  name = 'Angular 2 Webpack Starter';
-  url = 'https://twitter.com/AngularClass';
-
-  constructor(public appState: AppState) {}
-
-  ngOnInit() {
-    console.log('Initial App State', this.appState.state);
-  }
-
 }
 
 /*

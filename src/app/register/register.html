@@ -1,50 +1,52 @@
-<div layout="row" layout-align="center">
-  <md-content layout="column" flex="100">
-    <md-toolbar>
-      <div class="md-toolbar-tools">
-        <h1>
-          <span>{{title}}</span>
-        </h1>
-      </div>
-    </md-toolbar>
-    <md-content layout-padding="">
-      <form (ngSubmit)="onSubmit()" [ngFormModel]="registerForm">
-        <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.name}">
-          <label>用户名</label>
-          <input class="material-input" type="text" [(ngModel)]="user.name" ngControl="name" required/>
-          <div md-messages="name">
-            <div md-message="required">用户名不能为空</div>
+<div class="center-box-background">
+  <div layout="row" layout-align="center" class="center-box-frame">
+    <md-content layout="column" class="center-box">
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h1>
+            <span>{{title}}</span>
+          </h1>
+        </div>
+      </md-toolbar>
+      <md-content layout-padding="">
+        <form (ngSubmit)="onSubmit()" [ngFormModel]="registerForm">
+          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.name}">
+            <label>用户名</label>
+            <input class="material-input" type="text" [(ngModel)]="user.name" ngControl="name" required/>
+            <div md-messages="name">
+              <div md-message="required">用户名不能为空</div>
+            </div>
+          </md-input-container>
+          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.password}">
+            <label>密码</label>
+            <input class="material-input" type="password" [(ngModel)]="user.password" ngControl="password" required/>
+            <div md-messages="password">
+              <div md-message="required">密码不能为空</div>
+            </div>
+          </md-input-container>
+          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.password_repeat}">
+            <label>重复密码</label>
+            <input class="material-input" type="password" [(ngModel)]="user.password_repeat" ngControl="password_repeat" required/>
+            <div md-messages="password_repeat">
+              <div md-message="required">重复密码不能为空</div>
+            </div>
+            <div class="md-messages md-invalid" *ngIf="registerForm.controls.password_repeat.touched && !registerForm.controls.password_repeat.hasError('required')">
+              <div class="md-message" *ngIf="registerForm.hasError('mismatchedPasswords')">密码不匹配</div>
+            </div>
+          </md-input-container>
+          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.invite_code}">
+            <label>邀请码</label>
+            <input class="material-input" type="password" [(ngModel)]="user.invite_code" ngControl="invite_code" required/>
+            <div md-messages="invite_code">
+              <div md-message="required">邀请码不能为空</div>
+            </div>
+          </md-input-container>
+          <div layout="row" layout-align="center">
+            <button *ngIf="urlPath === 'forget'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">重置密码</button>
+            <button *ngIf="urlPath === 'register'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">注册</button>
           </div>
-        </md-input-container>
-        <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.password}">
-          <label>密码</label>
-          <input class="material-input" type="password" [(ngModel)]="user.password" ngControl="password" required/>
-          <div md-messages="password">
-            <div md-message="required">密码不能为空</div>
-          </div>
-        </md-input-container>
-        <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.password_repeat}">
-          <label>重复密码</label>
-          <input class="material-input" type="password" [(ngModel)]="user.password_repeat" ngControl="password_repeat" required/>
-          <div md-messages="password_repeat">
-            <div md-message="required">重复密码不能为空</div>
-          </div>
-          <div class="md-messages md-invalid" *ngIf="registerForm.controls.password_repeat.touched && !registerForm.controls.password_repeat.hasError('required')">
-            <div class="md-message" *ngIf="registerForm.hasError('mismatchedPasswords')">密码不匹配</div>
-          </div>
-        </md-input-container>
-        <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.invite_code}">
-          <label>邀请码</label>
-          <input class="material-input" type="password" [(ngModel)]="user.invite_code" ngControl="invite_code" required/>
-          <div md-messages="invite_code">
-            <div md-message="required">邀请码不能为空</div>
-          </div>
-        </md-input-container>
-        <button *ngIf="urlPath === 'forget'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">重置密码</button>
-        <button *ngIf="urlPath === 'register'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">注册</button>
-      </form>
+        </form>
+      </md-content>
     </md-content>
-  </md-content>
+  </div>
 </div>
-
-

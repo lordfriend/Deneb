@@ -46,6 +46,12 @@
             <button *ngIf="urlPath === 'register'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">注册</button>
           </div>
         </form>
+        <div layout="row" layout-align="center" class="login-link">
+          <a md-button class="md-primary" [routerLink]="['Login']">已有帐号?登录</a>
+        </div>
+        <div layout="row" layout-align="center" *ngIf="errorMessage">
+          <p class="error-message">{{errorMessage}}</p>
+        </div>
       </md-content>
     </md-content>
   </div>

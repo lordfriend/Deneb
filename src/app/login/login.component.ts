@@ -3,8 +3,9 @@ import {UserService} from "../user-service";
 import {FormBuilder, ControlGroup, Validators, Control} from "angular2/common";
 import {User} from "../entity";
 import {AuthError} from "../error/AuthError";
+import {Router} from "angular2/router";
 
-require('./login.scss')
+require('./login.scss');
 
 @Component({
   selector: 'login',
@@ -20,6 +21,7 @@ export class Login implements OnInit {
   errorMessage: string;
 
   constructor(private _userService:UserService,
+              private _router: Router,
               private _formBuilder: FormBuilder) {
     this.user = new User();
   }
@@ -50,7 +52,9 @@ export class Login implements OnInit {
   login(): void {
     this._userService.login(this.loginForm.value)
       .subscribe(
-        res => console.log(res),
+        () => {
+          this._router.navigate(['Index']);
+        },
         error => {
           if(error instanceof AuthError) {
             if(error.isLoginFailed()) {

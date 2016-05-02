@@ -21,7 +21,8 @@ export class UserService extends BaseService {
     let options = new RequestOptions({headers: headers});
     let body = JSON.stringify(user);
     return this._http.post(queryUrl, body, options)
-      .map(res => res.json());
+      .map(res => res.json())
+      .catch(this.handleError);
   }
 
   resetPassword(user: User): Observable<any> {
@@ -30,7 +31,8 @@ export class UserService extends BaseService {
     let options = new RequestOptions({headers: headers});
     let body = JSON.stringify(user);
     return this._http.post(queryUrl, body, options)
-      .map(res => res.json());
+      .map(res => res.json())
+      .catch(this.handleError);
   }
 
   login(user: User): Observable<any> {
@@ -46,7 +48,8 @@ export class UserService extends BaseService {
   getUserInfo(): Observable<User> {
     let queryUrl = this.baseUrl + '/info';
     return this._http.get(queryUrl)
-      .map(res =>  <User> res.json().data);
+      .map(res =>  <User> res.json().data)
+      .catch(this.handleError);
   }
 
 }

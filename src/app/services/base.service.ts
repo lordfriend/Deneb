@@ -1,5 +1,6 @@
 import {AuthError} from '../error';
 import {Observable} from "rxjs/Observable";
+import {ServerError} from "../error/ServerError";
 
 export abstract class BaseService {
 
@@ -10,7 +11,11 @@ export abstract class BaseService {
     } else if(resp.status == 403) {
       error = new AuthError(resp.json().message, resp.status);
     } else if(resp.status === 500) {
-      error = new AuthError(resp.json().message, resp.status);
+      error = new ServerError(resp.json().message, resp.status);
+    } else if(resp.status === 502) {
+      error = new ServerError('Server offline', resp.status);
+    } else {
+      error = new ServerError('Network Error', 0);
     }
     return Observable.throw(error);
   }

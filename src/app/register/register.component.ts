@@ -5,6 +5,9 @@ import {FormBuilder, ControlGroup, Validators} from "angular2/common";
 import {passwordMatch} from "../form-utils";
 import {Router, OnActivate, ComponentInstruction} from "angular2/router";
 import {register} from "ts-node/dist/ts-node";
+import {AuthError} from "../error/AuthError";
+
+require('./register.scss');
 
 /**
  * Register User Component, /register
@@ -24,6 +27,8 @@ export class Register implements OnInit, OnActivate {
   public urlPath: string;
 
   public title: string;
+
+  public errorMessage: string;
 
   constructor(
     private _userService: UserService,
@@ -60,16 +65,50 @@ export class Register implements OnInit, OnActivate {
   resetPassword() {
     this._userService.resetPassword(this.user)
       .subscribe(
-        result => console.log(result),
-        error => console.log(error)
+        () => {
+          this._router.navigate(['Login']);
+        },
+        error => {
+          if(error instanceof AuthError) {
+            switch(error.message) {
+              case AuthError.INVALID_INVITE_CODE:
+                    this.errorMessage = '邀请码不合法';
+                    break;
+              default:
+                    this.errorMessage = error.message;
+            }
+          } else {
+            this.errorMessage = error.message;
+          }
+        }
       );
   }
 
   registerUser() {
     this._userService.register(this.user)
       .subscribe(
-        result => console.log(result),
-        error => console.log(error)
+        () => {
+          this._router.navigate(['Login']);
+        },
+        error => {
+          if(error instanceof AuthError) {
+            switch(error.message) {
+              case AuthError.DUPLICATE_NAME:
+                    this.errorMessage = '用户名已存在';
+                    break;
+              case AuthError.INVALID_INVITE_CODE:
+                    this.errorMessage = '邀请码不合法';
+                    break;
+              case AuthError.PASSWORD_MISMATCH:
+                    this.errorMessage = '密码不匹配';
+                    break;
+              default:
+                    this.errorMessage = error.message;
+            }
+          } else {
+            this.errorMessage = error.message;
+          }
+        }
       );
   }
 }

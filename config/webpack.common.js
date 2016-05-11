@@ -147,12 +147,11 @@ module.exports = {
         exclude: [helpers.root('src/index.html')]
       },
 
-      // SCSS loader support for *.scss
-      // Returns compiled css as string
+      // Less loader support for *.less
+      // See https://github.com/webpack/less-loader
       {
-        test: /\.scss$/,
-        loader: 'style-loader!css-loader!sass-loader',
-        exclude: /node_modules/
+        test: /\.less$/,
+        loader: 'style!css!less'
       }
     ]
 

@@ -1,11 +1,11 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from "../user-service";
-import {FormBuilder, ControlGroup, Validators, Control} from "angular2/common";
+import {FormBuilder, ControlGroup, Validators, Control} from "@angular/common";
 import {User} from "../entity";
 import {AuthError} from "../error/AuthError";
-import {Router} from "angular2/router";
+import {Router} from "@angular/router-deprecated";
 
-require('./login.scss');
+require('./login.less');
 
 @Component({
   selector: 'login',
@@ -19,6 +19,8 @@ export class Login implements OnInit {
   user: User;
 
   errorMessage: string;
+
+  siteTitle: string = SITE_TITLE;
 
   constructor(private _userService:UserService,
               private _router: Router,

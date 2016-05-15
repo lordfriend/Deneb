@@ -1,0 +1,72 @@
+{
+  "_args": [
+    [
+      "semantic-ui-less",
+      "/Users/konomi/WebstormProjects/Deneb"
+    ]
+  ],
+  "_from": "semantic-ui-less@*",
+  "_id": "semantic-ui-less@2.1.8",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/semantic-ui-less",
+  "_nodeVersion": "0.12.7",
+  "_npmUser": {
+    "email": "bot@semantic-ui.com",
+    "name": "semantic-bot"
+  },
+  "_npmVersion": "3.1.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "semantic-ui-less",
+    "raw": "semantic-ui-less",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "*",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/semantic-ui-less/-/semantic-ui-less-2.1.8.tgz",
+  "_shasum": "f77b75a814543e6aae1eee387cc069b89aa92983",
+  "_shrinkwrap": null,
+  "_spec": "semantic-ui-less",
+  "_where": "/Users/konomi/WebstormProjects/Deneb",
+  "author": {
+    "email": "jack@semantic-ui.com",
+    "name": "Jack Lukic"
+  },
+  "bugs": {
+    "url": "https://github.com/Semantic-Org/Semantic-UI/issues"
+  },
+  "dependencies": {
+    "jquery": "x.*"
+  },
+  "description": "LESS Only distribution of Semantic UI",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "f77b75a814543e6aae1eee387cc069b89aa92983",
+    "tarball": "https://registry.npmjs.org/semantic-ui-less/-/semantic-ui-less-2.1.8.tgz"
+  },
+  "gitHead": "495ce78f0ff3eb69197459dcb9f4b8d56447a7bd",
+  "homepage": "http://www.semantic-ui.com",
+  "license": "MIT",
+  "maintainers": [
+    {
+      "name": "semantic-bot",
+      "email": "bot@semantic-ui.com"
+    }
+  ],
+  "name": "semantic-ui-less",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Semantic-Org/Semantic-UI-LESS.git"
+  },
+  "scripts": {},
+  "title": "Semantic UI",
+  "version": "2.1.8"
+}

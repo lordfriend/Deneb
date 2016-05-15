@@ -1,13 +1,13 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit} from '@angular/core';
 import {User} from "../entity";
 import {UserService} from "../user-service";
-import {FormBuilder, ControlGroup, Validators} from "angular2/common";
+import {FormBuilder, ControlGroup, Validators} from "@angular/common";
 import {passwordMatch} from "../form-utils";
-import {Router, OnActivate, ComponentInstruction} from "angular2/router";
+import {Router, OnActivate, ComponentInstruction} from "@angular/router-deprecated";
 import {register} from "ts-node/dist/ts-node";
 import {AuthError} from "../error/AuthError";
 
-require('./register.scss');
+require('./register.less');
 
 /**
  * Register User Component, /register

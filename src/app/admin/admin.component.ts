@@ -1,11 +1,11 @@
-import {Component} from 'angular2/core';
-import {RouteConfig, OnActivate, ComponentInstruction} from "angular2/router";
+import {Component} from '@angular/core';
+import {RouteConfig, OnActivate, ComponentInstruction} from "@angular/router-deprecated";
 import {SearchBangumi} from "./search-bangumi";
 import {BangumiDetail} from "./bangumi-detail";
 import {ListBangumi} from "./list-bangumi";
 import {Authentication} from "../user-service";
 
-require('./admin.scss');
+require('./admin.less');
 
 
 

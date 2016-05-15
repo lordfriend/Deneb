@@ -1,17 +1,16 @@
 /*
  * Angular 2 decorators and services
  */
-import {Component} from 'angular2/core';
-import {RouteConfig, Router} from 'angular2/router';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {RouteConfig, Router} from '@angular/router-deprecated';
 
-import {Home} from './home';
 import {Admin} from "./admin";
 import {Register} from "./register/register.component";
 import {Login} from "./login/login.component";
 import {UserService} from "./user-service";
 import {User} from "./entity";
 
-require('./app.scss');
+require('./app.less');
 
 /*
  * App Component
@@ -20,18 +19,17 @@ require('./app.scss');
 @Component({
   selector: 'app',
   pipes: [ ],
-  providers: [UserService],
+  providers: [],
   directives: [ ],
   template: `
 
     <main>
       <router-outlet></router-outlet>
     </main>
-  `
+  `,
+  encapsulation: ViewEncapsulation.None
 })
 @RouteConfig([
-  { path: '/',      name: 'Index', component: Home, useAsDefault: true },
-  { path: '/home',  name: 'Home',  component: Home },
   { path: '/admin/...', name: 'Admin', component: Admin},
   { path: '/register', name: 'Register', component: Register},
   { path: '/forget', name: 'Forget', component: Register},

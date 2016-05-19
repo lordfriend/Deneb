@@ -8,9 +8,12 @@
       </header>
       <div class="center-box-body">
         <form class="ui form" (ngSubmit)="login()" [ngFormModel]="loginForm" [ngClass]="{error: !loginForm.valid}">
-          <div class="field input-field" [ngClass]="{error: !loginForm.controls.name.valid && loginForm.controls.name.dirty}">
-            <input type="text" ngControl="name" required placeholder="用户名"/>
-            <div class="floating-error ui red pointing below basic label" *ngIf="!loginForm.controls.name.valid && loginForm.controls.name.dirty">用户名不能为空</div>
+          <!--<div class="field input-field" [ngClass]="{error: !loginForm.controls.name.valid && loginForm.controls.name.dirty}">-->
+            <!--<input type="text" ngControl="name" required placeholder="用户名"/>-->
+            <!--<div class="floating-error ui red pointing below basic label" *ngIf="!loginForm.controls.name.valid && loginForm.controls.name.dirty">用户名不能为空</div>-->
+          <!--</div>-->
+          <div class="field">
+            <ui-input ngControl="name" type="text" placeholder="用户名"></ui-input>
           </div>
           <div class="field input-field" [ngClass]="{error: !loginForm.controls.password.valid && loginForm.controls.password.dirty}">
             <input type="password" ngControl="password" required placeholder="密码"/>

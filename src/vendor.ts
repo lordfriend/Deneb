@@ -18,6 +18,8 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 
+// ng2-semantic
+import './ng2-semantic';
 
 if ('production' === ENV) {
   // Production

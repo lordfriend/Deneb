@@ -1,0 +1,18 @@
+ui-input {
+  display: block;
+}
+
+.ui-input-wrapper {
+  position: relative;
+  .floating-error.label {
+    position: absolute;
+    top: -1.5em;
+    right: -1em;
+    z-index: 100;
+    display: none;
+
+    &.show {
+      display: inline-block;
+    }
+  }
+}

@@ -15,6 +15,8 @@ require('./login.less');
 export class Login implements OnInit {
 
   loginForm: ControlGroup;
+  name: Control;
+  password: Control;
 
   user: User;
 
@@ -29,9 +31,11 @@ export class Login implements OnInit {
   }
 
   private _buildForm(): void {
+    this.name = new Control('', Validators.required);
+    this.password = new Control('', Validators.required);
     this.loginForm = this._formBuilder.group({
-      name: ['', Validators.required],
-      password: ['', Validators.required],
+      name: this.name,
+      password: this.password,
       remember: [false]
     });
 

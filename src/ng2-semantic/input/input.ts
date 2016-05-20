@@ -12,9 +12,10 @@ import {
   EventEmitter,
   Optional,
   SkipSelf,
+  Self,
   Host
 } from '@angular/core';
-import {NG_VALUE_ACCESSOR, ControlValueAccessor, NgControlName, NgFormModel} from '@angular/common';
+import {NG_VALUE_ACCESSOR, ControlValueAccessor, NgControlName, NgControl} from '@angular/common';
 import {BooleanFieldValue} from '../core/annotations/field-value';
 import {UIError} from '../core/error/error';
 import {Observable} from 'rxjs/Observable';
@@ -41,34 +42,37 @@ export class UIInputUnsupportedTypeError extends UIError {
 
 
 @Directive({
-  selector: 'ui-message',
+  selector: '[ui-message]',
   host: {
     '[class.show]': '!valid && isTouched',
     '[class.floating-error]': 'true',
     '[class.ui]': 'true',
     '[class.pointing]': 'true',
+    '[class.below]': 'align == "top"',
     '[class.basic]': 'true',
-    '[class.label': 'true',
-    '[class.red]': '!valid && isTouched'
+    '[class.label]': 'true',
+    '[class.red]': '!valid && isTouched',
   }
 })
-export class UIHint {
+export class UIMessage {
   @Input('ui-message')
-  property: string | NgControlName;
+  errorName: string;
+
+  @Input()
+  align: string = 'top';
 
   constructor(
-    @Optional() @SkipSelf() @Host() public form: NgFormModel
+    @Optional() @SkipSelf() @Host() public control: NgControlName
   ) {}
 
   get valid(): boolean {
-    if(this.property instanceof NgControlName) {
-      let ctrl = <NgControlName> this.property;
-      return !!ctrl.valid;
-    }
-    let prop = <string> this.property;
-    let ctrl = this.form.control.controls[prop];
-    return ctrl.valid && ctrl.touched;
+    return !this.control.control.errors || !this.control.control.errors[this.errorName];
   }
+
+  get isTouched(): boolean {
+    return this.control.touched;
+  }
+
 }
 
 
@@ -76,21 +80,34 @@ export class UIHint {
   selector: 'ui-input',
   template: `
 <div class="ui-input-wrapper">
-  <input #input [type]="type" [(ngModel)]="value" [placeholder]="placeholder">
+  <input #input 
+         [type]="type" 
+         [(ngModel)]="value" 
+         [placeholder]="placeholder" 
+         [required]="required" 
+         [disabled]="disabled"
+         [readOnly]="readOnly"
+         (change)="handleChange($event)">
+  <ng-content select="[ui-message]"></ng-content>
 </div>`,
   providers: [UI_INPUT_CONTROL_VALUE_ACCESSOR],
-  host: {'(click)': 'focus()'}
+  host: {
+    '(click)': 'focus()',
+    '[class.field]': 'true'
+  }
 })
 export class UIInput implements ControlValueAccessor, OnChanges, AfterContentInit {
 
   private _value: any = '';
-  private _onChangeCallback: () => void = noop;
+  private _onChangeCallback: ( v: any) => void = noop;
   private _onTouchedCallback: () => void = noop;
 
   @Input() id: string;
   @Input() type: string = 'text';
   @Input() placeholder: string;
   @Input() @BooleanFieldValue() required: boolean = false;
+  @Input() @BooleanFieldValue() disabled: boolean = false;
+  @Input() @BooleanFieldValue() readOnly: boolean = false;
 
   @ViewChild('input') _inputElement: ElementRef;
 
@@ -115,7 +132,8 @@ export class UIInput implements ControlValueAccessor, OnChanges, AfterContentIni
     v = this._convertValueForInputType(v);
     if(v !== this._value) {
       this._value = v;
-      this._onChangeCallback();
+      //noinspection TypeScriptValidateTypes
+      this._onChangeCallback(v);
     }
   }
 
@@ -123,6 +141,10 @@ export class UIInput implements ControlValueAccessor, OnChanges, AfterContentIni
     this._inputElement.nativeElement.focus();
   }
 
+  handleChange(event: Event) {
+    this.value = (<HTMLInputElement>event.target).value;
+    this._onTouchedCallback();
+  }
 
   writeValue(v:any):void {
     this._value = v;

@@ -12,9 +12,9 @@
             <!--<input type="text" ngControl="name" required placeholder="用户名"/>-->
             <!--<div class="floating-error ui red pointing below basic label" *ngIf="!loginForm.controls.name.valid && loginForm.controls.name.dirty">用户名不能为空</div>-->
           <!--</div>-->
-          <div class="field">
-            <ui-input ngControl="name" type="text" placeholder="用户名"></ui-input>
-          </div>
+          <ui-input ngControl="name" type="text" placeholder="用户名">
+            <div ui-message="required">用户名不能为空</div>
+          </ui-input>
           <div class="field input-field" [ngClass]="{error: !loginForm.controls.password.valid && loginForm.controls.password.dirty}">
             <input type="password" ngControl="password" required placeholder="密码"/>
             <div class="floating-error ui red pointing below basic label" *ngIf="!loginForm.controls.password.valid && loginForm.controls.password.dirty">密码不能为空</div>

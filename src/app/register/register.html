@@ -1,58 +1,39 @@
 <div class="center-box-background">
-  <div layout="row" layout-align="center" class="center-box-frame">
-    <md-content layout="column" class="center-box">
-      <md-toolbar>
-        <div class="md-toolbar-tools">
-          <h1>
-            <span>{{title}}</span>
-          </h1>
-        </div>
-      </md-toolbar>
-      <md-content layout-padding="">
-        <form (ngSubmit)="onSubmit()" [ngFormModel]="registerForm">
-          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.name}">
-            <label>用户名</label>
-            <input class="material-input" type="text" [(ngModel)]="user.name" ngControl="name" required/>
-            <div md-messages="name">
-              <div md-message="required">用户名不能为空</div>
-            </div>
-          </md-input-container>
-          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.password}">
-            <label>密码</label>
-            <input class="material-input" type="password" [(ngModel)]="user.password" ngControl="password" required/>
-            <div md-messages="password">
-              <div md-message="required">密码不能为空</div>
-            </div>
-          </md-input-container>
-          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.password_repeat}">
-            <label>重复密码</label>
-            <input class="material-input" type="password" [(ngModel)]="user.password_repeat" ngControl="password_repeat" required/>
-            <div md-messages="password_repeat">
-              <div md-message="required">重复密码不能为空</div>
-            </div>
-            <div class="md-messages md-invalid" *ngIf="registerForm.controls.password_repeat.touched && !registerForm.controls.password_repeat.hasError('required')">
-              <div class="md-message" *ngIf="registerForm.hasError('mismatchedPasswords')">密码不匹配</div>
-            </div>
-          </md-input-container>
-          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': user.invite_code}">
-            <label>邀请码</label>
-            <input class="material-input" type="password" [(ngModel)]="user.invite_code" ngControl="invite_code" required/>
-            <div md-messages="invite_code">
-              <div md-message="required">邀请码不能为空</div>
-            </div>
-          </md-input-container>
+  <div class="center-box-frame">
+    <div class="center-box">
+      <header class="center-box-header">
+        <h1>
+          <span>注册{{siteTitle}}</span>
+        </h1>
+      </header>
+      <div class="center-box-body">
+        <form class="ui form" (ngSubmit)="onSubmit()" [ngFormModel]="registerForm" [ngClass]="{error: !registerForm.valid}">
+          <ui-input type="text" placeholder="用户名" ngControl="name">
+            <div ui-message="required">用户名不能为空</div>
+          </ui-input>
+          <ui-input type="password" placeholder="密码" ngControl="password">
+            <div ui-message="required">密码不能为空</div>
+          </ui-input>
+          <div class="field ui-input-wrapper" [ngClass]="{error: (!password_repeat.valid || (registerForm.errors && registerForm.errors['mismatchedPasswords'])) && password_repeat.touched}">
+            <input type="password" ngControl="password_repeat" placeholder="重复密码">
+            <div class="ui floating-error red pointing below basic label" *ngIf="(password_repeat.errors && password_repeat.errors['required']) && password_repeat.touched">重复密码不能为空</div>
+            <div class="ui floating-error red pointing below basic label" *ngIf="((registerForm.errors && registerForm.errors['mismatchedPasswords']) && !(password_repeat.errors && password_repeat.errors['required'])) && password_repeat.touched">密码不匹配</div>
+          </div>
+          <ui-input type="text" placeholder="邀请码" ngControl="invite_code">
+            <div ui-message="required">邀请码不能为空</div>
+          </ui-input>
           <div layout="row" layout-align="center">
-            <button *ngIf="urlPath === 'forget'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">重置密码</button>
-            <button *ngIf="urlPath === 'register'" md-raised-button class="md-raised md-primary" type="submit" [disabled]="!registerForm.valid">注册</button>
+            <button *ngIf="urlPath === 'forget'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">重置密码</button>
+            <button *ngIf="urlPath === 'register'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
           </div>
         </form>
-        <div layout="row" layout-align="center" class="login-link">
-          <a md-button class="md-primary" [routerLink]="['Login']">已有帐号?登录</a>
+        <div class="login-link">
+          <a [routerLink]="['Login']">已有帐号?登录</a>
         </div>
-        <div layout="row" layout-align="center" *ngIf="errorMessage">
-          <p class="error-message">{{errorMessage}}</p>
+        <div class="ui error message" *ngIf="errorMessage">
+          <p>{{errorMessage}}</p>
         </div>
-      </md-content>
-    </md-content>
+      </div>
+    </div>
   </div>
 </div>

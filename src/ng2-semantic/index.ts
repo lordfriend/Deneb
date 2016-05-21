@@ -1,8 +1,7 @@
-import {UIInput, UIMessage} from './input/input';
+import {INPUT_DIRECTIVES} from './input/input';
 
 require('./ng2-semantic.less');
 
 export var UI_DIRECTIVES = [
-  UIInput,
-  UIMessage
+  ...INPUT_DIRECTIVES
 ];

@@ -13,6 +13,8 @@ export class AuthError extends Error {
 
   // update pass error
   static PASSWORD_INCORRECT = 'password incorrect';
+  
+  static PERMISSION_DENIED = 'permission denied';
 
   constructor(
     public message: string,

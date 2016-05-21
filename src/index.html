@@ -39,7 +39,11 @@
 <body>
 
   <app>
-    Loading...
+    <div class="ui page visible dimmer">
+      <div class="content">
+        <div class="center">Loading...</div>
+      </div>
+    </div>
   </app>
 
   <% if (webpackConfig.metadata.ENV === 'development') { %>

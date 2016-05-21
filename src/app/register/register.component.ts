@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../entity";
 import {UserService} from "../user-service";
-import {FormBuilder, ControlGroup, Validators} from "@angular/common";
+import {FormBuilder, Control, ControlGroup, Validators} from "@angular/common";
 import {passwordMatch} from "../form-utils";
 import {Router, OnActivate, ComponentInstruction} from "@angular/router-deprecated";
 import {register} from "ts-node/dist/ts-node";
@@ -20,9 +20,11 @@ require('./register.less');
 })
 export class Register implements OnInit, OnActivate {
 
-  public user: User;
-
-  public registerForm: ControlGroup;
+  registerForm: ControlGroup;
+  name: Control;
+  password: Control;
+  password_repeat: Control;
+  invite_code: Control;
 
   public urlPath: string;
 
@@ -34,17 +36,23 @@ export class Register implements OnInit, OnActivate {
     private _userService: UserService,
     private _formBuilder:FormBuilder,
     private _router: Router
-  ){
-    this.user = new User();
+  ){}
+
+  private _buildForm(): void {
+    this.name = new Control('', Validators.required);
+    this.password = new Control('', Validators.required);
+    this.password_repeat = new Control('', Validators.required);
+    this.invite_code = new Control('', Validators.required);
+    this.registerForm = this._formBuilder.group({
+      name: this.name,
+      password: this.password,
+      password_repeat: this.password_repeat,
+      invite_code: this.invite_code
+    }, {validator: passwordMatch('password', 'password_repeat')});
   }
 
   ngOnInit():any {
-    this.registerForm = this._formBuilder.group({
-      name: ['', Validators.required],
-      password: ['', Validators.required],
-      password_repeat: ['', Validators.required],
-      invite_code: ['', Validators.required]
-    }, {validator: passwordMatch('password', 'password_repeat')});
+    this._buildForm();
     return undefined;
   }
 
@@ -63,7 +71,7 @@ export class Register implements OnInit, OnActivate {
   }
 
   resetPassword() {
-    this._userService.resetPassword(this.user)
+    this._userService.resetPassword(this.registerForm.value)
       .subscribe(
         () => {
           this._router.navigate(['Login']);
@@ -85,7 +93,7 @@ export class Register implements OnInit, OnActivate {
   }
 
   registerUser() {
-    this._userService.register(this.user)
+    this._userService.register(this.registerForm.value)
       .subscribe(
         () => {
           this._router.navigate(['Login']);

@@ -8,6 +8,8 @@ export abstract class BaseService {
     var error: Error;
     if(resp.status === 400) {
       error = new AuthError(resp.json().message, resp.status);
+    } else if(resp.status === 401) {
+      error = new AuthError(resp.json().message, resp.status);
     } else if(resp.status == 403) {
       error = new AuthError(resp.json().message, resp.status);
     } else if(resp.status === 500) {

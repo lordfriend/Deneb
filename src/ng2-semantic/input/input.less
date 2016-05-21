@@ -4,15 +4,19 @@ ui-input {
 
 .ui-input-wrapper {
   position: relative;
+
+  [ui-message] {
+    display: none;
+
+    &.ui-invalid {
+      display: inline-block;
+    }
+  }
+
   .floating-error.label {
     position: absolute;
     top: -1.5em;
     right: -1em;
     z-index: 100;
-    display: none;
-
-    &.show {
-      display: inline-block;
-    }
   }
 }

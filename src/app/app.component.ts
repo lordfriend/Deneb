@@ -9,6 +9,9 @@ import {Register} from "./register/register.component";
 import {Login} from "./login/login.component";
 import {UserService} from "./user-service";
 import {User} from "./entity";
+import {ErrorComponent} from "./error/error.component";
+import {SecurityOutlet} from "./user-service/security-outlet.directive";
+import {Authentication} from "./user-service/authentication.service";
 
 require('./app.less');
 
@@ -19,21 +22,23 @@ require('./app.less');
 @Component({
   selector: 'app',
   pipes: [ ],
-  providers: [],
-  directives: [ ],
+  providers: [UserService, Authentication],
+  directives: [SecurityOutlet],
   template: `
 
     <main>
-      <router-outlet></router-outlet>
+      <security-outlet login="/Login" unathorized="/ErrorComponent">
+      </security-outlet>
     </main>
   `,
   encapsulation: ViewEncapsulation.None
 })
 @RouteConfig([
-  { path: '/admin/...', name: 'Admin', component: Admin},
+  { path: '/admin/...', name: 'Admin', component: Admin, data: {level: User.LEVEL_ADMIN}},
   { path: '/register', name: 'Register', component: Register},
   { path: '/forget', name: 'Forget', component: Register},
-  { path: '/login', name: 'Login', component: Login}
+  { path: '/login', name: 'Login', component: Login},
+  { path: '/error', name: 'Error', component: ErrorComponent}
 ])
 export class App {
 }

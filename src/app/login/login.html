@@ -8,17 +8,12 @@
       </header>
       <div class="center-box-body">
         <form class="ui form" (ngSubmit)="login()" [ngFormModel]="loginForm" [ngClass]="{error: !loginForm.valid}">
-          <!--<div class="field input-field" [ngClass]="{error: !loginForm.controls.name.valid && loginForm.controls.name.dirty}">-->
-            <!--<input type="text" ngControl="name" required placeholder="用户名"/>-->
-            <!--<div class="floating-error ui red pointing below basic label" *ngIf="!loginForm.controls.name.valid && loginForm.controls.name.dirty">用户名不能为空</div>-->
-          <!--</div>-->
           <ui-input ngControl="name" type="text" placeholder="用户名">
             <div ui-message="required">用户名不能为空</div>
           </ui-input>
-          <div class="field input-field" [ngClass]="{error: !loginForm.controls.password.valid && loginForm.controls.password.dirty}">
-            <input type="password" ngControl="password" required placeholder="密码"/>
-            <div class="floating-error ui red pointing below basic label" *ngIf="!loginForm.controls.password.valid && loginForm.controls.password.dirty">密码不能为空</div>
-          </div>
+          <ui-input ngControl="password" type="password" placeholder="密码">
+            <div ui-message="required">密码不能为空</div>
+          </ui-input>
           <div class="field">
             <div class="ui checkbox">
               <input type="checkbox" ngControl="remember">
@@ -26,6 +21,9 @@
             </div>
           </div>
           <button class="ui primary button large fluid submit" type="submit" [disabled]="!loginForm.valid">登录</button>
+          <dvi class="ui inverted dimmer active page" *ngIf="inProgress">
+            <div class="ui loader"></div>
+          </dvi>
         </form>
         <div class="forget-link additional-info">
           <a [routerLink]="['Forget']">忘记密码</a>
@@ -33,8 +31,8 @@
         <div class="additional-info">
           <a [routerLink]="['Register']">创建新用户</a>
         </div>
-        <div *ngIf="errorMessage">
-          <p class="error-message">{{errorMessage}}</p>
+        <div class="ui error message" *ngIf="errorMessage">
+          <p>{{errorMessage}}</p>
         </div>
       </div>
     </div>

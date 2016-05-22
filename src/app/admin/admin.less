@@ -76,3 +76,55 @@
     color: #f44336 !important;
   }
 }
+
+.bangumi-form {
+  display: block;
+  padding: 1rem 2rem 3rem 2rem;
+  margin-bottom: 3em;
+  .bangumi-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    .bangumi-image {
+      width: 30%;
+      flex: 0 1 auto;
+    }
+
+    .bangumi-basic-info {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-left: 0.8rem;
+      padding-right: 1rem;
+    }
+  }
+}
+
+.episode-list {
+  .episode-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    .episode-no-wrapper {
+      width: 4em;
+      min-height: 3em;
+      flex: 0 1 auto;
+      > .episode-no {
+        margin: 0;
+        color: #999999;
+      }
+    }
+    .content {
+      flex: 1 1 auto;
+
+      .right-aligned.button {
+        position: absolute;
+        right: 0;
+        bottom: 1em;
+      }
+    }
+  }
+}

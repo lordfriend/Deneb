@@ -19,11 +19,11 @@ import {RouteParams, Router} from "@angular/router-deprecated";
 })
 export class BangumiDetail implements OnInit {
 
-  public bangumi: Bangumi = <Bangumi>{};
+  bangumi: Bangumi = <Bangumi>{};
 
-  public episodeList: Episode[] = [];
+  episodeList: Episode[] = [];
 
-  public errorMessage: any;
+  errorMessage: any;
 
   private from: string;
 
@@ -64,7 +64,7 @@ export class BangumiDetail implements OnInit {
     return undefined;
   }
 
-  public onSubmit(): void {
+  onSubmit(): void {
     if(!this.bangumi.id) {
       this._bangumiApi.addBangumi(<BangumiRaw>this.bangumi)
         .subscribe(
@@ -86,11 +86,15 @@ export class BangumiDetail implements OnInit {
     }
   }
 
-  public back(): void {
+  back(): void {
     if(this.from === 'search') {
       this._router.navigate(['SearchBangumi']);
     } else if(this.from === 'list') {
       this._router.navigate(['ListBangumi']);
     }
+  }
+
+  updateEpisode(): void {
+    
   }
 }

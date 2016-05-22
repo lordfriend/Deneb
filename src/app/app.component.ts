@@ -12,6 +12,7 @@ import {User} from "./entity";
 import {ErrorComponent} from "./error/error.component";
 import {SecurityOutlet} from "./user-service/security-outlet.directive";
 import {Authentication} from "./user-service/authentication.service";
+import {Home} from "./home/home.component";
 
 require('./app.less');
 
@@ -34,6 +35,7 @@ require('./app.less');
   encapsulation: ViewEncapsulation.None
 })
 @RouteConfig([
+  { path: '/...', name: 'Home', component: Home, data: {level: User.LEVEL_DEFAULT}, useAsDefault: true},
   { path: '/admin/...', name: 'Admin', component: Admin, data: {level: User.LEVEL_ADMIN}},
   { path: '/register', name: 'Register', component: Register},
   { path: '/forget', name: 'Forget', component: Register},

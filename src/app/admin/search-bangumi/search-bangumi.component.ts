@@ -28,6 +28,9 @@ export class SearchBangumi {
   }
 
   addBangumi(bangumi: Bangumi):void {
+    if(bangumi.id) {
+      return;
+    }
     this._router.navigate(['BangumiDetail', {bgm_id: bangumi.bgm_id}]);
   }
 }

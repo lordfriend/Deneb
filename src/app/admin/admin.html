@@ -1,6 +1,13 @@
-<div class="ui left sidebar visible">
-
-</div>
-<div class="pusher">
-  <router-outlet></router-outlet>
+<div class="admin-container">
+  <aside class="ui left inverted vertical sidebar fixed menu visible">
+    <a class="item" [routerLink]="['ListBangumi']">
+      已添加的新番
+    </a>
+    <a class="item" [routerLink]="['SearchBangumi']">
+      添加新的新番
+    </a>
+  </aside>
+  <div class="admin-content">
+    <router-outlet></router-outlet>
+  </div>
 </div>

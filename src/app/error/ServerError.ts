@@ -1,7 +1,10 @@
-export class ServerError extends Error {
+import {BaseError} from './BaseError';
+
+
+export class ServerError extends BaseError {
   constructor(
     public message: string,
     public status: number) {
-    super(message);
+    super(message, status);
   }
 }

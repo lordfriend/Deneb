@@ -60,7 +60,7 @@ export class SecurityOutlet extends RouterOutlet {
           return super.activate(nextInstruction);
         } else {
           // user has insufficient level, redirect to error page
-          ins = this.parentRouter.generate([this.unauthorized, {error: new AuthError(AuthError.PERMISSION_DENIED, 403)}]);
+          ins = this.parentRouter.generate([this.unauthorized, {message: AuthError.PERMISSION_DENIED, status: 403}]);
           return super.activate(ins.component);
         }
       }, (error: any) => {
@@ -71,7 +71,7 @@ export class SecurityOutlet extends RouterOutlet {
           return super.activate(ins.component);
         } else {
           // other error occurs, redirect to error page
-          ins = this.parentRouter.generate([this.unauthorized, {error: error}]);
+          ins = this.parentRouter.generate([this.unauthorized, {message: error.message, status: error.status}]);
           return super.activate(ins.component);
         }
       })

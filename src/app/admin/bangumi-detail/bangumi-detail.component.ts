@@ -94,7 +94,11 @@ export class BangumiDetail implements OnInit {
     }
   }
 
-  updateEpisode(): void {
-    
+  updateEpisode(episode: Episode): void {
+    this._bangumiApi.updateEpisode(episode)
+      .subscribe(
+        result => console.log(result),
+        error => this.errorMessage = <any> error
+      )
   }
 }

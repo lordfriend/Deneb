@@ -36,38 +36,40 @@
       </section>
       <button class="ui right floated primary button" type="submit">Save</button>
   </form>
-  <h4 class="ui header">各话列表</h4>
-  <div class="ui divider"></div>
-  <div class="episode-list">
-    <div class="episode-item ui segment" *ngFor="#episode of bangumi.episodes">
-      <div class="episode-no-wrapper">
-        <h1 class="episode-no"><span>#</span>{{episode.episode_no}}</h1>
-      </div>
-      <div class="content">
-        <form class="ui form" (ngSubmit)="updateEpisode()">
-          <div class="field">
-            <label>标题</label>
-            <div class="two fields">
-              <div class="field">
-                <input type="text" placeholder="标题" [(ngModel)]="episode.name">
+  <div class="bangumi-episodes" *ngIf="bangumi.id">
+    <h4 class="ui header">各话列表</h4>
+    <div class="ui divider"></div>
+    <div class="episode-list">
+      <div class="episode-item ui segment" *ngFor="#episode of bangumi.episodes">
+        <div class="episode-no-wrapper">
+          <h1 class="episode-no"><span>#</span>{{episode.episode_no}}</h1>
+        </div>
+        <div class="content">
+          <form class="ui form" (ngSubmit)="updateEpisode(episode)">
+            <div class="field">
+              <label>标题</label>
+              <div class="two fields">
+                <div class="field">
+                  <input type="text" placeholder="标题" [(ngModel)]="episode.name">
+                </div>
+                <div class="field">
+                  <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn">
+                </div>
               </div>
-              <div class="field">
-                <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn">
+            </div>
+            <div class="fields">
+              <div class="four wide field">
+                <label>放送日期(YYYY-MM-DD)</label>
+                <input type="text" placeholder="放送日期" [(ngModel)]="episode.airdate">
+              </div>
+              <div class="four wide field">
+                <label>时长(HH:mm:dd)</label>
+                <input type="text" placeholder="时长" [(ngModel)]="episode.duration">
               </div>
             </div>
-          </div>
-          <div class="fields">
-            <div class="four wide field">
-              <label>放送日期(YYYY-MM-DD)</label>
-              <input type="text" placeholder="放送日期" [(ngModel)]="episode.airdate">
-            </div>
-            <div class="four wide field">
-              <label>时长(HH:mm:dd)</label>
-              <input type="text" placeholder="时长" [(ngModel)]="episode.duration">
-            </div>
-          </div>
-          <button class="ui primary button right-aligned" type="submit">Save</button>
-        </form>
+            <button class="ui primary button right-aligned" type="submit">Save</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

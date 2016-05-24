@@ -103,7 +103,7 @@ module.exports = webpackMerge(commonConfig, {
     new DefinePlugin({
       'ENV': JSON.stringify(METADATA.ENV),
       'HMR': METADATA.HMR,
-      'SITE_TIEL': METADATA.title
+      'SITE_TITLE': JSON.stringify(METADATA.title)
     }),
 
     // Plugin: UglifyJsPlugin

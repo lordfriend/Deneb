@@ -4,6 +4,7 @@ import {RouteConfig} from "@angular/router-deprecated";
 import {DefaultComponent} from "./default/default.component";
 import {HomeService} from './home.service';
 
+require('./home.less');
 
 @Component({
   selector: 'home',

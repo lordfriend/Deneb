@@ -1,13 +1,19 @@
 import {AuthError} from '../error';
-import {Observable} from "rxjs/Observable";
-import {ServerError} from "../error/ServerError";
+import {Observable} from 'rxjs/Observable';
+import {ServerError} from '../error/ServerError';
+import {ClientError} from '../error/ClientError';
 
 export abstract class BaseService {
 
   handleError(resp: any) {
     var error: Error;
     if(resp.status === 400) {
-      error = new AuthError(resp.json().message, resp.status);
+      if(resp.json().message === AuthError.LOGIN_FAIL) {
+        error = new AuthError(resp.json().message, resp.status);
+      } else {
+        error = new ClientError(resp.json().message, resp.status);
+      }
+
     } else if(resp.status === 401) {
       error = new AuthError(resp.json().message, resp.status);
     } else if(resp.status == 403) {

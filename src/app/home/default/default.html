@@ -1,3 +1,13 @@
 <div class="ui container">
-  <div class="ui segment"></div>
+  <div class="ui five doubling cards">
+    <div class="card" *ngFor="#episode of recentEpisodes">
+      <div class="image">
+        <img src="" alt="">
+      </div>
+      <div class="content">
+        <span>{{episode.bangumi.name_cn}}</span>
+        <span>第{{episode.episode_no}}话</span>
+      </div>
+    </div>
+  </div>
 </div>

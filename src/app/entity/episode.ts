@@ -1,3 +1,6 @@
+import {Bangumi} from './bangumi';
+
+
 export class Episode {
 
   public static EPISODE_TYPE_NORMAL: number = 0;
@@ -15,6 +18,7 @@ export class Episode {
   public torrent_id: string;
   public create_time: number;
   public update_time: number;
+  public bangumi: Bangumi;
 
   public static fromRawData(rawData: any, episode_no?: number) {
     let episode = new Episode();

@@ -28,7 +28,7 @@ require('./app.less');
   template: `
 
     <main>
-      <security-outlet login="/Login" unathorized="/ErrorComponent">
+      <security-outlet login="/Login" unathorized="/Error">
       </security-outlet>
     </main>
   `,

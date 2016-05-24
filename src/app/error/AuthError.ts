@@ -5,8 +5,6 @@ export class AuthError extends BaseError {
   // login error
   static LOGIN_FAIL = 'invalid name or password';
 
-  // common error
-  static INVALID_REQUEST = 'invalid parameter';
 
   // register error
   static INVALID_INVITE_CODE = 'invalid invite code';

@@ -69,7 +69,7 @@ export class Login implements OnInit, OnActivate {
           if(this.sourceUrl) {
             this._router.navigateByUrl(this.sourceUrl);
           } else {
-            this._router.navigate(['Index']);
+            this._router.navigateByUrl('/');
           }
 
         },

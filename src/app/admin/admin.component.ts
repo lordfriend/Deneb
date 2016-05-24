@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {Title} from '@angular/platform-browser';
 import {RouteConfig} from "@angular/router-deprecated";
 import {SearchBangumi} from "./search-bangumi";
 import {BangumiDetail} from "./bangumi-detail";
@@ -11,7 +12,7 @@ require('./admin.less');
 @Component({
   selector: 'admin',
   template: require('./admin.html'),
-  providers: []
+  providers: [Title]
 })
 @RouteConfig([
   {path: '/search', name: 'SearchBangumi', component: SearchBangumi},

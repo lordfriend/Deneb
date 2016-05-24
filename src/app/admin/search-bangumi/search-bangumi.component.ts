@@ -1,7 +1,8 @@
 import {Component, Output} from '@angular/core';
-import {BangumiService} from "../api";
-import {Bangumi} from "../../entity";
-import {Router} from "@angular/router-deprecated";
+import {BangumiService} from '../api';
+import {Bangumi} from '../../entity';
+import {Router} from '@angular/router-deprecated';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'search-bangumi',
@@ -14,8 +15,11 @@ export class SearchBangumi {
 
   constructor(
     private _router: Router,
-    private _bangumiApi: BangumiService
-  ){}
+    private _bangumiApi: BangumiService,
+    titleService: Title
+  ){
+    titleService.setTitle('添加新番 - ' + SITE_TITLE);
+  }
 
   searchBangumi(name: string):void {
     if(name) {

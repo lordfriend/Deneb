@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Title} from '@angular/platform-browser';
 import {BangumiService} from '../api';
 import {Bangumi, Episode, BangumiRaw} from '../../entity';
 import {RouteParams, Router} from "@angular/router-deprecated";
@@ -30,7 +31,8 @@ export class BangumiDetail implements OnInit {
   constructor(
     private _router: Router,
     private _routeParams: RouteParams,
-    private _bangumiApi: BangumiService
+    private _bangumiApi: BangumiService,
+    private _titleService: Title
   ){}
 
   ngOnInit(): any {
@@ -40,6 +42,7 @@ export class BangumiDetail implements OnInit {
     this.from = id ? 'list' : 'search';
 
     if(bgm_id) {
+      this._titleService.setTitle('添加新番 - ' + SITE_TITLE);
       this._bangumiApi.queryBangumi(bgm_id)
         .subscribe(
           (bangumiRaw: BangumiRaw) => {
@@ -52,6 +55,7 @@ export class BangumiDetail implements OnInit {
           error => this.errorMessage = <any>error
         );
     } else if(id) {
+      this._titleService.setTitle('编辑新番 - ' + SITE_TITLE);
       this._bangumiApi.getBangumi(id)
         .subscribe(
           (bangumi: Bangumi) => {

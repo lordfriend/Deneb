@@ -6,6 +6,8 @@ import {passwordMatch} from "../form-utils";
 import {Router, OnActivate, ComponentInstruction} from "@angular/router-deprecated";
 import {register} from "ts-node/dist/ts-node";
 import {AuthError} from "../error/AuthError";
+import {Title} from '@angular/platform-browser';
+
 
 require('./register.less');
 
@@ -16,7 +18,7 @@ require('./register.less');
 @Component({
   selector: 'register',
   template: require('./register.html'),
-  providers: [UserService]
+  providers: [UserService, Title]
 })
 export class Register implements OnInit, OnActivate {
 
@@ -35,8 +37,11 @@ export class Register implements OnInit, OnActivate {
   constructor(
     private _userService: UserService,
     private _formBuilder:FormBuilder,
-    private _router: Router
-  ){}
+    private _router: Router,
+    titleService: Title
+  ){
+    titleService.setTitle('注册 - ' + SITE_TITLE);
+  }
 
   private _buildForm(): void {
     this.name = new Control('', Validators.required);

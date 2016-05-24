@@ -1,6 +1,7 @@
 import {Bangumi} from "../../entity";
 import {BangumiService} from "../api";
 import {OnInit, Component} from "@angular/core";
+import {Title} from '@angular/platform-browser';
 import {Router} from "@angular/router-deprecated";
 
 @Component({
@@ -22,8 +23,11 @@ export class ListBangumi implements OnInit {
 
   constructor(
     private _bangumiApi: BangumiService,
-    private _router: Router
-  ){}
+    private _router: Router,
+    titleService: Title
+  ){
+    titleService.setTitle('新番管理 - ' + SITE_TITLE);
+  }
 
   public filterBangumi(): void {
     this._bangumiApi.listBangumi(this.currentPage, this.numberPerPage, this.name)

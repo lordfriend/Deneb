@@ -1,34 +1,43 @@
-<md-toolbar>
-  <div class="md-toolbar-tools">
-    <h2>
-      <span>已保存的新番</span>
-    </h2>
+<nav class="nav-admin">
+  <h1 class="ui header">已保存的新番</h1>
+</nav>
+<div class="bangumi-container">
+  <div class="ui loading search">
+    <div class="ui fluid icon input">
+      <input class="prompt" type="text" placeholder="按名称过滤" #searchBox (keyup.enter)="filterBangumi()" [name]="searchBox.value">
+      <i class="search icon"></i>
+    </div>
   </div>
-</md-toolbar>
-<div layout="row" layout-align="center">
-  <md-content layout="column" flex="100" flex-gt-md="70">
-    <section layout="row" layout-align="center stretch">
-      <md-input-container class="md-block" flex="100">
-        <input placeholder="按名称过滤" class="material-input" #searchBox (keyup.enter)="filterBangumi()" [name]="searchBox.value"/>
-      </md-input-container>
-    </section>
-  </md-content>
-</div>
-<div layout="row" layout-align="center">
-  <md-content layout="column" flex="100" flex-gt-md="70">
-    <md-list>
-      <md-list-item *ngFor="#bangumi of bangumiList" (click)="editBangumi(bangumi)" class="md-3-line bangumi-list-item md-whiteframe-1dp">
-        <img [src]="bangumi.image" alt="image" class="bangumi-image">
-        <div class="md-list-item-text" layout="column">
-          <h3>{{bangumi.name_cn}}</h3>
-          <h4>{{bangumi.name}}</h4>
-          <p>{{bangumi.summary}}</p>
-          <p>{{bangumi.air_date}}</p>
-          <p>{{bangumi.air_weekday}}</p>
-          <p>{{bangumi.rss}}</p>
-          <p>{{bangumi.eps_regex}}</p>
-        </div>
-      </md-list-item>
-    </md-list>
-  </md-content>
+  <div class="bangumi-list">
+    <div *ngFor="#bangumi of bangumiList" (click)="editBangumi(bangumi)" class="ui segment bangumi-list-item">
+      <img [src]="bangumi.image" alt="image" class="bangumi-image">
+      <div class="md-list-item-text">
+        <h3 class="bangumi-title">{{bangumi.name_cn}}</h3>
+        <h4 class="entry">
+          <span class="entry-key">日文名</span>
+          <span class="entry-value">{{bangumi.name}}</span>
+        </h4>
+        <p class="entry">
+          <span class="entry-key">简介</span>
+          <span class="entry-value">{{bangumi.summary}}</span>
+        </p>
+        <p class="entry">
+          <span class="entry-key">放送开始</span>
+          <span class="entry-value">{{bangumi.air_date}}</span>
+        </p>
+        <p class="entry">
+          <span class="entry-key">放送星期</span>
+          <span class="entry-value">{{bangumi.air_weekday}}</span>
+        </p>
+        <p class="entry">
+          <span class="entry-key">RSS</span>
+          <span class="entry-value">{{bangumi.rss}}</span>
+        </p>
+        <p class="entry">
+          <span class="entry-key">正则表达式</span>
+          <span class="entry-value">{{bangumi.eps_regex}}</span>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>

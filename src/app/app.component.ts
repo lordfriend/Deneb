@@ -1,17 +1,20 @@
 /*
  * Angular 2 decorators and services
  */
-import {Component} from 'angular2/core';
-import {RouteConfig, Router} from 'angular2/router';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {RouteConfig, Router} from '@angular/router-deprecated';
 
-import {Home} from './home';
 import {Admin} from "./admin";
 import {Register} from "./register/register.component";
 import {Login} from "./login/login.component";
 import {UserService} from "./user-service";
 import {User} from "./entity";
+import {ErrorComponent} from "./error/error.component";
+import {SecurityOutlet} from "./user-service/security-outlet.directive";
+import {Authentication} from "./user-service/authentication.service";
+import {Home} from "./home/home.component";
 
-require('./app.scss');
+require('./app.less');
 
 /*
  * App Component
@@ -20,22 +23,24 @@ require('./app.scss');
 @Component({
   selector: 'app',
   pipes: [ ],
-  providers: [UserService],
-  directives: [ ],
+  providers: [UserService, Authentication],
+  directives: [SecurityOutlet],
   template: `
 
     <main>
-      <router-outlet></router-outlet>
+      <security-outlet login="/Login" unathorized="/ErrorComponent">
+      </security-outlet>
     </main>
-  `
+  `,
+  encapsulation: ViewEncapsulation.None
 })
 @RouteConfig([
-  { path: '/',      name: 'Index', component: Home, useAsDefault: true },
-  { path: '/home',  name: 'Home',  component: Home },
-  { path: '/admin/...', name: 'Admin', component: Admin},
+  { path: '/...', name: 'Home', component: Home, data: {level: User.LEVEL_DEFAULT}, useAsDefault: true},
+  { path: '/admin/...', name: 'Admin', component: Admin, data: {level: User.LEVEL_ADMIN}},
   { path: '/register', name: 'Register', component: Register},
   { path: '/forget', name: 'Forget', component: Register},
-  { path: '/login', name: 'Login', component: Login}
+  { path: '/login', name: 'Login', component: Login},
+  { path: '/error', name: 'Error', component: ErrorComponent}
 ])
 export class App {
 }

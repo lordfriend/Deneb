@@ -1,56 +1,76 @@
-<md-toolbar>
-  <div class="md-toolbar-tools">
-    <button md-button class="md-icon-button" aria-label="back" (click)="back()">
-      <i md-icon>arrow_back</i>
-    </button>
-    <h2>
-      <span>编辑新番</span>
-    </h2>
+<nav class="nav-admin">
+  <h1 class="ui header">编辑新番</h1>
+</nav>
+<div class="bangumi-container">
+    <form (ngSubmit)="onSubmit()" class="bangumi-form ui form">
+      <section class="bangumi-info">
+        <div class="bangumi-image">
+          <img src="{{bangumi.image}}" alt="image">
+        </div>
+        <div class="bangumi-basic-info">
+          <div class="field">
+            <label>番组名</label>
+            <input type="text" [(ngModel)]="bangumi.name"/>
+          </div>
+          <div class="field">
+            <label>中文名</label>
+            <input type="text" [(ngModel)]="bangumi.name_cn"/>
+          </div>
+          <div class="field">
+            <label>放送开始</label>
+            <input type="text" [(ngModel)]="bangumi.air_date"/>
+          </div>
+          <div class="field">
+            <label>放送星期</label>
+            <input type="text" [(ngModel)]="bangumi.air_weekday"/>
+          </div>
+          <div class="field">
+            <label>RSS</label>
+            <input type="text" [(ngModel)]="bangumi.rss"/>
+          </div>
+          <div class="field">
+            <label>正则表达式(用于匹配番组名称以及话数)</label>
+            <input type="text" [(ngModel)]="bangumi.eps_regex"/>
+          </div>
+        </div>
+      </section>
+      <button class="ui right floated primary button" type="submit">Save</button>
+  </form>
+  <div class="bangumi-episodes" *ngIf="bangumi.id">
+    <h4 class="ui header">各话列表</h4>
+    <div class="ui divider"></div>
+    <div class="episode-list">
+      <div class="episode-item ui segment" *ngFor="#episode of bangumi.episodes">
+        <div class="episode-no-wrapper">
+          <h1 class="episode-no"><span>#</span>{{episode.episode_no}}</h1>
+        </div>
+        <div class="content">
+          <form class="ui form" (ngSubmit)="updateEpisode(episode)">
+            <div class="field">
+              <label>标题</label>
+              <div class="two fields">
+                <div class="field">
+                  <input type="text" placeholder="标题" [(ngModel)]="episode.name">
+                </div>
+                <div class="field">
+                  <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn">
+                </div>
+              </div>
+            </div>
+            <div class="fields">
+              <div class="four wide field">
+                <label>放送日期(YYYY-MM-DD)</label>
+                <input type="text" placeholder="放送日期" [(ngModel)]="episode.airdate">
+              </div>
+              <div class="four wide field">
+                <label>时长(HH:mm:dd)</label>
+                <input type="text" placeholder="时长" [(ngModel)]="episode.duration">
+              </div>
+            </div>
+            <button class="ui primary button right-aligned" type="submit">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-</md-toolbar>
-<div layout="row" layout-align="center">
-  <md-content layout="column" flex="100" flex-gt-md="70">
-    <form (ngSubmit)="onSubmit()">
-      <md-card>
-        <md-card-content>
-          <section layout="column" layout-gt-md="row" flex="100">
-            <div class="bangumi-image" flex="100" flex-gt-md="30">
-              <img src="{{bangumi.image}}" alt="image">
-            </div>
-            <div flex="100" flex-gt-md="70" layout="column" layout-align="start">
-              <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': bangumi.name}">
-                <label>番组名</label>
-                <input class="material-input" type="text" [(ngModel)]="bangumi.name"/>
-              </md-input-container>
-              <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': bangumi.name_cn}">
-                <label>中文名</label>
-                <input class="material-input" type="text" [(ngModel)]="bangumi.name_cn"/>
-              </md-input-container>
-              <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': bangumi.air_date}">
-                <label>放送开始</label>
-                <input class="material-input" type="text" [(ngModel)]="bangumi.air_date"/>
-              </md-input-container>
-              <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': bangumi.air_weekday}">
-                <label>放送星期</label>
-                <input class="material-input" type="text" [(ngModel)]="bangumi.air_weekday"/>
-              </md-input-container>
-            </div>
-          </section>
-          <section layout="column" flex="100">
-            <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': bangumi.rss}">
-              <label>RSS</label>
-              <input class="material-input" type="text" [(ngModel)]="bangumi.rss"/>
-            </md-input-container>
-            <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': bangumi.eps_regex}">
-              <label>正则表达式(用于匹配番组名称以及话数)</label>
-              <input class="material-input" type="text" [(ngModel)]="bangumi.eps_regex"/>
-            </md-input-container>
-          </section>
-        </md-card-content>
-        <md-card-actions layout="row" layout-align="end center">
-          <button md-button type="submit">Save</button>
-        </md-card-actions>
-      </md-card>
-    </form>
-  </md-content>
 </div>

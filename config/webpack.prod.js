@@ -22,11 +22,13 @@ var WebpackMd5Hash = require('webpack-md5-hash');
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 8080;
+const TITLE = process.env.SITE_TITLE || 'Deneb';
 const METADATA = webpackMerge(commonConfig.metadata, {
   host: HOST,
   port: PORT,
   ENV: ENV,
-  HMR: false
+  HMR: false,
+  title: TITLE
 });
 
 module.exports = webpackMerge(commonConfig, {
@@ -100,7 +102,8 @@ module.exports = webpackMerge(commonConfig, {
     // NOTE: when adding more properties make sure you include them in custom-typings.d.ts
     new DefinePlugin({
       'ENV': JSON.stringify(METADATA.ENV),
-      'HMR': METADATA.HMR
+      'HMR': METADATA.HMR,
+      'SITE_TIEL': METADATA.title
     }),
 
     // Plugin: UglifyJsPlugin

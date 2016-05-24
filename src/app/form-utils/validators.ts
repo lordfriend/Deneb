@@ -1,4 +1,4 @@
-import {ControlGroup} from "angular2/common";
+import {ControlGroup} from "@angular/common";
 
 
 export function passwordMatch(passwordKey:string, passwordConfirmKey:string) {

@@ -1,4 +1,6 @@
-export class AuthError extends Error {
+import {BaseError} from './BaseError';
+
+export class AuthError extends BaseError {
 
   // login error
   static LOGIN_FAIL = 'invalid name or password';
@@ -13,11 +15,13 @@ export class AuthError extends Error {
 
   // update pass error
   static PASSWORD_INCORRECT = 'password incorrect';
+  
+  static PERMISSION_DENIED = 'permission denied';
 
   constructor(
     public message: string,
     public status: number) {
-    super(message);
+    super(message, status);
   }
 
   public isPermission(): boolean {

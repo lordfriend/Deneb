@@ -1,46 +1,27 @@
-import {Component} from 'angular2/core';
-import {AppState} from '../app.service';
+import {Component, OnInit} from '@angular/core';
+import {Title} from '@angular/platform-browser';
+import {RouteConfig} from "@angular/router-deprecated";
+import {DefaultComponent} from "./default/default.component";
 
-import {Title} from './title';
-import {XLarge} from './x-large';
 
 @Component({
-  // The selector is what angular internally uses
-  // for `document.querySelectorAll(selector)` in our index.html
-  // where, in this case, selector is the string 'home'
-  selector: 'home',  // <home></home>
-  // We need to tell Angular's Dependency Injection which providers are in our app.
-  providers: [
-    Title
-  ],
-  // We need to tell Angular's compiler which directives are in our template.
-  // Doing so will allow Angular to attach our behavior to an element
-  directives: [
-    XLarge
-  ],
-  // We need to tell Angular's compiler which custom pipes are in our template.
-  pipes: [ ],
-  // Our list of styles in our component. We may add more to compose many styles together
-  styles: [ require('./home.css') ],
-  // Every Angular template is first compiled by the browser before Angular runs it's compiler
-  template: require('./home.html')
+  selector: 'home',
+  template: require('./home.html'),
+  providers: [Title]
 })
-export class Home {
-  // Set our default values
-  localState = { value: '' };
-  // TypeScript public modifiers
-  constructor(public appState: AppState, public title: Title) {
+@RouteConfig([
+  {path: '/', name: 'Default', component: DefaultComponent, useAsDefault: true}
+])
+export class Home implements OnInit {
+  siteTitle:string = SITE_TITLE;
 
+  constructor(
+    titleService: Title
+  ) {
+    titleService.setTitle(this.siteTitle);
   }
 
-  ngOnInit() {
-    console.log('hello `Home` component');
-    // this.title.getData().subscribe(data => this.data = data);
+  ngOnInit():any {
+    return null;
   }
-
-  submitState(value) {
-    console.log('submitState', value);
-    this.appState.set('value', value);
-  }
-
 }

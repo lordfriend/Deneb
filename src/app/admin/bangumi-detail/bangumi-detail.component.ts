@@ -1,7 +1,7 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit} from '@angular/core';
 import {BangumiService} from '../api';
 import {Bangumi, Episode, BangumiRaw} from '../../entity';
-import {RouteParams, Router} from "angular2/router";
+import {RouteParams, Router} from "@angular/router-deprecated";
 
 @Component({
   selector: 'bangumi-detail',
@@ -19,11 +19,11 @@ import {RouteParams, Router} from "angular2/router";
 })
 export class BangumiDetail implements OnInit {
 
-  public bangumi: Bangumi = <Bangumi>{};
+  bangumi: Bangumi = <Bangumi>{};
 
-  public episodeList: Episode[] = [];
+  episodeList: Episode[] = [];
 
-  public errorMessage: any;
+  errorMessage: any;
 
   private from: string;
 
@@ -64,7 +64,7 @@ export class BangumiDetail implements OnInit {
     return undefined;
   }
 
-  public onSubmit(): void {
+  onSubmit(): void {
     if(!this.bangumi.id) {
       this._bangumiApi.addBangumi(<BangumiRaw>this.bangumi)
         .subscribe(
@@ -86,11 +86,19 @@ export class BangumiDetail implements OnInit {
     }
   }
 
-  public back(): void {
+  back(): void {
     if(this.from === 'search') {
       this._router.navigate(['SearchBangumi']);
     } else if(this.from === 'list') {
       this._router.navigate(['ListBangumi']);
     }
+  }
+
+  updateEpisode(episode: Episode): void {
+    this._bangumiApi.updateEpisode(episode)
+      .subscribe(
+        result => console.log(result),
+        error => this.errorMessage = <any> error
+      )
   }
 }

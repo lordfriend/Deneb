@@ -1,15 +1,15 @@
-<div>
-  <span x-large>Your Content Here</span>
-  <form (ngSubmit)="submitState(localState.value)">
-    <input type="text" [value]="localState.value" (input)="localState.value = $event.target.value" autofocus>
-    <button>Submit Value</button>
-  </form>
-  <!--
-    Rather than wiring up two-way data-binding ourselves with [value] and (input)
-    we can use Angular's [(ngModel)] syntax
-    <input type="text" [(ngModel)]="localState.value" autofocus>
-  -->
-
-  <pre>this.localState = {{ localState | json }}</pre>
-
+<nav class="navbar">
+  <div class="ui container">
+    <div class="ui secondary pointing menu">
+      <div class="item">
+        <h2>{{siteTitle}}</h2>
+      </div>
+      <a class="item">Home</a>
+      <a href="" class="item">Something</a>
+    </div>
+  </div>
+</nav>
+<div class="home-content">
+  <router-outlet></router-outlet>
 </div>
+

@@ -1,7 +1,7 @@
-import {Component, Output} from 'angular2/core';
+import {Component, Output} from '@angular/core';
 import {BangumiService} from "../api";
 import {Bangumi} from "../../entity";
-import {Router} from "angular2/router";
+import {Router} from "@angular/router-deprecated";
 
 @Component({
   selector: 'search-bangumi',
@@ -28,6 +28,9 @@ export class SearchBangumi {
   }
 
   addBangumi(bangumi: Bangumi):void {
+    if(bangumi.id) {
+      return;
+    }
     this._router.navigate(['BangumiDetail', {bgm_id: bangumi.bgm_id}]);
   }
 }

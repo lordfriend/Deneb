@@ -1,49 +1,40 @@
 <div class="center-box-background">
-  <div layout="row" layout-align="center" class="center-box-frame">
-    <md-content layout="column" class="center-box">
-      <md-toolbar>
-        <div class="md-toolbar-tools">
-          <h1>
-            <span>登录</span>
-          </h1>
-        </div>
-      </md-toolbar>
-      <md-content layout-padding="">
-        <form (ngSubmit)="login()" [ngFormModel]="loginForm">
-          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': loginForm.controls.name.value}">
-            <label>用户名</label>
-            <input class="material-input" type="text" ngControl="name" required/>
-            <div md-messages="name">
-              <div md-message="required">用户名不能为空</div>
+  <div class="center-box-frame">
+    <div class="center-box">
+      <header class="center-box-header">
+        <h1>
+          <span>{{siteTitle}}</span>
+        </h1>
+      </header>
+      <div class="center-box-body">
+        <form class="ui form" (ngSubmit)="login()" [ngFormModel]="loginForm" [ngClass]="{error: !loginForm.valid}">
+          <ui-input ngControl="name" type="text" placeholder="用户名">
+            <div ui-message="required">用户名不能为空</div>
+          </ui-input>
+          <ui-input ngControl="password" type="password" placeholder="密码">
+            <div ui-message="required">密码不能为空</div>
+          </ui-input>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" ngControl="remember">
+              <label>保存登录状态</label>
             </div>
-          </md-input-container>
-          <md-input-container class="md-block" flex="100" [ngClass]="{'md-input-has-value': loginForm.controls.password.value}">
-            <label>密码</label>
-            <input class="material-input" type="password" ngControl="password" required/>
-            <div md-messages="password">
-              <div md-message="required">密码不能为空</div>
-            </div>
-          </md-input-container>
-          <div flex="100">
-            <md-checkbox [checked]="loginForm.controls.remember.value" (click)="toggleRemember()">保存登录状态</md-checkbox>
           </div>
-          <div layout="row" layout-align="center">
-            <button md-raised-button class="md-raised md-primary" type="submit" [disabled]="!loginForm.valid">登录</button>
-          </div>
-
+          <button class="ui primary button large fluid submit" type="submit" [disabled]="!loginForm.valid">登录</button>
+          <dvi class="ui inverted dimmer active page" *ngIf="inProgress">
+            <div class="ui loader"></div>
+          </dvi>
         </form>
-        <div layout="row" layout-align="center">
-          <div class="forget-link">
-            <button md-button class="md-disabled" [routerLink]="['Forget']">忘记密码</button>
-          </div>
+        <div class="forget-link additional-info">
+          <a [routerLink]="['Forget']">忘记密码</a>
         </div>
-        <div layout="row" layout-align="center">
-          <a md-button class="md-primary" [routerLink]="['Register']">创建新用户</a>
+        <div class="additional-info">
+          <a [routerLink]="['Register']">创建新用户</a>
         </div>
-        <div layout="row" layout-align="center" *ngIf="errorMessage">
-          <p class="error-message">{{errorMessage}}</p>
+        <div class="ui error message" *ngIf="errorMessage">
+          <p>{{errorMessage}}</p>
         </div>
-      </md-content>
-    </md-content>
+      </div>
+    </div>
   </div>
 </div>

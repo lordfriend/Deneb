@@ -1,7 +1,7 @@
 import {Bangumi} from "../../entity";
 import {BangumiService} from "../api";
-import {OnInit, Component} from "angular2/core";
-import {Router} from "angular2/router";
+import {OnInit, Component} from "@angular/core";
+import {Router} from "@angular/router-deprecated";
 
 @Component({
   selector: 'list-bangumi',

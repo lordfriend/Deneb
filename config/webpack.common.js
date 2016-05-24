@@ -16,7 +16,7 @@ var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
  * Webpack Constants
  */
 const METADATA = {
-  title: 'Angular2 Webpack Starter by @gdi2990 from @AngularClass',
+  title: 'Deneb',
   baseUrl: '/'
 };
 
@@ -96,8 +96,7 @@ module.exports = {
         loader: 'source-map-loader',
         exclude: [
           // these packages have problems with their sourcemaps
-          helpers.root('node_modules/rxjs'),
-          helpers.root('node_modules/ng2-material')
+          helpers.root('node_modules/rxjs')
         ]
       }
 
@@ -147,13 +146,18 @@ module.exports = {
         exclude: [helpers.root('src/index.html')]
       },
 
-      // SCSS loader support for *.scss
-      // Returns compiled css as string
+      // Less loader support for *.less
+      // See https://github.com/webpack/less-loader
       {
-        test: /\.scss$/,
-        loader: 'style-loader!css-loader!sass-loader',
-        exclude: /node_modules/
-      }
+        test: /\.less$/,
+        loader: 'style-loader!css-loader!less-loader'
+      },
+      { test: /\.(png|jpg)$/, loader: 'file?name=images/[name].[hash].[ext]' },
+      { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'},
+      { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'},
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream'},
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]'},
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=images/[name].[hash].[ext]&mimetype=image/svg+xml' }
     ]
 
   },

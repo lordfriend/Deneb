@@ -39,15 +39,17 @@
 <body>
 
   <app>
-    Loading...
+    <div class="ui page visible dimmer">
+      <div class="content">
+        <div class="center">Loading...</div>
+      </div>
+    </div>
   </app>
 
   <% if (webpackConfig.metadata.ENV === 'development') { %>
   <!-- Webpack Dev Server reload -->
   <script src="/webpack-dev-server.js"></script>
   <% } %>
-
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </body>
 </html>

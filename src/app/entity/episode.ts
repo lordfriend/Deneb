@@ -18,7 +18,8 @@ export class Episode {
   public torrent_id: string;
   public create_time: number;
   public update_time: number;
-  public bangumi: Bangumi;
+  public bangumi: Bangumi; // optional
+  public thumbnail: string; // optional
 
   public static fromRawData(rawData: any, episode_no?: number) {
     let episode = new Episode();

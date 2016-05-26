@@ -113,6 +113,9 @@ module.exports = webpackMerge(commonConfig, {
     proxy: {
       '/api/*': {
         target: 'http://192.168.1.6:5000'
+      },
+      '/thumbnail/*': {
+        target: 'http://192.168.1.6:8000'
       }
     }
   },

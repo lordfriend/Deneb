@@ -44,6 +44,9 @@
         <div class="episode-no-wrapper">
           <h1 class="episode-no"><span>#</span>{{episode.episode_no}}</h1>
         </div>
+        <div class="episode-thumbnail">
+          <img [src]="episode.thumbnail" alt="no image" class="thumbnail-image">
+        </div>
         <div class="content">
           <form class="ui form" (ngSubmit)="updateEpisode(episode)">
             <div class="field">

@@ -108,7 +108,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    .episode-no-wrapper {
+    > .episode-no-wrapper {
       width: 4em;
       min-height: 3em;
       flex: 0 1 auto;
@@ -117,14 +117,18 @@
         color: #999999;
       }
     }
-    .episode-thumbnail {
-      width: 40rem;
-      > .thumbnail-image {
+    > .episode-thumbnail {
+      width: 20rem;
+      margin-right: 1.5em;
+       .thumbnail-image {
         width: 100%;
-        height: auto;
+        height: 11.25rem;
+      }
+      .edit-button {
+        cursor: pointer;
       }
     }
-    .content {
+    > .content {
       flex: 1 1 auto;
 
       .right-aligned.button {

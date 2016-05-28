@@ -44,9 +44,26 @@
         <div class="episode-no-wrapper">
           <h1 class="episode-no"><span>#</span>{{episode.episode_no}}</h1>
         </div>
-        <div class="episode-thumbnail">
-          <img [src]="episode.thumbnail" alt="no image" class="thumbnail-image">
-        </div>
+        <ui-dimmer class="episode-thumbnail">
+          <ui-image-placeholder [imageUrl]="episode.thumbnail" class="thumbnail-image ui-dimmer-content">
+            <div class="ui-image-fallback">
+              <h4 class="ui icon film">
+                <i class="film icon"></i>
+              </h4>
+            </div>
+          </ui-image-placeholder>
+          <!--<img [src]="episode.thumbnail" alt="no image" class="thumbnail-image ui-dimmer-content">-->
+          <div class="ui simple dimmer">
+            <div class="content">
+              <div class="center">
+                <h4 class="ui inverted icon edit edit-button" (click)="editThumbnail()">
+                  <i class="edit icon"></i>
+                  修改预览图
+                </h4>
+              </div>
+            </div>
+          </div>
+        </ui-dimmer>
         <div class="content">
           <form class="ui form" (ngSubmit)="updateEpisode(episode)">
             <div class="field">

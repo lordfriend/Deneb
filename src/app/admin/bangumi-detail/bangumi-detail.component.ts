@@ -105,4 +105,8 @@ export class BangumiDetail implements OnInit {
         error => this.errorMessage = <any> error
       )
   }
+
+  editThumbnail(): void {
+    
+  }
 }

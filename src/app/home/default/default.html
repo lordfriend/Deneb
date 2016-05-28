@@ -2,14 +2,20 @@
   <h4>最近更新</h4>
   <div class="ui divider"></div>
   <div class="ui five doubling cards">
-    <div class="card" *ngFor="#episode of recentEpisodes">
-      <div class="image">
-        <img src="" alt="">
-      </div>
-      <div class="content">
+    <div class="card episode-card" *ngFor="#episode of recentEpisodes">
+      <a class="image" [routerLink]="['Play', {episode_id: episode.id}]">
+        <ui-image-placeholder [imageUrl]="episode.thumbnail">
+          <div class="ui-image-fallback">
+            <h4 class="ui icon film icon-holder">
+              <i class="film icon"></i>
+            </h4>
+          </div>
+        </ui-image-placeholder>
+      </a>
+      <a class="content" [routerLink]="['Play', {episode_id: episode.id}]">
         <span>{{episode.bangumi.name_cn}}</span>
         <span>第{{episode.episode_no}}话</span>
-      </div>
+      </a>
     </div>
   </div>
 </div>

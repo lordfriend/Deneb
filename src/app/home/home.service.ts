@@ -21,7 +21,14 @@ export class HomeService extends BaseService {
       queryUrl = queryUrl + '?days=' + days;
     }
     return this._http.get(queryUrl)
-      .map(res => <Episode[]> res.json())
+      .map(res => <Episode[]> res.json().data)
+      .catch(this.handleError);
+  }
+
+  episode_detail(episode_id: string): Observable<Episode> {
+    let queryUrl = this._baseUrl + '/episode/' + episode_id;
+    return this._http.get(queryUrl)
+      .map(res => <Episode> res.json())
       .catch(this.handleError);
   }
 }

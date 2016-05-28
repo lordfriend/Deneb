@@ -139,6 +139,9 @@ module.exports = webpackMerge(commonConfig, {
       },
       '/pic/*': {
         target: 'http://192.168.1.6:8000'
+      },
+      '/video/*': {
+        target: 'http://192.168.1.6:8000'
       }
     }
   },

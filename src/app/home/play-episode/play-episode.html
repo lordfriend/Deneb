@@ -1,0 +1,8 @@
+<div class="ui container" *ngIf="episode">
+  <h3>
+    <span class="bangumi-name">{{episode.bangumi.name_cn}}</span>
+    <span class="episode-no">{{episode.episode_no}}</span>
+  </h3>
+  <div class="ui divider"></div>
+  <player [episode]="episode"></player>
+</div>

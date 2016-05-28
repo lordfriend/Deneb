@@ -20,6 +20,7 @@ export class Episode {
   public update_time: number;
   public bangumi: Bangumi; // optional
   public thumbnail: string; // optional
+  public videos: string[]; // optional
 
   public static fromRawData(rawData: any, episode_no?: number) {
     let episode = new Episode();

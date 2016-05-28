@@ -14,9 +14,16 @@ export class Player implements OnInit {
 
   playerId:string = 'videoPlayerId' + (nextId++);
   videoUrl: string;
+  videoType: string;
+
+  private getExtname(url: string) {
+    let parts = url.split('.');
+    return parts[parts.length - 1];
+  }
 
   ngOnInit():any {
     this.videoUrl = this.episode.videos[0];
+    this.videoType = 'video/' + this.getExtname(this.videoUrl);
     return null;
   }
 }

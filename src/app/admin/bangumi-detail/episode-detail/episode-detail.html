@@ -1,0 +1,33 @@
+<div class="ui ribbon label episode-status-label" [ngClass]="episodeStatus[episode.status].labelColor">
+  {{episodeStatus[episode.status].text}}
+</div>
+<div class="episode-no-wrapper">
+  <h1 class="episode-no"><span>#</span>{{episode.episode_no}}</h1>
+</div>
+<episode-thumbnail [episode]="episode"></episode-thumbnail>
+<div class="content">
+  <form class="ui form" (ngSubmit)="updateEpisode(episode)">
+    <div class="field">
+      <label>标题</label>
+      <div class="two fields">
+        <div class="field">
+          <input type="text" placeholder="标题" [(ngModel)]="episode.name">
+        </div>
+        <div class="field">
+          <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn">
+        </div>
+      </div>
+    </div>
+    <div class="fields">
+      <div class="four wide field">
+        <label>放送日期(YYYY-MM-DD)</label>
+        <input type="text" placeholder="放送日期" [(ngModel)]="episode.airdate">
+      </div>
+      <div class="four wide field">
+        <label>时长(HH:mm:dd)</label>
+        <input type="text" placeholder="时长" [(ngModel)]="episode.duration">
+      </div>
+    </div>
+    <button class="ui primary button right-aligned" type="submit">Save</button>
+  </form>
+</div>

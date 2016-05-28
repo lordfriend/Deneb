@@ -137,7 +137,7 @@ module.exports = webpackMerge(commonConfig, {
       '/api/*': {
         target: 'http://192.168.1.6:5000'
       },
-      '/thumbnail/*': {
+      '/pic/*': {
         target: 'http://192.168.1.6:8000'
       }
     }

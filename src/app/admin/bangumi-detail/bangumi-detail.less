@@ -1,0 +1,87 @@
+
+.bangumi-form {
+  display: block;
+  padding: 1rem 2rem 3rem 2rem;
+  margin-bottom: 3em;
+  .bangumi-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    .bangumi-image {
+      width: 30%;
+      flex: 0 1 auto;
+    }
+
+    .bangumi-basic-info {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-left: 0.8rem;
+      padding-right: 1rem;
+    }
+  }
+}
+
+.episode-list {
+  .episode-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    > .episode-status-label {
+      position: absolute;
+      top: 1rem;
+      left: -1.2em;
+    }
+    > .episode-no-wrapper {
+      width: 5em;
+      min-height: 3em;
+      flex: 0 1 auto;
+      > .episode-no {
+        margin: 0;
+        color: #999999;
+      }
+    }
+    .episode-thumbnail {
+      width: 20rem;
+      margin-right: 1.5em;
+      .thumbnail-image {
+        width: 100%;
+        height: 11.25rem;
+      }
+      .edit-button {
+        cursor: pointer;
+      }
+      .thumbnail-editor {
+        width: 100%;
+        height: 11.25rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+        .close-button {
+          align-self: flex-start;
+          order: 1;
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+        .action.input {
+          order: 2;
+        }
+      }
+    }
+    > .content {
+      flex: 1 1 auto;
+
+      .right-aligned.button {
+        position: absolute;
+        right: 0;
+        bottom: 1em;
+      }
+    }
+  }
+}

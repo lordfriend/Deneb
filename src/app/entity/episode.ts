@@ -31,4 +31,8 @@ export class Episode {
     episode.airdate = rawData.airdate;
     return episode;
   }
+
+  static STATUS_NOT_DOWNLOADED = 0;
+  static STATUS_DOWNLOADING = 1;
+  static STATUS_DOWNLOADED = 2;
 }

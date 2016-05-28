@@ -1,0 +1,29 @@
+<ui-dimmer *ngIf="!editorOpen">
+  <ui-image-placeholder [imageUrl]="episode.thumbnail" class="thumbnail-image ui-dimmer-content">
+    <div class="ui-image-fallback">
+      <h4 class="ui icon film">
+        <i class="film icon"></i>
+      </h4>
+    </div>
+  </ui-image-placeholder>
+  <!--<img [src]="episode.thumbnail" alt="no image" class="thumbnail-image ui-dimmer-content">-->
+  <div class="ui simple dimmer">
+    <div class="content">
+      <div class="center">
+        <h4 class="ui inverted icon edit edit-button" (click)="openEditor()">
+          <i class="edit icon"></i>
+          修改预览图
+        </h4>
+      </div>
+    </div>
+  </div>
+</ui-dimmer>
+<div class="thumbnail-editor" *ngIf="editorOpen">
+  <div class="ui fluid action input">
+    <input type="text" placeholder="00:00:20.000" [(ngModel)]="time">
+    <div [ngClass]="{loading: isSaving}" class="ui button" (click)="updateThumbnail()">Update</div>
+  </div>
+  <div class="close-button circular ui icon button" (click)="closeEditor()">
+    <i class="icon remove"></i>
+  </div>
+</div>

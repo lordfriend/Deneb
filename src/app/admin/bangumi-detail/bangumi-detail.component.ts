@@ -3,11 +3,13 @@ import {Title} from '@angular/platform-browser';
 import {BangumiService} from '../api';
 import {Bangumi, Episode, BangumiRaw} from '../../entity';
 import {RouteParams, Router} from "@angular/router-deprecated";
+import {EpisodeDetail} from "./episode-detail/episode-detail.component";
 
 @Component({
   selector: 'bangumi-detail',
   template: require('./bangumi-detail.html'),
   providers: [BangumiService],
+  directives: [EpisodeDetail],
   styles:[`
     .bangumi-image {
       margin-right: 20px;
@@ -23,8 +25,9 @@ export class BangumiDetail implements OnInit {
   bangumi: Bangumi = <Bangumi>{};
 
   episodeList: Episode[] = [];
-
   errorMessage: any;
+  
+  isSavingBangumi: boolean = false;
 
   private from: string;
 
@@ -69,23 +72,34 @@ export class BangumiDetail implements OnInit {
   }
 
   onSubmit(): void {
+    this.isSavingBangumi = true;
     if(!this.bangumi.id) {
       this._bangumiApi.addBangumi(<BangumiRaw>this.bangumi)
         .subscribe(
           (id: string) => {
+            this.isSavingBangumi = false;
             if(id) {
               this._router.navigate(['EditBangumiDetail', {id: id}]);
             } else {
               this.errorMessage = 'No id return';
             }
           },
-          error => this.errorMessage = <any>error
+          (error:any) => {
+            this.errorMessage = <any>error;
+            this.isSavingBangumi = false;
+          }
         )
     } else {
       this._bangumiApi.updateBangumi(this.bangumi)
         .subscribe(
-          result => console.log(result),
-          error => this.errorMessage = <any> error
+          result => {
+            console.log(result);
+            this.isSavingBangumi = false;
+          },
+          error => {
+            this.errorMessage = <any> error;
+            this.isSavingBangumi = false;
+          }
         );
     }
   }
@@ -98,15 +112,4 @@ export class BangumiDetail implements OnInit {
     }
   }
 
-  updateEpisode(episode: Episode): void {
-    this._bangumiApi.updateEpisode(episode)
-      .subscribe(
-        result => console.log(result),
-        error => this.errorMessage = <any> error
-      )
-  }
-
-  editThumbnail(): void {
-    
-  }
 }

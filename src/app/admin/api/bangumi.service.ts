@@ -74,4 +74,14 @@ export class BangumiService {
     return this.http.put(queryUrl, body, options)
       .map(res => res.json());
   }
+
+  updateThumbnail(episode: Episode, time: string): Observable<any> {
+    let id = episode.id;
+    let queryUrl = this.baseUrl + '/episode/' + id + '/thumbnail';
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify({time: time});
+    return this.http.put(queryUrl, body, options)
+      .map(res => res.json());
+  }
 }

@@ -1,0 +1,61 @@
+.video-container {
+  margin: 0;
+  position: relative;
+
+  > video {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .video-controls {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4rem;
+    padding: 0.5rem;
+    z-index: 100;
+    > .controls-wrapper {
+      width: 100%;
+      height: 100%;
+      padding: 0 0.4rem;
+      background-color: rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+
+      > .control-button {
+        flex: 0 0 auto;
+        color: #ffffff;
+        font-size: 1.2rem;
+        background: none;
+        border: none;
+        padding: 0.3rem 0.5rem;
+        &:active,
+        &:focus {
+          outline: none;
+        }
+      }
+
+      > .play-progress {
+        flex: 1 1 auto;
+        height: 1.6rem;
+        border: 1px solid #d2d2d2;
+        margin-left: 0.4rem;
+        margin-right: 0.4rem;
+        position: relative;
+        > .progress-fill {
+          height: 100%;
+          width: 0;
+          background-color: #93b4d1;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+    }
+  }
+}

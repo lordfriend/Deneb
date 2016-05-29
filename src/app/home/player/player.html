@@ -1,5 +1,21 @@
-<figure class="videoContainer">
-  <video [poster]="episode.thumbnail" [id]="playerId">
+<figure class="video-container" [style.width]="containerWidth" [style.height]="containerHeight">
+  <video #video [poster]="episode.thumbnail" [id]="playerId">
     <source [src]="videoUrl" [type]="videoType">
   </video>
+  <div class="video-controls">
+    <div class="controls-wrapper">
+      <button class="play-button control-button" (click)="onClickPlay()">
+        <i class="icon" [ngClass]="playButtonIcon"></i>
+      </button>
+      <div class="play-progress">
+        <div class="progress-fill"></div>
+      </div>
+      <button class="volume-button control-button">
+        <i class="icon volume up"></i>
+      </button>
+      <button class="fullscreen-button control-button">
+        <i class="icon maximize"></i>
+      </button>
+    </div>
+  </div>
 </figure>

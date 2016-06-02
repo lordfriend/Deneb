@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="bangumi-list">
-    <div *ngFor="#bangumi of bangumiList" (click)="editBangumi(bangumi)" class="ui segment bangumi-list-item">
+    <div *ngFor="let bangumi of bangumiList" (click)="editBangumi(bangumi)" class="ui segment bangumi-list-item">
       <img [src]="bangumi.image" alt="image" class="bangumi-image">
       <div class="md-list-item-text">
         <h3 class="bangumi-title">{{bangumi.name_cn}}</h3>

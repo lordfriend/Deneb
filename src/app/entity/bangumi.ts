@@ -1,3 +1,4 @@
+import {Episode} from "./episode";
 export class Bangumi {
   public id: string;
   public bgm_id: number;
@@ -13,4 +14,6 @@ export class Bangumi {
   public status: number;
   public create_time: number;
   public update_time: number;
+  public cover: string; //optional
+  public episodes: Episode[]; //optional
 }

@@ -4,6 +4,7 @@ import {RouteConfig} from "@angular/router-deprecated";
 import {DefaultComponent} from "./default/default.component";
 import {HomeService} from './home.service';
 import {PlayEpisode} from "./play-episode/play-episode.component";
+import {BangumiDetail} from "./bangumi-detail/bangumi-detail.components";
 
 require('./home.less');
 
@@ -14,7 +15,8 @@ require('./home.less');
 })
 @RouteConfig([
   {path: '/', name: 'Default', component: DefaultComponent, useAsDefault: true},
-  {path: '/play/:episode_id', name: 'Play', component: PlayEpisode}
+  {path: '/play/:episode_id', name: 'Play', component: PlayEpisode},
+  {path: '/bangumi/:bangumi_id', name: 'Bangumi', component: BangumiDetail}
 ])
 export class Home implements OnInit {
 

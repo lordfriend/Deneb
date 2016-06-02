@@ -1,0 +1,40 @@
+<div class="ui container">
+  <div class="bangumi-info">
+    <div class="bangumi-cover">
+      <ui-image-placeholder [imageUrl]="bangumi.image">
+        <div class="ui-image-fallback">
+          <h4 class="ui icon film icon-holder">
+            <i class="film icon"></i>
+          </h4>
+        </div>
+      </ui-image-placeholder>
+    </div>
+    <div class="bangumi-base-info">
+      <h2 class="bangumi-title">
+        <span class="name-cn">{{bangumi.name_cn}}</span>
+        <span class="name">{{bangumi.name}}</span>
+      </h2>
+      <div class="summary">
+        {{bangumi.summary}}
+      </div>
+    </div>
+  </div>
+  <h4>各话列表</h4>
+  <div class="ui divider"></div>
+  <div class="ui six doubling cards">
+    <div class="card episode-card" *ngFor="let episode of bangumi.episodes">
+      <a class="image" [routerLink]="['Play', {episode_id: episode.id}]">
+        <ui-image-placeholder [imageUrl]="episode.thumbnail">
+          <div class="ui-image-fallback">
+            <h4 class="ui icon film icon-holder">
+              <i class="film icon"></i>
+            </h4>
+          </div>
+        </ui-image-placeholder>
+      </a>
+      <a class="content" [routerLink]="['Play', {episode_id: episode.id}]">
+        <span>第{{episode.episode_no}}话</span>
+      </a>
+    </div>
+  </div>
+</div>

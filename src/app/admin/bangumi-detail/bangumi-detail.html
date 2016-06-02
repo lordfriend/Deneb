@@ -43,7 +43,7 @@
     <h4 class="ui header">各话列表</h4>
     <div class="ui divider"></div>
     <div class="episode-list">
-      <episode-detail class="episode-item ui segment" [episode]="episode" *ngFor="#episode of bangumi.episodes">
+      <episode-detail class="episode-item ui segment" [episode]="episode" *ngFor="let episode of bangumi.episodes">
       </episode-detail>
     </div>
   </div>

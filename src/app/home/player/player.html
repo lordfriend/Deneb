@@ -1,14 +1,17 @@
-<figure class="video-container" [style.width]="containerWidth" [style.height]="containerHeight">
-  <video #video [poster]="episode.thumbnail" [id]="playerId">
+<figure class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mousemove)="onMousemove()">
+  <video #video [poster]="episode.thumbnail" [id]="playerId" (timeupdate)="onTimeUpdate()">
     <source [src]="videoUrl" [type]="videoType">
   </video>
-  <div class="video-controls">
+  <div class="video-controls" [ngClass]="{show: showControl}">
     <div class="controls-wrapper">
       <button class="play-button control-button" (click)="onClickPlay()">
         <i class="icon" [ngClass]="playButtonIcon"></i>
       </button>
       <div class="play-progress">
-        <div class="progress-fill"></div>
+        <div class="play-progress-fill" [style.width]="playProgress"></div>
+        <div class="load-progress">
+          <div class="load-progress-fill"></div>
+        </div>
       </div>
       <button class="volume-button control-button">
         <i class="icon volume up"></i>

@@ -17,6 +17,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/observable/interval';
 
 // ng2-semantic
 import './ng2-semantic';

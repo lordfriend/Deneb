@@ -59,6 +59,8 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   private _currentTime: number = 0;
   private _duration: number = 0;
 
+  private _playButton: string = 'play';
+
   @Input()
   episode:Episode;
 
@@ -105,12 +107,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get playButtonIcon():string {
-    if (this.videoElementRef) {
-      let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
-      return videoElement.paused ? 'play' : 'pause';
-    } else {
-      return 'play';
-    }
+    return this._playButton;
   }
 
   get playProgress(): string {
@@ -132,6 +129,22 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     } else {
       videoElement.pause();
     }
+  }
+
+  onWaiting() {
+    console.log('waiting...');
+  }
+
+  onPlay() {
+    this._playButton = 'pause';
+  }
+
+  onPause() {
+    this._playButton = 'play';
+  }
+
+  onEnded() {
+    this._playButton = 'repeat';
   }
 
   onTimeUpdate() {
@@ -369,6 +382,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy():any {
     this._autoHideSubscription.unsubscribe();
+    window.removeEventListener('resize', this._windowResizeHandler);
     document.removeEventListener('fullscreenchange', this._fullScreenChangeHandler);
     document.removeEventListener('webkitfullscreenchange', this._fullScreenChangeHandler);
     document.removeEventListener('mozfullscreenchange', this._fullScreenChangeHandler);

@@ -119,3 +119,10 @@ interface Thenable<T> {
     onRejected?: (error: any) => void): Thenable<U>;
   catch<U>(onRejected?: (error: any) => U | Thenable<U>): Thenable<U>;
 }
+
+interface Document {
+  msRequestFullscreen(): void;
+  mozRequestFullScreen(): void;
+  msExitFullscreen(): void;
+  mozCancelFullScreen(): void;
+}

@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {Episode} from "../../entity/episode";
 import {Observable, Subscription} from "rxjs/Rx";
+import {TimePipe} from "./pipe/time.pipe";
 
 let nextId = 0;
 
@@ -27,7 +28,8 @@ const FULL_SCREEN = 2;
 
 @Component({
   selector: 'player',
-  template: require('./player.html')
+  template: require('./player.html'),
+  pipes: [TimePipe]
 })
 export class Player implements OnInit, AfterViewInit, OnDestroy {
 
@@ -51,6 +53,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   private _fullScreenChangeHandler: () => {};
   private _windowResizeHandler: () => {};
 
+  private _hoveringProgress: boolean = false;
+
+  private _pointingOffsetX: number = 0;
+  private _currentTime: number = 0;
+  private _duration: number = 0;
+
   @Input()
   episode:Episode;
 
@@ -64,9 +72,28 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   videoUrl:string;
   videoType:string;
 
+  pointingOffsetTime: number = 0;
+
+
   constructor() {
     this._fullScreenChangeHandler = this.onFullscreenChange.bind(this);
     this._windowResizeHandler = this.onWindowReisze.bind(this);
+  }
+
+  get currentTime(): number {
+    return this._currentTime;
+  }
+
+  get duration(): number {
+    return this._duration;
+  }
+
+  get hoveringProgress(): boolean {
+    return this._hoveringProgress;
+  }
+
+  get pointingOffsetX(): string {
+    return this._pointingOffsetX ? this._pointingOffsetX + 'px' : 0 + '';
   }
 
   get containerWidth():string {
@@ -108,11 +135,11 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onTimeUpdate() {
+    let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
+    this._currentTime = videoElement.currentTime;
     if(!this._isSeeking) {
-      let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
-      let currentTime = videoElement.currentTime;
       let duration = videoElement.duration;
-      this._playProgress = Math.round(currentTime / duration * 1000) / 10;
+      this._playProgress = Math.round(this._currentTime / duration * 1000) / 10;
     }
   }
 
@@ -124,6 +151,9 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onMetadataLoaded() {
+
+    this._duration = this.videoElementRef.nativeElement.duration;
+
     this.scaleVideoContainer(KEEP_RESERVED_SPACE);
 
     window.addEventListener('resize', this._windowResizeHandler, false);
@@ -221,6 +251,23 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     this._lastmoveTime = Date.now();
   }
 
+  onHoverProgress(event: MouseEvent) {
+    let sliderElement = this.sliderElementRef.nativeElement;
+    if(!this.isInRect(sliderElement, event)) {
+      this._hoveringProgress = false;
+      return;
+    }
+    this._hoveringProgress = true;
+    let width = sliderElement.getBoundingClientRect().width;
+    let ratio = this.getProgressRatio(sliderElement, event);
+    this._pointingOffsetX = width * ratio;
+    this.pointingOffsetTime = this.videoElementRef.nativeElement.duration * ratio;
+  }
+
+  endHoverProgress() {
+    this._hoveringProgress = false;
+  }
+
   toggleFullscreen() {
     let videoContainer = this.videoContainerRef.nativeElement;
     if(!document.fullscreenElement &&    // alternative standard method
@@ -288,6 +335,11 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     return offsetX / (rect.width - 2);
   }
 
+  private isInRect(element: HTMLElement, event: MouseEvent): boolean {
+    let rect = element.getBoundingClientRect();
+    return (rect.left < event.clientX) && (rect.top < event.clientY) && (rect.bottom > event.clientY) && (rect.right > event.clientX);
+  }
+
   private seekTo(ratio) {
     let videoElement = this.videoElementRef.nativeElement;
     videoElement.currentTime = ratio * videoElement.duration;
@@ -304,8 +356,8 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     this._autoHideSubscription = Observable.interval(1000)
       .subscribe(() => {
         if (this._showControl && !this._isSeeking) {
-          var currentTime = Date.now();
-          if (currentTime - this._lastmoveTime > this.controlFadeOutTime) {
+          var currentTimestamp = Date.now();
+          if (currentTimestamp - this._lastmoveTime > this.controlFadeOutTime) {
             this._showControl = false;
           }
         }

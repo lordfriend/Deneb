@@ -73,6 +73,23 @@
             height: 100%;
           }
         }
+
+        > .ui.pointing {
+          display: none;
+          position: absolute;
+          top: -2.8em;
+          transform: translateX(-50%);
+          &.show {
+            display: block;
+          }
+        }
+      }
+      > .time-indicator {
+        flex: 0 1 auto;
+        color: rgba(256, 256, 256, 0.8);
+        font-family: "Segoe UI", sans-serif;
+        font-weight: 200;
+        font-size: 1rem;
       }
     }
   }

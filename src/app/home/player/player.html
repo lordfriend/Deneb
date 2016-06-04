@@ -7,11 +7,17 @@
       <button class="play-button control-button" (click)="onClickPlay()">
         <i class="icon" [ngClass]="playButtonIcon"></i>
       </button>
-      <div #slider class="play-progress" (mousedown)="onDragSlider($event)" (click)="onClickSlider($event)">
+      <div #slider class="play-progress" (mousedown)="onDragSlider($event)" (click)="onClickSlider($event)" (mousemove)="onHoverProgress($event)" (mouseleave)="endHoverProgress()">
         <div class="play-progress-fill" [style.width]="playProgress"></div>
         <div class="load-progress">
           <div class="load-progress-fill" [style.width]="bufferedProgress"></div>
         </div>
+        <div class="ui pointing below label" [style.left]="pointingOffsetX" [ngClass]="{show: hoveringProgress}">
+          {{pointingOffsetTime | time}}
+        </div>
+      </div>
+      <div class="time-indicator">
+        {{currentTime | time: duration}} / {{duration | time}}
       </div>
       <button class="volume-button control-button">
         <i class="icon volume up"></i>

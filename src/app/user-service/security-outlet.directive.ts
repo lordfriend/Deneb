@@ -46,7 +46,7 @@ export class SecurityOutlet extends RouterOutlet {
     var requiredLevel = 0;
     var extraData = nextInstruction.routeData.data;
     // if no level is defined on this route, use super class default method
-    if(!extraData || !extraData['level']) {
+    if(!extraData || (typeof extraData['level'] === 'undefined')) {
       return super.activate(nextInstruction);
     }
 

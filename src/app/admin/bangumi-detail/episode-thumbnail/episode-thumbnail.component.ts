@@ -22,6 +22,10 @@ export class EpisodeThumbnail {
 
   constructor(private _bangumiService: BangumiService){}
 
+  private getBaseUrl(url) {
+    return url.split('?')[0];
+  }
+
   openEditor() {
     this.editorOpen = true;
   }
@@ -34,6 +38,7 @@ export class EpisodeThumbnail {
     this._bangumiService.updateThumbnail(this.episode, this.time)
       .subscribe(
         () => {
+          this.episode.thumbnail = this.getBaseUrl(this.episode.thumbnail) + '?time=' + this.time;
           this.editorOpen = false;
           this.isSaving = false;
         },

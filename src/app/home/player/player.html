@@ -1,5 +1,5 @@
-<figure class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mousemove)="onMousemove()">
-  <video #video [poster]="episode.thumbnail" [id]="playerId" (timeupdate)="onTimeUpdate()" (progress)="onChunkLoad()">
+<figure #videoContainer class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mousemove)="onMousemove()">
+  <video #video preload="metadata" (loadedmetadata)="onMetadataLoaded()" [poster]="episode.thumbnail" [id]="playerId" (timeupdate)="onTimeUpdate()" (progress)="onChunkLoad()" class="ng2-video">
     <source [src]="videoUrl" [type]="videoType">
   </video>
   <div class="video-controls" [ngClass]="{show: showControl}">

@@ -121,6 +121,10 @@ interface Thenable<T> {
 }
 
 interface Document {
+
+  mozFullScreenElement: Element;
+  msFullscreenElement: Element;
+
   msRequestFullscreen(): void;
   mozRequestFullScreen(): void;
   msExitFullscreen(): void;

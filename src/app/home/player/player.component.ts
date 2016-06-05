@@ -107,11 +107,19 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get containerWidth():string {
-    return this._videoWidth + 'px';
+    if(this._fullscreenMode) {
+      return '100%';
+    } else {
+      return this._videoWidth + 'px';
+    }
   }
 
   get containerHeight():string {
-    return this._videoHeight + 'px';
+    if(this._fullscreenMode) {
+      return '100%';
+    } else {
+      return this._videoHeight + 'px';
+    }
   }
 
   get playButtonIcon():string {

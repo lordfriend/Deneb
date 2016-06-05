@@ -2,6 +2,7 @@
 @import "./play-episode/play-episode.less";
 @import "./player/player.less";
 @import "./bangumi-detail/bangumi-detail.less";
+@import "./bangumi-list/bangumi-list.less";
 
 .navbar {
   width: 100%;
@@ -44,13 +45,15 @@
   margin-top: 3.5rem;
 
   &.Default.sidebar-active,
-  &.Bangumi.sidebar-active {
+  &.Bangumi.sidebar-active,
+  &.BangumiList.sidebar-active {
     padding-left: 15em;
   }
 
   @media (max-width: 1330px) {
     &.Default.sidebar-active,
-    &.Bangumi.sidebar-active {
+    &.Bangumi.sidebar-active,
+    &.BangumiList.sidebar-active {
       padding-left: 0;
     }
   }

@@ -53,6 +53,16 @@ export class HomeService extends BaseService {
       .map(res => <Bangumi> res.json().data)
       .catch(this.handleError);
   }
+
+  listBangumi(page: number, name?:string): Observable<Bangumi[]> {
+    let queryUrl = this._baseUrl + '/bangumi?page' + page;
+    if(name) {
+      queryUrl = queryUrl + '&name=' + name;
+    }
+    return this._http.get(queryUrl)
+      .map(res => <Bangumi[]> res.json().data)
+      .catch(this.handleError);
+  }
 }
 
 /**

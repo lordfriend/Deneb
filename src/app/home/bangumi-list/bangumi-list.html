@@ -1,0 +1,35 @@
+<div class="ui container bangumi-list-container">
+  <a class="ui segment ui grid bangumi-segment" *ngFor="let bangumi of bangumiList" [routerLink]="['Bangumi', {bangumi_id: bangumi.id}]">
+    <div class="three wide column">
+      <ui-image-placeholder [imageUrl]="bangumi.image">
+        <div class="ui-image-fallback">
+          <h4 class="ui icon film icon-holder">
+            <i class="film icon"></i>
+          </h4>
+        </div>
+      </ui-image-placeholder>
+    </div>
+    <div class="thirteen wide column bangumi-info">
+      <h3 class="bangumi-title">
+        <span class="name-cn">{{bangumi.name_cn}}</span>
+        <span class="name"><{{bangumi.name}}</span>
+      </h3>
+      <div class="summary">{{bangumi.summary}}</div>
+      <p class="air-date">
+        <span class="entry-key">放送开始</span>
+        <span class="entry-value">{{bangumi.air_date}}</span>
+      </p>
+      <p class="air-weekday">
+        <span class="entry-key">放送星期</span>
+        <span class="entry-value">{{bangumi.air_weekday}}</span>
+      </p>
+    </div>
+  </a>
+</div>
+<div class="ui container bangumi-list-pagination">
+  <div class="ui pagination menu">
+    <a class="item">1</a>
+    <a class="item">2</a>
+    <a class="item">3</a>
+  </div>
+</div>

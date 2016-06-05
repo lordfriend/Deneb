@@ -8,6 +8,7 @@
 </nav>
 <div class="ui sidebar ui vertical menu home-sidebar" [ngClass]="{visible: sidebarActive}">
   <a class="item" [routerLink]="['Home', 'Default']">Home</a>
+  <a class="item" [routerLink]="['Home', 'BangumiList', {page: 1}]">所有番组</a>
   <a class="item" [routerLink]="['Admin', 'ListBangumi']">Management</a>
 </div>
 <div class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">

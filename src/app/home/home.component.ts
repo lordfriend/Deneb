@@ -5,6 +5,7 @@ import {DefaultComponent} from "./default/default.component";
 import {HomeService} from './home.service';
 import {PlayEpisode} from "./play-episode/play-episode.component";
 import {BangumiDetail} from "./bangumi-detail/bangumi-detail.components";
+import {BangumiList} from "./bangumi-list/bangumi-list.component";
 
 require('./home.less');
 
@@ -16,7 +17,8 @@ require('./home.less');
 @RouteConfig([
   {path: '/', name: 'Default', component: DefaultComponent, useAsDefault: true},
   {path: '/play/:episode_id', name: 'Play', component: PlayEpisode},
-  {path: '/bangumi/:bangumi_id', name: 'Bangumi', component: BangumiDetail}
+  {path: '/bangumi/:bangumi_id', name: 'Bangumi', component: BangumiDetail},
+  {path: '/bangumi', name: 'BangumiList', component: BangumiList}
 ])
 export class Home implements OnInit {
 

@@ -17,7 +17,7 @@ require('./admin.less');
 @RouteConfig([
   {path: '/search', name: 'SearchBangumi', component: SearchBangumi},
   {path: '/search/:bgm_id', name: 'BangumiDetail', component: BangumiDetail},
-  {path: '/bangumi', name: 'ListBangumi', component: ListBangumi},
+  {path: '/bangumi', name: 'ListBangumi', component: ListBangumi, useAsDefault: true},
   {path: '/bangumi/:id', name: 'EditBangumiDetail', component: BangumiDetail}
 ])
 export class Admin {

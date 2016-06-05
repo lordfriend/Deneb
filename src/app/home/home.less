@@ -2,11 +2,52 @@
 @import "./bangumi-detail/bangumi-detail.less";
 
 .navbar {
+  width: 100%;
+  height: 3.5rem;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  border-bottom: 1px solid #ccc;
+  align-items: center;
+  position: relative;
+  z-index: 200;
 
+  .sidebar-toggle {
+    display: block;
+    font-size: 1.2rem;
+    color: #4c4c4c;
+    cursor: pointer;
+    padding-left: 1.5rem;
+    &:focus,
+    &:hover {
+      color: #101010;
+    }
+  }
+
+  .brand {
+    display: block;
+    padding: 0 1rem;
+    color: #101010;
+  }
+}
+
+.home-sidebar {
+  padding-top: 3.5rem;
 }
 
 .home-content {
   margin-top: 2rem;
+
+  &.Default.sidebar-active {
+    padding-left: 15em;
+  }
+
+  @media (max-width: 1330px) {
+    &.Default.sidebar-active {
+      padding-left: 0;
+    }
+  }
 }
 
 .episode-card {

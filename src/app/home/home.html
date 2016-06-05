@@ -1,15 +1,16 @@
 <nav class="navbar">
-  <div class="ui container">
-    <div class="ui secondary pointing menu">
-      <div class="item">
-        <h2>{{siteTitle}}</h2>
-      </div>
-      <a class="item" [routerLink]="['Home', 'Default']">Home</a>
-      <a href="" class="item">Something</a>
-    </div>
-  </div>
+  <a class="sidebar-toggle" (click)="toggleSidebar()">
+    <i class="icon sidebar"></i>
+  </a>
+  <a class="brand" [routerLink]="['Home', 'Default']">
+    <h2>{{siteTitle}}</h2>
+  </a>
 </nav>
-<div class="home-content">
+<div class="ui sidebar ui vertical menu home-sidebar" [ngClass]="{visible: sidebarActive}">
+  <a class="item" [routerLink]="['Home', 'Default']">Home</a>
+  <a class="item" [routerLink]="['Admin', 'ListBangumi']">Management</a>
+</div>
+<div class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
   <router-outlet></router-outlet>
 </div>
 

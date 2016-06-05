@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Episode} from "../../entity/episode";
-import {HomeService} from "../home.service";
+import {HomeService, HomeChild} from "../home.service";
 import {RouteParams} from '@angular/router-deprecated';
 import {Player} from "../player/player.component";
 
@@ -9,18 +9,20 @@ import {Player} from "../player/player.component";
   template: require('./play-episode.html'),
   directives: [Player]
 })
-export class PlayEpisode implements OnInit {
+export class PlayEpisode extends HomeChild implements OnInit {
 
   episode:Episode;
 
   constructor(
-    private _homeService: HomeService,
+    homeService: HomeService,
     private _routeParams: RouteParams
-  ){}
+  ){
+    super(homeService);
+  }
 
   ngOnInit():any {
     let episode_id = this._routeParams.get('episode_id');
-    this._homeService.episode_detail(episode_id)
+    this.homeService.episode_detail(episode_id)
       .subscribe(
         (episode: Episode) => {
           this.episode = episode;

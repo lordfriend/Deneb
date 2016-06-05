@@ -414,7 +414,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnDestroy():any {
-    this._autoHideSubscription.unsubscribe();
+    if(this._autoHideSubscription) {
+      this._autoHideSubscription.unsubscribe();
+    }
+    if(this._sliderSubscription) {
+      this._sliderSubscription.unsubscribe();
+    }
     window.removeEventListener('resize', this._windowResizeHandler);
     document.removeEventListener('fullscreenchange', this._fullScreenChangeHandler);
     document.removeEventListener('webkitfullscreenchange', this._fullScreenChangeHandler);

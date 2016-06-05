@@ -10,7 +10,9 @@
   justify-content: flex-start;
   border-bottom: 1px solid #ccc;
   align-items: center;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 200;
 
   .sidebar-toggle {
@@ -37,14 +39,16 @@
 }
 
 .home-content {
-  margin-top: 2rem;
+  margin-top: (2rem + 3.5rem);
 
-  &.Default.sidebar-active {
+  &.Default.sidebar-active,
+  &.Bangumi.sidebar-active {
     padding-left: 15em;
   }
 
   @media (max-width: 1330px) {
-    &.Default.sidebar-active {
+    &.Default.sidebar-active,
+    &.Bangumi.sidebar-active {
       padding-left: 0;
     }
   }

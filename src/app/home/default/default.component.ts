@@ -1,24 +1,25 @@
 import {Component, OnInit} from '@angular/core';
 import {Episode} from "../../entity/episode";
-import {HomeService} from "../home.service";
+import {HomeService, HomeChild} from "../home.service";
 import {Bangumi} from "../../entity/bangumi";
 
 @Component({
   selector: 'default-component',
   template: require('./default.html')
 })
-export class DefaultComponent implements OnInit {
+export class DefaultComponent extends HomeChild implements OnInit {
 
   recentEpisodes:Episode[];
 
   onAirBangumi: Bangumi[];
 
-  constructor(private _homeService:HomeService) {
+  constructor(homeService:HomeService) {
+    super(homeService);
   }
 
 
   ngOnInit():any {
-    this._homeService.recentEpisodes()
+    this.homeService.recentEpisodes()
       .subscribe(
         (episodeList: Episode[]) => {
           this.recentEpisodes = episodeList;
@@ -26,7 +27,7 @@ export class DefaultComponent implements OnInit {
         error => console.log(error)
       );
 
-    this._homeService.onAir()
+    this.homeService.onAir()
       .subscribe(
         (bangumiList:Bangumi[]) => {
           this.onAirBangumi = bangumiList;

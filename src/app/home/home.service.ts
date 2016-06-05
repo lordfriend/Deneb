@@ -1,9 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import {Http} from '@angular/http';
 import {BaseService} from "../services/base.service";
 import {Observable} from "rxjs/Observable";
 import {Episode} from '../entity/episode';
 import {Bangumi} from "../entity/bangumi";
+import {OnActivate, ComponentInstruction} from "@angular/router-deprecated";
 
 @Injectable()
 export class HomeService extends BaseService {
@@ -14,6 +15,12 @@ export class HomeService extends BaseService {
     private _http: Http
   ){
     super();
+  }
+
+  childRouteChanges: EventEmitter<any> = new EventEmitter();
+
+  activateChild(routeName: string) {
+    this.childRouteChanges.emit(routeName);
   }
 
   recentEpisodes(days?: number): Observable<Episode[]> {
@@ -45,5 +52,20 @@ export class HomeService extends BaseService {
     return this._http.get(queryUrl)
       .map(res => <Bangumi> res.json().data)
       .catch(this.handleError);
+  }
+}
+
+/**
+ * Communicate between Home Component and its children
+ */
+export abstract class HomeChild implements OnActivate {
+
+  constructor(protected homeService: HomeService) {
+
+  }
+
+  routerOnActivate(nextInstruction:ComponentInstruction, prevInstruction:ComponentInstruction):any|Promise<any> {
+    this.homeService.activateChild(nextInstruction.routeName);
+    return null;
   }
 }

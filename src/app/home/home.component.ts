@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
-import {RouteConfig, Router, OnActivate, ComponentInstruction} from "@angular/router-deprecated";
+import {RouteConfig} from "@angular/router-deprecated";
 import {DefaultComponent} from "./default/default.component";
 import {HomeService} from './home.service';
 import {PlayEpisode} from "./play-episode/play-episode.component";
@@ -26,8 +26,16 @@ export class Home implements OnInit {
 
   sidebarActive: boolean = true;
 
-  constructor(titleService:Title, private _router: Router) {
+  constructor(titleService:Title, homeService: HomeService) {
     titleService.setTitle(this.siteTitle);
+    homeService.childRouteChanges.subscribe((routeName) => {
+      if(routeName === 'Play') {
+        this.sidebarActive = false;
+      } else {
+        this.sidebarActive = true;
+      }
+      this.currentRouteName = routeName;
+    })
   }
 
   toggleSidebar() {
@@ -35,7 +43,7 @@ export class Home implements OnInit {
   }
 
   ngOnInit():any {
-    this.currentRouteName = this._router.currentInstruction.component.routeName;
+
     return null;
   }
 

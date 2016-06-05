@@ -1,4 +1,4 @@
-<figure #videoContainer class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mousemove)="onMousemove()">
+<figure #videoContainer class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mouseenter)="onEnterContainer()">
   <video #video
          preload="metadata"
          class="ng2-video"
@@ -10,9 +10,11 @@
          (waiting)="onWaiting()"
          (play)="onPlay()"
          (pause)="onPause()"
-         (ended)="onEnded()">
+         (ended)="onEnded()"
+         (click)="onClickPlay()">
     <source [src]="videoUrl" [type]="videoType">
   </video>
+  <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay()"></div>
   <div class="video-controls" [ngClass]="{show: showControl}">
     <div class="controls-wrapper">
       <button class="play-button control-button" (click)="onClickPlay()">

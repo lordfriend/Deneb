@@ -26,6 +26,8 @@ const KEEP_RESERVED_SPACE = 0; // will keep the reserved space and strech the vi
 const FIT_ORIGINAL = 1; // if space is enough will scale up to the original video size
 const FULL_SCREEN = 2;
 
+const noop = () => {};
+
 @Component({
   selector: 'player',
   template: require('./player.html'),
@@ -41,7 +43,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   private _autoHideSubscription:Subscription;
 
   private _showControl:boolean = true;
-  private _lastmoveTime:number = Date.now();
 
   private _sliderControlObservable:Observable<any>;
   private _sliderSubscription:Subscription;
@@ -82,6 +83,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     this._windowResizeHandler = this.onWindowReisze.bind(this);
   }
 
+  //noinspection JSUnusedGlobalSymbols
   get currentTime(): number {
     return this._currentTime;
   }
@@ -122,6 +124,15 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     return this._showControl;
   }
 
+  get showLoader(): boolean {
+    if(this.videoElementRef) {
+      let videoElement = this.videoElementRef.nativeElement;
+      return videoElement.readyState < HAVE_FUTURE_DATA && !videoElement.paused;
+    } else {
+      return false;
+    }
+  }
+
   onClickPlay() {
     let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
     if (videoElement.paused) {
@@ -136,10 +147,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onPlay() {
+    console.log('playing');
     this._playButton = 'pause';
   }
 
   onPause() {
+    console.log('pausing');
     this._playButton = 'play';
   }
 
@@ -156,11 +169,25 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onMousemove() {
-    this._lastmoveTime = Date.now();
-    if (!this._showControl) {
-      this._showControl = true;
-    }
+  onEnterContainer() {
+    this._showControl = true;
+    let videoContainerElement = this.videoContainerRef.nativeElement;
+
+    this._autoHideSubscription = Observable.fromEvent(videoContainerElement, 'mousemove')
+      .merge(Observable.interval(500).filter(() => this._isSeeking))
+      .takeUntil(Observable.fromEvent(videoContainerElement, 'mouseleave')
+        .map((event) => {
+          this._showControl = false;
+          return event;
+        }))
+      .timeout(this.controlFadeOutTime)
+      .do(noop, () => {this._showControl = false;})
+      .retry()
+      .subscribe(
+        () => {
+          this._showControl = true;
+        }
+      );
   }
 
   onMetadataLoaded() {
@@ -230,8 +257,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   onDragSlider(mousedownEvent: MouseEvent) {
     let sliderElement = this.sliderElementRef.nativeElement;
     this._isSeeking = true;
-    this._lastmoveTime = Date.now();
-
 
     this._playProgress = Math.round(this.getProgressRatio(sliderElement, mousedownEvent) * 1000) / 10;
 
@@ -261,7 +286,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     let ratio = this.getProgressRatio(this.sliderElementRef.nativeElement, event);
     this._playProgress = Math.round(ratio * 1000) / 10;
     this.seekTo(ratio);
-    this._lastmoveTime = Date.now();
   }
 
   onHoverProgress(event: MouseEvent) {
@@ -366,15 +390,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit():any {
-    this._autoHideSubscription = Observable.interval(1000)
-      .subscribe(() => {
-        if (this._showControl && !this._isSeeking) {
-          var currentTimestamp = Date.now();
-          if (currentTimestamp - this._lastmoveTime > this.controlFadeOutTime) {
-            this._showControl = false;
-          }
-        }
-      });
 
     return null;
   }

@@ -54,13 +54,13 @@ export class HomeService extends BaseService {
       .catch(this.handleError);
   }
 
-  listBangumi(page: number, name?:string): Observable<Bangumi[]> {
-    let queryUrl = this._baseUrl + '/bangumi?page' + page;
+  listBangumi(page: number, orderBy: string, name?:string): Observable<any> {
+    let queryUrl = this._baseUrl + '/bangumi?page=' + page + '&order_by=' + orderBy;
     if(name) {
       queryUrl = queryUrl + '&name=' + name;
     }
     return this._http.get(queryUrl)
-      .map(res => <Bangumi[]> res.json().data)
+      .map(res => res.json())
       .catch(this.handleError);
   }
 }

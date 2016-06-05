@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {HomeChild, HomeService} from "../home.service";
 import {RouteParams} from "@angular/router-deprecated";
 import {Bangumi} from "../../entity/bangumi";
+import {Observable} from "rxjs/Rx";
 
 
 @Component({
@@ -10,25 +11,63 @@ import {Bangumi} from "../../entity/bangumi";
 })
 export class BangumiList extends HomeChild implements OnInit {
 
-  page: number;
+  page: number = 0;
+  total: number;
+  countPerPage: number = 10;
+
   name: string;
 
-  bangumiList: Bangumi[];
+  isLoading: boolean = false;
+  
+  orderBy: string = 'air_date';
+
+  bangumiList: Bangumi[] = [];
+
+  @ViewChild('loadMore') loadMoreButtonRef: ElementRef;
 
   constructor(homeService:HomeService, private _routeParams: RouteParams) {
     super(homeService);
   }
 
-  ngOnInit():any {
-    this.page = parseInt(this._routeParams.get('page'));
-    this.name = this._routeParams.get('name');
-
-    this.homeService.listBangumi(this.page, this.name)
+  loadMoreContent() {
+    if(this.page >= Math.ceil(this.total/this.countPerPage)) {
+      return;
+    }
+    this.page++;
+    this.isLoading = true;
+    this.homeService.listBangumi(this.page, this.orderBy, this.name)
       .subscribe(
-        (bangumiList: Bangumi[]) => {
-          this.bangumiList = bangumiList;
+        (result: any) => {
+          this.bangumiList = this.bangumiList.concat(result.data);
+          this.total = result.total;
         },
-        (error) => {console.log(error)}
+        (error) => {console.log(error)},
+        () => {
+          this.isLoading = false;
+        }
+      );
+  }
+
+  ngOnInit():any {
+    let pageFromParams = parseInt(this._routeParams.get('page'));
+    this.page = Number.isNaN(pageFromParams) ? 0: pageFromParams;
+
+    this.name = this._routeParams.get('name');
+    this.loadMoreContent();
+
+    Observable.fromEvent(document, 'scroll')
+      .filter(() => {
+        return !this.isLoading && this.page < Math.ceil(this.total / this.countPerPage);
+      })
+      .debounceTime(100)
+      .subscribe(
+        () => {
+          let viewportHeight = window.innerHeight;
+          let rect = this.loadMoreButtonRef.nativeElement.getBoundingClientRect();
+          if(rect.bottom < viewportHeight) {
+            this.loadMoreContent();
+          }
+        }
       );
 
     return null;

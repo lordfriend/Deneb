@@ -26,10 +26,6 @@
     </div>
   </a>
 </div>
-<div class="ui container bangumi-list-pagination">
-  <div class="ui pagination menu">
-    <a class="item">1</a>
-    <a class="item">2</a>
-    <a class="item">3</a>
-  </div>
+<div class="load-more-indicator ui container">
+  <button #loadMore class="ui fluid button" [ngClass]="{loading: isLoading, hide: page >= (total / countPerPage)}" (click)="loadMoreContent()">加载更多</button>
 </div>

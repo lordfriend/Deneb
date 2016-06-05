@@ -62,11 +62,17 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   private _playButton: string = 'play';
 
+  private _delayedResizeTimerId: number;
+
   @Input()
   episode:Episode;
 
   @Input()
   controlFadeOutTime:number = CONTROL_FADE_OUT_TIME;
+
+  @Input()
+  reservedSpaceHeight:number = 0;
+
   @ViewChild('videoContainer') videoContainerRef: ElementRef;
   @ViewChild('video') videoElementRef:ElementRef;
   @ViewChild('slider') sliderElementRef:ElementRef;
@@ -207,7 +213,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   private scaleVideoContainer(pattern: number) {
     let videoElement = this.videoElementRef.nativeElement;
 
-    let reservedSpaceHeight = 0;
+    let reservedSpaceHeight = this.reservedSpaceHeight;
 
     let videoWidth = videoElement.videoWidth;
     let videoHeight = videoElement.videoHeight;
@@ -318,7 +324,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
       } else if(videoContainer.webkitRequestFullscreen) {
         videoContainer.webkitRequestFullscreen();
       }
-
     } else {
 
       if (document.exitFullscreen) {
@@ -343,15 +348,28 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onFullscreenChange() {
-
+    let videoContainerElement = this.videoContainerRef.nativeElement;
     if(!document.fullscreenElement &&    // alternative standard method
       !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
       console.log('fullscreen off');
       this._fullscreenMode = false;
+      videoContainerElement.classList.remove('fullscreen');
     } else {
-      this._fullscreenMode = true;
       console.log('fullscreen on');
+      this._fullscreenMode = true;
+      videoContainerElement.classList.add('fullscreen');
     }
+
+    clearTimeout(this._delayedResizeTimerId);
+
+    this._delayedResizeTimerId = window.setTimeout(() => {
+      if(this._fullscreenMode) {
+        this.scaleVideoContainer(FULL_SCREEN);
+      } else {
+        this.scaleVideoContainer(KEEP_RESERVED_SPACE);
+      }
+
+    }, 500);
   }
 
   private getExtname(url:string) {

@@ -4,7 +4,7 @@
 <div class="bangumi-container">
   <div class="ui loading search">
     <div class="ui fluid icon input">
-      <input class="prompt" type="text" placeholder="输入番组名称搜索" #searchBox (keyup.enter)="searchBangumi(searchBox.value)"/>
+      <input class="prompt" type="text" placeholder="输入番组名称搜索" #searchBox (keyup)="searchBangumi(searchBox.value)"/>
       <i class="search icon"></i>
     </div>
   </div>

@@ -9,6 +9,8 @@ import {BangumiList} from "./bangumi-list/bangumi-list.component";
 
 require('./home.less');
 
+const BREAK_POINT = 1330;
+
 @Component({
   selector: 'home',
   template: require('./home.html'),
@@ -26,14 +28,16 @@ export class Home implements OnInit {
 
   currentRouteName: string = '';
 
-  sidebarActive: boolean = true;
+  sidebarActive: boolean = false;
+
+  sidebarOverlap: boolean = false;
 
   constructor(titleService:Title, homeService: HomeService) {
     titleService.setTitle(this.siteTitle);
     homeService.childRouteChanges.subscribe((routeName) => {
       if(routeName === 'Play') {
         this.sidebarActive = false;
-      } else {
+      } else if(!this.sidebarOverlap) {
         this.sidebarActive = true;
       }
       this.currentRouteName = routeName;
@@ -45,7 +49,10 @@ export class Home implements OnInit {
   }
 
   ngOnInit():any {
-
+    let viewportWidth =  window.innerWidth;
+    if(viewportWidth <= BREAK_POINT) {
+      this.sidebarOverlap = true;
+    }
     return null;
   }
 

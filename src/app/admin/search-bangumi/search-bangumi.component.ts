@@ -3,6 +3,7 @@ import {BangumiService} from '../api';
 import {Bangumi} from '../../entity';
 import {Router} from '@angular/router-deprecated';
 import {Title} from '@angular/platform-browser';
+import {Subject} from 'rxjs'
 
 @Component({
   selector: 'search-bangumi',
@@ -12,6 +13,7 @@ import {Title} from '@angular/platform-browser';
 export class SearchBangumi {
 
   public bangumiList = [];
+  private _input = new Subject<string>();
 
   constructor(
     private _router: Router,
@@ -19,16 +21,20 @@ export class SearchBangumi {
     titleService: Title
   ){
     titleService.setTitle('添加新番 - ' + SITE_TITLE);
+    this._input
+      .debounceTime(500)
+      .distinctUntilChanged()
+      .forEach(name => {
+        this._bangumiApi.searchBangumi(name)
+          .subscribe(
+            bangumiList => this.bangumiList = bangumiList,
+            error => console.log(error)
+          );
+      });
   }
 
   searchBangumi(name: string):void {
-    if(name) {
-      this._bangumiApi.searchBangumi(name)
-        .subscribe(
-          bangumiList => this.bangumiList = bangumiList,
-          error => console.log(error)
-        );
-    }
+    this._input.next(name)
   }
 
   addBangumi(bangumi: Bangumi):void {

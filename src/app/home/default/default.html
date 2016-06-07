@@ -23,7 +23,7 @@
   <div class="ui five doubling cards">
     <div class="card bangumi-card" *ngFor="let bangumi of onAirBangumi">
       <a class="image" [routerLink]="['Bangumi', {bangumi_id: bangumi.id}]">
-        <ui-image-placeholder [imageUrl]="bangumi.cover || bangumi.image">
+        <ui-image-placeholder [imageUrl]="bangumi.cover">
           <div class="ui-image-fallback">
             <h4 class="ui icon film icon-holder">
               <i class="film icon"></i>

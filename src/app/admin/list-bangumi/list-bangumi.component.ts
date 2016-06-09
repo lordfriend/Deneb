@@ -3,6 +3,7 @@ import {BangumiService} from "../api";
 import {OnInit, Component} from "@angular/core";
 import {Title} from '@angular/platform-browser';
 import {Router} from "@angular/router-deprecated";
+import {Subject} from "rxjs/Rx";
 
 @Component({
   selector: 'list-bangumi',
@@ -11,15 +12,19 @@ import {Router} from "@angular/router-deprecated";
 })
 export class ListBangumi implements OnInit {
 
-  public name: string;
+  name: string;
 
-  public currentPage: number = 1;
+  currentPage: number = 1;
 
-  public total: number = 0;
+  total: number = 0;
 
-  public numberPerPage: number = 20;
+  numberPerPage: number = 10;
 
-  public bangumiList: Bangumi[];
+  bangumiList: Bangumi[];
+
+  isLoading: boolean = false;
+
+  private _input = new Subject<string>();
 
   constructor(
     private _bangumiApi: BangumiService,
@@ -27,21 +32,49 @@ export class ListBangumi implements OnInit {
     titleService: Title
   ){
     titleService.setTitle('新番管理 - ' + SITE_TITLE);
+
+    this._input
+      .debounceTime(500)
+      .distinctUntilChanged()
+      .forEach(name => {
+        this.isLoading = true;
+        this.currentPage = 1;
+        this._bangumiApi.listBangumi(this.currentPage, this.numberPerPage, name)
+          .subscribe(
+            (result: {data: Bangumi[], total: number}) => {
+              this.bangumiList = result.data;
+              this.total = result.total;
+            },
+            error => console.log(error),
+            () => {this.isLoading = false}
+          );
+      });
   }
 
-  public filterBangumi(): void {
+  private loadBangumiList() {
+    this.isLoading = true;
     this._bangumiApi.listBangumi(this.currentPage, this.numberPerPage, this.name)
       .subscribe(
         (result: {data: Bangumi[], total: number}) => {
           this.bangumiList = result.data;
           this.total = result.total;
         },
-        error => console.log(error)
+        error => console.log(error),
+        () => {this.isLoading = false}
       );
   }
 
+  filterBangumi(name: string): void {
+    this._input.next(name);
+  }
+
+  onPageChange(pageNumber: number) {
+    this.currentPage = pageNumber;
+    this.loadBangumiList();
+  }
+
   ngOnInit():any {
-    this.filterBangumi();
+    this.loadBangumiList();
     return undefined;
   }
 

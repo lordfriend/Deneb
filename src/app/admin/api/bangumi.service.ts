@@ -41,7 +41,7 @@ export class BangumiService {
   }
 
   listBangumi(page: number, count: number, name?: string): Observable<{data: Bangumi[], total: number}> {
-    let queryUrl = this.baseUrl + '/bangumi?page' + page + '&count=' + count;
+    let queryUrl = this.baseUrl + '/bangumi?page=' + page + '&count=' + count;
     if(name) {
       queryUrl += '&name=' + name;
     }

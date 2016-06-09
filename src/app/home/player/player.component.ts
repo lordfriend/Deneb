@@ -35,8 +35,8 @@ const noop = () => {};
 })
 export class Player implements OnInit, AfterViewInit, OnDestroy {
 
-  private _videoWidth:number = 1280;
-  private _videoHeight:number = 720;
+  private _videoWidth:number;
+  private _videoHeight:number;
   private _playProgress:number = 0;
   private _bufferedProgress:number = 0;
 
@@ -110,7 +110,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     if(this._fullscreenMode) {
       return '100%';
     } else {
-      return this._videoWidth + 'px';
+      return this._videoWidth ? this._videoWidth + 'px' : 'auto';
     }
   }
 
@@ -118,7 +118,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     if(this._fullscreenMode) {
       return '100%';
     } else {
-      return this._videoHeight + 'px';
+      return this._videoHeight ? this._videoHeight + 'px' : 'auto';
     }
   }
 

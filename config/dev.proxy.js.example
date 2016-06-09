@@ -1,0 +1,11 @@
+module.exports = {
+  '/api/*': {
+    target: 'http://localhost:5000'
+  },
+  '/pic/*': {
+    target: 'http://localhost:8000'
+  },
+  '/video/*': {
+    target: 'http://localhost:8000'
+  }
+};

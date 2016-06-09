@@ -46,6 +46,26 @@ const METADATA = webpackMerge(commonConfig.metadata, {
   HMR: HMR
 });
 
+var PROXY_SETTINGS;
+try {
+  PROXY_SETTINGS = require('./dev.proxy');
+} catch(e) {
+  PROXY_SETTINGS = {
+    '/api/*': {
+      target: 'http://localhost:5000'
+    },
+    '/pic/*': {
+      target: 'http://localhost:8000'
+    },
+    '/video/*': {
+      target: 'http://localhost:8000'
+    }
+  };
+
+  console.log(e);
+}
+
+
 /**
  * Webpack configuration
  *
@@ -133,17 +153,7 @@ module.exports = webpackMerge(commonConfig, {
       aggregateTimeout: 300,
       poll: 1000
     },
-    proxy: {
-      '/api/*': {
-        target: 'http://192.168.1.6:5000'
-      },
-      '/pic/*': {
-        target: 'http://192.168.1.6:8000'
-      },
-      '/video/*': {
-        target: 'http://192.168.1.6:8000'
-      }
-    }
+    proxy: PROXY_SETTINGS
   },
 
   node: {

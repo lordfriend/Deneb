@@ -1,4 +1,4 @@
-<figure #videoContainer class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mouseenter)="onEnterContainer()">
+<figure #videoContainer class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mouseenter)="onEnterContainer()" [ngClass]="{'hide-cursor': !showControl}">
   <video #video
          preload="metadata"
          class="ng2-video"

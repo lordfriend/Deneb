@@ -1,6 +1,7 @@
 <figure #videoContainer class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mouseenter)="onEnterContainer()" [ngClass]="{'hide-cursor': !showControl}">
   <video #video
-         preload="metadata"
+         preload="auto"
+         autoplay
          class="ng2-video"
          [poster]="episode.thumbnail"
          [id]="playerId"
@@ -11,7 +12,8 @@
          (play)="onPlay()"
          (pause)="onPause()"
          (ended)="onEnded()"
-         (click)="onClickPlay()">
+         (click)="onClickPlay()"
+         (suspend)="onSuspend()">
     <source [src]="videoUrl" [type]="videoType">
   </video>
   <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay()"></div>

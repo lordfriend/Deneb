@@ -156,6 +156,10 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onSuspend() {
+    console.log('suspend');
+  }
+
   onWaiting() {
     console.log('waiting...');
   }
@@ -207,8 +211,19 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   onMetadataLoaded() {
 
     this._duration = this.videoElementRef.nativeElement.duration;
+    let videoElement = this.videoElementRef.nativeElement;
 
-    this.scaleVideoContainer(KEEP_RESERVED_SPACE);
+    let readyStateSubscription = Observable.interval(300)
+      .map(() => {
+        return {width: videoElement.videoWidth, height: videoElement.videoHeight};
+      })
+      .subscribe((dimension: {width: number, height: number}) => {
+        if(dimension.width > 0) {
+          console.log('dimension', dimension);
+          readyStateSubscription.unsubscribe();
+          this.scaleVideoContainer(KEEP_RESERVED_SPACE);
+        }
+      }, () => {});
 
     window.addEventListener('resize', this._windowResizeHandler, false);
 

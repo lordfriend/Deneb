@@ -2,9 +2,10 @@
   <player [episode]="episode"></player>
 </div>
 <div class="ui container episode-info-container" *ngIf="episode">
-  <h3>
+  <h3 class=episode-title>
     <span class="bangumi-name">{{episode.bangumi.name_cn}}</span>
     <span class="episode-no">{{episode.episode_no}}</span>
+    <span class="episode-name-cn">{{episode.name_cn}}</span>
   </h3>
   <div class="ui divider">
   </div>
@@ -25,6 +26,19 @@
       </h2>
       <div class="summary">
         {{episode.bangumi.summary}}
+      </div>
+      <h4>
+        各话列表
+      </h4>
+      <div class="episode-list ui eight column doubling grid">
+        <div class="column" *ngFor="let eps of episode.bangumi.episodes">
+          <a class="ui segment episode-link" *ngIf="eps.status===2" [routerLink]="['Play', {episode_id: eps.id}]">
+            {{eps.episode_no}}
+          </a>
+          <a class="ui disabled segment episode-link" *ngIf="eps.status!==2">
+            {{eps.episode_no}}
+          </a>
+        </div>
       </div>
     </div>
   </div>

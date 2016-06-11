@@ -317,7 +317,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
       let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
       if (videoElement.buffered.length > 0) {
         let bufferedEnd = videoElement.buffered.end(videoElement.buffered.length - 1);
-        console.log( videoElement.buffered, videoElement.buffered.end(videoElement.buffered.length - 1));
         let duration = videoElement.duration;
         this._bufferedProgress = Math.round(bufferedEnd / duration * 1000) / 10;
       }

@@ -7,6 +7,9 @@ import {PlayEpisode} from "./play-episode/play-episode.component";
 import {BangumiDetail} from "./bangumi-detail/bangumi-detail.components";
 import {BangumiList} from "./bangumi-list/bangumi-list.component";
 import {Observable, Subscription} from "rxjs/Rx";
+import {Authentication} from '../user-service/authentication.service';
+import {User} from '../entity';
+
 
 require('./home.less');
 
@@ -15,7 +18,7 @@ const BREAK_POINT = 1330;
 @Component({
   selector: 'home',
   template: require('./home.html'),
-  providers: [Title, HomeService, PlayEpisode]
+  providers: [Title, HomeService, PlayEpisode, Authentication]
 })
 @RouteConfig([
   {path: '/', name: 'Default', component: DefaultComponent, useAsDefault: true},
@@ -33,10 +36,12 @@ export class Home implements OnInit, OnDestroy {
 
   sidebarOverlap: boolean = false;
 
+  user: User;
+
   private _sidebarClickSubscription: Subscription;
   private _resizeSubscription: Subscription;
 
-  constructor(titleService:Title, homeService: HomeService) {
+  constructor(titleService:Title, homeService: HomeService, private _authentication: Authentication) {
     titleService.setTitle(this.siteTitle);
     homeService.childRouteChanges.subscribe((routeName) => {
       if(routeName === 'Play') {
@@ -64,6 +69,13 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnInit():any {
+    this._authentication.isAuthenticated()
+      .then((user: User) => {
+        this.user = user;
+        console.log(this.user);
+      });
+    
+    
     this.checkOverlapMode();
 
     this._sidebarClickSubscription = Observable.fromEvent(document, 'click')

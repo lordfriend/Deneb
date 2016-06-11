@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Episode} from "../../entity/episode";
+import {Episode, Bangumi} from "../../entity";
 import {HomeService, HomeChild} from "../home.service";
 import {RouteParams} from '@angular/router-deprecated';
 import {Player} from "../player/player.component";
@@ -26,6 +26,13 @@ export class PlayEpisode extends HomeChild implements OnInit {
       .subscribe(
         (episode: Episode) => {
           this.episode = episode;
+          this.homeService.bangumi_datail(episode.bangumi_id)
+            .subscribe(
+              (bangumi: Bangumi) => {
+                this.episode.bangumi = bangumi
+              },
+              error => console.log(error)
+            );
         },
         error => console.log(error)
       );

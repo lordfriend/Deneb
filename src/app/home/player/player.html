@@ -13,10 +13,14 @@
          (pause)="onPause()"
          (ended)="onEnded()"
          (click)="onClickPlay()"
-         (suspend)="onSuspend()">
+         (suspend)="onSuspend()"
+         (resize)="onVideoResized()"
+         (error)="onError($event)"
+         (stalled)="onStalled()">
     <source [src]="videoUrl" [type]="videoType">
   </video>
   <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay()"></div>
+  <a class="error-info" (click)="retry($event)" [ngClass]="{show: isStalled}">Network Error, click to Retry</a>
   <div class="video-controls" [ngClass]="{show: showControl}">
     <div class="controls-wrapper">
       <button class="play-button control-button" (click)="onClickPlay()">

@@ -64,6 +64,9 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   private _delayedResizeTimerId: number;
 
+  private _isStalled: boolean = false;
+  private _lastStalledPosition: number;
+
   @Input()
   episode:Episode;
 
@@ -147,6 +150,51 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  get isStalled(): boolean {
+    return this._isStalled;
+  }
+
+  onError(error: MediaError) {
+    console.log(error);
+    let videoElement = this.videoElementRef.nativeElement;
+    if(videoElement.error.code === MediaError.MEDIA_ERR_NETWORK) {
+      videoElement.pause();
+      console.log('current_time', this._currentTime);
+      this._lastStalledPosition = this._currentTime;
+      this._isStalled = true;
+    }
+  }
+
+  onStalled() {
+    console.log('stalled');
+    this._isStalled = true;
+    let videoElement = this.videoElementRef.nativeElement;
+    videoElement.pause();
+    this._lastStalledPosition = this._currentTime;
+  }
+
+  retry(event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    let videoElement = this.videoElementRef.nativeElement;
+    videoElement.load();
+    let retrySubscription = Observable.fromEvent(videoElement, 'canplay')
+      .takeUntil(Observable.fromEvent(videoElement, 'seeked'))
+      .timeout(5000)
+      .retry(3)
+      .subscribe(
+        () => {
+          console.log('resumed', videoElement.duration);
+          this._isStalled = false;
+          videoElement.currentTime = this._lastStalledPosition;
+        },
+        () => {},
+        () => {
+          retrySubscription.unsubscribe();
+        }
+      )
+  }
+
   onClickPlay() {
     let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
     if (videoElement.paused) {
@@ -211,19 +259,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   onMetadataLoaded() {
 
     this._duration = this.videoElementRef.nativeElement.duration;
-    let videoElement = this.videoElementRef.nativeElement;
-
-    let readyStateSubscription = Observable.interval(300)
-      .map(() => {
-        return {width: videoElement.videoWidth, height: videoElement.videoHeight};
-      })
-      .subscribe((dimension: {width: number, height: number}) => {
-        if(dimension.width > 0) {
-          console.log('dimension', dimension);
-          readyStateSubscription.unsubscribe();
-          this.scaleVideoContainer(KEEP_RESERVED_SPACE);
-        }
-      }, () => {});
 
     window.addEventListener('resize', this._windowResizeHandler, false);
 
@@ -231,6 +266,11 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     document.addEventListener('webkitfullscreenchange', this._fullScreenChangeHandler, false);
     document.addEventListener('mozfullscreenchange', this._fullScreenChangeHandler, false);
     document.addEventListener('MSFullscreenChange', this._fullScreenChangeHandler, false);
+  }
+
+  onVideoResized() {
+    console.log('video resized');
+    this.scaleVideoContainer(KEEP_RESERVED_SPACE);
   }
 
   private scaleVideoContainer(pattern: number) {
@@ -277,6 +317,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
       let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
       if (videoElement.buffered.length > 0) {
         let bufferedEnd = videoElement.buffered.end(videoElement.buffered.length - 1);
+        console.log( videoElement.buffered, videoElement.buffered.end(videoElement.buffered.length - 1));
         let duration = videoElement.duration;
         this._bufferedProgress = Math.round(bufferedEnd / duration * 1000) / 10;
       }
@@ -431,7 +472,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit():any {
-
     return null;
   }
 

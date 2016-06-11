@@ -16,6 +16,22 @@
     height: 100%;
   }
 
+  .error-info {
+    position: absolute;
+    display: none;
+    padding: 1rem 1.8rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    z-index: 101;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    &.show {
+      display: block;
+    }
+  }
+
   .video-controls {
     display: block;
     position: absolute;

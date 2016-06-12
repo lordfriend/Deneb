@@ -64,8 +64,9 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   private _delayedResizeTimerId: number;
 
-  private _isStalled: boolean = false;
+  private _isError: boolean = false;
   private _lastStalledPosition: number;
+  private _isStalled: boolean = false;
 
   @Input()
   episode:Episode;
@@ -144,14 +145,14 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   get showLoader(): boolean {
     if(this.videoElementRef) {
       let videoElement = this.videoElementRef.nativeElement;
-      return videoElement.readyState < HAVE_FUTURE_DATA && !videoElement.paused;
+      return (this._isStalled || videoElement.readyState < HAVE_FUTURE_DATA) && !videoElement.paused;
     } else {
       return false;
     }
   }
 
-  get isStalled(): boolean {
-    return this._isStalled;
+  get isError(): boolean {
+    return this._isError;
   }
 
   onError(error: MediaError) {
@@ -161,16 +162,13 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
       videoElement.pause();
       console.log('current_time', this._currentTime);
       this._lastStalledPosition = this._currentTime;
-      this._isStalled = true;
+      this._isError = true;
     }
   }
 
   onStalled() {
-    console.log('stalled');
     this._isStalled = true;
-    let videoElement = this.videoElementRef.nativeElement;
-    videoElement.pause();
-    this._lastStalledPosition = this._currentTime;
+    console.log('stalled');
   }
 
   retry(event: Event) {
@@ -178,6 +176,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     event.preventDefault();
     let videoElement = this.videoElementRef.nativeElement;
     videoElement.load();
+    this._isError = false;
     let retrySubscription = Observable.fromEvent(videoElement, 'canplay')
       .takeUntil(Observable.fromEvent(videoElement, 'seeked'))
       .timeout(5000)
@@ -185,7 +184,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(
         () => {
           console.log('resumed', videoElement.duration);
-          this._isStalled = false;
           videoElement.currentTime = this._lastStalledPosition;
         },
         () => {},
@@ -313,6 +311,9 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onChunkLoad() {
+    if(this._isStalled) {
+      this._isStalled = false;
+    }
     if (this.videoElementRef) {
       let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
       if (videoElement.buffered.length > 0) {

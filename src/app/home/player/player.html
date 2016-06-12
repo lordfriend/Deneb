@@ -20,7 +20,7 @@
     <source [src]="videoUrl" [type]="videoType">
   </video>
   <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay()"></div>
-  <a class="error-info" (click)="retry($event)" [ngClass]="{show: isStalled}">Network Error, click to Retry</a>
+  <a class="error-info" (click)="retry($event)" [ngClass]="{show: isError}">Network Error, click to Retry</a>
   <div class="video-controls" [ngClass]="{show: showControl}">
     <div class="controls-wrapper">
       <button class="play-button control-button" (click)="onClickPlay()">

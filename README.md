@@ -1,4 +1,4 @@
-#Web App client for Albireo
+#Web App client for [Albireo](https://github.com/lordfriend/Albireo)
 
 Built with Angular2 using angular2-webpack-starter
 

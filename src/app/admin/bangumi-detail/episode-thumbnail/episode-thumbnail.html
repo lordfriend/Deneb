@@ -19,9 +19,12 @@
   </div>
 </ui-dimmer>
 <div class="thumbnail-editor" *ngIf="editorOpen">
-  <div class="ui fluid action input">
-    <input type="text" placeholder="00:00:20.000" [(ngModel)]="time">
+  <div class="ui fluid action input" *ngIf="!episode.duration">
+    <input type="text" placeholder="format: 00:00:20.000" [(ngModel)]="time">
     <div [ngClass]="{loading: isSaving}" class="ui button" (click)="updateThumbnail()">Update</div>
+  </div>
+  <div class="slider-container" *ngIf="episode.duration">
+    <ui-slider (release)="updateThumbnail($event)"></ui-slider>
   </div>
   <div class="close-button circular ui icon button" (click)="closeEditor()">
     <i class="icon remove"></i>

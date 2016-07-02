@@ -1,4 +1,13 @@
-<figure #videoContainer class="video-container" [style.width]="containerWidth" [style.height]="containerHeight" (mouseenter)="onEnterContainer()" [ngClass]="{'hide-cursor': !showControl}">
+<figure #videoContainer
+        class="video-container"
+        tabindex="0"
+        [style.width]="containerWidth"
+        [style.height]="containerHeight"
+        [ngClass]="{'hide-cursor': !showControl}"
+        (mouseenter)="onEnterContainer()"
+        (keydown.Space)="onClickPlay($event)"
+        (keydown.ArrowLeft)="onSeeking($event, 'left')"
+        (keydown.ArrowRight)="onSeeking($event, 'right')">
   <video #video
          preload="auto"
          autoplay
@@ -12,18 +21,18 @@
          (play)="onPlay()"
          (pause)="onPause()"
          (ended)="onEnded()"
-         (click)="onClickPlay()"
+         (click)="onClickPlay($event)"
          (suspend)="onSuspend()"
          (resize)="onVideoResized()"
          (error)="onError($event)"
          (stalled)="onStalled()">
     <source [src]="videoUrl" [type]="videoType">
   </video>
-  <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay()"></div>
+  <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay($event)"></div>
   <a class="error-info" (click)="retry($event)" [ngClass]="{show: isError}">Network Error, click to Retry</a>
   <div class="video-controls" [ngClass]="{show: showControl}">
     <div class="controls-wrapper">
-      <button class="play-button control-button" (click)="onClickPlay()">
+      <button class="play-button control-button" (click)="onClickPlay($event)">
         <i class="icon" [ngClass]="playButtonIcon"></i>
       </button>
       <div #slider class="play-progress" (mousedown)="onDragSlider($event)" (click)="onClickSlider($event)" (mousemove)="onHoverProgress($event)" (mouseleave)="endHoverProgress()">

@@ -93,7 +93,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     this._windowResizeHandler = this.onWindowReisze.bind(this);
   }
 
-  //noinspection JSUnusedGlobalSymbols
   get currentTime(): number {
     return this._currentTime;
   }
@@ -193,8 +192,19 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
       )
   }
 
-  onClickPlay() {
+  onClickPlay(event: Event) {
+    // let target = <HTMLElement> (event.target || event.currentTarget);
     let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
+    // let videoContainer = this.videoContainerRef.nativeElement;
+    // videoContainer.focus();
+    event.preventDefault();
+    event.stopPropagation();
+    // console.log(document.activeElement);
+    // console.log(document.activeElement === videoContainer);
+    // if (!target.classList.contains('play-button')) {
+    //   console.log(document.activeElement);
+    //   console.log(document.activeElement === videoContainer);
+    // }
     if (videoElement.paused) {
       videoElement.play();
     } else {
@@ -322,6 +332,26 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
         this._bufferedProgress = Math.round(bufferedEnd / duration * 1000) / 10;
       }
     }
+  }
+
+  onSeeking(event: Event, direction: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    let videoElement = this.videoElementRef.nativeElement;
+    let currentTime = videoElement.currentTime;
+    let duration = videoElement.duration;
+    if(direction === 'right') {
+      currentTime += 5;
+      if(currentTime > duration) {
+        currentTime = duration;
+      }
+    } else if(direction === 'left') {
+      currentTime -= 5;
+      if(currentTime < 0) {
+        currentTime = 0;
+      }
+    }
+    videoElement.currentTime = currentTime;
   }
 
   onDragSlider(mousedownEvent: MouseEvent) {
@@ -472,6 +502,18 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit():any {
+    // let videoContainer = this.videoContainerRef.nativeElement;
+    // Observable.fromEvent(videoContainer, 'keydown')
+    //   .filter((event: KeyboardEvent) => {
+    //     return event.key === 'ArrowLeft' || event.key === 'ArrowRight'
+    //   })
+    //   .map((event: KeyboardEvent) => {
+    //     if(event.key === 'ArrowLeft') {
+    //       return 'left';
+    //     } else {
+    //       return 'right'
+    //     }
+    //   });
     return null;
   }
 

@@ -157,7 +157,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   onError(error: MediaError) {
     console.log(error);
     let videoElement = this.videoElementRef.nativeElement;
-    if(videoElement.error.code === MediaError.MEDIA_ERR_NETWORK) {
+    if(videoElement.error && videoElement.error.code === MediaError.MEDIA_ERR_NETWORK) {
       videoElement.pause();
       console.log('current_time', this._currentTime);
       this._lastStalledPosition = this._currentTime;

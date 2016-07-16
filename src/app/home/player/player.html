@@ -3,8 +3,6 @@
         tabindex="0"
         [style.width]="containerWidth"
         [style.height]="containerHeight"
-        [ngClass]="{'hide-cursor': !showControl}"
-        (mouseenter)="onEnterContainer()"
         (keydown.Space)="onClickPlay($event)"
         (keydown.ArrowLeft)="onSeeking($event, 'left')"
         (keydown.ArrowRight)="onSeeking($event, 'right')">
@@ -22,7 +20,6 @@
          (pause)="onPause()"
          (ended)="onEnded()"
          (click)="onClickPlay($event)"
-         (suspend)="onSuspend()"
          (resize)="onVideoResized()"
          (error)="onError($event)"
          (stalled)="onStalled()">
@@ -30,29 +27,23 @@
   </video>
   <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay($event)"></div>
   <a class="error-info" (click)="retry($event)" [ngClass]="{show: isError}">Network Error, click to Retry</a>
-  <div class="video-controls" [ngClass]="{show: showControl}">
-    <div class="controls-wrapper">
-      <button class="play-button control-button" (click)="onClickPlay($event)">
-        <i class="icon" [ngClass]="playButtonIcon"></i>
-      </button>
-      <div #slider class="play-progress" (mousedown)="onDragSlider($event)" (click)="onClickSlider($event)" (mousemove)="onHoverProgress($event)" (mouseleave)="endHoverProgress()">
-        <div class="play-progress-fill" [style.width]="playProgress"></div>
-        <div class="load-progress">
-          <div class="load-progress-fill" [style.width]="bufferedProgress"></div>
-        </div>
-        <div class="ui pointing below label" [style.left]="pointingOffsetX" [ngClass]="{show: hoveringProgress}">
-          {{pointingOffsetTime | time}}
-        </div>
-      </div>
-      <div class="time-indicator">
-        {{currentTime | time: duration}} / {{duration | time}}
-      </div>
-      <button class="volume-button control-button">
-        <i class="icon volume up"></i>
-      </button>
-      <button class="fullscreen-button control-button" (click)="toggleFullscreen()">
-        <i class="icon maximize"></i>
-      </button>
-    </div>
-  </div>
+  <player-controls [playButtonIcon]="playButtonIcon"
+                   [progress]="playProgress"
+                   [buffered]="bufferedProgress"
+                   [controlFadeOutTime]="controlFadeOutTime"
+                   [duration]="duration"
+                   [currentTime]="currentTime"
+                   (onProgressUpdate)="seekTo($event)"
+                   (onPlayButtonClick)="onClickPlay()"
+                   (onFullScreenClick)="toggleFullscreen()">
+    <button class="play-button control-button" (click)="onClickPlay($event)">
+      <i class="icon" [ngClass]="playButtonIcon"></i>
+    </button>
+    <button class="volume-button control-button">
+      <i class="icon volume up"></i>
+    </button>
+    <button class="fullscreen-button control-button" (click)="toggleFullscreen()">
+      <i class="icon maximize"></i>
+    </button>
+  </player-controls>
 </figure>

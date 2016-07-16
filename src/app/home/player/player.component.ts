@@ -9,6 +9,7 @@ import {
 import {Episode} from "../../entity/episode";
 import {Observable, Subscription} from "rxjs/Rx";
 import {TimePipe} from "./pipe/time.pipe";
+import {PlayerControls} from './player-controls/player-controls.component';
 
 let nextId = 0;
 
@@ -31,7 +32,8 @@ const noop = () => {};
 @Component({
   selector: 'player',
   template: require('./player.html'),
-  pipes: [TimePipe]
+  pipes: [TimePipe],
+  directives: [PlayerControls]
 })
 export class Player implements OnInit, AfterViewInit, OnDestroy {
 
@@ -40,23 +42,11 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   private _playProgress:number = 0;
   private _bufferedProgress:number = 0;
 
-  private _autoHideSubscription:Subscription;
-
-  private _showControl:boolean = true;
-
-  private _sliderControlObservable:Observable<any>;
-  private _sliderSubscription:Subscription;
-
-  private _isSeeking:boolean = false;
-
   private _fullscreenMode: boolean = false;
 
   private _fullScreenChangeHandler: () => {};
   private _windowResizeHandler: () => {};
 
-  private _hoveringProgress: boolean = false;
-
-  private _pointingOffsetX: number = 0;
   private _currentTime: number = 0;
   private _duration: number = 0;
 
@@ -79,14 +69,13 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('videoContainer') videoContainerRef: ElementRef;
   @ViewChild('video') videoElementRef:ElementRef;
-  @ViewChild('slider') sliderElementRef:ElementRef;
+  @ViewChild(PlayerControls) playerControls: PlayerControls;
 
   playerId:string = 'videoPlayerId' + (nextId++);
   videoUrl:string;
   videoType:string;
 
   pointingOffsetTime: number = 0;
-
 
   constructor() {
     this._fullScreenChangeHandler = this.onFullscreenChange.bind(this);
@@ -101,12 +90,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     return this._duration;
   }
 
-  get hoveringProgress(): boolean {
-    return this._hoveringProgress;
+  get playProgress(): number {
+    return this._playProgress;
   }
 
-  get pointingOffsetX(): string {
-    return this._pointingOffsetX ? this._pointingOffsetX + 'px' : 0 + '';
+  get bufferedProgress(): number {
+    return this._bufferedProgress;
   }
 
   get containerWidth():string {
@@ -127,18 +116,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   get playButtonIcon():string {
     return this._playButton;
-  }
-
-  get playProgress(): string {
-    return this._playProgress ? this._playProgress + '%' : 0 + '';
-  }
-
-  get bufferedProgress():string {
-    return this._bufferedProgress ? this._bufferedProgress + '%' : 0 + '';
-  }
-
-  get showControl():boolean {
-    return this._showControl;
   }
 
   get showLoader(): boolean {
@@ -193,27 +170,16 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onClickPlay(event: Event) {
-    // let target = <HTMLElement> (event.target || event.currentTarget);
     let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
-    // let videoContainer = this.videoContainerRef.nativeElement;
-    // videoContainer.focus();
-    event.preventDefault();
-    event.stopPropagation();
-    // console.log(document.activeElement);
-    // console.log(document.activeElement === videoContainer);
-    // if (!target.classList.contains('play-button')) {
-    //   console.log(document.activeElement);
-    //   console.log(document.activeElement === videoContainer);
-    // }
+    if(event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     if (videoElement.paused) {
       videoElement.play();
     } else {
       videoElement.pause();
     }
-  }
-
-  onSuspend() {
-    console.log('suspend');
   }
 
   onWaiting() {
@@ -237,31 +203,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   onTimeUpdate() {
     let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
     this._currentTime = videoElement.currentTime;
-    if(!this._isSeeking) {
-      let duration = videoElement.duration;
-      this._playProgress = Math.round(this._currentTime / duration * 1000) / 10;
-    }
-  }
-
-  onEnterContainer() {
-    this._showControl = true;
-    let videoContainerElement = this.videoContainerRef.nativeElement;
-
-    this._autoHideSubscription = Observable.fromEvent(videoContainerElement, 'mousemove')
-      .merge(Observable.interval(500).filter(() => this._isSeeking))
-      .takeUntil(Observable.fromEvent(videoContainerElement, 'mouseleave')
-        .map((event) => {
-          this._showControl = false;
-          return event;
-        }))
-      .timeout(this.controlFadeOutTime)
-      .do(noop, () => {this._showControl = false;})
-      .retry()
-      .subscribe(
-        () => {
-          this._showControl = true;
-        }
-      );
+    this._playProgress = Math.round(this._currentTime / this._duration * 1000) / 10;
   }
 
   onMetadataLoaded() {
@@ -352,57 +294,8 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     videoElement.currentTime = currentTime;
-  }
 
-  onDragSlider(mousedownEvent: MouseEvent) {
-    let sliderElement = this.sliderElementRef.nativeElement;
-    this._isSeeking = true;
-
-    this._playProgress = Math.round(this.getProgressRatio(sliderElement, mousedownEvent) * 1000) / 10;
-
-    this._sliderControlObservable = Observable.fromEvent(document, 'mousemove')
-      .takeUntil(Observable.fromEvent(document, 'mouseup'))
-      .map((event:MouseEvent) => {
-        return this.getProgressRatio(sliderElement, event);
-      })
-      .map((ratio:number) => {
-        this._playProgress = Math.round(ratio * 1000) / 10;
-        return ratio;
-      })
-      .takeLast(1);
-
-    this._sliderSubscription = this._sliderControlObservable.subscribe(
-      (ratio:number) => {
-        this.seekTo(ratio);
-      },
-      () => {},
-      () => {
-        this._isSeeking = false;
-      }
-    );
-  }
-
-  onClickSlider(event:MouseEvent) {
-    let ratio = this.getProgressRatio(this.sliderElementRef.nativeElement, event);
-    this._playProgress = Math.round(ratio * 1000) / 10;
-    this.seekTo(ratio);
-  }
-
-  onHoverProgress(event: MouseEvent) {
-    let sliderElement = this.sliderElementRef.nativeElement;
-    if(!this.isInRect(sliderElement, event)) {
-      this._hoveringProgress = false;
-      return;
-    }
-    this._hoveringProgress = true;
-    let width = sliderElement.getBoundingClientRect().width;
-    let ratio = this.getProgressRatio(sliderElement, event);
-    this._pointingOffsetX = width * ratio;
-    this.pointingOffsetTime = this.videoElementRef.nativeElement.duration * ratio;
-  }
-
-  endHoverProgress() {
-    this._hoveringProgress = false;
+    this.playerControls.seeking(Date.now());
   }
 
   toggleFullscreen() {
@@ -471,25 +364,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     return parts[parts.length - 1];
   }
 
-  private getProgressRatio(sliderElement: HTMLElement, event: MouseEvent):number {
-    let rect = sliderElement.getBoundingClientRect();
-    let offsetX = 0;
-    if (event.clientX < rect.left + 1) {
-      offsetX = 0;
-    } else if (event.clientX > rect.right - 1) {
-      offsetX = rect.width;
-    } else {
-      offsetX = event.clientX - (rect.left + 1);
-    }
-    return offsetX / (rect.width - 2);
-  }
-
-  private isInRect(element: HTMLElement, event: MouseEvent): boolean {
-    let rect = element.getBoundingClientRect();
-    return (rect.left < event.clientX) && (rect.top < event.clientY) && (rect.bottom > event.clientY) && (rect.right > event.clientX);
-  }
-
-  private seekTo(ratio) {
+  seekTo(ratio) {
     let videoElement = this.videoElementRef.nativeElement;
     videoElement.currentTime = ratio * videoElement.duration;
   }
@@ -500,31 +375,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     return null;
   }
 
-
   ngAfterViewInit():any {
-    // let videoContainer = this.videoContainerRef.nativeElement;
-    // Observable.fromEvent(videoContainer, 'keydown')
-    //   .filter((event: KeyboardEvent) => {
-    //     return event.key === 'ArrowLeft' || event.key === 'ArrowRight'
-    //   })
-    //   .map((event: KeyboardEvent) => {
-    //     if(event.key === 'ArrowLeft') {
-    //       return 'left';
-    //     } else {
-    //       return 'right'
-    //     }
-    //   });
     return null;
   }
 
 
   ngOnDestroy():any {
-    if(this._autoHideSubscription) {
-      this._autoHideSubscription.unsubscribe();
-    }
-    if(this._sliderSubscription) {
-      this._sliderSubscription.unsubscribe();
-    }
     window.removeEventListener('resize', this._windowResizeHandler);
     document.removeEventListener('fullscreenchange', this._fullScreenChangeHandler);
     document.removeEventListener('webkitfullscreenchange', this._fullScreenChangeHandler);

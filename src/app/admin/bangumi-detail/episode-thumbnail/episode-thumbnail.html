@@ -1,4 +1,5 @@
-<ui-dimmer *ngIf="!editorOpen">
+<!-- Episode.STATUS_DOWNLOADED = 2 -->
+<ui-dimmer *ngIf="!editorOpen && episode.status === 2">
   <ui-image-placeholder [imageUrl]="episode.thumbnail" class="thumbnail-image ui-dimmer-content">
     <div class="ui-image-fallback">
       <div class="ui icon film">
@@ -18,7 +19,7 @@
     </div>
   </div>
 </ui-dimmer>
-<div class="thumbnail-editor" *ngIf="editorOpen">
+<div class="thumbnail-editor" *ngIf="editorOpen && episode.status === 2">
   <div class="ui fluid action input" *ngIf="!episode.duration">
     <input type="text" placeholder="format: 00:00:20.000" [(ngModel)]="time">
     <div [ngClass]="{loading: isSaving}" class="ui button" (click)="updateThumbnail()">Update</div>
@@ -28,5 +29,14 @@
   </div>
   <div class="close-button circular ui icon button" (click)="closeEditor()">
     <i class="icon remove"></i>
+  </div>
+</div>
+<div class="no-image" *ngIf="episode.status !== 2">
+  <div class="image-wrapper">
+    <div class="image-fallback">
+      <h4 class="ui icon film icon-holder">
+        <i class="film icon"></i>
+      </h4>
+    </div>
   </div>
 </div>

@@ -1,4 +1,7 @@
-import {Component, ViewChild, ElementRef, Input, Output, EventEmitter} from '@angular/core';
+import {
+  Component, ViewChild, ElementRef, Input, Output, EventEmitter,
+  AfterViewInit
+} from '@angular/core';
 import {Observable} from "rxjs/Rx";
 
 @Component({
@@ -12,7 +15,7 @@ import {Observable} from "rxjs/Rx";
     </div>
 `
 })
-export class UISlider {
+export class UISlider implements AfterViewInit {
 
   private _progress;
   private _sliderControlObservable;
@@ -81,6 +84,33 @@ export class UISlider {
     );
   }
 
+  ngAfterViewInit():any {
+    let sliderBar = this.sliderBarRef.nativeElement;
+    this._sliderControlObservable = Observable.fromEvent(sliderBar, 'mousedown')
+      .flatMap((event: MouseEvent) => {
+        this._progress = Math.round(this.getProgressRatio(sliderBar, event) * 1000) / 10;
+        return Observable.fromEvent(sliderBar, 'mousemove')
+          .takeUntil(Observable.fromEvent(document, 'mouseup')
+            .map((event: MouseEvent) => {
+              console.log('mouse up');
+              this._progress = Math.round(this.getProgressRatio(sliderBar, event) * 1000) / 10;
+              this.release.emit(this._progress);
+            }))
+          .map((event:MouseEvent) => {
+            return this.getProgressRatio(sliderBar, event);
+          })
+          .map((ratio: number) => {
+            this._progress = Math.round(ratio * 1000) / 10;
+            this.changes.emit(this._progress);
+            return 0;
+          });
+      });
+    this._sliderSubscription = this._sliderControlObservable.subscribe(
+      () => {},
+      () => {}
+    );
+    return null;
+  }
 }
 
 export var SLIDER_DIRECITVES = [

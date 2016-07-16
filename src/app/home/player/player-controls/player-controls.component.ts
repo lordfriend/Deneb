@@ -115,7 +115,6 @@ export class PlayerControls implements AfterViewInit, OnDestroy {
   onClickSlider(event: MouseEvent) {
     let ratio = this.getProgressRatio(this.sliderRef.nativeElement, event);
     this._progress = Math.round(ratio * 1000) / 10;
-    console.log(ratio);
     this.onProgressUpdate.emit(ratio);
   }
 

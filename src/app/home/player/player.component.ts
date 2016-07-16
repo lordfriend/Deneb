@@ -7,7 +7,7 @@ import {
   ElementRef, OnDestroy
 } from '@angular/core';
 import {Episode} from "../../entity/episode";
-import {Observable, Subscription} from "rxjs/Rx";
+import {Observable} from "rxjs/Rx";
 import {TimePipe} from "./pipe/time.pipe";
 import {PlayerControls} from './player-controls/player-controls.component';
 

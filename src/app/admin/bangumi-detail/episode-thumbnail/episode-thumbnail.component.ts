@@ -71,7 +71,7 @@ export class EpisodeThumbnail {
 
   updateThumbnail(progress) {
     if(typeof progress !== 'undefined') {
-      this.time = this.toTimestampString(this.getDurationTime() * (progress / 100));
+      this.time = this.toTimestampString(this.getDurationTime() * progress);
       console.log(this.time);
     }
     this.isSaving = true;

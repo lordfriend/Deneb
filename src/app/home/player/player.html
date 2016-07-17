@@ -39,11 +39,12 @@
     <button class="play-button control-button" (click)="onClickPlay($event)">
       <i class="icon" [ngClass]="playButtonIcon"></i>
     </button>
-    <button class="volume-button control-button">
+    <button class="volume-button control-button" (click)="toggleVolumeControl()">
       <i class="icon volume up"></i>
     </button>
     <button class="fullscreen-button control-button" (click)="toggleFullscreen()">
       <i class="icon maximize"></i>
     </button>
+    <volume-control [volume]="volume" [muted]="muted" (volumeChanges)="changeVolume($event)" [ngClass]="{show: showVolumeControl}"></volume-control>
   </player-controls>
 </figure>

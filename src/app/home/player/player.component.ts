@@ -10,6 +10,7 @@ import {Episode} from "../../entity/episode";
 import {Observable} from "rxjs/Rx";
 import {TimePipe} from "./pipe/time.pipe";
 import {PlayerControls} from './player-controls/player-controls.component';
+import {VolumeControl} from './volumne-control/volume-control.component';
 
 let nextId = 0;
 
@@ -33,7 +34,7 @@ const noop = () => {};
   selector: 'player',
   template: require('./player.html'),
   pipes: [TimePipe],
-  directives: [PlayerControls]
+  directives: [PlayerControls, VolumeControl]
 })
 export class Player implements OnInit, AfterViewInit, OnDestroy {
 
@@ -49,7 +50,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   private _currentTime: number = 0;
   private _duration: number = 0;
-
   private _playButton: string = 'play';
 
   private _delayedResizeTimerId: number;
@@ -76,6 +76,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   videoType:string;
 
   pointingOffsetTime: number = 0;
+  showVolumeControl: boolean = false;
 
   constructor() {
     this._fullScreenChangeHandler = this.onFullscreenChange.bind(this);
@@ -88,6 +89,24 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
   get duration(): number {
     return this._duration;
+  }
+
+  get volume(): number {
+    if(this.videoElementRef) {
+      let videoElement: HTMLVideoElement = this.videoElementRef.nativeElement;
+      return videoElement.volume;
+    } else {
+      return 1;
+    }
+  }
+
+  get muted(): boolean {
+    if(this.videoElementRef) {
+      let videoElement: HTMLVideoElement = this.videoElementRef.nativeElement;
+      return videoElement.muted;
+    } else {
+      return false;
+    }
   }
 
   get playProgress(): number {
@@ -297,6 +316,20 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
 
     this.playerControls.seeking(Date.now());
   }
+
+  changeVolume(vol: number) {
+    let videoElement: HTMLVideoElement = this.videoElementRef.nativeElement;
+    videoElement.volume = vol;
+  }
+
+  toggleVolumeControl() {
+    this.showVolumeControl = !this.showVolumeControl;
+  }
+
+  // muteVolume() {
+  //   let videoElement: HTMLVideoElement = this.videoElementRef.nativeElement;
+  //   videoElement.muted = !videoElement.muted;
+  // }
 
   toggleFullscreen() {
     let videoContainer = this.videoContainerRef.nativeElement;

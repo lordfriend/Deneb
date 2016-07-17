@@ -19,7 +19,7 @@ import {Observable, Subscription} from "rxjs/Rx";
         <template [ngIf]="orientation === 'vertical'">
           <div class="slider-bar-progress" [style.height]="progressStr"></div>
           <div class="slider-bar-dragger" [style.bottom]="progressStr"></div>
-          <div class="ui pointing left label" [style.bottom]="progressStr" [ngClass]="{show: indicatorVisibility}">
+          <div class="ui right pointing label" [style.bottom]="progressStr" [ngClass]="{show: indicatorVisibility}">
             {{progressStr}}
           </div>
         </template>
@@ -50,7 +50,7 @@ export class UISlider implements AfterViewInit {
 
   get progressStr(): string {
     if(this._progress) {
-      return this._progress + '%';
+      return Math.round(this._progress * 100) + '%';
     } else {
       return 0 + '';
     }
@@ -73,7 +73,7 @@ export class UISlider implements AfterViewInit {
       if (event.clientX < rect.left + 1) {
         offsetX = 0;
       } else if (event.clientX > rect.right - 1) {
-        offsetX = rect.width;
+        offsetX = rect.width - 2;
       } else {
         offsetX = event.clientX - (rect.left + 1);
       }
@@ -83,9 +83,9 @@ export class UISlider implements AfterViewInit {
       if (event.clientY > rect.bottom - 1) {
         offsetY = 0;
       } else if (event.clientY < rect.top + 1) {
-        offsetY = rect.height;
+        offsetY = rect.height - 2;
       } else {
-        offsetY = rect.top + 1 - event.clientY;
+        offsetY = (rect.bottom - 1) - event.clientY;
       }
       return offsetY / (rect.height - 2);
     }
@@ -96,7 +96,7 @@ export class UISlider implements AfterViewInit {
 
   onClickSlider(event: MouseEvent) {
     let ratio = this.getProgressRatio(this.sliderBarRef.nativeElement, event);
-    this._progress = Math.round(ratio * 1000) / 10;
+    this._progress = ratio;
     this.changes.emit(this._progress);
     this.release.emit(this._progress);
   }
@@ -106,19 +106,19 @@ export class UISlider implements AfterViewInit {
     this._sliderControlObservable = Observable.fromEvent(sliderBar, 'mousedown')
       .flatMap((event: MouseEvent) => {
         this._isSeeking = true;
-        this._progress = Math.round(this.getProgressRatio(sliderBar, event) * 1000) / 10;
+        this._progress = this.getProgressRatio(sliderBar, event);
         return Observable.fromEvent(sliderBar, 'mousemove')
           .takeUntil(Observable.fromEvent(document, 'mouseup')
             .map((event: MouseEvent) => {
               this._isSeeking = false;
-              this._progress = Math.round(this.getProgressRatio(sliderBar, event) * 1000) / 10;
+              this._progress = this.getProgressRatio(sliderBar, event);
               this.release.emit(this._progress);
             }))
           .map((event:MouseEvent) => {
             return this.getProgressRatio(sliderBar, event);
           })
           .map((ratio: number) => {
-            this._progress = Math.round(ratio * 1000) / 10;
+            this._progress = ratio;
             this.changes.emit(this._progress);
             return 0;
           });

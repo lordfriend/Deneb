@@ -29,6 +29,7 @@ To deploy on production server, a compiled and minfied bundle is needed, to buil
 
 ```shell
 export SITE_TITLE="Your site name"
+export GA="You google analytics Tracking ID" # if you want to use google analytics, export this environment variable.
 npm run build:prod
 ```
 

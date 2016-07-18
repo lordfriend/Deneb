@@ -39,7 +39,8 @@ var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
  */
 const METADATA = {
   title: 'Deneb',
-  baseUrl: '/'
+  baseUrl: '/',
+  GA: process.env.GA || ''
 };
 
 /**

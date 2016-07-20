@@ -11,6 +11,7 @@ import {Observable} from "rxjs/Rx";
 import {TimePipe} from "./pipe/time.pipe";
 import {PlayerControls} from './player-controls/player-controls.component';
 import {VolumeControl} from './volumne-control/volume-control.component';
+import {VideoCaptureService} from "./video-capture/video-capture.service";
 
 let nextId = 0;
 
@@ -34,7 +35,8 @@ const noop = () => {};
   selector: 'player',
   template: require('./player.html'),
   pipes: [TimePipe],
-  directives: [PlayerControls, VolumeControl]
+  directives: [PlayerControls, VolumeControl],
+  providers: [VideoCaptureService]
 })
 export class Player implements OnInit, AfterViewInit, OnDestroy {
 
@@ -78,7 +80,9 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   pointingOffsetTime: number = 0;
   showVolumeControl: boolean = false;
 
-  constructor() {
+  constructor(
+    private _captureService: VideoCaptureService
+  ) {
     this._fullScreenChangeHandler = this.onFullscreenChange.bind(this);
     this._windowResizeHandler = this.onWindowReisze.bind(this);
   }
@@ -199,6 +203,19 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     } else {
       videoElement.pause();
     }
+  }
+
+  captureFrame(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let previewImg = document.createElement('img');
+    previewImg.setAttribute('src', this._captureService.capture(this.videoElementRef.nativeElement));
+    let framePreviewHolder = this.videoContainerRef.nativeElement.querySelector('.frame-preview');
+    for(let child of framePreviewHolder.children) {
+      framePreviewHolder.removeChild(child);
+    }
+    framePreviewHolder.appendChild(previewImg);
   }
 
   onWaiting() {

@@ -47,4 +47,12 @@
     </button>
     <volume-control [volume]="volume" [muted]="muted" (volumeChanges)="changeVolume($event)" [ngClass]="{show: showVolumeControl}"></volume-control>
   </player-controls>
+  <div class="pause-overlay">
+    <button class="overlay-button capture-button" (click)="captureFrame($event)">
+      <i class="camera retro icon"></i>
+      <span>截图</span>
+    </button>
+    <div class="frame-preview">
+    </div>
+  </div>
 </figure>

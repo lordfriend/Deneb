@@ -1,21 +1,27 @@
 <div class="ui container bangumi-default-container">
-  <div class="bangumi-info">
-    <div class="bangumi-cover" *ngIf="bangumi.cover">
-      <ui-image-placeholder [imageUrl]="bangumi.cover">
-        <div class="ui-image-fallback">
-          <h4 class="ui icon film icon-holder">
-            <i class="film icon"></i>
-          </h4>
-        </div>
-      </ui-image-placeholder>
+  <div class="bangumi-info ui grid">
+    <div class="six wide column">
+      <div class="bangumi-cover" *ngIf="bangumi.cover">
+        <ui-image-placeholder [imageUrl]="bangumi.cover">
+          <div class="ui-image-fallback">
+            <h4 class="ui icon film icon-holder">
+              <i class="film icon"></i>
+            </h4>
+          </div>
+        </ui-image-placeholder>
+      </div>
     </div>
-    <div class="bangumi-base-info">
-      <h2 class="bangumi-title">
-        <span class="name-cn">{{bangumi.name_cn}}</span>
-        <span class="name">{{bangumi.name}}</span>
-      </h2>
-      <div class="summary">
-        {{bangumi.summary}}
+    <div class="ten wide column">
+      <div class="bangumi-base-info">
+        <h2 class="bangumi-title name-cn">
+          {{bangumi.name_cn}}
+        </h2>
+        <h3 class="bangumi-title name">
+          {{bangumi.name}}
+        </h3>
+        <div class="summary">
+          {{bangumi.summary}}
+        </div>
       </div>
     </div>
   </div>

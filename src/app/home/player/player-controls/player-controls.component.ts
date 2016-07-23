@@ -46,6 +46,7 @@ export class PlayerControls implements AfterViewInit, OnDestroy {
   @Input() duration: number;
   @Input() currentTime: number;
   @Input() controlFadeOutTime: number;
+  @Input() isPaused: boolean;
 
   @ViewChild('slider') sliderRef: ElementRef;
   @ViewChild('playerControls') playerControls: ElementRef;
@@ -91,7 +92,7 @@ export class PlayerControls implements AfterViewInit, OnDestroy {
   }
 
   get showControl(): boolean {
-    return this._isMouseMotion || this._isSeeking || this.isKeySeeking;
+    return this._isMouseMotion || this._isSeeking || this.isKeySeeking || this.isPaused;
   }
 
   onHoverProgress(event: MouseEvent) {

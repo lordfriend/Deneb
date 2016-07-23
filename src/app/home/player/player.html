@@ -1,6 +1,7 @@
 <figure #videoContainer
         class="video-container"
         tabindex="0"
+        [ngClass]="{paused: paused}"
         [style.width]="containerWidth"
         [style.height]="containerHeight"
         (keydown.Space)="onClickPlay($event)"
@@ -27,7 +28,8 @@
   </video>
   <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay($event)"></div>
   <a class="error-info" (click)="retry($event)" [ngClass]="{show: isError}">Network Error, click to Retry</a>
-  <player-controls [playButtonIcon]="playButtonIcon"
+  <player-controls [isPaused]="paused"
+                   [playButtonIcon]="playButtonIcon"
                    [progress]="playProgress"
                    [buffered]="bufferedProgress"
                    [controlFadeOutTime]="controlFadeOutTime"
@@ -36,23 +38,21 @@
                    (onProgressUpdate)="seekTo($event)"
                    (onPlayButtonClick)="onClickPlay()"
                    (onFullScreenClick)="toggleFullscreen()">
-    <button class="play-button control-button" (click)="onClickPlay($event)">
+    <button class="play-button control-button" (click)="onClickPlay($event)" title="播放">
       <i class="icon" [ngClass]="playButtonIcon"></i>
     </button>
-    <button class="volume-button control-button" (click)="toggleVolumeControl()">
+    <button class="volume-button control-button" (click)="toggleVolumeControl()" title="音量">
       <i class="icon volume up"></i>
     </button>
-    <button class="fullscreen-button control-button" (click)="toggleFullscreen()">
+    <button class="fullscreen-button control-button" (click)="toggleFullscreen()" title="全屏">
       <i class="icon maximize"></i>
+    </button>
+    <button class="capture-button control-button" (click)="captureFrame($event)" title="截图">
+      <i class="camera retro icon"></i>
     </button>
     <volume-control [volume]="volume" [muted]="muted" (volumeChanges)="changeVolume($event)" [ngClass]="{show: showVolumeControl}"></volume-control>
   </player-controls>
-  <div class="pause-overlay">
-    <button class="overlay-button capture-button" (click)="captureFrame($event)">
-      <i class="camera retro icon"></i>
-      <span>截图</span>
-    </button>
-    <div class="frame-preview">
-    </div>
+  <div class="capture-overlay" (click)="closeCaptureOverlay($event)" [ngClass]="{show: showCaptureOverlay}">
+    <canvas class="preview-canvas"></canvas>
   </div>
 </figure>

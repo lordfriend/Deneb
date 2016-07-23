@@ -76,9 +76,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   playerId:string = 'videoPlayerId' + (nextId++);
   videoUrl:string;
   videoType:string;
+  paused: boolean = true;
+  ended: boolean = false;
 
   pointingOffsetTime: number = 0;
   showVolumeControl: boolean = false;
+  showCaptureOverlay: boolean = false;
 
   constructor(
     private _captureService: VideoCaptureService
@@ -208,14 +211,20 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   captureFrame(event: Event) {
     event.preventDefault();
     event.stopPropagation();
-
-    let previewImg = document.createElement('img');
-    previewImg.setAttribute('src', this._captureService.capture(this.videoElementRef.nativeElement));
-    let framePreviewHolder = this.videoContainerRef.nativeElement.querySelector('.frame-preview');
-    for(let child of framePreviewHolder.children) {
-      framePreviewHolder.removeChild(child);
+    if(this._captureService.downloadSupport) {
+      this._captureService.download(this.videoElementRef.nativeElement, this.episode.bangumi.name, this.episode.episode_no, this.currentTime);
+    } else {
+      this.showCaptureOverlay = true;
+      let framePreviewHolder = this.videoContainerRef.nativeElement.querySelector('.capture-overlay');
+      let previewCanvas = framePreviewHolder.querySelector('.preview-canvas');
+      this._captureService.captureOnCanvas(this.videoElementRef.nativeElement, previewCanvas);
     }
-    framePreviewHolder.appendChild(previewImg);
+  }
+
+  closeCaptureOverlay(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.showCaptureOverlay = false;
   }
 
   onWaiting() {
@@ -223,16 +232,18 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onPlay() {
-    console.log('playing');
+    this.paused = false;
+    this.ended = false;
     this._playButton = 'pause';
   }
 
   onPause() {
-    console.log('pausing');
+    this.paused = true;
     this._playButton = 'play';
   }
 
   onEnded() {
+    this.ended = true;
     this._playButton = 'repeat';
   }
 

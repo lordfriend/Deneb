@@ -1,58 +1,64 @@
 <div class="ui container bangumi-default-container">
-  <div class="bangumi-info ui grid">
-    <div class="six wide column">
-      <div class="bangumi-cover" *ngIf="bangumi.cover">
-        <ui-image-placeholder [imageUrl]="bangumi.cover">
-          <div class="ui-image-fallback">
-            <h4 class="ui icon film icon-holder">
-              <i class="film icon"></i>
-            </h4>
-          </div>
-        </ui-image-placeholder>
-      </div>
-    </div>
-    <div class="ten wide column">
-      <div class="bangumi-base-info">
-        <h2 class="bangumi-title name-cn">
-          {{bangumi.name_cn}}
-        </h2>
-        <h3 class="bangumi-title name">
-          {{bangumi.name}}
-        </h3>
-        <div class="summary">
-          {{bangumi.summary}}
+  <div class="bangumi-info">
+    <div #bangumiCover class="bangumi-cover" *ngIf="bangumi.cover">
+      <ui-image-placeholder [imageUrl]="bangumi.cover">
+        <div class="ui-image-fallback">
+          <h4 class="ui icon film icon-holder">
+            <i class="film icon"></i>
+          </h4>
         </div>
+      </ui-image-placeholder>
+    </div>
+    <div class="bangumi-cover-revealer" [style.height]="coverRevealerHeight" (click)="toggleCover()">
+    </div>
+    <div class="bangumi-base-info">
+      <h2 class="bangumi-title name-cn">
+        {{bangumi.name_cn}}
+      </h2>
+      <h3 class="bangumi-title name">
+        <span class="tip">日文名:</span><span class="name-text">{{bangumi.name}}</span>
+      </h3>
+      <div class="summary facade-item">
+        {{bangumi.summary}}
+      </div>
+      <div class="air-date facade-item">
+        {{bangumi.air_date}}
+      </div>
+      <div class="air-weekday facade-item">
+        {{bangumi.air_weekday | weekday}}
       </div>
     </div>
   </div>
-  <h4>各话列表</h4>
-  <div class="ui divider"></div>
-  <div class="ui six doubling cards">
-    <div class="card episode-card" *ngFor="let episode of bangumi.episodes">
-      <div class="image" *ngIf="episode.status!==2">
-        <div class="image-wrapper">
-          <div class="image-fallback">
-            <h4 class="ui icon film icon-holder">
-              <i class="film icon"></i>
-            </h4>
+  <div class="episode-list">
+    <h4 class="episode-list-heading">各话列表</h4>
+    <div class="ui divider"></div>
+    <div class="ui six doubling cards">
+      <div class="card episode-card" *ngFor="let episode of bangumi.episodes">
+        <div class="image" *ngIf="episode.status!==2">
+          <div class="image-wrapper">
+            <div class="image-fallback">
+              <h4 class="ui icon film icon-holder">
+                <i class="film icon"></i>
+              </h4>
+            </div>
           </div>
         </div>
+        <div *ngIf="episode.status!==2" class="content unfinished">
+          <span>第{{episode.episode_no}}话</span>
+        </div>
+        <a *ngIf="episode.status===2" class="image" [routerLink]="['Play', {episode_id: episode.id}]">
+          <ui-image-placeholder [imageUrl]="episode.thumbnail">
+            <div class="ui-image-fallback">
+              <h4 class="ui icon film icon-holder">
+                <i class="film icon"></i>
+              </h4>
+            </div>
+          </ui-image-placeholder>
+        </a>
+        <a *ngIf="episode.status===2" class="content" [routerLink]="['Play', {episode_id: episode.id}]">
+          <span>第{{episode.episode_no}}话</span>
+        </a>
       </div>
-      <div *ngIf="episode.status!==2" class="content unfinished">
-        <span>第{{episode.episode_no}}话</span>
-      </div>
-      <a *ngIf="episode.status===2" class="image" [routerLink]="['Play', {episode_id: episode.id}]">
-        <ui-image-placeholder [imageUrl]="episode.thumbnail">
-          <div class="ui-image-fallback">
-            <h4 class="ui icon film icon-holder">
-              <i class="film icon"></i>
-            </h4>
-          </div>
-        </ui-image-placeholder>
-      </a>
-      <a *ngIf="episode.status===2" class="content" [routerLink]="['Play', {episode_id: episode.id}]">
-        <span>第{{episode.episode_no}}话</span>
-      </a>
     </div>
   </div>
 </div>

@@ -9,8 +9,8 @@
   </h3>
   <div class="ui divider">
   </div>
-  <div class="bangumi-info ui grid">
-    <div class="three wide column">
+  <div class="bangumi-info">
+    <div class="bangumi-cover">
       <ui-image-placeholder [imageUrl]="episode.bangumi.cover">
         <div class="ui-image-fallback">
           <h4 class="ui icon film icon-holder">
@@ -19,11 +19,9 @@
         </div>
       </ui-image-placeholder>
     </div>
-    <div class="thirteen wide column">
-      <h2 class="bangumi-title">
-        <span class="name-cn">{{episode.bangumi.name_cn}}</span>
-        <span class="name">{{episode.bangumi.name}}</span>
-      </h2>
+    <div class="bangumi-basic-info">
+      <h2 class="bangumi-title name-cn">{{episode.bangumi.name_cn}}</h2>
+      <h4 class="bangumi-title name">{{episode.bangumi.name}}</h4>
       <div class="summary">
         {{episode.bangumi.summary}}
       </div>

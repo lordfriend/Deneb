@@ -1,166 +1,168 @@
-.bangumi-default-container {
-  padding-top: 2rem;
-}
-.bangumi-info {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: stretch;
-  flex-wrap: wrap;
-  .bangumi-cover {
-    display: inline-block;
-    flex: 1 1 auto;
-    width: 35%;
+view-bangumi-detail {
+  .bangumi-default-container {
+    padding-top: 2rem;
   }
-  .bangumi-cover-revealer {
-    display: none;
-  }
-  .bangumi-base-info {
-    flex: 1 1 auto;
-    width: 65%;
-    display: inline-block;
-    padding: 0 1rem 0 2.5rem;
-
-    .facade-item {
-      margin-top: 2.8rem;
-      padding-top: 0.6rem;
-      border-top: 1px solid #ccc;
-      position: relative;
-      &:before {
-        display: block;
-        font-size: 0.8rem;
-        color: #adadad;
-        position: absolute;
-        top: -1.8rem;
-        left: 0;
-      }
-    }
-
-    > .bangumi-title {
-      margin: 0;
-      &.name-cn {
-        margin-bottom: 1.2rem;
-      }
-      &.name {
-        color: #696969;
-        .tip {
-          font-size: 0.8em;
-          font-weight: normal;
-          color: #adadad;
-          padding-right: 1em;
-          vertical-align: bottom;
-        }
-        > .name-text {
-          vertical-align: bottom;
-        }
-      }
-    }
-
-    .summary {
-      &:before {
-        content: "简介";
-      }
-    }
-
-    .air-date {
-      &:before {
-        content: "放送开始";
-      }
-    }
-    .air-weekday {
-      &:before {
-        content: "放送星期";
-      }
-    }
-  }
-}
-
-@media (max-width: 767px) {
   .bangumi-info {
     width: 100%;
-    position: relative;
-    display: block;
-    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
     .bangumi-cover {
-      width: 100%;
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
+      display: inline-block;
+      flex: 1 1 auto;
+      width: 35%;
     }
     .bangumi-cover-revealer {
-      width: 100%;
-      display: block;
-      position: relative;
-      z-index: 100;
-      transition: height 300ms ease;
+      display: none;
     }
     .bangumi-base-info {
+      flex: 1 1 auto;
+      width: 65%;
+      display: inline-block;
+      padding: 0 1rem 0 2.5rem;
+
+      .facade-item {
+        margin-top: 2.8rem;
+        padding-top: 0.6rem;
+        border-top: 1px solid #ccc;
+        position: relative;
+        &:before {
+          display: block;
+          font-size: 0.8rem;
+          color: #adadad;
+          position: absolute;
+          top: -1.8rem;
+          left: 0;
+        }
+      }
+
+      > .bangumi-title {
+        margin: 0;
+        &.name-cn {
+          margin-bottom: 1.2rem;
+        }
+        &.name {
+          color: #696969;
+          .tip {
+            font-size: 0.8em;
+            font-weight: normal;
+            color: #adadad;
+            padding-right: 1em;
+            vertical-align: bottom;
+          }
+          > .name-text {
+            vertical-align: bottom;
+          }
+        }
+      }
+
+      .summary {
+        &:before {
+          content: "简介";
+        }
+      }
+
+      .air-date {
+        &:before {
+          content: "放送开始";
+        }
+      }
+      .air-weekday {
+        &:before {
+          content: "放送星期";
+        }
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    .bangumi-info {
       width: 100%;
-      display: block;
-      z-index: 100;
       position: relative;
-      background-color: #fff;
-      padding: 1rem;
-      border-top-left-radius: 1rem;
-      border-top-right-radius: 1rem;
-      &:before {
-        display: block;
-        content: " ";
+      display: block;
+      padding-bottom: 1rem;
+      .bangumi-cover {
         width: 100%;
-        height: 1rem;
+        display: block;
         position: absolute;
         top: 0;
         left: 0;
+      }
+      .bangumi-cover-revealer {
+        width: 100%;
+        display: block;
+        position: relative;
+        z-index: 100;
+        transition: height 300ms ease;
+      }
+      .bangumi-base-info {
+        width: 100%;
+        display: block;
+        z-index: 100;
+        position: relative;
+        background-color: #fff;
+        padding: 1rem;
         border-top-left-radius: 1rem;
         border-top-right-radius: 1rem;
-        box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.3);
+        &:before {
+          display: block;
+          content: " ";
+          width: 100%;
+          height: 1rem;
+          position: absolute;
+          top: 0;
+          left: 0;
+          border-top-left-radius: 1rem;
+          border-top-right-radius: 1rem;
+          box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.3);
+        }
       }
+    }
+
+    .episode-list {
+      padding: 1rem;
     }
   }
 
   .episode-list {
-    padding: 1rem;
-  }
-}
-
-.episode-list {
-  position: relative;
-  z-index: 100;
-  background-color: #fff;
-  .episode-list-heading {
-    margin: 0;
-    padding: 2rem 0 0 0;
-  }
-}
-
-.episode-card {
-
-  .image-wrapper {
     position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
-  }
-
-  .image-fallback{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #cfcfcf;
-    color: #868686;
-    .icon-holder {
-      font-size: 2rem;
+    z-index: 100;
+    background-color: #fff;
+    .episode-list-heading {
+      margin: 0;
+      padding: 2rem 0 0 0;
     }
   }
 
-  .content.unfinished {
-    color: #a9a9a9;
+  .episode-card {
+
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%;
+    }
+
+    .image-fallback{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #cfcfcf;
+      color: #868686;
+      .icon-holder {
+        font-size: 2rem;
+      }
+    }
+
+    .content.unfinished {
+      color: #a9a9a9;
+    }
   }
 }

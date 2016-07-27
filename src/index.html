@@ -45,7 +45,9 @@
       </div>
     </div>
   </app>
-
+  <script>
+    ga_events = [];
+  </script>
   <% if (webpackConfig.metadata.GA !== '') { %>
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -55,6 +57,12 @@
 
     ga('create', '<%= webpackConfig.metadata.GA %>', 'auto');
 //    ga('send', 'pageview');
+    if(ga_events && ga_events.length > 0) {
+      while(ga_events.length > 0) {
+        var events = ga_events.shift();
+        ga.apply(window, events);
+      }
+    }
 
   </script>
   <% } %>

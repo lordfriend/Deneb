@@ -132,3 +132,4 @@ interface Document {
 }
 
 declare var ga: Function;
+declare var ga_events: any[];

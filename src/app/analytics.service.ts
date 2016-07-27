@@ -1,6 +1,6 @@
-
 import {Injectable} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
+
 @Injectable()
 export class AnalyticsService {
 
@@ -20,7 +20,14 @@ export class AnalyticsService {
   }
 
   private routeChanged(route: string): void {
-    ga('set', 'page', route);
-    ga('send', 'pageview');
+    if(typeof ga === 'undefined') {
+      ga_events.push(
+        ['set', 'page', route],
+        ['send', 'pageview']
+      )
+    } else {
+      ga('set', 'page', route);
+      ga('send', 'pageview');
+    }
   }
 }

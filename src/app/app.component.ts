@@ -4,8 +4,7 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 
 import {UserService} from "./user-service";
-// import {SecurityOutlet} from "./_user-service/security-outlet.directive";
-import {Authentication} from "./user-service/authentication.service";
+import {AnalyticsService} from './analytics.service';
 
 require('./app.less');
 
@@ -16,8 +15,7 @@ require('./app.less');
 @Component({
   selector: 'app',
   pipes: [ ],
-  providers: [UserService],
-  // directives: [SecurityOutlet],
+  providers: [UserService, AnalyticsService],
   template: `
 
     <main>
@@ -28,6 +26,9 @@ require('./app.less');
   encapsulation: ViewEncapsulation.None
 })
 export class App {
+  constructor(analyticsSerivce: AnalyticsService) {
+
+  }
 }
 
 /*

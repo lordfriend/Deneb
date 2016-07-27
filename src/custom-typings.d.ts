@@ -130,3 +130,5 @@ interface Document {
   msExitFullscreen(): void;
   mozCancelFullScreen(): void;
 }
+
+declare var ga: Function;

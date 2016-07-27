@@ -35,8 +35,8 @@ export class HomeService extends BaseService {
   }
 
   private parseUrl(url: string) {
-    let [paths, queryStrings] = url.split('?');
-    let pathSegement = paths.split('/')
+    let [paths, queryStrings] = url.split(';');
+    let pathSegement = paths.split('/');
     return {
       paths: pathSegement.slice(1),
       queryString: queryStrings

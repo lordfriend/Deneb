@@ -1,15 +1,15 @@
-import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, OnDestroy} from '@angular/core';
 import {HomeChild, HomeService} from "../home.service";
-import {RouteParams} from "@angular/router-deprecated";
 import {Bangumi} from "../../entity/bangumi";
-import {Observable} from "rxjs/Rx";
+import {Observable, Subscription} from "rxjs/Rx";
+import {ActivatedRoute} from '@angular/router';
 
 
 @Component({
   selector: 'bangumi-list',
   template: require('./bangumi-list.html')
 })
-export class BangumiList extends HomeChild implements OnInit {
+export class BangumiList extends HomeChild implements OnInit, OnDestroy {
 
   page: number = 0;
   total: number;
@@ -18,14 +18,17 @@ export class BangumiList extends HomeChild implements OnInit {
   name: string;
 
   isLoading: boolean = false;
-  
+
   orderBy: string = 'air_date';
 
   bangumiList: Bangumi[] = [];
 
+  private routeParamsSubscription: Subscription;
+  private scrollSubscription: Subscription;
+
   @ViewChild('loadMore') loadMoreButtonRef: ElementRef;
 
-  constructor(homeService:HomeService, private _routeParams: RouteParams) {
+  constructor(homeService:HomeService, private route: ActivatedRoute) {
     super(homeService);
   }
 
@@ -49,13 +52,16 @@ export class BangumiList extends HomeChild implements OnInit {
   }
 
   ngOnInit():any {
-    let pageFromParams = parseInt(this._routeParams.get('page'));
-    this.page = Number.isNaN(pageFromParams) ? 0: pageFromParams;
+    this.routeParamsSubscription = this.route.params
+      .subscribe((params) => {
+        let pageFromParams = parseInt(params['page']);
+        this.page = Number.isNaN(pageFromParams) ? 0: pageFromParams;
 
-    this.name = this._routeParams.get('name');
-    this.loadMoreContent();
+        this.name = params['name'];
+        this.loadMoreContent();
+      });
 
-    Observable.fromEvent(document, 'scroll')
+    this.scrollSubscription = Observable.fromEvent(document, 'scroll')
       .filter(() => {
         return !this.isLoading && this.page < Math.ceil(this.total / this.countPerPage);
       })
@@ -70,6 +76,13 @@ export class BangumiList extends HomeChild implements OnInit {
         }
       );
 
+    return null;
+  }
+
+
+  ngOnDestroy():any {
+    this.routeParamsSubscription.unsubscribe();
+    this.scrollSubscription.unsubscribe();
     return null;
   }
 }

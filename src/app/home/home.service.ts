@@ -4,28 +4,57 @@ import {BaseService} from "../services/base.service";
 import {Observable} from "rxjs/Observable";
 import {Episode} from '../entity/episode';
 import {Bangumi} from "../entity/bangumi";
-import {OnActivate, ComponentInstruction} from "@angular/router-deprecated";
+import {Router, NavigationEnd} from '@angular/router';
+import {homeRoutes} from './home.routes';
 
 @Injectable()
 export class HomeService extends BaseService {
 
   private _baseUrl = '/api/home';
 
-  constructor(
-    private _http: Http
-  ){
+  constructor(private _http: Http,
+              private router: Router) {
     super();
+    let childRoutes = homeRoutes[0].children;
+    this.router.events.subscribe(
+      (event) => {
+        if (event instanceof NavigationEnd) {
+          let urlSegements = this.parseUrl(event.url);
+          if (urlSegements.paths[0] === '') {
+            this.childRouteChanges.emit('Default');
+          } else if (urlSegements.paths[0] === 'play') {
+            this.childRouteChanges.emit('Play');
+          } else if (urlSegements.paths.length === 1 && urlSegements.paths[0] === 'bangumi') {
+            this.childRouteChanges.emit('Bangumi');
+          } else if (urlSegements.paths.length === 2 && urlSegements.paths[0] === 'bangumi') {
+            this.childRouteChanges.emit('BangumiDetail');
+          }
+        }
+      }
+    )
+  }
+
+  private parseUrl(url: string) {
+    let [paths, queryStrings] = url.split('?');
+    let pathSegement = paths.split('/')
+    return {
+      paths: pathSegement.slice(1),
+      queryString: queryStrings
+    }
   }
 
   childRouteChanges: EventEmitter<any> = new EventEmitter();
 
+  /**
+   * @Deprecated
+   */
   activateChild(routeName: string) {
     this.childRouteChanges.emit(routeName);
   }
 
   recentEpisodes(days?: number): Observable<Episode[]> {
     let queryUrl = this._baseUrl + '/recent';
-    if(days) {
+    if (days) {
       queryUrl = queryUrl + '?days=' + days;
     }
     return this._http.get(queryUrl)
@@ -54,9 +83,9 @@ export class HomeService extends BaseService {
       .catch(this.handleError);
   }
 
-  listBangumi(page: number, orderBy: string, name?:string): Observable<any> {
+  listBangumi(page: number, orderBy: string, name?: string): Observable<any> {
     let queryUrl = this._baseUrl + '/bangumi?page=' + page + '&order_by=' + orderBy;
-    if(name) {
+    if (name) {
       queryUrl = queryUrl + '&name=' + name;
     }
     return this._http.get(queryUrl)
@@ -68,14 +97,10 @@ export class HomeService extends BaseService {
 /**
  * Communicate between Home Component and its children
  */
-export abstract class HomeChild implements OnActivate {
+export abstract class HomeChild {
 
   constructor(protected homeService: HomeService) {
 
   }
 
-  routerOnActivate(nextInstruction:ComponentInstruction, prevInstruction:ComponentInstruction):any|Promise<any> {
-    this.homeService.activateChild(nextInstruction.routeName);
-    return null;
-  }
 }

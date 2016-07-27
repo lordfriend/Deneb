@@ -2,14 +2,14 @@
   <a class="sidebar-toggle" (click)="toggleSidebar($event)">
     <i class="icon sidebar"></i>
   </a>
-  <a class="brand" [routerLink]="['Home', 'Default']">
+  <a class="brand" [routerLink]="['/']">
     <h2>{{siteTitle}}</h2>
   </a>
 </nav>
 <div class="ui sidebar ui vertical menu home-sidebar" [ngClass]="{visible: sidebarActive}">
-  <a class="item" [routerLink]="['Home', 'Default']">Home</a>
-  <a class="item" [routerLink]="['Home', 'BangumiList']">所有番组</a>
-  <a class="item" [routerLink]="['Admin', 'ListBangumi']" *ngIf="user && user.level >= 2">Management</a>
+  <a class="item" [routerLink]="['/']">Home</a>
+  <a class="item" [routerLink]="['/bangumi']">所有番组</a>
+  <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
 </div>
 <div class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
   <router-outlet></router-outlet>

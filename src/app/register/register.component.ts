@@ -1,12 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {User} from "../entity";
 import {UserService} from "../user-service";
 import {FormBuilder, Control, ControlGroup, Validators} from "@angular/common";
 import {passwordMatch} from "../form-utils";
-import {Router, OnActivate, ComponentInstruction} from "@angular/router-deprecated";
 import {register} from "ts-node/dist/ts-node";
 import {AuthError} from "../error/AuthError";
 import {Title} from '@angular/platform-browser';
+import {Router, NavigationEnd} from '@angular/router';
 
 
 require('./register.less');
@@ -20,7 +19,7 @@ require('./register.less');
   template: require('./register.html'),
   providers: [UserService, Title]
 })
-export class Register implements OnInit, OnActivate {
+export class Register implements OnInit {
 
   registerForm: ControlGroup;
   name: Control;
@@ -35,20 +34,29 @@ export class Register implements OnInit, OnActivate {
   public errorMessage: string;
 
   constructor(
-    private _userService: UserService,
-    private _formBuilder:FormBuilder,
-    private _router: Router,
+    private userService: UserService,
+    private formBuilder:FormBuilder,
+    private router: Router,
     titleService: Title
   ){
     titleService.setTitle('注册 - ' + SITE_TITLE);
+    router.events.subscribe(
+      (event) => {
+        if(event instanceof NavigationEnd) {
+          this.urlPath = event.url;
+          console.log(this.urlPath);
+          this.title = {'/register': '注册', '/forget': '找回密码'}[this.urlPath];
+        }
+      }
+    );
   }
 
-  private _buildForm(): void {
+  private buildForm(): void {
     this.name = new Control('', Validators.required);
     this.password = new Control('', Validators.required);
     this.password_repeat = new Control('', Validators.required);
     this.invite_code = new Control('', Validators.required);
-    this.registerForm = this._formBuilder.group({
+    this.registerForm = this.formBuilder.group({
       name: this.name,
       password: this.password,
       password_repeat: this.password_repeat,
@@ -57,18 +65,12 @@ export class Register implements OnInit, OnActivate {
   }
 
   ngOnInit():any {
-    this._buildForm();
+    this.buildForm();
     return undefined;
   }
 
-  routerOnActivate(nextInstruction:ComponentInstruction, prevInstruction:ComponentInstruction):any|Promise<any> {
-    this.urlPath = nextInstruction.urlPath;
-    this.title = {'register': '注册', 'forget': '找回密码'}[this.urlPath];
-    return true;
-  }
-
   onSubmit() {
-    if(this.urlPath === 'register') {
+    if(this.urlPath === '/register') {
       this.registerUser();
     } else {
       this.resetPassword();
@@ -76,10 +78,10 @@ export class Register implements OnInit, OnActivate {
   }
 
   resetPassword() {
-    this._userService.resetPassword(this.registerForm.value)
+    this.userService.resetPassword(this.registerForm.value)
       .subscribe(
         () => {
-          this._router.navigate(['Login']);
+          this.router.navigate(['/login']);
         },
         error => {
           if(error instanceof AuthError) {
@@ -98,10 +100,10 @@ export class Register implements OnInit, OnActivate {
   }
 
   registerUser() {
-    this._userService.register(this.registerForm.value)
+    this.userService.register(this.registerForm.value)
       .subscribe(
         () => {
-          this._router.navigate(['Login']);
+          this.router.navigate(['/login']);
         },
         error => {
           if(error instanceof AuthError) {

@@ -2,17 +2,10 @@
  * Angular 2 decorators and services
  */
 import {Component, ViewEncapsulation} from '@angular/core';
-import {RouteConfig, Router} from '@angular/router-deprecated';
 
-import {Admin} from "./admin";
-import {Register} from "./register/register.component";
-import {Login} from "./login/login.component";
 import {UserService} from "./user-service";
-import {User} from "./entity";
-import {ErrorComponent} from "./error/error.component";
-import {SecurityOutlet} from "./user-service/security-outlet.directive";
+// import {SecurityOutlet} from "./_user-service/security-outlet.directive";
 import {Authentication} from "./user-service/authentication.service";
-import {Home} from "./home/home.component";
 
 require('./app.less');
 
@@ -23,25 +16,17 @@ require('./app.less');
 @Component({
   selector: 'app',
   pipes: [ ],
-  providers: [UserService, Authentication],
-  directives: [SecurityOutlet],
+  providers: [UserService],
+  // directives: [SecurityOutlet],
   template: `
 
     <main>
-      <security-outlet login="/Login" unathorized="/Error">
-      </security-outlet>
+      <router-outlet>
+      </router-outlet>
     </main>
   `,
   encapsulation: ViewEncapsulation.None
 })
-@RouteConfig([
-  { path: '/...', name: 'Home', component: Home, data: {level: User.LEVEL_DEFAULT}, useAsDefault: true},
-  { path: '/admin/...', name: 'Admin', component: Admin, data: {level: User.LEVEL_ADMIN}},
-  { path: '/register', name: 'Register', component: Register},
-  { path: '/forget', name: 'Forget', component: Register},
-  { path: '/login', name: 'Login', component: Login},
-  { path: '/error', name: 'Error', component: ErrorComponent}
-])
 export class App {
 }
 

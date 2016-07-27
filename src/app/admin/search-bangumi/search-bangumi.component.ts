@@ -1,14 +1,14 @@
 import {Component, Output} from '@angular/core';
-import {BangumiService} from '../api';
 import {Bangumi} from '../../entity';
-import {Router} from '@angular/router-deprecated';
 import {Title} from '@angular/platform-browser';
 import {Subject} from 'rxjs'
+import {Router} from '@angular/router';
+import {AdminService} from '../admin.service';
 
 @Component({
   selector: 'search-bangumi',
   template: require('./search-bangumi.html'),
-  providers: [BangumiService]
+  providers: [AdminService]
 })
 export class SearchBangumi {
 
@@ -16,8 +16,8 @@ export class SearchBangumi {
   private _input = new Subject<string>();
 
   constructor(
-    private _router: Router,
-    private _bangumiApi: BangumiService,
+    private router: Router,
+    private adminService: AdminService,
     titleService: Title
   ){
     titleService.setTitle('添加新番 - ' + SITE_TITLE);
@@ -25,7 +25,7 @@ export class SearchBangumi {
       .debounceTime(500)
       .distinctUntilChanged()
       .forEach(name => {
-        this._bangumiApi.searchBangumi(name)
+        this.adminService.searchBangumi(name)
           .subscribe(
             bangumiList => this.bangumiList = bangumiList,
             error => console.log(error)
@@ -41,6 +41,6 @@ export class SearchBangumi {
     if(bangumi.id) {
       return;
     }
-    this._router.navigate(['BangumiDetail', {bgm_id: bangumi.bgm_id}]);
+    this.router.navigate(['/admin/search', bangumi.bgm_id]);
   }
 }

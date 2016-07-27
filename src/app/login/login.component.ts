@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {UserService} from '../user-service';
 import {FormBuilder, ControlGroup, Validators, Control} from '@angular/common';
 import {User} from '../entity';
 import {AuthError} from '../error/AuthError';
-import {Router, OnActivate, ComponentInstruction} from '@angular/router-deprecated';
 import {Title} from '@angular/platform-browser';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs/Rx';
 
 require('./login.less');
 
@@ -13,7 +14,7 @@ require('./login.less');
   template: require('./login.html'),
   providers: [UserService, Title]
 })
-export class Login implements OnInit, OnActivate {
+export class Login implements OnInit, OnDestroy {
 
   loginForm: ControlGroup;
   name: Control;
@@ -29,17 +30,20 @@ export class Login implements OnInit, OnActivate {
 
   sourceUrl: string;
 
-  constructor(private _userService:UserService,
-              private _titleService: Title,
-              private _router: Router,
-              private _formBuilder: FormBuilder) {
+  private routeParamsSubscription: Subscription;
+
+  constructor(private userService: UserService,
+              private route: ActivatedRoute,
+              private router: Router,
+              private title: Title,
+              private formBuilder: FormBuilder) {
     this.user = new User();
   }
 
-  private _buildForm(): void {
+  private buildForm(): void {
     this.name = new Control('', Validators.required);
     this.password = new Control('', Validators.required);
-    this.loginForm = this._formBuilder.group({
+    this.loginForm = this.formBuilder.group({
       name: this.name,
       password: this.password,
       remember: [false]
@@ -47,29 +51,29 @@ export class Login implements OnInit, OnActivate {
   };
 
   ngOnInit() {
-    this._titleService.setTitle(`登录 - ${this.siteTitle}`);
-    this._buildForm();
+    this.title.setTitle(`登录 - ${this.siteTitle}`);
+    this.buildForm();
+    this.routeParamsSubscription = this.route.params
+      .subscribe((params) => {
+        this.sourceUrl = params['source'];
+      });
   }
 
-
-  routerOnActivate(nextInstruction:ComponentInstruction, prevInstruction:ComponentInstruction):any|Promise<any> {
-    console.log(nextInstruction);
-    if(nextInstruction.params['url']) {
-      this.sourceUrl = nextInstruction.params['url'];
-    }
-    return true;
+  ngOnDestroy(): any {
+    this.routeParamsSubscription.unsubscribe();
+    return null;
   }
 
-  login():void {
+  login(): void {
     this.inProgress = true;
-    this._userService.login(this.loginForm.value)
+    this.userService.login(this.loginForm.value)
       .subscribe(
         () => {
           this.inProgress = false;
-          if(this.sourceUrl) {
-            this._router.navigateByUrl(this.sourceUrl);
+          if (this.sourceUrl) {
+            this.router.navigateByUrl(this.sourceUrl);
           } else {
-            this._router.navigateByUrl('/');
+            this.router.navigateByUrl('/');
           }
 
         },

@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Episode} from "../../../entity/episode";
-import {BangumiService} from '../../api';
+import {AdminService} from '../../admin.service';
 
 @Component({
   selector: 'episode-thumbnail',
@@ -20,7 +20,7 @@ export class EpisodeThumbnail {
 
   time: string = '';
 
-  constructor(private _bangumiService: BangumiService){}
+  constructor(private adminService: AdminService){}
 
   private getBaseUrl(url) {
     return url.split('?')[0];
@@ -75,7 +75,7 @@ export class EpisodeThumbnail {
       console.log(this.time);
     }
     this.isSaving = true;
-    this._bangumiService.updateThumbnail(this.episode, this.time)
+    this.adminService.updateThumbnail(this.episode, this.time)
       .subscribe(
         () => {
           this.episode.thumbnail = this.getBaseUrl(this.episode.thumbnail) + '?time=' + this.time;

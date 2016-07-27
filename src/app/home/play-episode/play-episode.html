@@ -30,7 +30,7 @@
       </h4>
       <div class="episode-list ui eight column doubling grid">
         <div class="column" *ngFor="let eps of episode.bangumi.episodes">
-          <a class="ui segment episode-link" *ngIf="eps.status===2" [routerLink]="['Play', {episode_id: eps.id}]">
+          <a class="ui segment episode-link" *ngIf="eps.status===2" [routerLink]="['/play', eps.id]">
             {{eps.episode_no}}
           </a>
           <a class="ui disabled segment episode-link" *ngIf="eps.status!==2">

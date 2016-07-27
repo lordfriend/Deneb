@@ -1,14 +1,14 @@
 import {Bangumi} from "../../entity";
-import {BangumiService} from "../api";
 import {OnInit, Component} from "@angular/core";
 import {Title} from '@angular/platform-browser';
-import {Router} from "@angular/router-deprecated";
+import {Router} from "@angular/router";
 import {Subject} from "rxjs/Rx";
+import {AdminService} from '../admin.service';
 
 @Component({
   selector: 'list-bangumi',
   template: require('./list-bangumi.html'),
-  providers: [BangumiService]
+  providers: [AdminService]
 })
 export class ListBangumi implements OnInit {
 
@@ -27,8 +27,8 @@ export class ListBangumi implements OnInit {
   private _input = new Subject<string>();
 
   constructor(
-    private _bangumiApi: BangumiService,
-    private _router: Router,
+    private adminService: AdminService,
+    private router: Router,
     titleService: Title
   ){
     titleService.setTitle('新番管理 - ' + SITE_TITLE);
@@ -39,7 +39,7 @@ export class ListBangumi implements OnInit {
       .forEach(name => {
         this.isLoading = true;
         this.currentPage = 1;
-        this._bangumiApi.listBangumi(this.currentPage, this.numberPerPage, name)
+        this.adminService.listBangumi(this.currentPage, this.numberPerPage, name)
           .subscribe(
             (result: {data: Bangumi[], total: number}) => {
               this.bangumiList = result.data;
@@ -53,7 +53,7 @@ export class ListBangumi implements OnInit {
 
   private loadBangumiList() {
     this.isLoading = true;
-    this._bangumiApi.listBangumi(this.currentPage, this.numberPerPage, this.name)
+    this.adminService.listBangumi(this.currentPage, this.numberPerPage, this.name)
       .subscribe(
         (result: {data: Bangumi[], total: number}) => {
           this.bangumiList = result.data;
@@ -79,7 +79,7 @@ export class ListBangumi implements OnInit {
   }
 
   public editBangumi(bangumi: Bangumi):void {
-    this._router.navigate(['EditBangumiDetail', {id: bangumi.id}]);
+    this.router.navigate(['/admin/bangumi', bangumi.id]);
   }
 
 }

@@ -1,9 +1,9 @@
 import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import {HomeService, HomeChild} from "../home.service";
 import {Bangumi} from "../../entity/bangumi";
-import {RouteParams} from "@angular/router-deprecated";
 import {WeekdayPipe} from "../../pipes/weekday.pipe";
 import {Observable, Subscription} from "rxjs/Rx";
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'view-bangumi-detail',
@@ -21,10 +21,11 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 
   private _resizeSubscription: Subscription;
   private _coverExpaneded: boolean = false;
+  private routeParamsSubscription: Subscription;
 
   constructor(
     homeService:HomeService,
-    private _routeParams: RouteParams
+    private route: ActivatedRoute
   ) {
     super(homeService);
   }
@@ -51,8 +52,10 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
   }
 
   ngOnInit():any {
-    let bangumi_id = this._routeParams.get('bangumi_id');
-    this.homeService.bangumi_datail(bangumi_id)
+    this.routeParamsSubscription = this.route.params
+      .flatMap((params) => {
+        return this.homeService.bangumi_datail(params['bangumi_id']);
+      })
       .subscribe(
         (bangumi: Bangumi) => {
           this.bangumi = bangumi;
@@ -74,6 +77,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 
   ngOnDestroy():any {
     this._resizeSubscription.unsubscribe();
+    this.routeParamsSubscription.unsubscribe();
     return null;
   }
 }

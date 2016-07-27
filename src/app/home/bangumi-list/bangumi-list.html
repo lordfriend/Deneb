@@ -1,5 +1,5 @@
 <div class="ui container bangumi-list-container">
-  <a class="ui segment ui grid bangumi-segment" *ngFor="let bangumi of bangumiList" [routerLink]="['Bangumi', {bangumi_id: bangumi.id}]">
+  <a class="ui segment ui grid bangumi-segment" *ngFor="let bangumi of bangumiList" [routerLink]="['/bangumi', bangumi.id]">
     <div class="three wide column">
       <ui-image-placeholder [imageUrl]="bangumi.cover">
         <div class="ui-image-fallback">

@@ -26,10 +26,10 @@
           </dvi>
         </form>
         <div class="forget-link additional-info">
-          <a [routerLink]="['Forget']">忘记密码</a>
+          <a [routerLink]="['/forget']">忘记密码</a>
         </div>
         <div class="additional-info">
-          <a [routerLink]="['Register']">创建新用户</a>
+          <a [routerLink]="['/register']">创建新用户</a>
         </div>
         <div class="ui error message" *ngIf="errorMessage">
           <p>{{errorMessage}}</p>

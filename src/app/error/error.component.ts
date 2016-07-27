@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
-import {OnActivate, ComponentInstruction} from '@angular/router-deprecated';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {BaseError} from '../error';
 import {Title} from '@angular/platform-browser';
+import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs/Rx';
 
 
 @Component({
@@ -9,9 +10,9 @@ import {Title} from '@angular/platform-browser';
   template: require('./error.html'),
   providers: [Title]
 })
-export class ErrorComponent implements OnActivate {
-  
-  constructor(titleService: Title) {
+export class ErrorComponent implements OnInit, OnDestroy {
+
+  constructor(titleService: Title, private route: ActivatedRoute) {
     titleService.setTitle('出错了!');
   }
 
@@ -19,9 +20,22 @@ export class ErrorComponent implements OnActivate {
 
   errorStatus: string;
 
-  routerOnActivate(nextInstruction:ComponentInstruction, prevInstruction:ComponentInstruction):any|Promise<any> {
-    this.errorMessage = nextInstruction.params['message'];
-    this.errorStatus = nextInstruction.params['status'];
+  private routeParamsSubscription: Subscription;
+
+  ngOnInit(): any {
+    this.routeParamsSubscription = this.route.params.subscribe(
+      (params) => {
+        this.errorMessage = params['message'];
+        this.errorStatus = params['status'];
+      }
+    );
+    return null;
+  }
+
+  ngOnDestroy(): any {
+    if(this.routeParamsSubscription) {
+      this.routeParamsSubscription.unsubscribe();
+    }
     return null;
   }
 }

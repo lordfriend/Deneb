@@ -46,7 +46,7 @@
         <div *ngIf="episode.status!==2" class="content unfinished">
           <span>第{{episode.episode_no}}话</span>
         </div>
-        <a *ngIf="episode.status===2" class="image" [routerLink]="['Play', {episode_id: episode.id}]">
+        <a *ngIf="episode.status===2" class="image" [routerLink]="['/play', episode.id]">
           <ui-image-placeholder [imageUrl]="episode.thumbnail">
             <div class="ui-image-fallback">
               <h4 class="ui icon film icon-holder">
@@ -55,7 +55,7 @@
             </div>
           </ui-image-placeholder>
         </a>
-        <a *ngIf="episode.status===2" class="content" [routerLink]="['Play', {episode_id: episode.id}]">
+        <a *ngIf="episode.status===2" class="content" [routerLink]="['/play', episode.id]">
           <span>第{{episode.episode_no}}话</span>
         </a>
       </div>

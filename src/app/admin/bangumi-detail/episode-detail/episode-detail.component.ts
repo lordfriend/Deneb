@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {Episode} from "../../../entity/episode";
-import {BangumiService} from "../../api/bangumi.service";
 import {EpisodeThumbnail} from "../episode-thumbnail/episode-thumbnail.component";
+import {AdminService} from '../../admin.service';
 
 @Component({
   selector: 'episode-detail',
@@ -21,10 +21,10 @@ export class EpisodeDetail {
 
   errorMessage: string;
 
-  constructor(private _bangumiApi: BangumiService) {}
+  constructor(private adminService: AdminService) {}
 
   updateEpisode(episode: Episode): void {
-    this._bangumiApi.updateEpisode(episode)
+    this.adminService.updateEpisode(episode)
       .subscribe(
         result => console.log(result),
         error => this.errorMessage = <any> error

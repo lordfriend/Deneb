@@ -36,6 +36,11 @@ export class VideoCaptureService {
     let filename = `${bangumi_name}_${episode_no}_${Math.round(currentPlayTime)}.${this.imageFormat}`;
     hiddenAnchor.setAttribute('download', filename);
     hiddenAnchor.setAttribute('href', url.replace(/^data:image\/[^;]]/, 'data:application/octet-stream'));
-    hiddenAnchor.click();
+    let clickEvent = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: false
+    });
+    hiddenAnchor.dispatchEvent(clickEvent);
   }
 }

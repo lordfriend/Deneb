@@ -62,7 +62,6 @@ export class Home implements OnInit, OnDestroy {
       .subscribe(
         (user: User) => {
           this.user = user;
-          console.log(this.user);
         }
       );
 

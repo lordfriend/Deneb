@@ -4,7 +4,7 @@ import {
   OnInit,
   AfterViewInit,
   ViewChild,
-  ElementRef, OnDestroy
+  ElementRef, OnDestroy, OnChanges, SimpleChanges
 } from '@angular/core';
 import {Episode} from "../../entity/episode";
 import {Observable} from "rxjs/Rx";
@@ -38,7 +38,7 @@ const noop = () => {};
   directives: [PlayerControls, VolumeControl],
   providers: [VideoCaptureService]
 })
-export class Player implements OnInit, AfterViewInit, OnDestroy {
+export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   private _videoWidth:number;
   private _videoHeight:number;
@@ -425,18 +425,32 @@ export class Player implements OnInit, AfterViewInit, OnDestroy {
     return parts[parts.length - 1];
   }
 
+  private setVideoUrl() {
+    this.videoUrl = this.episode.videos[0];
+    this.videoType = 'video/' + this.getExtname(this.videoUrl);
+  }
+
   seekTo(ratio) {
     let videoElement = this.videoElementRef.nativeElement;
     videoElement.currentTime = ratio * videoElement.duration;
   }
 
   ngOnInit():any {
-    this.videoUrl = this.episode.videos[0];
-    this.videoType = 'video/' + this.getExtname(this.videoUrl);
     return null;
   }
 
-  ngAfterViewInit():any {
+  ngOnChanges(changes: SimpleChanges): any {
+    if(changes['episode']) {
+      this.setVideoUrl();
+      if(changes['episode'].previousValue['videos']) {
+        this.videoElementRef.nativeElement.load();
+        this.videoElementRef.nativeElement.play();
+      }
+    }
+    return null;
+  }
+
+    ngAfterViewInit():any {
     return null;
   }
 

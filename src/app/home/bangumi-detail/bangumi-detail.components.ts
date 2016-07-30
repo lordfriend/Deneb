@@ -4,6 +4,7 @@ import {Bangumi} from "../../entity/bangumi";
 import {WeekdayPipe} from "../../pipes/weekday.pipe";
 import {Observable, Subscription} from "rxjs/Rx";
 import {ActivatedRoute} from '@angular/router';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'view-bangumi-detail',
@@ -25,7 +26,8 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 
   constructor(
     homeService:HomeService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private titleService: Title
   ) {
     super(homeService);
   }
@@ -58,6 +60,8 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
       })
       .subscribe(
         (bangumi: Bangumi) => {
+          let bgmTitle = `${bangumi.name} - ${SITE_TITLE}`;
+          this.titleService.setTitle(bgmTitle);
           this.bangumi = bangumi;
         },
         error => console.log(error)

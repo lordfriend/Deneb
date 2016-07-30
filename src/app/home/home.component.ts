@@ -35,7 +35,6 @@ export class Home implements OnInit, OnDestroy {
   private userServiceSubscription: Subscription;
 
   constructor(titleService:Title, homeService: HomeService, private userService: UserService) {
-    titleService.setTitle(this.siteTitle);
     this.checkOverlapMode();
     homeService.childRouteChanges.subscribe((routeName) => {
       if(routeName === 'Play') {
@@ -44,6 +43,12 @@ export class Home implements OnInit, OnDestroy {
         this.sidebarActive = true;
       }
       this.currentRouteName = routeName;
+
+      if(routeName === 'Bangumi') {
+        titleService.setTitle(`所有新番 - ${this.siteTitle}`);
+      } else if(routeName === 'Default') {
+        titleService.setTitle(this.siteTitle);
+      }
     });
   }
 

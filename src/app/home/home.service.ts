@@ -78,7 +78,7 @@ export class HomeService extends BaseService {
 
   bangumi_datail(bangumi_id: string): Observable<Bangumi> {
     let queryUrl = this._baseUrl + '/bangumi/' + bangumi_id;
-    return Observable.timer(3000).flatMap(() => this._http.get(queryUrl))
+    return this._http.get(queryUrl)
       .map(res => <Bangumi> res.json().data)
       .catch(this.handleError);
   }

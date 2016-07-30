@@ -20,7 +20,10 @@
   <!--</div>-->
   <h4>ON AIR</h4>
   <div class="ui divider"></div>
-  <div class="ui five doubling cards">
+  <div class="ui active inverted dimmer on-air-loading-wrapper" *ngIf="!onAirBangumi">
+    <div class="ui medium loader"></div>
+  </div>
+  <div class="ui five doubling cards" *ngIf="onAirBangumi">
     <div class="card bangumi-card" *ngFor="let bangumi of onAirBangumi">
       <a class="image" [routerLink]="['/bangumi', bangumi.id]">
         <ui-image-placeholder [imageUrl]="bangumi.cover">

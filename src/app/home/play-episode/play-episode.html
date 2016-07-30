@@ -1,3 +1,6 @@
+<div class="ui active inverted dimmer loading-wrapper" *ngIf="!episode">
+  <div class="ui medium loader"></div>
+</div>
 <div class="theater-backdrop" *ngIf="episode">
   <player [episode]="episode"></player>
 </div>

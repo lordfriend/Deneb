@@ -5,6 +5,8 @@ import {Component, ViewEncapsulation} from '@angular/core';
 
 import {UserService} from "./user-service";
 import {AnalyticsService} from './analytics.service';
+import {Router, NavigationEnd, NavigationStart} from '@angular/router';
+import {Subscription} from 'rxjs/Rx';
 
 require('./app.less');
 
@@ -17,17 +19,37 @@ require('./app.less');
   pipes: [ ],
   providers: [UserService, AnalyticsService],
   template: `
-
-    <main>
-      <router-outlet>
-      </router-outlet>
-    </main>
+    <router-outlet>
+    </router-outlet>
   `,
   encapsulation: ViewEncapsulation.None
 })
 export class App {
-  constructor(analyticsSerivce: AnalyticsService) {
 
+  private routeEventsSubscription: Subscription;
+
+  private removePreLoader() {
+    if(document) {
+      let $body = document.body;
+      let preloader = document.getElementById('preloader');
+      if(preloader) {
+        $body.removeChild(preloader);
+        this.routeEventsSubscription.unsubscribe();
+      }
+      $body.classList.remove('loading');
+
+    }
+  }
+
+  constructor(analyticsSerivce: AnalyticsService, router: Router) {
+    this.routeEventsSubscription = router.events
+      .subscribe(
+        (event) => {
+          if(event instanceof NavigationEnd) {
+            this.removePreLoader();
+          }
+        }
+      )
   }
 }
 

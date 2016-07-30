@@ -32,19 +32,94 @@
 
   <!-- base url -->
   <base href="<%= webpackConfig.metadata.baseUrl %>">
+  <style>
+    #preloader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+    }
 
+    #body-container.loading app {
+      display: none;
+    }
 
+    body {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    #preloader .wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #preloader .text {
+      color: #fbae17;
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 15px;
+      line-height: 15px;
+    }
+
+    #preloader .bounceball {
+      position: relative;
+      display: inline-block;
+      height: 37px;
+      width: 15px;
+    }
+
+    #preloader .bounceball:before {
+      position: absolute;
+      content: '';
+      display: block;
+      top: 0;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: #fbae17;
+      transform-origin: 50%;
+      animation: preloader-bounce 500ms alternate infinite ease;
+    }
+
+    @keyframes preloader-bounce {
+      0% {
+        top: 30px;
+        height: 5px;
+        border-radius: 60px 60px 20px 20px;
+        transform: scaleX(2);
+      }
+      35% {
+        height: 15px;
+        border-radius: 50%;
+        transform: scaleX(1);
+      }
+      100% {
+        top: 0;
+      }
+    }
+
+  </style>
 </head>
 
-<body>
-
+<body id="body-container" class="loading">
   <app>
-    <div class="ui page visible dimmer">
-      <div class="content">
-        <div class="center">Loading...</div>
+  </app>
+
+  <!-- preload will visible once page is loaded and hidden until the authentication is finished -->
+  <div id="preloader">
+    <div class="wrap">
+      <div class="loading">
+        <div class="bounceball"></div>
+        <div class="text">NOW LOADING</div>
       </div>
     </div>
-  </app>
+  </div>
+
   <script>
     ga_events = [];
   </script>

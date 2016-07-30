@@ -55,6 +55,7 @@ export class Login implements OnInit, OnDestroy {
     this.buildForm();
     this.routeParamsSubscription = this.route.params
       .subscribe((params) => {
+        console.log(params);
         this.sourceUrl = params['source'];
       });
   }
@@ -69,7 +70,6 @@ export class Login implements OnInit, OnDestroy {
     this.userService.login(this.loginForm.value)
       .subscribe(
         () => {
-          this.inProgress = false;
           if (this.sourceUrl) {
             this.router.navigateByUrl(this.sourceUrl);
           } else {

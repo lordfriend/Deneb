@@ -11,7 +11,11 @@
   <a class="item" [routerLink]="['/bangumi']">所有番组</a>
   <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
 </div>
-<div class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
+<main class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
   <router-outlet></router-outlet>
-</div>
+</main>
 
+<footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
+  <div class="copyright-content">&copy;2016 Nyasoft, All rights reserved.</div>
+  <div class="credits">Powered By <a target="_blank" href="https://github.com/lordfriend/Albireo">Albireo</a></div>
+</footer>

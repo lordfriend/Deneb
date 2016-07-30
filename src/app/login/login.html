@@ -14,7 +14,7 @@
           <ui-input ngControl="password" type="password" placeholder="密码">
             <div ui-message="required">密码不能为空</div>
           </ui-input>
-          <div class="field">
+          <div class="field" id="remember-login">
             <div class="ui checkbox">
               <input type="checkbox" ngControl="remember">
               <label>保存登录状态</label>
@@ -28,7 +28,7 @@
         <div class="forget-link additional-info">
           <a [routerLink]="['/forget']">忘记密码</a>
         </div>
-        <div class="additional-info">
+        <div class="register-link additional-info">
           <a [routerLink]="['/register']">创建新用户</a>
         </div>
         <div class="ui error message" *ngIf="errorMessage">

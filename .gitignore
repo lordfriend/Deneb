@@ -62,3 +62,8 @@ npm-debug.log
 
 # proxy settings #
 config/dev.proxy.js
+
+# custom login/register background #
+src/assets/img/background.jpg
+src/assets/img/background.png
+src/assets/css/login.css

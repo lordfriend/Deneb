@@ -26,6 +26,7 @@
  */
 var webpack = require('webpack');
 var helpers = require('./helpers');
+var fs = require('fs');
 
 /**
  * Webpack Plugins
@@ -35,12 +36,26 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 
 /**
+ * check custom login style exists
+ */
+
+var loginStyleExsits;
+try {
+  loginStyleExsits = fs.statSync(helpers.root('src/assets/css/login.css')).isFile();
+  console.log('login style file existence: ' + loginStyleExsits);
+} catch (e) {
+  console.error(e);
+  loginStyleExsits = false;
+}
+
+/**
  * Webpack Constants
  */
 const METADATA = {
   title: 'Deneb',
   baseUrl: '/',
-  GA: process.env.GA || ''
+  GA: process.env.GA || '',
+  customLoginStyle: loginStyleExsits
 };
 
 /**

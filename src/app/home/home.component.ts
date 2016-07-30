@@ -36,6 +36,7 @@ export class Home implements OnInit, OnDestroy {
 
   constructor(titleService:Title, homeService: HomeService, private userService: UserService) {
     titleService.setTitle(this.siteTitle);
+    this.checkOverlapMode();
     homeService.childRouteChanges.subscribe((routeName) => {
       if(routeName === 'Play') {
         this.sidebarActive = false;
@@ -64,8 +65,6 @@ export class Home implements OnInit, OnDestroy {
           this.user = user;
         }
       );
-
-    this.checkOverlapMode();
 
     this.sidebarClickSubscription = Observable.fromEvent(document, 'click')
       .filter(() => {

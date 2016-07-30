@@ -12,7 +12,7 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 
-  bangumi:Bangumi = new Bangumi();
+  bangumi:Bangumi;
 
   orientation: 'landscape' | 'portrait';
   coverRevealerHeight: string;

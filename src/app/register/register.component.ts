@@ -39,13 +39,13 @@ export class Register implements OnInit {
     private router: Router,
     titleService: Title
   ){
-    titleService.setTitle('注册 - ' + SITE_TITLE);
     router.events.subscribe(
       (event) => {
         if(event instanceof NavigationEnd) {
           this.urlPath = event.url;
           console.log(this.urlPath);
           this.title = {'/register': '注册', '/forget': '找回密码'}[this.urlPath];
+          titleService.setTitle(`${this.title} - ${SITE_TITLE}`);
         }
       }
     );

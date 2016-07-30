@@ -55,7 +55,6 @@ export class Login implements OnInit, OnDestroy {
     this.buildForm();
     this.routeParamsSubscription = this.route.params
       .subscribe((params) => {
-        console.log(params);
         this.sourceUrl = params['source'];
       });
   }

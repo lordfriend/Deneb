@@ -253,10 +253,11 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     this._playProgress = Math.round(this._currentTime / this._duration * 1000) / 10;
   }
 
+  onDurationChange(event: Event) {
+    this._duration = (<HTMLMediaElement> event.target).duration;
+  }
+
   onMetadataLoaded() {
-
-    this._duration = this.videoElementRef.nativeElement.duration;
-
     window.addEventListener('resize', this._windowResizeHandler, false);
 
     document.addEventListener('fullscreenchange', this._fullScreenChangeHandler, false);
@@ -450,7 +451,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     return null;
   }
 
-    ngAfterViewInit():any {
+  ngAfterViewInit(): any {
     return null;
   }
 

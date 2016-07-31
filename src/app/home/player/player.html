@@ -15,6 +15,7 @@
          [poster]="episode.thumbnail"
          [id]="playerId"
          (loadedmetadata)="onMetadataLoaded()"
+         (durationchange)="onDurationChange($event)"
          (timeupdate)="onTimeUpdate()"
          (progress)="onChunkLoad()"
          (waiting)="onWaiting()"

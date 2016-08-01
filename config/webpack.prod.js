@@ -155,62 +155,7 @@ module.exports = webpackMerge(commonConfig, {
 
       beautify: false, //prod
 
-      // mangle: { screw_ie8 : true }, //prod
-      mangle: false,
-      /*
-      mangle: {
-        screw_ie8: true,
-        except: [
-            'App',
-            'About',
-            'Contact',
-            'Home',
-            'Menu',
-            'Footer',
-            'XLarge',
-            'RouterActive',
-            'RouterLink',
-            'RouterOutlet',
-            'NgFor',
-            'NgIf',
-            'NgClass',
-            'NgSwitch',
-            'NgStyle',
-            'NgSwitchDefault',
-            'NgControl',
-            'NgControlName',
-            'NgControlGroup',
-            'NgFormControl',
-            'NgModel',
-            'NgFormModel',
-            'NgForm',
-            'NgSelectOption',
-            'DefaultValueAccessor',
-            'NumberValueAccessor',
-            'CheckboxControlValueAccessor',
-            'SelectControlValueAccessor',
-            'RadioControlValueAccessor',
-            'NgControlStatus',
-            'RequiredValidator',
-            'MinLengthValidator',
-            'MaxLengthValidator',
-            'PatternValidator',
-            'AsyncPipe',
-            'DatePipe',
-            'JsonPipe',
-            'NumberPipe',
-            'DecimalPipe',
-            'PercentPipe',
-            'CurrencyPipe',
-            'LowerCasePipe',
-            'UpperCasePipe',
-            'SlicePipe',
-            'ReplacePipe',
-            'I18nPluralPipe',
-            'I18nSelectPipe'
-          ] // Needed for uglify RouterLink problem
-      }, // prod
-      */
+      mangle: { screw_ie8 : true }, //prod
       compress: {
         screw_ie8: true
       }, //prod

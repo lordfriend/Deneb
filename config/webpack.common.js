@@ -257,7 +257,7 @@ module.exports = {
       template: 'src/index.html',
       chunksSortMode: 'none'
     }),
-    new ExtractTextPlugin('assets/css/[name].[hash].css', {disable: false})
+    new ExtractTextPlugin('[name].[hash].css', {disable: false})
 
   ],
 

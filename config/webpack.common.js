@@ -34,6 +34,7 @@ var fs = require('fs');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 /**
  * check custom login style exists
@@ -187,7 +188,12 @@ module.exports = {
       // Less loader support for *.less
       // See https://github.com/webpack/less-loader
       {
+        test: /ng2-semantic\.less$/,
+        loader: ExtractTextPlugin.extract('style', 'css-loader!less-loader!')
+      },
+      {
         test: /\.less$/,
+        exclude: /ng2-semantic\.less$/,
         loader: 'style-loader!css-loader!less-loader'
       },
       { test: /\.(png|jpg)$/, loader: 'file?name=images/[name].[hash].[ext]' },
@@ -250,7 +256,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       chunksSortMode: 'none'
-    })
+    }),
+    new ExtractTextPlugin('assets/css/[name].[hash].css', {disable: false})
 
   ],
 

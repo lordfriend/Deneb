@@ -1,4 +1,6 @@
-import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, ViewChild, ElementRef
+} from '@angular/core';
 import {HomeService, HomeChild} from "../home.service";
 import {Bangumi} from "../../entity/bangumi";
 import {WeekdayPipe} from "../../pipes/weekday.pipe";
@@ -13,29 +15,27 @@ import {Title} from '@angular/platform-browser';
 })
 export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 
-  bangumi:Bangumi;
+  bangumi: Bangumi;
 
   orientation: 'landscape' | 'portrait';
   coverRevealerHeight: string;
 
-  @ViewChild('bangumiCover') bangumiCoverRef:ElementRef;
+  @ViewChild('bangumiCover') bangumiCoverRef: ElementRef;
 
   private _resizeSubscription: Subscription;
   private _coverExpaneded: boolean = false;
   private routeParamsSubscription: Subscription;
 
-  constructor(
-    homeService:HomeService,
-    private route: ActivatedRoute,
-    private titleService: Title
-  ) {
+  constructor(homeService: HomeService,
+              private route: ActivatedRoute,
+              private titleService: Title) {
     super(homeService);
   }
 
   private checkViewport() {
     let viewportWidth = window.innerWidth;
     let viewportHeight = window.innerHeight;
-    if(viewportWidth < 768) {
+    if (viewportWidth < 768) {
       this.orientation = 'portrait';
       this.coverRevealerHeight = Math.round(viewportHeight / 4) + 'px';
     } else {
@@ -45,7 +45,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
   }
 
   toggleCover() {
-    if(this._coverExpaneded) {
+    if (this._coverExpaneded) {
       this.checkViewport();
     } else {
       this.coverRevealerHeight = (this.bangumiCoverRef.nativeElement.clientHeight - 14) + 'px';
@@ -53,7 +53,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
     this._coverExpaneded = !this._coverExpaneded;
   }
 
-  ngOnInit():any {
+  ngOnInit(): any {
     this.routeParamsSubscription = this.route.params
       .flatMap((params) => {
         return this.homeService.bangumi_datail(params['bangumi_id']);
@@ -66,9 +66,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
         },
         error => console.log(error)
       );
-
     this.checkViewport();
-
     this._resizeSubscription = Observable.fromEvent(window, 'resize')
       .subscribe(
         () => {
@@ -79,7 +77,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
   }
 
 
-  ngOnDestroy():any {
+  ngOnDestroy(): any {
     this._resizeSubscription.unsubscribe();
     this.routeParamsSubscription.unsubscribe();
     return null;

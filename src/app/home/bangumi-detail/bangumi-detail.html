@@ -14,7 +14,7 @@
     </div>
     <div class="bangumi-cover-revealer" [style.height]="coverRevealerHeight" (click)="toggleCover()">
     </div>
-    <div class="bangumi-base-info">
+    <div #bangumiInfo class="bangumi-base-info">
       <h2 class="bangumi-title name-cn">
         {{bangumi.name_cn}}
       </h2>

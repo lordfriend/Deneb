@@ -28,13 +28,21 @@
           <input type="text" [(ngModel)]="bangumi.air_weekday"/>
         </div>
         <div class="field">
-          <label>RSS</label>
-          <input type="text" [(ngModel)]="bangumi.rss"/>
+          <label>DMHY</label>
+          <input type="text" [(ngModel)]="bangumi.dmhy"/>
         </div>
         <div class="field">
+          <label>ACG_RIP</label>
+          <input type="text" [(ngModel)]="bangumi.acg_rip"/>
+        </div>
+        <!--<div class="field">
+          <label>RSS</label>
+          <input type="text" [(ngModel)]="bangumi.rss"/>
+        </div>-->
+        <!--<div class="field">
           <label>正则表达式(用于匹配番组名称以及话数)</label>
           <input type="text" [(ngModel)]="bangumi.eps_regex"/>
-        </div>
+        </div>-->
       </div>
     </section>
     <button class="ui right floated primary button" [ngClass]="{loading: isSavingBangumi}" type="submit">Save</button>

@@ -29,11 +29,11 @@
         </div>
         <div class="field">
           <label>DMHY</label>
-          <input type="text" [(ngModel)]="bangumi.dmhy"/>
+          <keyword-builder [bangumi]="bangumi" [siteName]="'dmhy'"></keyword-builder>
         </div>
         <div class="field">
           <label>ACG_RIP</label>
-          <input type="text" [(ngModel)]="bangumi.acg_rip"/>
+          <keyword-builder [bangumi]="bangumi" [siteName]="'acg_rip'"></keyword-builder>
         </div>
         <!--<div class="field">
           <label>RSS</label>

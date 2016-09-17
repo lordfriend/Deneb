@@ -29,7 +29,6 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
     this.isEditorOpen = Boolean(this.bangumi[this.siteName]);
   }
 
-
   ngOnDestroy(): any {
     document.body.removeEventListener('click', this.outerClickHandler);
   }
@@ -47,7 +46,6 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
 
   outerClick(event: MouseEvent) {
     let target = event.target;
-    console.log(closest(target, '.search-result-wrapper'));
     if (this.itemList && this.itemList.length > 0 && closest(target, '.search-result-wrapper') === null) {
       this.itemList = [];
       event.preventDefault();

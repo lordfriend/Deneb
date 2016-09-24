@@ -83,7 +83,7 @@ export class HomeService extends BaseService {
       .catch(this.handleError);
   }
 
-  listBangumi(page: number, orderBy: string, name?: string): Observable<any> {
+  listBangumi(page: number, orderBy: string, name?: string): Observable<{data: Bangumi[], total: number}> {
     let queryUrl = this._baseUrl + '/bangumi?page=' + page + '&order_by=' + orderBy;
     if (name) {
       queryUrl = queryUrl + '&name=' + name;

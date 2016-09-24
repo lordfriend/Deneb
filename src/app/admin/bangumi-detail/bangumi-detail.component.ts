@@ -5,12 +5,13 @@ import {EpisodeDetail} from "./episode-detail/episode-detail.component";
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
+import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
 
 @Component({
   selector: 'bangumi-detail',
   template: require('./bangumi-detail.html'),
   providers: [AdminService],
-  directives: [EpisodeDetail],
+  directives: [EpisodeDetail, KeywordBuilder],
   styles:[`
     .bangumi-image {
       margin-right: 20px;

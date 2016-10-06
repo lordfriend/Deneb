@@ -1,6 +1,2 @@
-// App
-export * from './app.component';
-
-// Application wide providers
-export const APP_PROVIDERS = [
-];
+// APP
+export * from './app.module';

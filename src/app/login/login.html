@@ -7,23 +7,23 @@
         </h1>
       </header>
       <div class="center-box-body">
-        <form class="ui form" (ngSubmit)="login()" [ngFormModel]="loginForm" [ngClass]="{error: !loginForm.valid}">
-          <ui-input ngControl="name" type="text" placeholder="用户名">
-            <div ui-message="required">用户名不能为空</div>
-          </ui-input>
-          <ui-input ngControl="password" type="password" placeholder="密码">
-            <div ui-message="required">密码不能为空</div>
-          </ui-input>
+        <form class="ui form" (ngSubmit)="login()" [formGroup]="loginForm" [ngClass]="{error: !loginForm.valid}" novalidate>
+          <div class="ui field">
+            <input type="text" formControlName="name" placeholder="用户名">
+          </div>
+          <div class="ui field">
+            <input type="password" formControlName="password" placeholder="密码">
+          </div>
           <div class="field" id="remember-login">
             <div class="ui checkbox">
-              <input type="checkbox" ngControl="remember">
+              <input type="checkbox" formControlName="remember">
               <label>保存登录状态</label>
             </div>
           </div>
           <button class="ui primary button large fluid submit" type="submit" [disabled]="!loginForm.valid">登录</button>
-          <dvi class="ui inverted dimmer active page" *ngIf="inProgress">
+          <div class="ui inverted dimmer active page" *ngIf="inProgress">
             <div class="ui loader"></div>
-          </dvi>
+          </div>
         </form>
         <div class="forget-link additional-info">
           <a [routerLink]="['/forget']">忘记密码</a>

@@ -1,4 +1,4 @@
-import {RouterConfig} from '@angular/router';
+import {Routes} from '@angular/router';
 import {Admin} from './admin.component';
 import {SearchBangumi} from './search-bangumi/search-bangumi.component';
 import {BangumiDetail} from './bangumi-detail/bangumi-detail.component';
@@ -6,7 +6,7 @@ import {ListBangumi} from './list-bangumi/list-bangumi.component';
 import {Authentication} from '../user-service/authentication.service';
 
 
-export const adminRoutes: RouterConfig = [
+export const adminRoutes: Routes = [
   {
     path: 'admin',
     component: Admin,

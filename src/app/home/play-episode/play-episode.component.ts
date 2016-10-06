@@ -1,15 +1,13 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Episode, Bangumi} from "../../entity";
 import {HomeService, HomeChild} from "../home.service";
-import {Player} from "../player/player.component";
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'play-episode',
-  template: require('./play-episode.html'),
-  directives: [Player]
+  template: require('./play-episode.html')
 })
 export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 

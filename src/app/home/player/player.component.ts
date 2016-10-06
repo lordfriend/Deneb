@@ -8,9 +8,7 @@ import {
 } from '@angular/core';
 import {Episode} from "../../entity/episode";
 import {Observable} from "rxjs/Rx";
-import {TimePipe} from "./pipe/time.pipe";
 import {PlayerControls} from './player-controls/player-controls.component';
-import {VolumeControl} from './volumne-control/volume-control.component';
 import {VideoCaptureService} from "./video-capture/video-capture.service";
 
 let nextId = 0;
@@ -33,10 +31,7 @@ const noop = () => {};
 
 @Component({
   selector: 'player',
-  template: require('./player.html'),
-  pipes: [TimePipe],
-  directives: [PlayerControls, VolumeControl],
-  providers: [VideoCaptureService]
+  template: require('./player.html')
 })
 export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 

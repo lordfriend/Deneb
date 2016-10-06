@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../user-service";
-import {FormBuilder, Control, ControlGroup, Validators} from "@angular/common";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {passwordMatch} from "../form-utils";
 import {register} from "ts-node/dist/ts-node";
-import {AuthError} from "../error/AuthError";
+import {AuthError} from "../../facade/error/AuthError";
 import {Title} from '@angular/platform-browser';
 import {Router, NavigationEnd} from '@angular/router';
 
@@ -16,16 +16,11 @@ require('./register.less');
  */
 @Component({
   selector: 'register',
-  template: require('./register.html'),
-  providers: [UserService, Title]
+  template: require('./register.html')
 })
 export class Register implements OnInit {
 
-  registerForm: ControlGroup;
-  name: Control;
-  password: Control;
-  password_repeat: Control;
-  invite_code: Control;
+  registerForm: FormGroup;
 
   public urlPath: string;
 
@@ -52,15 +47,11 @@ export class Register implements OnInit {
   }
 
   private buildForm(): void {
-    this.name = new Control('', Validators.required);
-    this.password = new Control('', Validators.required);
-    this.password_repeat = new Control('', Validators.required);
-    this.invite_code = new Control('', Validators.required);
     this.registerForm = this.formBuilder.group({
-      name: this.name,
-      password: this.password,
-      password_repeat: this.password_repeat,
-      invite_code: this.invite_code
+      name: ['', Validators.required],
+      password: ['', Validators.required],
+      password_repeat: ['', Validators.required],
+      invite_code: ['', Validators.required]
     }, {validator: passwordMatch('password', 'password_repeat')});
   }
 

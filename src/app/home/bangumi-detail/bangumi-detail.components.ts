@@ -3,7 +3,6 @@ import {
 } from '@angular/core';
 import {HomeService, HomeChild} from "../home.service";
 import {Bangumi} from "../../entity/bangumi";
-import {WeekdayPipe} from "../../pipes/weekday.pipe";
 import {Observable, Subscription} from "rxjs/Rx";
 import {ActivatedRoute} from '@angular/router';
 import {Title} from '@angular/platform-browser';
@@ -11,7 +10,6 @@ import {Title} from '@angular/platform-browser';
 @Component({
   selector: 'view-bangumi-detail',
   template: require('./bangumi-detail.html'),
-  pipes: [WeekdayPipe]
 })
 export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 

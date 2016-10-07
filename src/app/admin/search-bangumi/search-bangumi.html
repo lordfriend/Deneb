@@ -2,7 +2,7 @@
   <h1 class="ui header">添加新的新番</h1>
 </nav>
 <div class="bangumi-container">
-  <div class="ui loading search">
+  <div class="ui search" [ngClass]="{loading: isLoading}">
     <div class="ui fluid icon input">
       <input class="prompt" type="text" placeholder="输入番组名称搜索" #searchBox (keyup)="searchBangumi(searchBox.value)"/>
       <i class="search icon"></i>

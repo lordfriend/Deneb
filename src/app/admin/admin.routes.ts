@@ -3,15 +3,12 @@ import {Admin} from './admin.component';
 import {SearchBangumi} from './search-bangumi/search-bangumi.component';
 import {BangumiDetail} from './bangumi-detail/bangumi-detail.component';
 import {ListBangumi} from './list-bangumi/list-bangumi.component';
-import {Authentication} from '../user-service/authentication.service';
 
 
 export const adminRoutes: Routes = [
   {
-    path: 'admin',
+    path: '',
     component: Admin,
-    data: {level: 2},
-    canActivate: [Authentication],
     children: [
       {
         path: '',

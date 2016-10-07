@@ -1,1 +1,3 @@
-export * from './admin.component';
+import {AdminModule} from './admin.module';
+
+export default AdminModule;

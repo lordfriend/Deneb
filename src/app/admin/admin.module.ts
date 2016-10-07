@@ -1,4 +1,5 @@
-import {NgModule} from '@angular/core'
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {Admin} from './admin.component';
 import {SearchBangumi} from './search-bangumi/search-bangumi.component';
 import {ListBangumi} from './list-bangumi/list-bangumi.component';
@@ -8,21 +9,23 @@ import {EpisodeDetail} from './bangumi-detail/episode-detail/episode-detail.comp
 import {EpisodeThumbnail} from './bangumi-detail/episode-thumbnail/episode-thumbnail.component';
 import {AdminService} from './admin.service';
 import {BrowserModule} from '@angular/platform-browser';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {adminRoutes} from './admin.routes';
 import {HttpModule} from '@angular/http';
 import {FeedService} from './bangumi-detail/keyword-builder/feed.service';
+import {Ng2SemanticModule} from '../../ng2-semantic/ng2-semantic.module';
 
 
 @NgModule({
   declarations: [Admin, SearchBangumi, ListBangumi, BangumiDetail, KeywordBuilder, EpisodeDetail, EpisodeThumbnail],
   providers: [AdminService, FeedService],
   imports: [
-    BrowserModule,
-    ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
     RouterModule.forChild(adminRoutes),
-    HttpModule
+    HttpModule,
+    Ng2SemanticModule
   ]
 })
 export class AdminModule {

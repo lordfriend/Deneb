@@ -24,10 +24,10 @@ import 'core-js/es6/reflect';
 // see issue https://github.com/AngularClass/angular2-webpack-starter/issues/709
 // import 'core-js/es6/promise';
 import 'core-js/es7/reflect';
-require('zone.js/dist/zone');
+import 'zone.js/dist/zone';
 
 // Typescript emit helpers polyfill
-// import 'ts-helpers';
+import 'ts-helpers';
 
 if ('production' === ENV) {
   // Production

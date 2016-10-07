@@ -19,13 +19,13 @@ export class DefaultComponent extends HomeChild implements OnInit {
 
 
   ngOnInit():any {
-    this.homeService.recentEpisodes()
-      .subscribe(
-        (episodeList: Episode[]) => {
-          this.recentEpisodes = episodeList;
-        },
-        error => console.log(error)
-      );
+    // this.homeService.recentEpisodes()
+    //   .subscribe(
+    //     (episodeList: Episode[]) => {
+    //       this.recentEpisodes = episodeList;
+    //     },
+    //     error => console.log(error)
+    //   );
 
     this.homeService.onAir()
       .subscribe(

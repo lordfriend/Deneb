@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {App} from './app.component';
 import {AnalyticsService} from './analytics.service';
 import {Authentication} from './user-service/authentication.service';
@@ -36,6 +37,7 @@ import {Ng2SemanticModule} from '../ng2-semantic';
   imports: [
     RouterModule.forRoot(appRoutes, {useHash: true}),
     BrowserModule,
+    CommonModule,
     ReactiveFormsModule,
     HttpModule,
     PlayerModule,

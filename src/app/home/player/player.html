@@ -51,7 +51,7 @@
     <button class="capture-button control-button" (click)="captureFrame($event)" title="截图">
       <i class="camera retro icon"></i>
     </button>
-    <!--<volume-control [volume]="volume" [muted]="muted" (volumeChanges)="changeVolume($event)" [ngClass]="{show: showVolumeControl}"></volume-control>-->
+    <volume-control [volume]="volume" [muted]="muted" (volumeChanges)="changeVolume($event)" [ngClass]="{show: showVolumeControl}"></volume-control>
   </player-controls>
   <div class="capture-overlay" (click)="closeCaptureOverlay($event)" [ngClass]="{show: showCaptureOverlay}">
     <canvas class="preview-canvas"></canvas>

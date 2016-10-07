@@ -81,13 +81,18 @@
       font-family: "Segoe UI", sans-serif;
       font-weight: 200;
       font-size: 1rem;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      cursor: default;
     }
   }
 
   volume-control {
     display: none;
     position: absolute;
-    right: 3.5rem;
+    right: 6rem;
     bottom: 4rem;
     &.show {
       display: block;

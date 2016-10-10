@@ -2,8 +2,6 @@
         class="video-container"
         tabindex="0"
         [ngClass]="{paused: paused}"
-        [style.width]="containerWidth"
-        [style.height]="containerHeight"
         (keydown.Space)="onClickPlay($event)"
         (keydown.ArrowLeft)="onSeeking($event, 'left')"
         (keydown.ArrowRight)="onSeeking($event, 'right')">

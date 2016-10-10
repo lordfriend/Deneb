@@ -1,5 +1,5 @@
 import {Observable} from 'rxjs/Rx';
-import {BaseService} from '../../../services/base.service';
+import {BaseService} from '../../../../facade/base.service';
 import {Http} from '@angular/http';
 import {Injectable} from '@angular/core';
 

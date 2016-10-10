@@ -10,13 +10,11 @@ import {
 } from '@angular/core'
 import {Observable, Subscription} from 'rxjs/Rx';
 import {closest} from '../../../../facade/lang';
-import {TimePipe} from "../pipe/time.pipe";
 
 
 @Component({
   selector: 'player-controls',
-  template: require('./player-controls.html'),
-  pipes: [TimePipe]
+  template: require('./player-controls.html')
 })
 export class PlayerControls implements AfterViewInit, OnDestroy {
 

@@ -1,7 +1,7 @@
-import {AuthError} from '../error';
+import {AuthError} from './error';
 import {Observable} from 'rxjs/Observable';
-import {ServerError} from '../error/ServerError';
-import {ClientError} from '../error/ClientError';
+import {ServerError} from './error/ServerError';
+import {ClientError} from './error/ClientError';
 
 export abstract class BaseService {
 

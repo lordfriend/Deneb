@@ -6,7 +6,6 @@ import {AdminService} from '../../admin.service';
 @Component({
   selector: 'episode-detail',
   template: require('./episode-detail.html'),
-  directives: [EpisodeThumbnail]
 })
 export class EpisodeDetail {
 

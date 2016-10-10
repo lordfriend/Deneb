@@ -7,22 +7,20 @@
         </h1>
       </header>
       <div class="center-box-body">
-        <form class="ui form" (ngSubmit)="onSubmit()" [ngFormModel]="registerForm" [ngClass]="{error: !registerForm.valid}">
-          <ui-input type="text" placeholder="用户名" ngControl="name">
-            <div ui-message="required">用户名不能为空</div>
-          </ui-input>
-          <ui-input type="password" placeholder="密码" ngControl="password">
-            <div ui-message="required">密码不能为空</div>
-          </ui-input>
-          <div class="field ui-input-wrapper" [ngClass]="{error: (!password_repeat.valid || (registerForm.errors && registerForm.errors['mismatchedPasswords'])) && password_repeat.touched}">
-            <input type="password" ngControl="password_repeat" placeholder="重复密码">
-            <div class="ui floating-error red pointing below basic label" *ngIf="(password_repeat.errors && password_repeat.errors['required']) && password_repeat.touched">重复密码不能为空</div>
-            <div class="ui floating-error red pointing below basic label" *ngIf="((registerForm.errors && registerForm.errors['mismatchedPasswords']) && !(password_repeat.errors && password_repeat.errors['required'])) && password_repeat.touched">密码不匹配</div>
+        <form class="ui form" (ngSubmit)="onSubmit()" [formGroup]="registerForm" [ngClass]="{error: !registerForm.valid}">
+          <div class="ui field">
+            <input type="text" formControlName="name" placeholder="用户名">
           </div>
-          <ui-input type="text" placeholder="邀请码" ngControl="invite_code">
-            <div ui-message="required">邀请码不能为空</div>
-          </ui-input>
-          <div layout="row" layout-align="center">
+          <div class="ui field">
+            <input type="password" formControlName="password" placeholder="密码">
+          </div>
+          <div class="ui field">
+            <input type="password" formControlName="password_repeat" placeholder="重复密码">
+          </div>
+          <div class="ui field">
+            <input type="text" formControlName="invite_code" placeholder="邀请码">
+          </div>
+          <div>
             <button *ngIf="urlPath === '/forget'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">重置密码</button>
             <button *ngIf="urlPath === '/register'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
           </div>

@@ -1,10 +1,10 @@
-import {ControlGroup} from "@angular/common";
+import {FormGroup} from "@angular/forms";
 
 
 export function passwordMatch(passwordKey:string, passwordConfirmKey:string) {
-  return (group:ControlGroup):{[key:string]:any} => {
-    let password = group.controls[passwordKey];
-    let passwordConfirm = group.controls[passwordConfirmKey];
+  return (group:FormGroup):{[key:string]:any} => {
+    let password = group.get(passwordKey);
+    let passwordConfirm = group.get(passwordConfirmKey);
     return password.value !== passwordConfirm.value ? {mismatchedPasswords: true}: null;
   };
 }

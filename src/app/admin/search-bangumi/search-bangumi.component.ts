@@ -12,8 +12,9 @@ import {AdminService} from '../admin.service';
 })
 export class SearchBangumi {
 
-  public bangumiList = [];
   private _input = new Subject<string>();
+  bangumiList = [];
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -24,11 +25,14 @@ export class SearchBangumi {
     this._input
       .debounceTime(500)
       .distinctUntilChanged()
+      .filter(name => !!name)
       .forEach(name => {
+        this.isLoading = true;
         this.adminService.searchBangumi(name)
           .subscribe(
             bangumiList => this.bangumiList = bangumiList,
-            error => console.log(error)
+            error => console.log(error),
+            () => this.isLoading = false
           );
       });
   }

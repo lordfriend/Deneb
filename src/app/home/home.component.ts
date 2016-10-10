@@ -1,11 +1,8 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {HomeService} from './home.service';
-import {PlayEpisode} from "./play-episode/play-episode.component";
 import {Observable, Subscription} from "rxjs/Rx";
-import {Authentication} from '../user-service/authentication.service';
 import {User} from '../entity';
-import {Router, NavigationEnd} from '@angular/router';
 import {UserService} from '../user-service/user.service';
 
 
@@ -15,8 +12,7 @@ const BREAK_POINT = 1330;
 
 @Component({
   selector: 'home',
-  template: require('./home.html'),
-  providers: [Title, HomeService, PlayEpisode, Authentication]
+  template: require('./home.html')
 })
 export class Home implements OnInit, OnDestroy {
 

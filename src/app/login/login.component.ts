@@ -1,8 +1,8 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {UserService} from '../user-service';
-import {FormBuilder, ControlGroup, Validators, Control} from '@angular/common';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {User} from '../entity';
-import {AuthError} from '../error/AuthError';
+import {AuthError} from '../../facade/error/AuthError';
 import {Title} from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
@@ -11,14 +11,11 @@ require('./login.less');
 
 @Component({
   selector: 'login',
-  template: require('./login.html'),
-  providers: [UserService, Title]
+  template: require('./login.html')
 })
 export class Login implements OnInit, OnDestroy {
 
-  loginForm: ControlGroup;
-  name: Control;
-  password: Control;
+  loginForm: FormGroup;
 
   user: User;
 
@@ -41,11 +38,9 @@ export class Login implements OnInit, OnDestroy {
   }
 
   private buildForm(): void {
-    this.name = new Control('', Validators.required);
-    this.password = new Control('', Validators.required);
     this.loginForm = this.formBuilder.group({
-      name: this.name,
-      password: this.password,
+      name: ['', Validators.required],
+      password: ['', Validators.required],
       remember: [false]
     });
   };

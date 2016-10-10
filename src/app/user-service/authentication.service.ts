@@ -3,7 +3,7 @@ import {UserService} from "./user.service";
 import {User} from "../entity";
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from '@angular/router';
 import {Observable} from 'rxjs/Rx';
-import {AuthError} from '../error/AuthError';
+import {AuthError} from '../../facade/error/AuthError';
 
 
 @Injectable()

@@ -31,7 +31,6 @@
   <div class="ui large loader" [ngClass]="{active: showLoader}" (click)="onClickPlay($event)"></div>
   <a class="error-info" (click)="retry($event)" [ngClass]="{show: isError}">Network Error, click to Retry</a>
   <player-controls [isPaused]="paused"
-                   [playButtonIcon]="playButtonIcon"
                    [progress]="playProgress"
                    [buffered]="bufferedProgress"
                    [controlFadeOutTime]="controlFadeOutTime"

@@ -11,21 +11,21 @@
       <label>标题</label>
       <div class="two fields">
         <div class="field">
-          <input type="text" placeholder="标题" [(ngModel)]="episode.name">
+          <input type="text" placeholder="标题" [(ngModel)]="episode.name" name="name">
         </div>
         <div class="field">
-          <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn">
+          <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn" name="name_cn">
         </div>
       </div>
     </div>
     <div class="fields">
       <div class="four wide field">
         <label>放送日期(YYYY-MM-DD)</label>
-        <input type="text" placeholder="放送日期" [(ngModel)]="episode.airdate">
+        <input type="text" placeholder="放送日期" [(ngModel)]="episode.airdate" name="airdate">
       </div>
       <div class="four wide field">
         <label>时长(HH:mm:dd)</label>
-        <input type="text" placeholder="时长" [(ngModel)]="episode.duration">
+        <input type="text" placeholder="时长" [(ngModel)]="episode.duration" name="duration">
       </div>
       <div class="two wide field">
         <label>上传文件</label>

@@ -3,7 +3,6 @@
  */
 import {Component, ViewEncapsulation} from '@angular/core';
 
-import {UserService} from "./user-service";
 import {AnalyticsService} from './analytics.service';
 import {Router, NavigationEnd, NavigationStart} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
@@ -16,8 +15,6 @@ require('./app.less');
  */
 @Component({
   selector: 'app',
-  pipes: [ ],
-  providers: [UserService, AnalyticsService],
   template: `
     <router-outlet>
     </router-outlet>

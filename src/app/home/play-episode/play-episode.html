@@ -2,7 +2,7 @@
   <div class="ui medium loader"></div>
 </div>
 <div class="theater-backdrop" *ngIf="episode">
-  <player [episode]="episode"></player>
+  <player class="player-width player-height" [episode]="episode"></player>
 </div>
 <div class="ui container episode-info-container" *ngIf="episode">
   <h3 class=episode-title>

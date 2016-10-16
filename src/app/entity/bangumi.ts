@@ -22,4 +22,6 @@ export class Bangumi {
   public cover: string;
   // @Optional
   public episodes: Episode[];
+  // @Optional
+  eps_no_offset: number;
 }

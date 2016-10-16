@@ -2,8 +2,12 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Episode, Bangumi} from "../../entity";
 import {HomeService, HomeChild} from "../home.service";
 import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs/Rx';
+import {Subscription, Subject} from 'rxjs/Rx';
 import {Title} from '@angular/platform-browser';
+import {WatchService} from '../watch.service';
+
+export const MIN_WATCHED_PERCENTAGE = 0.95;
+
 
 @Component({
   selector: 'play-episode',
@@ -14,11 +18,35 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
   episode: Episode;
 
   private routeParamsSubscription: Subscription;
+  private positionChangeSubscription: Subscription;
+
+  private positionChange: Subject<number> = new Subject<number>();
 
   constructor(homeService: HomeService,
+              private watchService: WatchService,
               private titleService: Title,
               private route: ActivatedRoute) {
     super(homeService);
+  }
+
+  private current_position: number;
+  private duration: number;
+  private isUpdateHistory: boolean = false;
+
+  private get isFinished(): boolean {
+    if(typeof this.current_position === 'undefined' || typeof this.duration === 'undefined') {
+      return false;
+    }
+    return this.current_position / this.duration >= MIN_WATCHED_PERCENTAGE;
+  }
+
+  onWatchPositionUpdate(position: number) {
+    this.current_position = position;
+    this.positionChange.next(position);
+  }
+
+  onDurationUpdate(duration: number) {
+    this.duration = duration;
   }
 
   ngOnInit(): any {
@@ -40,11 +68,32 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         error => console.log(error)
       );
 
+    this.positionChangeSubscription = this.positionChange
+      .throttleTime(5000)
+      .filter(() => {
+        return !this.isUpdateHistory;
+      })
+      .subscribe(
+        (position) => {
+          this.isUpdateHistory = true;
+          this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, this.isFinished)
+            .subscribe(
+              () => {
+                this.isUpdateHistory = false;
+              },
+              () => {
+                this.isUpdateHistory = false;
+              }
+            );
+        },
+        () => {}
+      );
     return null;
   }
 
   ngOnDestroy(): any {
     this.routeParamsSubscription.unsubscribe();
+    this.positionChangeSubscription.unsubscribe();
     return null;
   }
 }

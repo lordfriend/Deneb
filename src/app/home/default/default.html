@@ -34,7 +34,7 @@
           </div>
         </ui-image-placeholder>
       </a>
-      <div class="ui ribbon label"
+      <div *ngIf="bangumi.favorite_status" class="ui ribbon label"
            [ngClass]="{
            orange: bangumi.favorite_status === 1,
            olive: bangumi.favorite_status === 2,

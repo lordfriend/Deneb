@@ -4,7 +4,7 @@ import {
   OnInit,
   AfterViewInit,
   ViewChild,
-  ElementRef, OnDestroy, OnChanges, SimpleChanges
+  ElementRef, OnDestroy, OnChanges, SimpleChanges, Output, EventEmitter
 } from '@angular/core';
 import {Episode} from "../../entity/episode";
 import {Observable} from "rxjs/Rx";
@@ -63,6 +63,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   @Input()
   reservedSpaceHeight:number = 0;
+
+  @Output()
+  onProgress: EventEmitter<number> = new EventEmitter<number>();
+
+  @Output()
+  onDurationUpdate: EventEmitter<number> = new EventEmitter<number>();
 
   @ViewChild('videoContainer') videoContainerRef: ElementRef;
   @ViewChild('video') videoElementRef:ElementRef;
@@ -246,10 +252,15 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
     this._currentTime = videoElement.currentTime;
     this._playProgress = Math.round(this._currentTime / this._duration * 1000) / 10;
+    this.onProgress.emit(this._currentTime);
   }
 
   onDurationChange(event: Event) {
     this._duration = (<HTMLMediaElement> event.target).duration;
+    this.onDurationUpdate.emit(this._duration);
+    if(this.episode.watch_progress && this.episode.watch_progress.last_watch_position) {
+      this.videoElementRef.nativeElement.currentTime = this.episode.watch_progress.last_watch_position;
+    }
   }
 
   onMetadataLoaded() {

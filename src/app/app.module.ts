@@ -17,6 +17,7 @@ import {PlayerModule} from './home/player';
 import {HOME_DECLARATIONS} from './home/index';
 import {HomeService} from './home/home.service';
 import {Ng2SemanticModule} from '../ng2-semantic';
+import {WatchService} from './home/watch.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {Ng2SemanticModule} from '../ng2-semantic';
     Authentication,
     UserService,
     HomeService,
+    WatchService,
     Title,
     ENV_PROVIDERS
   ],

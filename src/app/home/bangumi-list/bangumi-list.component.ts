@@ -3,6 +3,7 @@ import {HomeChild, HomeService} from "../home.service";
 import {Bangumi} from "../../entity/bangumi";
 import {Observable, Subscription} from "rxjs/Rx";
 import {ActivatedRoute} from '@angular/router';
+import {FAVORITE_LABEL} from '../../entity/constants';
 
 
 @Component({
@@ -10,6 +11,8 @@ import {ActivatedRoute} from '@angular/router';
   template: require('./bangumi-list.html')
 })
 export class BangumiList extends HomeChild implements OnInit, OnDestroy {
+
+  FAVORITE_LABEL = FAVORITE_LABEL;
 
   page: number = 0;
   total: number;

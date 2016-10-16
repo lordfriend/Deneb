@@ -1,25 +1,33 @@
 import {Episode} from "./episode";
 export class Bangumi {
-  public id: string;
-  public bgm_id: number;
-  public name: string;
-  public name_cn: string;
-  public eps: number;
-  public summary: string;
-  public image: string;
-  public air_date: string;
-  public air_weekday: number;
+  id: string;
+  bgm_id: number;
+  name: string;
+  name_cn: string;
+  eps: number;
+  summary: string;
+  image: string;
+  air_date: string;
+  air_weekday: number;
   // @Deprecated
-  public rss: string;
+  rss: string;
   // @Deprecated
-  public eps_regex: string;
-  public dmhy: string;
-  public acg_rip: string;
-  public status: number;
-  public create_time: number;
-  public update_time: number;
+  eps_regex: string;
+  dmhy: string;
+  acg_rip: string;
+  status: number;
+  create_time: number;
+  update_time: number;
   // @Optional
-  public cover: string;
+  cover: string;
   // @Optional
-  public episodes: Episode[];
+  episodes: Episode[];
+  // @Optional
+  favorite_status: number;
+
+  static WISH = 1;
+  static WATCHED = 2;
+  static WATCHING = 3;
+  static PAUSE = 4;
+  static ABANDONED = 5;
 }

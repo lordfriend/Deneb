@@ -76,7 +76,11 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
       .subscribe(
         (position) => {
           this.isUpdateHistory = true;
-          this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, this.isFinished)
+          let percentage = position / this.duration;
+          if(Number.isNaN(percentage)) {
+            return;
+          }
+          this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
             .subscribe(
               () => {
                 this.isUpdateHistory = false;

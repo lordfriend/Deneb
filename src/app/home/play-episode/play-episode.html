@@ -23,7 +23,7 @@
       </ui-image-placeholder>
     </div>
     <div class="bangumi-basic-info">
-      <h2 class="bangumi-title name-cn">{{episode.bangumi.name_cn}}</h2>
+      <h2 class="bangumi-title name-cn"><a [routerLink]="['/bangumi', episode.bangumi_id]">{{episode.bangumi.name_cn}}</a></h2>
       <h4 class="bangumi-title name">{{episode.bangumi.name}}</h4>
       <div class="summary">
         {{episode.bangumi.summary}}

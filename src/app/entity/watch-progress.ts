@@ -6,6 +6,7 @@ export class WatchProgress {
   watch_status: number;
   last_watch_position: number;
   last_watch_time: number;
+  percentage: number;
 
   static WISH = 1;
   static WATCHED = 2;

@@ -62,6 +62,16 @@
         <a *ngIf="episode.status===2" class="content" [routerLink]="['/play', episode.id]">
           <span>第{{episode.episode_no}}话</span>
         </a>
+        <div class="ui bottom attached progress" *ngIf="episode.watch_progress && episode.watch_progress.percentage"
+             [ngClass]="{
+             orange: episode.watch_progress.watch_status === 1,
+             olive: episode.watch_progress.watch_status === 2,
+             blue: episode.watch_progress.watch_status === 3,
+             brown: episode.watch_progress.watch_status === 4,
+             grey: episode.watch_progress.watch_status === 5
+             }">
+          <div class="bar" [style.width]="episode.watch_progress.percentage * 100 + '%'"></div>
+        </div>
       </div>
     </div>
   </div>

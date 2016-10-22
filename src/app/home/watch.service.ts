@@ -16,18 +16,19 @@ export class WatchService extends BaseService {
     this.requestOptions = new RequestOptions({headers: headers});
   }
 
-  favorite_bangumi(bangumi_id, status): Observable<any> {
+  favorite_bangumi(bangumi_id: string, status: number): Observable<any> {
     let body = JSON.stringify({status: status});
     return this.http.post(`${this.baseUrl}/favorite/bangumi/${bangumi_id}`, body, this.requestOptions)
       .map(res => res.json())
       .catch(this.handleError)
   }
 
-  episode_history(bangumi_id, episode_id, last_watch_position, is_finished): Observable<any> {
+  episode_history(bangumi_id: string, episode_id: string, last_watch_position: number, percentage: number, is_finished: boolean): Observable<any> {
     let body = JSON.stringify({
       bangumi_id: bangumi_id,
       last_watch_position: last_watch_position,
-      is_finished: is_finished
+      is_finished: is_finished,
+      percentage: percentage
     });
     return this.http.post(`${this.baseUrl}/history/${episode_id}`, body, this.requestOptions)
       .map(res => res.json())

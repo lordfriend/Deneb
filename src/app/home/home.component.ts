@@ -62,6 +62,15 @@ export class Home implements OnInit, OnDestroy {
     this.sidebarOverlap = viewportWidth <= BREAK_POINT;
   }
 
+  private updateMyBangumi() {
+    this.homeService.myBangumi()
+      .subscribe(
+        (myBangumiList: Bangumi[]) => {
+          this.myBangumiList = myBangumiList;
+        }
+      );
+  }
+
   ngOnInit():any {
     this.userServiceSubscription = this.userService.getUserInfo()
       .subscribe(
@@ -87,13 +96,6 @@ export class Home implements OnInit, OnDestroy {
         }
       );
 
-    this.homeService.myBangumi()
-      .subscribe(
-        (myBangumiList: Bangumi[]) => {
-          this.myBangumiList = myBangumiList;
-        }
-      );
-
     this.homeService.watchProgressChanges.subscribe((bangumi_id) => {
       if(Array.isArray(this.myBangumiList)) {
         let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
@@ -101,6 +103,12 @@ export class Home implements OnInit, OnDestroy {
           bangumi.unwatched_count--;
         }
       }
+    });
+
+    this.updateMyBangumi();
+
+    this.homeService.favoriteChanges.subscribe(() => {
+      this.updateMyBangumi();
     });
 
     return null;

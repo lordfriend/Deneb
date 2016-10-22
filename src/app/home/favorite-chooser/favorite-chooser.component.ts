@@ -2,6 +2,7 @@ import {Bangumi} from '../../entity/bangumi';
 import {Component, Input} from '@angular/core';
 import {FAVORITE_LABEL} from '../../entity/constants';
 import {WatchService} from '../watch.service';
+import {HomeService} from '../home.service';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class FavoriteChooser {
   @Input()
   bangumi: Bangumi;
 
-  constructor(private watchService: WatchService) {}
+  constructor(private watchService: WatchService, private homeService: HomeService) {}
 
   toggleFavoriteChooser() {
     this.isChoosingFavorite = !this.isChoosingFavorite;
@@ -29,6 +30,7 @@ export class FavoriteChooser {
     this.watchService.favorite_bangumi(this.bangumi.id, status)
       .subscribe(() => {
         this.bangumi.favorite_status = status;
+        this.homeService.changeFavorite();
         console.log('update favorite successful');
       }, () => {
         console.log('update favorite error');

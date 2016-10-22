@@ -131,7 +131,10 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
           return episode.watch_progress && episode.watch_progress.watch_status === WatchProgress.WATCHED;
         });
       if(otherWatched) {
-        this.watchService.favorite_bangumi(this.episode.bangumi_id, Bangumi.WATCHED);
+        this.watchService.favorite_bangumi(this.episode.bangumi_id, Bangumi.WATCHED)
+          .subscribe(() => {
+            this.homeService.changeFavorite();
+          });
       }
     }
   }

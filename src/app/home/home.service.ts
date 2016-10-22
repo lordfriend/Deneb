@@ -47,8 +47,14 @@ export class HomeService extends BaseService {
 
   watchProgressChanges: EventEmitter<string> = new EventEmitter<string>();
 
+  favoriteChanges: EventEmitter<any> = new EventEmitter<any>();
+
   episodeFinished(bangumi_id: string) {
     this.watchProgressChanges.emit(bangumi_id);
+  }
+
+  changeFavorite() {
+    this.favoriteChanges.emit(null);
   }
 
   /**

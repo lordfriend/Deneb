@@ -1,6 +1,6 @@
 <div class="favorite-wrapper">
-  <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite" class="small ui basic button"><i class="empty star icon"></i>收藏</button>
-  <a *ngIf="!isChoosingFavorite" class="ui tag label"
+  <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite" class="small ui basic button" (click)="toggleFavoriteChooser()"><i class="empty star icon"></i>收藏</button>
+  <a *ngIf="!isChoosingFavorite && bangumi.favorite_status" class="ui tag label"
      [ngClass]="{
                orange: bangumi.favorite_status === 1,
                olive: bangumi.favorite_status === 2,

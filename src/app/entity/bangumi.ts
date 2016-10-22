@@ -21,6 +21,8 @@ export class Bangumi {
   // @Optional
   cover: string;
   // @Optional
+  eps_no_offset: number;
+  // @Optional
   episodes: Episode[];
   // @Optional
   favorite_status: number;

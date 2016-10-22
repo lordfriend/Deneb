@@ -10,9 +10,9 @@ import {homeRoutes} from './home.routes';
 @Injectable()
 export class HomeService extends BaseService {
 
-  private _baseUrl = '/api/home';
+  private baseUrl = '/api/home';
 
-  constructor(private _http: Http,
+  constructor(private http: Http,
               private router: Router) {
     super();
     let childRoutes = homeRoutes[0].children;
@@ -53,43 +53,46 @@ export class HomeService extends BaseService {
   }
 
   recentEpisodes(days?: number): Observable<Episode[]> {
-    let queryUrl = this._baseUrl + '/recent';
+    let queryUrl = this.baseUrl + '/recent';
     if (days) {
       queryUrl = queryUrl + '?days=' + days;
     }
-    return this._http.get(queryUrl)
+    return this.http.get(queryUrl)
       .map(res => <Episode[]> res.json().data)
       .catch(this.handleError);
   }
 
   onAir(): Observable<Bangumi[]> {
-    let queryUrl = this._baseUrl + '/on_air';
-    return this._http.get(queryUrl)
+    return this.http.get(`${this.baseUrl}/on_air`)
       .map(res => <Bangumi[]> res.json().data)
       .catch(this.handleError);
   }
 
   episode_detail(episode_id: string): Observable<Episode> {
-    let queryUrl = this._baseUrl + '/episode/' + episode_id;
-    return this._http.get(queryUrl)
+    return this.http.get(`${this.baseUrl}/episode/${episode_id}`)
       .map(res => <Episode> res.json())
       .catch(this.handleError);
   }
 
   bangumi_datail(bangumi_id: string): Observable<Bangumi> {
-    let queryUrl = this._baseUrl + '/bangumi/' + bangumi_id;
-    return this._http.get(queryUrl)
+    return this.http.get(`${this.baseUrl}/bangumi/${bangumi_id}`)
       .map(res => <Bangumi> res.json().data)
       .catch(this.handleError);
   }
 
   listBangumi(page: number, orderBy: string, name?: string): Observable<{data: Bangumi[], total: number}> {
-    let queryUrl = this._baseUrl + '/bangumi?page=' + page + '&order_by=' + orderBy;
+    let queryUrl = this.baseUrl + '/bangumi?page=' + page + '&order_by=' + orderBy;
     if (name) {
       queryUrl = queryUrl + '&name=' + name;
     }
-    return this._http.get(queryUrl)
+    return this.http.get(queryUrl)
       .map(res => res.json())
+      .catch(this.handleError);
+  }
+
+  myBangumi(): Observable<Bangumi[]> {
+    return this.http.get(`${this.baseUrl}/my_bangumi`)
+      .map(res => <Bangumi[]> res.json().data)
       .catch(this.handleError);
   }
 }

@@ -24,6 +24,8 @@ export class Bangumi {
   episodes: Episode[];
   // @Optional
   favorite_status: number;
+  // @Optional
+  unwatched_count: number;
 
   static WISH = 1;
   static WATCHED = 2;

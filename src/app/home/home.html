@@ -7,9 +7,20 @@
   </a>
 </nav>
 <div class="ui sidebar ui vertical menu home-sidebar" [ngClass]="{visible: sidebarActive}">
-  <a class="item" [routerLink]="['/']">Home</a>
+  <a class="item" [routerLink]="['/']">首页</a>
   <a class="item" [routerLink]="['/bangumi']">所有番组</a>
   <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
+  <div class="item">
+    <div class="header">我的收藏</div>
+    <div class="menu">
+      <a class="item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">
+        <span class="bangumi-name">
+          {{bangumi.name_cn}}
+        </span>
+        <span *ngIf="bangumi.unwatched_count" class="ui orange small label">{{bangumi.unwatched_count}}</span>
+      </a>
+    </div>
+  </div>
 </div>
 <main class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
   <router-outlet></router-outlet>

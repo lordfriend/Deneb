@@ -4,6 +4,7 @@ import {HomeService} from './home.service';
 import {Observable, Subscription} from "rxjs/Rx";
 import {User} from '../entity';
 import {UserService} from '../user-service/user.service';
+import {Bangumi} from '../entity/bangumi';
 
 
 require('./home.less');
@@ -26,11 +27,13 @@ export class Home implements OnInit, OnDestroy {
 
   user: User;
 
+  myBangumiList: Bangumi[];
+
   private sidebarClickSubscription: Subscription;
   private resizeSubscription: Subscription;
   private userServiceSubscription: Subscription;
 
-  constructor(titleService:Title, homeService: HomeService, private userService: UserService) {
+  constructor(titleService:Title, private homeService: HomeService, private userService: UserService) {
     this.checkOverlapMode();
     homeService.childRouteChanges.subscribe((routeName) => {
       if(routeName === 'Play') {
@@ -81,6 +84,13 @@ export class Home implements OnInit, OnDestroy {
       .subscribe(
         () => {
           this.checkOverlapMode();
+        }
+      );
+
+    this.homeService.myBangumi()
+      .subscribe(
+        (myBangumiList: Bangumi[]) => {
+          this.myBangumiList = myBangumiList;
         }
       );
 

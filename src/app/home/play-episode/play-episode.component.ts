@@ -107,6 +107,8 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
   updateEpisodeWatchProgress() {
     if(!this.episode.watch_progress) {
       this.episode.watch_progress = new WatchProgress();
+      this.episode.watch_progress.watch_status = WatchProgress.WATCHING;
+      this.homeService.episodeFinished(this.episode.bangumi_id);
     }
     this.episode.watch_progress.last_watch_position = this.current_position;
     if(this.episode.watch_progress.watch_status !== WatchProgress.WATCHED && this.isFinished) {

@@ -94,6 +94,15 @@ export class Home implements OnInit, OnDestroy {
         }
       );
 
+    this.homeService.watchProgressChanges.subscribe((bangumi_id) => {
+      if(Array.isArray(this.myBangumiList)) {
+        let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
+        if(bangumi.unwatched_count > 0) {
+          bangumi.unwatched_count--;
+        }
+      }
+    });
+
     return null;
   }
 

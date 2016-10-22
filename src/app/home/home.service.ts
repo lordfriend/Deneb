@@ -45,6 +45,12 @@ export class HomeService extends BaseService {
 
   childRouteChanges: EventEmitter<any> = new EventEmitter();
 
+  watchProgressChanges: EventEmitter<string> = new EventEmitter<string>();
+
+  episodeFinished(bangumi_id: string) {
+    this.watchProgressChanges.emit(bangumi_id);
+  }
+
   /**
    * @Deprecated
    */

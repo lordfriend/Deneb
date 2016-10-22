@@ -23,6 +23,14 @@
         <span class="entry-key">放送星期</span>
         <span class="entry-value">{{bangumi.air_weekday}}</span>
       </p>
+      <div *ngIf="bangumi.favorite_status" class="ui tag label"
+           [ngClass]="{
+           orange: bangumi.favorite_status === 1,
+           olive: bangumi.favorite_status === 2,
+           blue: bangumi.favorite_status === 3,
+           brown: bangumi.favorite_status === 4,
+           grey: bangumi.favorite_status === 5
+           }">{{FAVORITE_LABEL[bangumi.favorite_status]}}</div>
     </div>
   </a>
 </div>

@@ -7,6 +7,7 @@ import {Observable, Subscription} from "rxjs/Rx";
 import {ActivatedRoute} from '@angular/router';
 import {Title} from '@angular/platform-browser';
 
+
 @Component({
   selector: 'view-bangumi-detail',
   template: require('./bangumi-detail.html'),

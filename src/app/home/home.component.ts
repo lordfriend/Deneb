@@ -4,6 +4,7 @@ import {HomeService} from './home.service';
 import {Observable, Subscription} from "rxjs/Rx";
 import {User} from '../entity';
 import {UserService} from '../user-service/user.service';
+import {Bangumi} from '../entity/bangumi';
 
 
 require('./home.less');
@@ -26,11 +27,13 @@ export class Home implements OnInit, OnDestroy {
 
   user: User;
 
+  myBangumiList: Bangumi[];
+
   private sidebarClickSubscription: Subscription;
   private resizeSubscription: Subscription;
   private userServiceSubscription: Subscription;
 
-  constructor(titleService:Title, homeService: HomeService, private userService: UserService) {
+  constructor(titleService:Title, private homeService: HomeService, private userService: UserService) {
     this.checkOverlapMode();
     homeService.childRouteChanges.subscribe((routeName) => {
       if(routeName === 'Play') {
@@ -59,6 +62,15 @@ export class Home implements OnInit, OnDestroy {
     this.sidebarOverlap = viewportWidth <= BREAK_POINT;
   }
 
+  private updateMyBangumi() {
+    this.homeService.myBangumi()
+      .subscribe(
+        (myBangumiList: Bangumi[]) => {
+          this.myBangumiList = myBangumiList;
+        }
+      );
+  }
+
   ngOnInit():any {
     this.userServiceSubscription = this.userService.getUserInfo()
       .subscribe(
@@ -83,6 +95,21 @@ export class Home implements OnInit, OnDestroy {
           this.checkOverlapMode();
         }
       );
+
+    this.homeService.watchProgressChanges.subscribe((bangumi_id) => {
+      if(Array.isArray(this.myBangumiList)) {
+        let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
+        if(bangumi.unwatched_count > 0) {
+          bangumi.unwatched_count--;
+        }
+      }
+    });
+
+    this.updateMyBangumi();
+
+    this.homeService.favoriteChanges.subscribe(() => {
+      this.updateMyBangumi();
+    });
 
     return null;
   }

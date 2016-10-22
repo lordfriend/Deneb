@@ -1,28 +1,32 @@
 import {Bangumi} from './bangumi';
-
+import {WatchProgress} from './watch-progress';
 
 export class Episode {
 
-  public static EPISODE_TYPE_NORMAL: number = 0;
-  public static EPISODE_TYPE_SPECIAL: number = 1;
+  static EPISODE_TYPE_NORMAL: number = 0;
+  static EPISODE_TYPE_SPECIAL: number = 1;
 
-  public id: string;
-  public bangumi_id: string;
-  public bgm_eps_id: number;
-  public episode_no: number;
-  public name: string;
-  public name_cn: string;
-  public duration: string;
-  public airdate: string;
-  public status: number;
-  public torrent_id: string;
-  public create_time: number;
-  public update_time: number;
-  public bangumi: Bangumi; // optional
-  public thumbnail: string; // optional
-  public videos: string[]; // optional
+  id: string;
+  bangumi_id: string;
+  bgm_eps_id: number;
+  episode_no: number;
+  name: string;
+  name_cn: string;
+  duration: string;
+  airdate: string;
+  status: number;
+  torrent_id: string;
+  create_time: number;
+  update_time: number;
+  bangumi: Bangumi; // optional
+  thumbnail: string; // optional
+  videos: string[]; // optional
 
-  public static fromRawData(rawData: any, episode_no?: number) {
+  // optional
+  watch_progress: WatchProgress;
+
+
+  static fromRawData(rawData: any, episode_no?: number) {
     let episode = new Episode();
     episode.bgm_eps_id = rawData.id;
     episode.episode_no = episode_no;

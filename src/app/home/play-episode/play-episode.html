@@ -2,7 +2,7 @@
   <div class="ui medium loader"></div>
 </div>
 <div class="theater-backdrop" *ngIf="episode">
-  <player class="player-width player-height" [episode]="episode"></player>
+  <player class="player-width player-height" [episode]="episode" (onProgress)="onWatchPositionUpdate($event)" (onDurationUpdate)="onDurationUpdate($event)"></player>
 </div>
 <div class="ui container episode-info-container" *ngIf="episode">
   <h3 class=episode-title>
@@ -23,8 +23,9 @@
       </ui-image-placeholder>
     </div>
     <div class="bangumi-basic-info">
-      <h2 class="bangumi-title name-cn">{{episode.bangumi.name_cn}}</h2>
+      <h2 class="bangumi-title name-cn"><a [routerLink]="['/bangumi', episode.bangumi_id]">{{episode.bangumi.name_cn}}</a></h2>
       <h4 class="bangumi-title name">{{episode.bangumi.name}}</h4>
+      <favorite-chooser *ngIf="isBangumiReady" [bangumi]="episode.bangumi"></favorite-chooser>
       <div class="summary">
         {{episode.bangumi.summary}}
       </div>

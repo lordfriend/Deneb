@@ -45,6 +45,29 @@ home {
 
 .home-sidebar {
   padding-top: 3.5rem;
+  &.ui.vertical.menu {
+    > .item {
+      > .header {
+        font-size: 0.9rem;
+        color: #2185d0;
+        padding-bottom: 0.9em;
+      }
+    }
+    .menu {
+      > .item {
+        font-size: 1rem;
+        padding: 0.5em 1.14em;
+        > .bangumi-name {
+          display: inline-block;
+          width: 10em;
+          color: #696969;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
 }
 
 .home-content {

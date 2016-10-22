@@ -4,7 +4,7 @@ import {
   OnInit,
   AfterViewInit,
   ViewChild,
-  ElementRef, OnDestroy, OnChanges, SimpleChanges
+  ElementRef, OnDestroy, OnChanges, SimpleChanges, Output, EventEmitter
 } from '@angular/core';
 import {Episode} from "../../entity/episode";
 import {Observable} from "rxjs/Rx";
@@ -63,6 +63,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   @Input()
   reservedSpaceHeight:number = 0;
+
+  @Output()
+  onProgress: EventEmitter<number> = new EventEmitter<number>();
+
+  @Output()
+  onDurationUpdate: EventEmitter<number> = new EventEmitter<number>();
 
   @ViewChild('videoContainer') videoContainerRef: ElementRef;
   @ViewChild('video') videoElementRef:ElementRef;
@@ -246,10 +252,13 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     let videoElement:HTMLVideoElement = this.videoElementRef.nativeElement;
     this._currentTime = videoElement.currentTime;
     this._playProgress = Math.round(this._currentTime / this._duration * 1000) / 10;
+    this.onProgress.emit(this._currentTime);
   }
 
   onDurationChange(event: Event) {
-    this._duration = (<HTMLMediaElement> event.target).duration;
+    let videoElement = (<HTMLMediaElement> event.target);
+    this._duration = videoElement.duration;
+    this.onDurationUpdate.emit(this._duration);
   }
 
   onMetadataLoaded() {
@@ -259,10 +268,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     document.addEventListener('webkitfullscreenchange', this._fullScreenChangeHandler, false);
     document.addEventListener('mozfullscreenchange', this._fullScreenChangeHandler, false);
     document.addEventListener('MSFullscreenChange', this._fullScreenChangeHandler, false);
+    if(this.episode.watch_progress && this.episode.watch_progress.last_watch_position && this.episode.watch_progress.last_watch_position < this._duration) {
+      this.videoElementRef.nativeElement.currentTime = this.episode.watch_progress.last_watch_position;
+    }
   }
 
   onVideoResized() {
-    console.log('video resized');
     this.scaleVideoContainer(KEEP_RESERVED_SPACE);
   }
 
@@ -383,7 +394,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   private onWindowReisze() {
-    console.log('resized', window.innerWidth, window.innerHeight);
     if(!this._fullscreenMode) {
       this.scaleVideoContainer(KEEP_RESERVED_SPACE);
     } else {

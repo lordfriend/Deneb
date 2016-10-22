@@ -40,11 +40,17 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     if(typeof this.current_position === 'undefined' || typeof this.duration === 'undefined') {
       return false;
     }
+    if(this.episode.watch_progress && this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
+      return true;
+    }
     return this.current_position / this.duration >= MIN_WATCHED_PERCENTAGE;
   }
 
   onWatchPositionUpdate(position: number) {
     this.current_position = position;
+    if(position === this.duration) {
+      this.updateHistory(position);
+    }
     this.positionChange.next(position);
     this.updateEpisodeWatchProgress();
   }
@@ -57,7 +63,6 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     this.routeParamsSubscription = this.route.params
       .flatMap((params) => {
         let episode_id = params['episode_id'];
-        console.log('episode changed', episode_id);
         return this.homeService.episode_detail(episode_id)
       })
       .flatMap((episode: Episode) => {
@@ -81,24 +86,28 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
       })
       .subscribe(
         (position) => {
-          this.isUpdateHistory = true;
-          let percentage = position / this.duration;
-          if(Number.isNaN(percentage)) {
-            return;
-          }
-          this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
-            .subscribe(
-              () => {
-                this.isUpdateHistory = false;
-              },
-              () => {
-                this.isUpdateHistory = false;
-              }
-            );
+          this.updateHistory(position);
         },
         () => {}
       );
     return null;
+  }
+
+  updateHistory(position) {
+    this.isUpdateHistory = true;
+    let percentage = position / this.duration;
+    if(Number.isNaN(percentage)) {
+      return;
+    }
+    this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
+      .subscribe(
+        () => {
+          this.isUpdateHistory = false;
+        },
+        () => {
+          this.isUpdateHistory = false;
+        }
+      );
   }
 
   /**
@@ -110,7 +119,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
       this.episode.watch_progress.watch_status = WatchProgress.WATCHING;
       this.homeService.episodeFinished(this.episode.bangumi_id);
     }
-    this.episode.watch_progress.last_watch_position = this.current_position;
+    // this.episode.watch_progress.last_watch_position = this.current_position;
     if(this.episode.watch_progress.watch_status !== WatchProgress.WATCHED && this.isFinished) {
       this.updateBangumiFavorite();
     }
@@ -130,9 +139,10 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         .every((episode) => {
           return episode.watch_progress && episode.watch_progress.watch_status === WatchProgress.WATCHED;
         });
-      if(otherWatched) {
+      if(otherWatched && this.episode.bangumi.favorite_status !== Bangumi.WATCHED) {
         this.watchService.favorite_bangumi(this.episode.bangumi_id, Bangumi.WATCHED)
           .subscribe(() => {
+            this.episode.bangumi.favorite_status = Bangumi.WATCHED;
             this.homeService.changeFavorite();
           });
       }

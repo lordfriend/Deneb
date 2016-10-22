@@ -256,11 +256,9 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   onDurationChange(event: Event) {
-    this._duration = (<HTMLMediaElement> event.target).duration;
+    let videoElement = (<HTMLMediaElement> event.target);
+    this._duration = videoElement.duration;
     this.onDurationUpdate.emit(this._duration);
-    if(this.episode.watch_progress && this.episode.watch_progress.last_watch_position) {
-      this.videoElementRef.nativeElement.currentTime = this.episode.watch_progress.last_watch_position;
-    }
   }
 
   onMetadataLoaded() {
@@ -270,10 +268,12 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     document.addEventListener('webkitfullscreenchange', this._fullScreenChangeHandler, false);
     document.addEventListener('mozfullscreenchange', this._fullScreenChangeHandler, false);
     document.addEventListener('MSFullscreenChange', this._fullScreenChangeHandler, false);
+    if(this.episode.watch_progress && this.episode.watch_progress.last_watch_position && this.episode.watch_progress.last_watch_position < this._duration) {
+      this.videoElementRef.nativeElement.currentTime = this.episode.watch_progress.last_watch_position;
+    }
   }
 
   onVideoResized() {
-    console.log('video resized');
     this.scaleVideoContainer(KEEP_RESERVED_SPACE);
   }
 
@@ -394,7 +394,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   private onWindowReisze() {
-    console.log('resized', window.innerWidth, window.innerHeight);
     if(!this._fullscreenMode) {
       this.scaleVideoContainer(KEEP_RESERVED_SPACE);
     } else {

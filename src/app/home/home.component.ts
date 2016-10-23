@@ -1,10 +1,11 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {HomeService} from './home.service';
-import {Observable, Subscription} from "rxjs/Rx";
+import {Observable, Subscription, Subject} from "rxjs/Rx";
 import {User} from '../entity';
 import {UserService} from '../user-service/user.service';
 import {Bangumi} from '../entity/bangumi';
+import {Router} from '@angular/router';
 
 
 require('./home.less');
@@ -17,7 +18,7 @@ const BREAK_POINT = 1330;
 })
 export class Home implements OnInit, OnDestroy {
 
-  siteTitle:string = SITE_TITLE;
+  siteTitle: string = SITE_TITLE;
 
   currentRouteName: string = '';
 
@@ -29,26 +30,36 @@ export class Home implements OnInit, OnDestroy {
 
   myBangumiList: Bangumi[];
 
+  showFloatSearchFrame: boolean;
+
   private sidebarClickSubscription: Subscription;
   private resizeSubscription: Subscription;
   private userServiceSubscription: Subscription;
 
-  constructor(titleService:Title, private homeService: HomeService, private userService: UserService) {
+  constructor(titleService: Title, private homeService: HomeService, private userService: UserService, private router: Router) {
     this.checkOverlapMode();
     homeService.childRouteChanges.subscribe((routeName) => {
-      if(routeName === 'Play') {
+      if (routeName === 'Play') {
         this.sidebarActive = false;
-      } else if(!this.sidebarOverlap) {
+      } else if (!this.sidebarOverlap) {
         this.sidebarActive = true;
       }
       this.currentRouteName = routeName;
 
-      if(routeName === 'Bangumi') {
+      if (routeName === 'Bangumi') {
         titleService.setTitle(`所有新番 - ${this.siteTitle}`);
-      } else if(routeName === 'Default') {
+      } else if (routeName === 'Default') {
         titleService.setTitle(this.siteTitle);
       }
     });
+  }
+
+  searchBangumi(name: string) {
+    this.router.navigate(['/bangumi', {name: name}]);
+  }
+
+  toggleFloatSearchFrame() {
+    this.showFloatSearchFrame = !this.showFloatSearchFrame;
   }
 
   toggleSidebar(event: Event) {
@@ -58,7 +69,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   private checkOverlapMode() {
-    let viewportWidth =  window.innerWidth;
+    let viewportWidth = window.innerWidth;
     this.sidebarOverlap = viewportWidth <= BREAK_POINT;
   }
 
@@ -71,7 +82,7 @@ export class Home implements OnInit, OnDestroy {
       );
   }
 
-  ngOnInit():any {
+  ngOnInit(): any {
     this.userServiceSubscription = this.userService.getUserInfo()
       .subscribe(
         (user: User) => {
@@ -97,9 +108,9 @@ export class Home implements OnInit, OnDestroy {
       );
 
     this.homeService.watchProgressChanges.subscribe((bangumi_id) => {
-      if(Array.isArray(this.myBangumiList)) {
+      if (Array.isArray(this.myBangumiList)) {
         let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
-        if(bangumi && bangumi.unwatched_count > 0) {
+        if (bangumi && bangumi.unwatched_count > 0) {
           bangumi.unwatched_count--;
         }
       }
@@ -115,11 +126,11 @@ export class Home implements OnInit, OnDestroy {
   }
 
 
-  ngOnDestroy():any {
-    if(this.userServiceSubscription) {
+  ngOnDestroy(): any {
+    if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
     }
-    if(this.sidebarClickSubscription) {
+    if (this.sidebarClickSubscription) {
       this.sidebarClickSubscription.unsubscribe();
     }
     return null;

@@ -41,6 +41,61 @@ home {
     padding: 0 1rem;
     color: #101010;
   }
+  .ui.static-search.input {
+    margin-left: 8rem;
+    @media (min-width: 1440px) {
+      width: 40rem;
+    }
+
+    @media (min-width: 1024px) and (max-width: 1439px) {
+      width: 30rem;
+    }
+
+    @media (min-width: 640px) and (max-width: 1023px) {
+      width: 16rem;
+      margin-left: 4rem;
+    }
+
+    @media (max-width: 639px) {
+      display: none;
+    }
+  }
+  .right-area {
+    flex: 1 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 1.5rem;
+    .search-toggle-button {
+      display: none;
+      color: #101010;
+      cursor: pointer;
+      @media (max-width: 639px) {
+        display: block;
+      }
+    }
+  }
+  .float-search-frame {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: 202;
+    padding: 0 1.5rem 0 0;
+    > .close-button {
+      font-size: 1.5rem;
+      padding: 0 1em;
+      cursor: pointer;
+      color: #666666;
+    }
+    > .ui.float-search {
+      flex: 1 1;
+    }
+  }
 }
 
 .home-sidebar {

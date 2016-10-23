@@ -35,8 +35,8 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
     super(homeService);
   }
 
-  loadMoreContent() {
-    if(this.page >= Math.ceil(this.total/this.countPerPage)) {
+  loadMoreContent(refresh?: boolean) {
+    if(!refresh && this.page >= Math.ceil(this.total/this.countPerPage)) {
       return;
     }
     this.page++;
@@ -44,7 +44,11 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
     this.homeService.listBangumi(this.page, this.orderBy, this.name)
       .subscribe(
         (result: any) => {
-          this.bangumiList = this.bangumiList.concat(result.data);
+          if(refresh) {
+            this.bangumiList = result.data;
+          } else {
+            this.bangumiList = this.bangumiList.concat(result.data);
+          }
           this.total = result.total;
         },
         (error) => {console.log(error)},
@@ -55,13 +59,15 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
   }
 
   ngOnInit():any {
+
     this.routeParamsSubscription = this.route.params
       .subscribe((params) => {
-        let pageFromParams = parseInt(params['page']);
-        this.page = Number.isNaN(pageFromParams) ? 0: pageFromParams;
-
+        // let pageFromParams = parseInt(params['page']);
+        // this.page = Number.isNaN(pageFromParams) ? 0: pageFromParams;
+        this.page = 0;
         this.name = params['name'];
-        this.loadMoreContent();
+        console.log(this.name);
+        this.loadMoreContent(true);
       });
 
     this.scrollSubscription = Observable.fromEvent(document, 'scroll')
@@ -84,8 +90,12 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
 
 
   ngOnDestroy():any {
-    this.routeParamsSubscription.unsubscribe();
-    this.scrollSubscription.unsubscribe();
+    if(this.routeParamsSubscription) {
+      this.routeParamsSubscription.unsubscribe();
+    }
+    if(this.scrollSubscription) {
+      this.scrollSubscription.unsubscribe();
+    }
     return null;
   }
 }

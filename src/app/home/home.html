@@ -5,6 +5,26 @@
   <a class="brand" [routerLink]="['/']">
     <h2>{{siteTitle}}</h2>
   </a>
+  <div class="ui static-search small action input">
+    <input type="text" placeholder="Search..." #staticSearch (keyup.enter)="searchBangumi(staticSearch.value)">
+    <button class="ui basic icon button" (click)="searchBangumi(staticSearch.value)">
+      <i class="search icon"></i>
+    </button>
+  </div>
+  <div class="right-area">
+    <a class="search-toggle-button" (click)="toggleFloatSearchFrame()">
+      <i class="search icon"></i>
+    </a>
+  </div>
+  <div class="float-search-frame" *ngIf="showFloatSearchFrame">
+    <a class="close-button" (click)="toggleFloatSearchFrame()">
+      <i class="close icon"></i>
+    </a>
+    <div class="ui float-search transparent icon input">
+      <input type="text" placeholder="Search..." #floatSearch (keyup.enter)="searchBangumi(floatSearch.value)">
+      <i class="search icon"></i>
+    </div>
+  </div>
 </nav>
 <div class="ui sidebar ui vertical menu home-sidebar" [ngClass]="{visible: sidebarActive}">
   <a class="item" [routerLink]="['/']">首页</a>

@@ -23,7 +23,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
   private routeParamsSubscription: Subscription;
   private positionChangeSubscription: Subscription;
 
-  private positionChange: Subject<number> = new Subject<number>();
+  private positionChange = new Subject<number>();
 
   constructor(homeService: HomeService,
               private watchService: WatchService,
@@ -32,15 +32,15 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     super(homeService);
   }
 
-  private current_position: number;
+  private current_position: number | undefined;
   private duration: number;
   private isUpdateHistory: boolean = false;
 
   private get isFinished(): boolean {
-    if(typeof this.current_position === 'undefined' || typeof this.duration === 'undefined') {
+    if (!this.current_position || !this.duration) {
       return false;
     }
-    if(this.episode.watch_progress && this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
+    if (this.episode.watch_progress && this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
       return true;
     }
     return this.current_position / this.duration >= MIN_WATCHED_PERCENTAGE;
@@ -48,7 +48,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
   onWatchPositionUpdate(position: number) {
     this.current_position = position;
-    if(position === this.duration) {
+    if (position === this.duration) {
       this.updateHistory(position);
     }
     this.positionChange.next(position);
@@ -88,7 +88,8 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         (position) => {
           this.updateHistory(position);
         },
-        () => {}
+        () => {
+        }
       );
     return null;
   }
@@ -96,7 +97,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
   updateHistory(position) {
     this.isUpdateHistory = true;
     let percentage = position / this.duration;
-    if(Number.isNaN(percentage)) {
+    if (Number.isNaN(percentage)) {
       return;
     }
     this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
@@ -114,13 +115,13 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
    * update current episode watch_progress in memory
    */
   updateEpisodeWatchProgress() {
-    if(!this.episode.watch_progress) {
+    if (!this.episode.watch_progress) {
       this.episode.watch_progress = new WatchProgress();
       this.episode.watch_progress.watch_status = WatchProgress.WATCHING;
       this.homeService.episodeWatching(this.episode.bangumi_id);
     }
     // this.episode.watch_progress.last_watch_position = this.current_position;
-    if(this.episode.watch_progress.watch_status !== WatchProgress.WATCHED && this.isFinished) {
+    if (this.episode.watch_progress.watch_status !== WatchProgress.WATCHED && this.isFinished) {
       this.updateBangumiFavorite();
     }
     this.episode.watch_progress.watch_status = this.isFinished ? WatchProgress.WATCHED : WatchProgress.WATCHING;
@@ -130,7 +131,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
    * update bangumi favorite status to WATCHED
    */
   updateBangumiFavorite() {
-    if(this.isBangumiReady) {
+    if (this.isBangumiReady) {
       let bangumi = this.episode.bangumi;
       let otherWatched = bangumi.episodes
         .filter((episode) => {
@@ -139,7 +140,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         .every((episode) => {
           return episode.watch_progress && episode.watch_progress.watch_status === WatchProgress.WATCHED;
         });
-      if(otherWatched && this.episode.bangumi.favorite_status !== Bangumi.WATCHED) {
+      if (otherWatched && this.episode.bangumi.favorite_status !== Bangumi.WATCHED) {
         this.watchService.favorite_bangumi(this.episode.bangumi_id, Bangumi.WATCHED)
           .subscribe(() => {
             this.episode.bangumi.favorite_status = Bangumi.WATCHED;
@@ -150,7 +151,6 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): any {
-    console.log('episode destroyed')
     this.routeParamsSubscription.unsubscribe();
     this.positionChangeSubscription.unsubscribe();
     return null;

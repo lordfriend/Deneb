@@ -127,10 +127,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/angularclass/angular2-webpack-starter.git"
+    "url": "https://github.com/lordfriend/Deneb.git"
   },
   "bugs": {
-    "url": "https://github.com/angularclass/angular2-webpack-starter/issues"
+    "url": "https://github.com/lordfriend/Deneb/issues"
   },
   "engines": {
     "node": ">= 4.2.1",

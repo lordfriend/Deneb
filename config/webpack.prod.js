@@ -24,6 +24,8 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+
+var webpack = require('webpack');
 var helpers = require('./helpers'); // Helper: root(), and rootDir() are defined at the bottom
 var webpackMerge = require('webpack-merge'); //Used to merge webpack configs
 var commonConfig = require('./webpack.common.js'); //The settings that are common to prod and dev
@@ -45,57 +47,49 @@ const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 8080;
 const TITLE = process.env.SITE_TITLE || 'Deneb';
-const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
+const METADATA = webpackMerge(commonConfig({ env: ENV }).metadata, {
   host: HOST,
   port: PORT,
   ENV: ENV,
   HMR: false,
   title: TITLE
 });
-module.exports = function(options) {
-  return webpackMerge(commonConfig({env: ENV}), {
+module.exports = function (options) {
+  return webpackMerge(commonConfig({ env: ENV }), {
 
-    // Override the common metadata property
-    metadata: METADATA,
+    // Developer tool to enhance debugging
+    //
+    // See: http://webpack.github.io/docs/configuration.html#devtool
+    // See: https://github.com/webpack/docs/wiki/build-performance#sourcemaps
+    devtool: 'source-map',
 
-      // Switch loaders to debug mode.
-      //
-      // See: http://webpack.github.io/docs/configuration.html#debug
-      debug: false,
-
-      // Developer tool to enhance debugging
-      //
-      // See: http://webpack.github.io/docs/configuration.html#devtool
-      // See: https://github.com/webpack/docs/wiki/build-performance#sourcemaps
-      devtool: 'source-map',
-
-      // Options affecting the output of the compilation.
-      //
-      // See: http://webpack.github.io/docs/configuration.html#output
-      output: {
+    // Options affecting the output of the compilation.
+    //
+    // See: http://webpack.github.io/docs/configuration.html#output
+    output: {
 
       // The output directory as absolute path (required).
       //
       // See: http://webpack.github.io/docs/configuration.html#output-path
       path: helpers.root('dist'),
 
-        // Specifies the name of each output file on disk.
-        // IMPORTANT: You must not specify an absolute path here!
-        //
-        // See: http://webpack.github.io/docs/configuration.html#output-filename
-        filename: '[name].[chunkhash].bundle.js',
+      // Specifies the name of each output file on disk.
+      // IMPORTANT: You must not specify an absolute path here!
+      //
+      // See: http://webpack.github.io/docs/configuration.html#output-filename
+      filename: '[name].[chunkhash].bundle.js',
 
-        // The filename of the SourceMaps for the JavaScript files.
-        // They are inside the output.path directory.
-        //
-        // See: http://webpack.github.io/docs/configuration.html#output-sourcemapfilename
-        sourceMapFilename: '[name].[chunkhash].bundle.map',
+      // The filename of the SourceMaps for the JavaScript files.
+      // They are inside the output.path directory.
+      //
+      // See: http://webpack.github.io/docs/configuration.html#output-sourcemapfilename
+      sourceMapFilename: '[name].[chunkhash].bundle.map',
 
-        // The filename of non-entry chunks as relative path
-        // inside the output.path directory.
-        //
-        // See: http://webpack.github.io/docs/configuration.html#output-chunkfilename
-        chunkFilename: '[id].[chunkhash].chunk.js'
+      // The filename of non-entry chunks as relative path
+      // inside the output.path directory.
+      //
+      // See: http://webpack.github.io/docs/configuration.html#output-chunkfilename
+      chunkFilename: '[id].[chunkhash].chunk.js'
 
     },
 
@@ -159,12 +153,23 @@ module.exports = function(options) {
         // comments: true, //debug
 
         beautify: false, //prod
-
-        mangle: { screw_ie8 : true, keep_fnames: true }, //prod
+        output: {
+          comments: false
+        }, //prod//prod
+        mangle: { screw_ie8: true, keep_fnames: true }, //prod
         compress: {
-          screw_ie8: true
-        }, //prod
-        comments: false //prod
+          screw_ie8: true,
+          warnings: false,
+          conditions: true,
+          unused: true,
+          comparisons: true,
+          sequences: true,
+          dead_code: true,
+          evaluate: true,
+          if_return: true,
+          join_vars: true,
+          negate_iife: false // we need this for lazy v8
+        },
       }),
 
       // Plugin: CompressionPlugin
@@ -175,43 +180,51 @@ module.exports = function(options) {
       new CompressionPlugin({
         regExp: /\.css$|\.html$|\.js$|\.map$/,
         threshold: 2 * 1024
+      }),
+
+      new webpack.LoaderOptionsPlugin({
+        debug: false,
+        minimize: true,
+        options: {
+
+          // Html loader advanced options
+          //
+          // See: https://github.com/webpack/html-loader#advanced-options
+          // TODO: Need to workaround Angular 2's html syntax => #id [bind] (event) *ngFor
+
+
+          htmlLoader: {
+            minimize: true,
+            removeAttributeQuotes: false,
+            caseSensitive: true,
+            customAttrSurround: [
+              [/#/, /(?:)/],
+              [/\*/, /(?:)/],
+              [/\[?\(?/, /(?:)/]
+            ],
+            customAttrAssign: [/\)?\]?=/]
+          }
+        }
       })
 
     ],
 
-      // Static analysis linter for TypeScript advanced options configuration
-      // Description: An extensible linter for the TypeScript language.
-      //
-      // See: https://github.com/wbuchwalter/tslint-loader
-      tslint: {
-      emitErrors: true,
-        failOnHint: true,
-        resourcePath: 'src'
-    },
-
-    // Html loader advanced options
+    // Static analysis linter for TypeScript advanced options configuration
+    // Description: An extensible linter for the TypeScript language.
     //
-    // See: https://github.com/webpack/html-loader#advanced-options
-    // TODO: Need to workaround Angular 2's html syntax => #id [bind] (event) *ngFor
-    htmlLoader: {
-      minimize: true,
-        removeAttributeQuotes: false,
-        caseSensitive: true,
-        customAttrSurround: [
-        [/#/, /(?:)/],
-        [/\*/, /(?:)/],
-        [/\[?\(?/, /(?:)/]
-      ],
-        customAttrAssign: [/\)?\]?=/]
+    // See: https://github.com/wbuchwalter/tslint-loader
+    tslint: {
+      emitErrors: true,
+      failOnHint: true,
+      resourcePath: 'src'
     },
-
     node: {
       global: 'window',
-        crypto: 'empty',
-        process: false,
-        module: false,
-        clearImmediate: false,
-        setImmediate: false
+      crypto: 'empty',
+      process: false,
+      module: false,
+      clearImmediate: false,
+      setImmediate: false
     }
   });
 };

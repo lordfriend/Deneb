@@ -25,6 +25,7 @@
  SOFTWARE.
  */
 
+var webpack = require('webpack');
 var helpers = require('./helpers');
 var webpackMerge = require('webpack-merge'); //Used to merge webpack configs
 var commonConfig = require('./webpack.common.js'); //The settings that are common to prod and dev
@@ -73,10 +74,6 @@ try {
  */
 module.exports = function(options) {
   return webpackMerge(commonConfig({env: ENV}), {
-    // Switch loaders to debug mode.
-    //
-    // See: http://webpack.github.io/docs/configuration.html#debug
-    debug: true,
 
     // Developer tool to enhance debugging
     //
@@ -130,6 +127,13 @@ module.exports = function(options) {
         'HMR': METADATA.HMR,
         'SITE_TITLE': JSON.stringify(METADATA.title)
       }),
+
+      // Plugin: LoaderOptionsPlugin
+      // https://gist.github.com/sokra/27b24881210b56bbaff7#loader-options--minimize
+      new webpack.LoaderOptionsPlugin({
+        // switch loader to debug mode
+        debug: true
+      })
     ],
 
     // Static analysis linter for TypeScript advanced options configuration

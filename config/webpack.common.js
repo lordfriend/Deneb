@@ -38,34 +38,11 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
 
 /**
- * check custom login style exists
- */
-
-var loginStyleExsits;
-try {
-  loginStyleExsits = fs.statSync(helpers.root('src/assets/css/login.css')).isFile();
-  console.log('login style file existence: ' + loginStyleExsits);
-} catch (e) {
-  console.error(e);
-  loginStyleExsits = false;
-}
-
-/**
- * Webpack Constants
- */
-const METADATA = {
-  title: 'Deneb',
-  baseUrl: '/',
-  GA: process.env.GA || '',
-  customLoginStyle: loginStyleExsits
-};
-
-/**
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
-module.exports = function(options) {
+module.exports = function (metadata) {
   return {
 
     // Static metadata for index.html
@@ -117,28 +94,19 @@ module.exports = function(options) {
         // See: https://github.com/s-panferov/awesome-typescript-loader
         {
           test: /\.ts$/,
-          loader: [
+          use: [
             'awesome-typescript-loader',
             'angular2-template-loader'
           ],
           exclude: [/\.(spec|e2e)\.ts$/]
         },
-
-        // Json loader support for *.json files.
-        //
-        // See: https://github.com/webpack/json-loader
-        {
-          test: /\.json$/,
-          loader: 'json-loader'
-        },
-
         // Raw loader support for *.css files
         // Returns file content as string
         //
         // See: https://github.com/webpack/raw-loader
         {
           test: /\.css$/,
-          loader: 'raw-loader'
+          use: 'raw-loader'
         },
 
         // Raw loader support for *.html
@@ -147,7 +115,7 @@ module.exports = function(options) {
         // See: https://github.com/webpack/raw-loader
         {
           test: /\.html$/,
-          loader: 'raw-loader',
+          use: 'raw-loader',
           exclude: [helpers.root('src/index.html')]
         },
 
@@ -155,19 +123,47 @@ module.exports = function(options) {
         // See https://github.com/webpack/less-loader
         {
           test: /ng2-semantic\.less$/,
-          loader: ExtractTextPlugin.extract({fallbackLoader: 'style', loader: 'css-loader!less-loader!'})
+          loader: ExtractTextPlugin.extract({
+            fallbackLoader: 'style-loader',
+            loader: [
+              'css-loader',
+              'less-loader'
+            ]
+          })
         },
         {
           test: /\.less$/,
           exclude: /ng2-semantic\.less$/,
-          loader: 'style-loader!css-loader!less-loader'
+          use: [
+            'style-loader',
+            'css-loader',
+            'less-loader'
+          ]
         },
-        { test: /\.(png|jpg)$/, loader: 'file?name=images/[name].[hash].[ext]' },
-        { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'},
-        { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'},
-        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream'},
-        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]'},
-        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=images/[name].[hash].[ext]&mimetype=image/svg+xml' }
+        {
+          test: /\.(png|jpg)$/,
+          use: 'file-loader?name=images/[name].[hash].[ext]'
+        },
+        {
+          test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'
+        },
+        {
+          test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'
+        },
+        {
+          test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream'
+        },
+        {
+          test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]'
+        },
+        {
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=images/[name].[hash].[ext]&mimetype=image/svg+xml'
+        }
       ]
     },
 
@@ -224,9 +220,9 @@ module.exports = function(options) {
       // See: https://github.com/ampedandwired/html-webpack-plugin
       new HtmlWebpackPlugin({
         template: 'src/index.html',
-        title: MEATADATA.TITLE,
+        title: metadata.TITLE,
         chunksSortMode: 'dependency',
-        metadata: METADATA,
+        metadata: metadata,
         inject: 'head'
       }),
 
@@ -242,7 +238,7 @@ module.exports = function(options) {
     //
     // See: https://webpack.github.io/docs/configuration.html#node
     node: {
-      global: 'window',
+      global: true,
       crypto: 'empty',
       module: false,
       clearImmediate: false,

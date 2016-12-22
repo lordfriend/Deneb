@@ -40,22 +40,8 @@ var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 var CompressionPlugin = require('compression-webpack-plugin');
 var WebpackMd5Hash = require('webpack-md5-hash');
 
-/**
- * Webpack Constants
- */
-const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
-const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || 8080;
-const TITLE = process.env.SITE_TITLE || 'Deneb';
-const METADATA = webpackMerge(commonConfig({ env: ENV }).metadata, {
-  host: HOST,
-  port: PORT,
-  ENV: ENV,
-  HMR: false,
-  title: TITLE
-});
-module.exports = function (options) {
-  return webpackMerge(commonConfig({ env: ENV }), {
+module.exports = function (metadata) {
+  return webpackMerge(commonConfig(metadata), {
 
     // Developer tool to enhance debugging
     //
@@ -121,13 +107,13 @@ module.exports = function (options) {
       // See: https://webpack.github.io/docs/list-of-plugins.html#defineplugin
       // NOTE: when adding more properties make sure you include them in custom-typings.d.ts
       new DefinePlugin({
-        'ENV': JSON.stringify(METADATA.ENV),
-        'HMR': METADATA.HMR,
-        'SITE_TITLE': JSON.stringify(METADATA.title),
+        'ENV': JSON.stringify(metadata.ENV),
+        'HMR': metadata.HMR,
+        'SITE_TITLE': JSON.stringify(metadata.title),
         'process.env': {
-          'ENV': JSON.stringify(METADATA.ENV),
-          'NODE_ENV': JSON.stringify(METADATA.ENV),
-          'HMR': METADATA.HMR,
+          'ENV': JSON.stringify(metadata.ENV),
+          'NODE_ENV': JSON.stringify(metadata.ENV),
+          'HMR': metadata.HMR,
         }
       }),
 
@@ -219,7 +205,7 @@ module.exports = function (options) {
       resourcePath: 'src'
     },
     node: {
-      global: 'window',
+      global: true,
       crypto: 'empty',
       process: false,
       module: false,

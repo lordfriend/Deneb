@@ -32,6 +32,7 @@ var fs = require('fs');
  * Webpack Plugins
  */
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var NormalModuleReplacementPlugin = require('webpack/lib/NormalModuleReplacementPlugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -223,14 +224,35 @@ module.exports = function (metadata) {
         title: metadata.TITLE,
         chunksSortMode: 'dependency',
         metadata: metadata,
-        inject: 'head'
+        inject: 'body'
       }),
 
       new ExtractTextPlugin({
         filename: '[name].[hash].css',
         disable: false,
         allChunks: true
-      })
+      }),
+      // Fix Angular 2
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)async/,
+        helpers.root('node_modules/@angular/core/src/facade/async.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)collection/,
+        helpers.root('node_modules/@angular/core/src/facade/collection.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)errors/,
+        helpers.root('node_modules/@angular/core/src/facade/errors.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)lang/,
+        helpers.root('node_modules/@angular/core/src/facade/lang.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)math/,
+        helpers.root('node_modules/@angular/core/src/facade/math.js')
+      ),
     ],
 
     // Include polyfills or mocks for various node stuff

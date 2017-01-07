@@ -13,12 +13,11 @@ try {
   loginStyleExsits = fs.statSync(helpers.root('src/assets/css/login.css')).isFile();
   console.log('login style file existence: ' + loginStyleExsits);
 } catch (e) {
-  console.error(e);
+  console.error('no login style file found, use default');
   loginStyleExsits = false;
 }
 
-const ENV = process.env.ENV = process.env.NODE_ENV
-
+const ENV = process.env.ENV = process.env.NODE_ENV;
 /**
  * Webpack Constants
  */
@@ -33,10 +32,10 @@ const METADATA = {
 
 
 // Look in ./config folder for webpack.dev.js
-switch (process.env.NODE_ENV) {
+switch (ENV) {
   case 'prod':
   case 'production':
-    METADATA.port = process.env.PORT || 8080
+    METADATA.port = process.env.PORT || 8080;
     METADATA.ENV = ENV || 'production';
     METADATA.HMR = false;
     module.exports = require('./config/webpack.prod')(METADATA);

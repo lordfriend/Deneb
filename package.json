@@ -6,10 +6,8 @@
   "homepage": "https://github.com/lordfriend/Deneb",
   "license": "MIT",
   "scripts": {
-    "build:dev": "webpack --config config/webpack.dev.js --progress --profile",
-    "build:docker": "npm run build:prod && docker build -t angular2-webpack-start:latest .",
-    "build:prod": "webpack --config config/webpack.prod.js  --progress --profile --bail",
-    "build": "npm run build:dev",
+    "build:prod": "NODE_ENV=production webpack --config webpack.config.js  --progress --profile --bail",
+    "build": "npm run build:prod",
     "ci": "npm run lint && npm test && npm run e2e",
     "clean:dist": "npm run rimraf -- dist",
     "clean:install": "npm set progress=false && npm install",
@@ -33,7 +31,7 @@
     "protractor": "protractor",
     "rimraf": "rimraf",
     "server:dev:hmr": "npm run server:dev -- --inline --hot",
-    "server:dev": "NODE_ENV=development && webpack-dev-server --config webpack.config.js --progress --profile --watch --content-base src/",
+    "server:dev": "NODE_ENV=development webpack-dev-server --config webpack.config.js --progress --profile --watch --content-base src/",
     "server:prod": "http-server dist --cors",
     "server": "npm run server:dev",
     "start:hmr": "npm run server:dev:hmr",
@@ -120,11 +118,11 @@
     "typedoc": "^0.4.5",
     "typescript": "2.1.1",
     "url-loader": "^0.5.7",
-    "webpack": "^2.1.0-beta.27",
+    "webpack": "2.2.0-rc.3",
     "webpack-dev-middleware": "^1.6.1",
-    "webpack-dev-server": "^2.1.0-beta.11",
+    "webpack-dev-server": "2.2.0-rc.0",
     "webpack-md5-hash": "^0.0.5",
-    "webpack-merge": "^1.0.1"
+    "webpack-merge": "~2.3.1"
   },
   "repository": {
     "type": "git",

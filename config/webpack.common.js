@@ -232,7 +232,7 @@ module.exports = function (metadata) {
       // See: https://github.com/ampedandwired/html-webpack-plugin
       new HtmlWebpackPlugin({
         template: 'src/index.html',
-        title: metadata.TITLE,
+        title: metadata.title,
         chunksSortMode: 'dependency',
         metadata: metadata,
         inject: 'body'

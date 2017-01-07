@@ -142,11 +142,13 @@ module.exports = function (metadata) {
         output: {
           comments: false
         }, //prod//prod
-        mangle: { screw_ie8: true, keep_fnames: true }, //prod
+        mangle: {
+          screw_ie8: true
+        }, //prod
         compress: {
           screw_ie8: true,
           warnings: false,
-          conditions: true,
+          conditionals: true,
           unused: true,
           comparisons: true,
           sequences: true,
@@ -155,7 +157,7 @@ module.exports = function (metadata) {
           if_return: true,
           join_vars: true,
           negate_iife: false // we need this for lazy v8
-        },
+        }
       }),
 
       // Plugin: CompressionPlugin
@@ -189,21 +191,21 @@ module.exports = function (metadata) {
               [/\[?\(?/, /(?:)/]
             ],
             customAttrAssign: [/\)?\]?=/]
+          },
+
+          // Static analysis linter for TypeScript advanced options configuration
+          // Description: An extensible linter for the TypeScript language.
+          //
+          // See: https://github.com/wbuchwalter/tslint-loader
+          tslint: {
+            emitErrors: true,
+            failOnHint: true,
+            resourcePath: 'src'
           }
         }
       })
 
     ],
-
-    // Static analysis linter for TypeScript advanced options configuration
-    // Description: An extensible linter for the TypeScript language.
-    //
-    // See: https://github.com/wbuchwalter/tslint-loader
-    tslint: {
-      emitErrors: true,
-      failOnHint: true,
-      resourcePath: 'src'
-    },
     node: {
       global: true,
       crypto: 'empty',

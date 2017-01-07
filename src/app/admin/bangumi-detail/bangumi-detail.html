@@ -20,6 +20,10 @@
           <input type="text" [(ngModel)]="bangumi.name_cn" name="name_cn"/>
         </div>
         <div class="field">
+          <label>简介</label>
+          <textarea type="text" [(ngModel)]="bangumi.summary" name="summary" cols="20" rows="6"></textarea>
+        </div>
+        <div class="field">
           <label>放送开始</label>
           <input type="text" [(ngModel)]="bangumi.air_date" name="air_date"/>
         </div>

@@ -2,7 +2,7 @@
  * Providers provided by Angular
  */
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-
+import {decorateModuleRef} from './app/environment';
 
 /*
 * App Component
@@ -13,4 +13,7 @@ import {AppModule} from './app';
 /*
  * Bootstrap our Angular app with a top level NgModule
  */
-platformBrowserDynamic().bootstrapModule(AppModule);
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .then(decorateModuleRef)
+  .catch((err) => console.error(err));

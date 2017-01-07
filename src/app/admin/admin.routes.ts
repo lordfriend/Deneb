@@ -11,16 +11,15 @@ export const adminRoutes: Routes = [
     component: Admin,
     children: [
       {
-        path: '',
-        redirectTo: 'bangumi',
-        pathMatch: 'full'
+        path: 'search/:bgm_id',
+        component: BangumiDetail
       },
       {
         path: 'search',
         component: SearchBangumi
       },
       {
-        path: 'search/:bgm_id',
+        path: 'bangumi/:id',
         component: BangumiDetail
       },
       {
@@ -28,8 +27,9 @@ export const adminRoutes: Routes = [
         component: ListBangumi
       },
       {
-        path: 'bangumi/:id',
-        component: BangumiDetail
+        path: '',
+        redirectTo: 'bangumi',
+        pathMatch: 'full'
       }
     ]
   }

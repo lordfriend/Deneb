@@ -5,6 +5,6 @@ export class ServerError extends BaseError {
   constructor(
     public message: string,
     public status: number) {
-    super(message, status);
+    super('ServerError', message, status);
   }
 }

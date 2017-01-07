@@ -8,13 +8,12 @@ import {KeywordBuilder} from './bangumi-detail/keyword-builder/keyword-builder.c
 import {EpisodeDetail} from './bangumi-detail/episode-detail/episode-detail.component';
 import {EpisodeThumbnail} from './bangumi-detail/episode-thumbnail/episode-thumbnail.component';
 import {AdminService} from './admin.service';
-import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {adminRoutes} from './admin.routes';
 import {HttpModule} from '@angular/http';
 import {FeedService} from './bangumi-detail/keyword-builder/feed.service';
-import {Ng2SemanticModule} from '../../ng2-semantic/ng2-semantic.module';
+import {Ng2SemanticModule} from '../../ng2-semantic';
 
 
 @NgModule({

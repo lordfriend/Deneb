@@ -1,9 +1,11 @@
-export class BaseError extends Error {
+export class BaseError implements Error {
+  name: string;
   status: number;
-  constructor(value: string, status?: number) {
-    super();
-    super.message = value;
-    
+  message: string;
+  constructor(name: string, value: string, status?: number) {
+    this.name = name;
+    this.message = value;
     this.status = status;
   }
+
 }

@@ -1,3 +1,3 @@
 require('./ng2-semantic.less');
 
-export * from './ng2-semantic.module';
+export {Ng2SemanticModule} from './ng2-semantic.module';

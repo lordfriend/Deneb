@@ -96,8 +96,16 @@ module.exports = function (metadata) {
         {
           test: /\.ts$/,
           use: [
-            'awesome-typescript-loader',
-            'angular2-template-loader'
+            'awesome-typescript-loader?{configFileName: "tsconfig.webpack.json"}',
+            'angular2-template-loader',
+            {
+              loader: 'ng-router-loader',
+              options: {
+                loader: 'async-system',
+                genDir: '.',
+                aot: false // TODO: add flag based option
+              }
+            }
           ],
           exclude: [/\.(spec|e2e)\.ts$/]
         },
@@ -199,7 +207,10 @@ module.exports = function (metadata) {
       new ContextReplacementPlugin(
         // The (\\|\/) piece accounts for path separators in *nix and Windows
         /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
-        helpers.root('src') // location of your src
+        helpers.root('src'), // location of your src
+        {
+          // your Angular Async Route paths relative to this root directory
+        }
       ),
 
       // Plugin: CopyWebpackPlugin

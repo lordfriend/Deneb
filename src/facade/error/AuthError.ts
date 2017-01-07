@@ -13,13 +13,13 @@ export class AuthError extends BaseError {
 
   // update pass error
   static PASSWORD_INCORRECT = 'password incorrect';
-  
+
   static PERMISSION_DENIED = 'permission denied';
 
   constructor(
     public message: string,
     public status: number) {
-    super(message, status);
+    super('AuthError', message, status);
   }
 
   public isPermission(): boolean {

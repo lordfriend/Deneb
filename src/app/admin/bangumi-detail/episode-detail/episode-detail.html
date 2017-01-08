@@ -6,16 +6,23 @@
 </div>
 <episode-thumbnail [episode]="episode"></episode-thumbnail>
 <div class="content">
-  <form class="ui form" (ngSubmit)="updateEpisode(episode)">
-    <div class="field">
-      <label>标题</label>
-      <div class="two fields">
-        <div class="field">
-          <input type="text" placeholder="标题" [(ngModel)]="episode.name" name="name">
-        </div>
-        <div class="field">
-          <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn" name="name_cn">
-        </div>
+  <form class="ui form" (ngSubmit)="saveEpisode(episode)">
+    <div class="fields">
+      <div class="one wide field">
+        <label>序号</label>
+        <input type="text" placeholder="序号" [(ngModel)]="episode.episode_no" name="episode_no">
+      </div>
+      <div class="four wide field">
+        <label>标题</label>
+        <input type="text" placeholder="标题" [(ngModel)]="episode.name" name="name">
+      </div>
+      <div class="four wide field">
+        <label>标题(中文)</label>
+        <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn" name="name_cn">
+      </div>
+      <div class="four wide field">
+        <label>bgm id</label>
+        <input type="text" placeholder="bgm.tv的对应id" [(ngModel)]="episode.bgm_eps_id" name="bgm_eps_id">
       </div>
     </div>
     <div class="fields">
@@ -33,6 +40,7 @@
         <span *ngIf="uploadProgress">{{uploadProgress}}%</span>
       </div>
     </div>
-    <button class="ui primary button right-aligned" type="submit">Save</button>
+    <button class="ui primary button" type="submit">保存</button>
+    <button class="ui red button" [attr.disabled]="episode.id" (click)="deleteEpisode()" type="button">删除</button>
   </form>
 </div>

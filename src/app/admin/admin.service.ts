@@ -65,6 +65,19 @@ export class AdminService {
       .map(res => res.json());
   }
 
+  getEpisode(episode_id: string): Observable<Episode> {
+      return this.http.get(`${this.baseUrl}/episode/${episode_id}`)
+        .map(res => <Episode> res.json().data);
+  }
+
+  addEpisode(episode: Episode): Observable<string> {
+      let headers = new Headers({'Content-Type': 'application/json'});
+      let options = new RequestOptions({headers: headers});
+      let body = JSON.stringify(episode);
+      return this.http.post(`${this.baseUrl}/episode`, body, options)
+        .map(res => <string> res.json().data.id);
+  }
+
   updateEpisode(episode: Episode): Observable<any> {
     let id = episode.id;
     let queryUrl = this.baseUrl + '/episode/' + id;

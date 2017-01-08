@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Episode} from "../../../entity/episode";
 import {EpisodeThumbnail} from "../episode-thumbnail/episode-thumbnail.component";
 import {AdminService} from '../../admin.service';
@@ -18,11 +18,31 @@ export class EpisodeDetail {
   @Input()
   episode: Episode;
 
+  @Output()
+  onDelete = new EventEmitter<Episode>();
+
+  @Output()
+  onAdded = new EventEmitter<string>();
+
   errorMessage: string;
 
   uploadProgress: number;
 
   constructor(private adminService: AdminService) {}
+
+  saveEpisode(episode: Episode): void {
+    if (episode.id) {
+      this.updateEpisode(episode);
+    } else {
+      this.adminService.addEpisode(episode)
+        .subscribe(
+          (episode_id: string) => {
+            this.onAdded.emit(episode_id);
+          },
+          error => this.errorMessage = <any> error
+        );
+    }
+  }
 
   updateEpisode(episode: Episode): void {
     this.adminService.updateEpisode(episode)
@@ -58,6 +78,13 @@ export class EpisodeDetail {
       xhr.open('POST', `/api/admin/episode/${this.episode.id}/upload`, true);
       xhr.send(formData);
     }
+  }
+
+  deleteEpisode() {
+    if (this.episode.id) {
+      return;
+    }
+    this.onDelete.emit(this.episode);
   }
 
 }

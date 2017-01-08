@@ -23,6 +23,13 @@ export class BangumiDetail implements OnInit, OnDestroy {
 
   bangumi: Bangumi = <Bangumi>{};
 
+  get orderedEpisodeList(): Episode[] {
+    if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
+      return this.bangumi.episodes.sort((episode1, episode2) => {return episode1.episode_no - episode2.episode_no});
+    }
+    return [];
+  }
+
   episodeList: Episode[] = [];
   errorMessage: any;
 
@@ -65,6 +72,38 @@ export class BangumiDetail implements OnInit, OnDestroy {
         error => this.errorMessage = <any>error
       );
     return undefined;
+  }
+
+  addEpisode() {
+    let episode = new Episode();
+    episode.bangumi_id = this.bangumi.id;
+    episode.status = Episode.STATUS_NOT_DOWNLOADED;
+    if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
+      episode.episode_no = this.bangumi.episodes[this.bangumi.episodes.length - 1].episode_no + 1;
+    } else {
+      episode.episode_no = 1;
+    }
+    this.bangumi.episodes.push(episode);
+  }
+
+  onEpisodeDelete(episode: Episode) {
+      let index = this.bangumi.episodes.indexOf(episode);
+      if (index !== -1) {
+        this.bangumi.episodes.splice(index, 1);
+      }
+  }
+
+  onEpisodeAdded(episode_id: string, episode: Episode) {
+      this.adminService.getEpisode(episode_id)
+        .subscribe(
+          (refreshedEpisode: Episode) => {
+            let index = this.bangumi.episodes.indexOf(episode);
+            if (index !== -1) {
+              this.bangumi.episodes[index] = refreshedEpisode;
+            }
+          },
+          error => console.log(error)
+        );
   }
 
   onSubmit(): void {

@@ -51,8 +51,15 @@
     <h4 class="ui header">各话列表</h4>
     <div class="ui divider"></div>
     <div class="episode-list">
-      <episode-detail class="episode-item ui segment" [episode]="episode" *ngFor="let episode of bangumi.episodes">
+      <episode-detail class="episode-item ui segment"
+                      [episode]="episode"
+                      (onDelete)="onEpisodeDelete($event)"
+                      (onAdded)="onEpisodeAdded($event, episode)"
+                      *ngFor="let episode of orderedEpisodeList">
       </episode-detail>
+    </div>
+    <div class="episode-list-control" *ngIf="bangumi.id">
+      <button class="ui primary button" (click)="addEpisode()" type="button">添加一话</button>
     </div>
   </div>
 </div>

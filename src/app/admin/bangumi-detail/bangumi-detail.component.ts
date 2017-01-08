@@ -4,6 +4,7 @@ import {Bangumi, Episode, BangumiRaw} from '../../entity';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'bangumi-detail',

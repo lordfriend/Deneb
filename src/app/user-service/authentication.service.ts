@@ -73,7 +73,7 @@ export class Authentication implements CanActivate {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error, `Is AuthError: ${error instanceof AuthError}`);
         if(error instanceof AuthError) {
           if(sourceUrl === '/') {
             this.router.navigate(['/login']);

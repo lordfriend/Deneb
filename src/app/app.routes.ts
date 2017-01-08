@@ -12,7 +12,7 @@ export const appRoutes: Routes = [
     path: 'admin',
     data: {level: 2},
     canActivate: [Authentication],
-    loadChildren: () => System.import('./admin')
+    loadChildren: './admin#AdminModule'
   },
   {
     path: 'register',

@@ -19,7 +19,7 @@ interface PageNumber {
 })
 export class UIPagination {
 
-  private _currentPageNumber: number;
+  _currentPageNumber: number;
   private _total: number;
   private _countPerPage: number;
   private _max: number = Number.MAX_SAFE_INTEGER;
@@ -29,16 +29,16 @@ export class UIPagination {
   @Output()
   pageChange = new EventEmitter<number>();
 
-  get currentPage(): number {
-    return this._currentPageNumber;
-  }
-
   @Input()
   set currentPage(page: number) {
     if(page !== this._currentPageNumber) {
       this._currentPageNumber = page;
       this.pageNumberList = this.updatePageNumberList();
     }
+  }
+
+  get currentPage(): number {
+    return this._currentPageNumber;
   }
 
   @Input()
@@ -64,7 +64,7 @@ export class UIPagination {
     if(page.text === '...') {
       return;
     }
-    if(page.number !== this.currentPage) {
+    if(page.number !== this._currentPageNumber) {
       this.currentPage = page.number;
       this.pageChange.emit(page.number);
     }

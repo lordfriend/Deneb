@@ -32,46 +32,24 @@ var fs = require('fs');
  * Webpack Plugins
  */
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var NormalModuleReplacementPlugin = require('webpack/lib/NormalModuleReplacementPlugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
 
 /**
- * check custom login style exists
- */
-
-var loginStyleExsits;
-try {
-  loginStyleExsits = fs.statSync(helpers.root('src/assets/css/login.css')).isFile();
-  console.log('login style file existence: ' + loginStyleExsits);
-} catch (e) {
-  console.error(e);
-  loginStyleExsits = false;
-}
-
-/**
- * Webpack Constants
- */
-const METADATA = {
-  title: 'Deneb',
-  baseUrl: '/',
-  GA: process.env.GA || '',
-  customLoginStyle: loginStyleExsits
-};
-
-/**
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
-module.exports = function(options) {
+module.exports = function (metadata) {
   return {
 
     // Static metadata for index.html
     //
     // See: (custom attribute)
-    metadata: METADATA,
+    // metadata: METADATA,
 
     // Cache generated modules and chunks to improve performance for multiple incremental builds.
     // This is enabled by default in watch mode.
@@ -100,72 +78,44 @@ module.exports = function(options) {
       // An array of extensions that should be used to resolve modules.
       //
       // See: http://webpack.github.io/docs/configuration.html#resolve-extensions
-      extensions: ['', '.ts', '.js'],
+      extensions: ['.ts', '.js'],
 
       // Make sure root is src
-      root: [
+      modules: [
         helpers.root('src'),
         helpers.root('node_modules')
       ]
 
     },
-
-    // Options affecting the normal modules.
-    //
-    // See: http://webpack.github.io/docs/configuration.html#module
     module: {
-
-      // An array of applied pre and post loaders.
-      //
-      // See: http://webpack.github.io/docs/configuration.html#module-preloaders-module-postloaders
-      preLoaders: [
-        {
-          test: /\.ts$/,
-          loader: 'string-replace-loader',
-          query: {
-            search: '(System|SystemJS)(.*[\\n\\r]\\s*\\.|\\.)import\\((.+)\\)',
-            replace: '$1.import($3).then(mod => (mod.__esModule && mod.default) ? mod.default : mod)',
-            flags: 'g'
-          },
-          include: [helpers.root('src')]
-        }
-      ],
-
-      // An array of automatically applied loaders.
-      //
-      // IMPORTANT: The loaders here are resolved relative to the resource which they are applied to.
-      // This means they are not resolved relative to the configuration file.
-      //
-      // See: http://webpack.github.io/docs/configuration.html#module-loaders
-      loaders: [
+      rules: [
 
         // Typescript loader support for .ts and Angular 2 async routes via .async.ts
         //
         // See: https://github.com/s-panferov/awesome-typescript-loader
         {
           test: /\.ts$/,
-          loader: [
-            'awesome-typescript-loader',
-            'angular2-template-loader'
+          use: [
+            'awesome-typescript-loader?{configFileName: "tsconfig.webpack.json"}',
+            'angular2-template-loader',
+            {
+              loader: 'ng-router-loader',
+              options: {
+                loader: 'async-system',
+                genDir: '.',
+                aot: false // TODO: add flag based option
+              }
+            }
           ],
           exclude: [/\.(spec|e2e)\.ts$/]
         },
-
-        // Json loader support for *.json files.
-        //
-        // See: https://github.com/webpack/json-loader
-        {
-          test: /\.json$/,
-          loader: 'json-loader'
-        },
-
         // Raw loader support for *.css files
         // Returns file content as string
         //
         // See: https://github.com/webpack/raw-loader
         {
           test: /\.css$/,
-          loader: 'raw-loader'
+          use: 'raw-loader'
         },
 
         // Raw loader support for *.html
@@ -174,7 +124,7 @@ module.exports = function(options) {
         // See: https://github.com/webpack/raw-loader
         {
           test: /\.html$/,
-          loader: 'raw-loader',
+          use: 'raw-loader',
           exclude: [helpers.root('src/index.html')]
         },
 
@@ -182,33 +132,48 @@ module.exports = function(options) {
         // See https://github.com/webpack/less-loader
         {
           test: /ng2-semantic\.less$/,
-          loader: ExtractTextPlugin.extract({fallbackLoader: 'style', loader: 'css-loader!less-loader!'})
+          loader: ExtractTextPlugin.extract({
+            fallbackLoader: 'style-loader',
+            loader: [
+              'css-loader',
+              'less-loader'
+            ]
+          })
         },
         {
           test: /\.less$/,
           exclude: /ng2-semantic\.less$/,
-          loader: 'style-loader!css-loader!less-loader'
+          use: [
+            'style-loader',
+            'css-loader',
+            'less-loader'
+          ]
         },
-        { test: /\.(png|jpg)$/, loader: 'file?name=images/[name].[hash].[ext]' },
-        { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'},
-        { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'},
-        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream'},
-        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]'},
-        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=images/[name].[hash].[ext]&mimetype=image/svg+xml' }
-      ],
-
-      postLoaders: [
         {
-          test: /\.js$/,
-          loader: 'string-replace-loader',
-          query: {
-            search: 'var sourceMappingUrl = extractSourceMappingUrl\\(cssText\\);',
-            replace: 'var sourceMappingUrl = "";',
-            flags: 'g'
-          }
+          test: /\.(png|jpg)$/,
+          use: 'file-loader?name=images/[name].[hash].[ext]'
+        },
+        {
+          test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'
+        },
+        {
+          test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'
+        },
+        {
+          test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream'
+        },
+        {
+          test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=fonts/[name].[hash].[ext]'
+        },
+        {
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          use: 'file-loader?name=images/[name].[hash].[ext]&mimetype=image/svg+xml'
         }
       ]
-
     },
 
     // Add additional plugins to the compiler.
@@ -242,7 +207,10 @@ module.exports = function(options) {
       new ContextReplacementPlugin(
         // The (\\|\/) piece accounts for path separators in *nix and Windows
         /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
-        helpers.root('src') // location of your src
+        helpers.root('src'), // location of your src
+        {
+          // your Angular Async Route paths relative to this root directory
+        }
       ),
 
       // Plugin: CopyWebpackPlugin
@@ -264,15 +232,38 @@ module.exports = function(options) {
       // See: https://github.com/ampedandwired/html-webpack-plugin
       new HtmlWebpackPlugin({
         template: 'src/index.html',
-        chunksSortMode: 'dependency'
+        title: metadata.title,
+        chunksSortMode: 'dependency',
+        metadata: metadata,
+        inject: 'body'
       }),
 
       new ExtractTextPlugin({
         filename: '[name].[hash].css',
         disable: false,
         allChunks: true
-      })
-
+      }),
+      // Fix Angular 2
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)async/,
+        helpers.root('node_modules/@angular/core/src/facade/async.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)collection/,
+        helpers.root('node_modules/@angular/core/src/facade/collection.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)errors/,
+        helpers.root('node_modules/@angular/core/src/facade/errors.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)lang/,
+        helpers.root('node_modules/@angular/core/src/facade/lang.js')
+      ),
+      new NormalModuleReplacementPlugin(
+        /facade(\\|\/)math/,
+        helpers.root('node_modules/@angular/core/src/facade/math.js')
+      ),
     ],
 
     // Include polyfills or mocks for various node stuff
@@ -280,7 +271,7 @@ module.exports = function(options) {
     //
     // See: https://webpack.github.io/docs/configuration.html#node
     node: {
-      global: 'window',
+      global: true,
       crypto: 'empty',
       module: false,
       clearImmediate: false,

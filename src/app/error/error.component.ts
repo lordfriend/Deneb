@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-// import {BaseError} from '../../facade/error';
+// import {BaseError} from '../../helpers/error';
 import {Title} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';

@@ -1,6 +1,6 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Http} from '@angular/http';
-import {BaseService} from "../../facade/base.service";
+import {BaseService} from "../../helpers/base.service";
 import {Observable} from "rxjs/Observable";
 import {Episode} from '../entity/episode';
 import {Bangumi} from "../entity/bangumi";

@@ -9,7 +9,7 @@ import {
   EventEmitter
 } from '@angular/core'
 import {Observable, Subscription} from 'rxjs/Rx';
-import {closest} from '../../../../facade/lang';
+import {closest} from '../../../../helpers/dom';
 
 
 @Component({

@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {UserService} from '../user-service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {User} from '../entity';
-import {AuthError} from '../../facade/error/AuthError';
+import {AuthError} from '../../helpers/error/AuthError';
 import {Title} from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';

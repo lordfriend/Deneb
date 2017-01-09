@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit, OnDestroy} from '@angular/core';
 import {Bangumi} from '../../../entity/bangumi';
 import {FeedService} from './feed.service';
-import {closest} from '../../../../facade/lang';
+import {closest} from '../../../../helpers/dom';
 
 require('./keyword-builder.less');
 

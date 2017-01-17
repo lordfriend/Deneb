@@ -1,4 +1,8 @@
 <div class="ui container default-container">
+  <div class="ui fluid two item secondary pointing menu">
+    <a class="item" [ngClass]="{active: bangumiType === 2}" (click)="changeBangumiType(2)">动画</a>
+    <a class="item" [ngClass]="{active: bangumiType === 6}" (click)="changeBangumiType(6)">日剧</a>
+  </div>
   <!--<h4>最近更新</h4>-->
   <!--<div class="ui divider"></div>-->
   <!--<div class="ui five doubling cards">-->
@@ -18,8 +22,8 @@
       <!--</a>-->
     <!--</div>-->
   <!--</div>-->
-  <h4>ON AIR</h4>
-  <div class="ui divider"></div>
+  <!--<h4>ON AIR</h4>-->
+  <!--<div class="ui divider"></div>-->
   <div class="ui active inverted dimmer on-air-loading-wrapper" *ngIf="!onAirBangumi">
     <div class="ui medium loader"></div>
   </div>

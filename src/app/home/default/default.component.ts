@@ -14,12 +14,28 @@ export class DefaultComponent extends HomeChild implements OnInit {
 
   onAirBangumi: Bangumi[];
 
+  bangumiType = 2; // 2 is anime, 6 is japanese tv drama Series
+
   FAVORITE_LABEL = FAVORITE_LABEL;
 
   constructor(homeService:HomeService) {
     super(homeService);
   }
 
+  changeBangumiType(type: number) {
+    this.bangumiType = type;
+    this.getOnAir();
+  }
+
+  getOnAir() {
+    this.homeService.onAir(this.bangumiType)
+      .subscribe(
+        (bangumiList:Bangumi[]) => {
+          this.onAirBangumi = bangumiList;
+        },
+        error => console.log(error)
+      );
+  }
 
   ngOnInit():any {
     // this.homeService.recentEpisodes()
@@ -29,14 +45,7 @@ export class DefaultComponent extends HomeChild implements OnInit {
     //     },
     //     error => console.log(error)
     //   );
-
-    this.homeService.onAir()
-      .subscribe(
-        (bangumiList:Bangumi[]) => {
-          this.onAirBangumi = bangumiList;
-        },
-        error => console.log(error)
-      );
+    this.getOnAir();
 
     return null;
   }

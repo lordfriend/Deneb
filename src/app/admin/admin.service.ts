@@ -25,9 +25,8 @@ export class AdminService {
       .map(res => new BangumiRaw(res.json()));
   }
 
-  searchBangumi(name: string): Observable<Bangumi[]> {
-    let queryUrl = this.baseUrl + '/query?name=' + name;
-    return this.http.get(queryUrl)
+  searchBangumi(name: string, type: number): Observable<Bangumi[]> {
+    return this.http.get(`${this.baseUrl}/query?name=${name}&type=${type}`)
       .map(res => <Bangumi[]> res.json().data);
   }
 

@@ -31,19 +31,23 @@
           <label>放送星期</label>
           <input type="text" [(ngModel)]="bangumi.air_weekday" name="air_weekday"/>
         </div>
-        <div class="field">
+        <div class="field" *ngIf="bangumi.type === 2">
           <label>DMHY</label>
           <keyword-builder [bangumi]="bangumi" [siteName]="'dmhy'"></keyword-builder>
         </div>
-        <div class="field">
+        <div class="field" *ngIf="bangumi.type === 2">
           <label>ACG_RIP</label>
           <keyword-builder [bangumi]="bangumi" [siteName]="'acg_rip'"></keyword-builder>
+        </div>
+        <div class="field" *ngIf="bangumi.type === 6">
+          <label>LIBYK_SO</label>
+          <keyword-builder [bangumi]="bangumi" [siteName]="'libyk_so'"></keyword-builder>
         </div>
         <div class="field">
           <label>集数偏移（解决某些集数不是从1开始的新番）</label>
           <input type="text" [(ngModel)]="bangumi.eps_no_offset" name="eps_no_offset"/>
         </div>
-        <div class="inline fields">
+        <div class="inline fields" *ngIf="bangumi.id">
           <label>状态</label>
           <div class="field">
             <div class="ui radio checkbox">

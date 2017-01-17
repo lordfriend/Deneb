@@ -13,8 +13,20 @@ import {AdminService} from '../admin.service';
 export class SearchBangumi {
 
   private _input = new Subject<string>();
+  private _bangumiType: number = 2;
   bangumiList = [];
   isLoading: boolean = false;
+
+  get bangumiType(): number {
+    return this._bangumiType;
+  }
+
+  set bangumiType(type: number) {
+    if (type != this._bangumiType) {
+      this.bangumiList = [];
+    }
+    this._bangumiType = type;
+  }
 
   constructor(
     private router: Router,
@@ -28,7 +40,7 @@ export class SearchBangumi {
       .filter(name => !!name)
       .forEach(name => {
         this.isLoading = true;
-        this.adminService.searchBangumi(name)
+        this.adminService.searchBangumi(name, this.bangumiType)
           .subscribe(
             bangumiList => this.bangumiList = bangumiList,
             error => console.log(error),

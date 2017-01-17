@@ -2,6 +2,24 @@
   <h1 class="ui header">添加新的新番</h1>
 </nav>
 <div class="bangumi-container">
+  <div class="ui form">
+    <div class="inline fields">
+      <label>类型</label>
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="type" [(ngModel)]="bangumiType" [value]="2">
+          <label>动画</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name=type [(ngModel)]="bangumiType" [value]="6">
+          <label>日剧</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div class="ui search" [ngClass]="{loading: isLoading}">
     <div class="ui fluid icon input">
       <input class="prompt" type="text" placeholder="输入番组名称搜索" #searchBox (keyup)="searchBangumi(searchBox.value)"/>

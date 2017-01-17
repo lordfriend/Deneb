@@ -18,6 +18,28 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
 
   itemList: {title: string, eps_no: number}[];
 
+  availableTable = ['yyets', 'tokyo', 'dmhy'];
+
+  private _libykCriteria: {t: string, q: string};
+
+  set libykCriteria(obj: {t: string, q: string}) {
+    this._libykCriteria = obj;
+    if (obj) {
+      try {
+        this.bangumi.libyk_so = JSON.stringify(this._libykCriteria);
+      } catch(error) {
+        console.log(error);
+        this.bangumi.libyk_so = undefined;
+      }
+    } else {
+      this.bangumi.libyk_so = undefined;
+    }
+  }
+
+  get libykCriteria(): {t: string, q: string} {
+    return this._libykCriteria;
+  }
+
   outerClickHandler: (event: MouseEvent) => {};
 
   constructor(private feedService: FeedService) {
@@ -35,8 +57,15 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
 
   ngOnChanges(changes: SimpleChanges): any {
     if (changes['bangumi']) {
-      console.log(changes);
       this.isEditorOpen = Boolean(this.bangumi[this.siteName]);
+      if (this.isEditorOpen && this.siteName === 'libyk_so') {
+        try {
+          this.libykCriteria = JSON.parse(this.bangumi[this.siteName]);
+        } catch (error) {
+          console.log(error);
+          this.libykCriteria = undefined;
+        }
+      }
     }
   }
 
@@ -55,10 +84,15 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
 
   addKeyword() {
     this.isEditorOpen = true;
+    this.libykCriteria = {
+      t: 'yyets',
+      q: undefined
+    };
   }
 
   removeKeyword() {
     this.bangumi[this.siteName] = undefined;
+    this.libykCriteria = undefined;
     this.isEditorOpen = false;
   }
 
@@ -76,6 +110,11 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
           this.itemList = result;
         }, () => {
         });
+    } else if (this.siteName === 'libyk_so') {
+      this.feedService.queryLibyk_so(this.libykCriteria)
+        .subscribe((result) => {
+          this.itemList = result;
+        }, () => {});
     }
   }
 }

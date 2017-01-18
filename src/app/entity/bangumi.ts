@@ -4,6 +4,7 @@ export class Bangumi {
   bgm_id: number;
   name: string;
   name_cn: string;
+  type: number;
   eps: number;
   summary: string;
   image: string;
@@ -15,6 +16,7 @@ export class Bangumi {
   eps_regex: string;
   dmhy: string;
   acg_rip: string;
+  libyk_so: string;
   status: number;
   create_time: number;
   update_time: number;

@@ -74,8 +74,8 @@ export class HomeService extends BaseService {
       .catch(this.handleError);
   }
 
-  onAir(): Observable<Bangumi[]> {
-    return this.http.get(`${this.baseUrl}/on_air`)
+  onAir(type: number): Observable<Bangumi[]> {
+    return this.http.get(`${this.baseUrl}/on_air?type=${type}`)
       .map(res => <Bangumi[]> res.json().data)
       .catch(this.handleError);
   }

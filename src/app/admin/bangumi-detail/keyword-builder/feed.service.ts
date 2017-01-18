@@ -17,15 +17,21 @@ export class FeedService extends BaseService {
 
     return this.http.get(query_url)
       .map(res => <{title: string, eps_no: number}[]> res.json().data)
-      .catch(this.handleError)
+      .catch(this.handleError);
   }
 
-  queryAcgrip(keywords): Observable<{title: string, eps_no: number}[]> {
+  queryAcgrip(keywords: string): Observable<{title: string, eps_no: number}[]> {
     let query_url = `${this.baseUrl}/acg-rip/${keywords}`;
 
     return this.http.get(query_url)
       .map(res => <{title: string, eps_no: number}[]> res.json().data)
-      .catch(this.handleError)
+      .catch(this.handleError);
+  }
+
+  queryLibyk_so({t, q}: {t: string, q: string}): Observable<{title: string, eps_no: number}[]> {
+    return this.http.get(`${this.baseUrl}/libyk-so?t=${t}&q=${q}`)
+      .map(res => <{title: string, eps_no: number}> res.json().data)
+      .catch(this.handleError);
   }
 
 }

@@ -1,7 +1,11 @@
 <div class="keyword-builder-container">
     <div class="editor-wrapper" *ngIf="isEditorOpen">
       <div class="input-box-wrapper">
-        <input type="text" [(ngModel)]="bangumi[siteName]">
+        <select [(ngModel)]="libykCriteria.t" name="table" *ngIf="siteName === 'libyk_so'">
+          <option *ngFor="let table of availableTable" [value]="table">{{table}}</option>
+        </select>
+        <input type="text" [(ngModel)]="libykCriteria.q" name="query" *ngIf="siteName === 'libyk_so'">
+        <input type="text" [(ngModel)]="bangumi[siteName]" *ngIf="siteName !== 'libyk_so'">
         <button class="ui primary button" type="button" (click)="testFeed()">Test</button>
         <button class="ui negative button" type="button" (click)="removeKeyword()">DEL</button>
       </div>

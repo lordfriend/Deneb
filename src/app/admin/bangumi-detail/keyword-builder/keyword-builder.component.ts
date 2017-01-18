@@ -1,4 +1,5 @@
-import {Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit, OnDestroy} from '@angular/core';
+import {Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit, OnDestroy, EventEmitter} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {Bangumi} from '../../../entity/bangumi';
 import {FeedService} from './feed.service';
 import {closest} from '../../../../helpers/dom';
@@ -18,6 +19,12 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
 
   itemList: {title: string, eps_no: number}[];
 
+  availableTable = ['yyets', 'tokyo', 'dmhy'];
+
+  libykCriteria: LibykCriteria;
+
+  libykCriteriaSubscription: Subscription;
+  
   outerClickHandler: (event: MouseEvent) => {};
 
   constructor(private feedService: FeedService) {
@@ -31,12 +38,22 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
 
   ngOnDestroy(): any {
     document.body.removeEventListener('click', this.outerClickHandler);
+    if (this.libykCriteriaSubscription) {
+      this.libykCriteriaSubscription.unsubscribe();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): any {
     if (changes['bangumi']) {
-      console.log(changes);
       this.isEditorOpen = Boolean(this.bangumi[this.siteName]);
+      if (this.isEditorOpen && this.siteName === 'libyk_so') {
+        this.libykCriteria = new LibykCriteria(this.bangumi[this.siteName]);
+        this.libykCriteriaSubscription = this.libykCriteria.criteriaUpdate.subscribe(
+          (criteria: string) => {
+            this.bangumi[this.siteName] = criteria;
+          }, () => {}
+        );
+      }
     }
   }
 
@@ -55,11 +72,20 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
 
   addKeyword() {
     this.isEditorOpen = true;
+    this.libykCriteria = new LibykCriteria();
+    this.libykCriteria.t = this.availableTable[0];
+    this.libykCriteriaSubscription = this.libykCriteria.criteriaUpdate.subscribe(
+          (criteria: string) => {
+            this.bangumi[this.siteName] = criteria;
+          }, () => {}
+        );
   }
 
   removeKeyword() {
     this.bangumi[this.siteName] = undefined;
+    this.libykCriteria = undefined;
     this.isEditorOpen = false;
+    this.libykCriteriaSubscription.unsubscribe();
   }
 
   testFeed() {
@@ -76,6 +102,64 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
           this.itemList = result;
         }, () => {
         });
+    } else if (this.siteName === 'libyk_so') {
+      this.feedService.queryLibyk_so(this.libykCriteria)
+        .subscribe((result) => {
+          this.itemList = result;
+        }, () => {});
     }
+  }
+}
+
+class LibykCriteria {
+  private _t: string;
+  private _q: string;
+
+  criteriaUpdate: EventEmitter<string> = new EventEmitter();
+
+  constructor(public criteria?: string) {
+    if (! this.criteria) {
+      return;
+    }
+    try {
+      let obj = JSON.parse(this.criteria);
+      this._t = obj.t;
+      this._q = obj.q;
+    } catch (error) {
+      console.log(error);
+      this.criteria = undefined;
+    }
+  }
+
+  get t(): string {
+    return this._t;
+  }
+
+  set t(table: string) {
+    this._t = table;
+    this._updateCriteria();
+  }
+
+  get q(): string {
+    return this._q;
+  }
+
+  set q(query: string) {
+    this._q = query;
+    this._updateCriteria();
+  }
+
+  private _updateCriteria() {
+    if (this._t && this._q) {
+      try {
+        this.criteria = JSON.stringify({t: this._t, q: this._q});
+      } catch(error) {
+        console.log(error);
+        this.criteria = undefined;
+      }
+    } else {
+      this.criteria = undefined;
+    }
+    this.criteriaUpdate.emit(this.criteria);
   }
 }

@@ -1,6 +1,6 @@
 import {Bangumi} from '../../entity/bangumi';
 import {Component, Input} from '@angular/core';
-import {FAVORITE_LABEL} from '../../entity/constants';
+import {FAVORITE_LABEL, BANGUMI_TYPE} from '../../entity/constants';
 import {WatchService} from '../watch.service';
 import {HomeService} from '../home.service';
 
@@ -11,6 +11,7 @@ import {HomeService} from '../home.service';
 })
 export class FavoriteChooser {
   FAVORITE_LABEL = FAVORITE_LABEL;
+  BANGUMI_TYPE = BANGUMI_TYPE;
 
   isChoosingFavorite = false;
   isSavingFavorite = false;

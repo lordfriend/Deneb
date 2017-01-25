@@ -8,7 +8,7 @@
                brown: bangumi.favorite_status === 4,
                grey: bangumi.favorite_status === 5
                }"
-     (click)="toggleFavoriteChooser()">我{{FAVORITE_LABEL[bangumi.favorite_status]}}这部动画</a>
+     (click)="toggleFavoriteChooser()">我{{FAVORITE_LABEL[bangumi.favorite_status]}}这部{{BANGUMI_TYPE[bangumi.type]}}</a>
   <div *ngIf="isChoosingFavorite" class="small ui basic buttons">
     <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 1}" (click)="chooseFavoriteStatus(1)">想看</button>
     <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 2}" (click)="chooseFavoriteStatus(2)">看过</button>

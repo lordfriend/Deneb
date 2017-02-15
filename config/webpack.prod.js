@@ -203,7 +203,8 @@ module.exports = function (metadata) {
             resourcePath: 'src'
           },
           semanticUiLessModuleLoader: {
-            siteFolder:helpers.root('src/assets/site')
+            siteFolder:helpers.root('src/assets/site'),
+            themePath: helpers.root('src/assets/site/theme.less')
           }
         }
       })

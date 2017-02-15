@@ -2491,6 +2491,10 @@ lodash._root@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/lodash._root/-/lodash._root-3.0.1.tgz#fba1c4524c19ee9a5f8136b4609f017cf4ded692"
 
+lodash.assign@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.assign/-/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
+
 lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
@@ -3822,9 +3826,18 @@ selenium-webdriver@2.52.0:
     ws "^1.0.1"
     xml2js "0.4.4"
 
-semantic-ui-less@2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/semantic-ui-less/-/semantic-ui-less-2.1.8.tgz#f77b75a814543e6aae1eee387cc069b89aa92983"
+semantic-ui-less-module-loader@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/semantic-ui-less-module-loader/-/semantic-ui-less-module-loader-0.1.5.tgz#bd2fbccfdfc0078d3d2d010c26799f419191c200"
+  dependencies:
+    less "^2.7.1"
+    less-loader "^2.2.3"
+    loader-utils "^0.2.16"
+    lodash.assign "^4.2.0"
+
+semantic-ui-less@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/semantic-ui-less/-/semantic-ui-less-2.2.4.tgz#b19058ff4d589118959166939bc240e2b4d6867a"
   dependencies:
     jquery x.*
 

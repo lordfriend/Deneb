@@ -130,19 +130,30 @@ module.exports = function (metadata) {
 
         // Less loader support for *.less
         // See https://github.com/webpack/less-loader
+        // {
+        //   test: /ng2-semantic\.less$/,
+        //   loader: ExtractTextPlugin.extract({
+        //     fallbackLoader: 'style-loader',
+        //     loader: [
+        //       'css-loader',
+        //       'less-loader'
+        //     ]
+        //   })
+        // },
         {
-          test: /ng2-semantic\.less$/,
+          test: /\.less$/,
           loader: ExtractTextPlugin.extract({
             fallbackLoader: 'style-loader',
             loader: [
               'css-loader',
-              'less-loader'
+              'semantic-ui-less-module-loader'
             ]
-          })
+          }),
+          include: [/[\/\\]node_modules[\/\\]semantic-ui-less[\/\\]/]
         },
         {
           test: /\.less$/,
-          exclude: /ng2-semantic\.less$/,
+          exclude: /[\/\\]node_modules[\/\\]semantic-ui-less[\/\\]/,
           use: [
             'style-loader',
             'css-loader',
@@ -263,7 +274,7 @@ module.exports = function (metadata) {
       new NormalModuleReplacementPlugin(
         /facade(\\|\/)math/,
         helpers.root('node_modules/@angular/core/src/facade/math.js')
-      ),
+      )
     ],
 
     // Include polyfills or mocks for various node stuff

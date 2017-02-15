@@ -30,6 +30,8 @@ var helpers = require('./helpers');
 var webpackMerge = require('webpack-merge'); //Used to merge webpack configs
 var commonConfig = require('./webpack.common.js'); //The settings that are common to prod and dev
 
+var chalk = require('chalk');
+
 /**
  * Webpack Plugins
  */
@@ -51,9 +53,14 @@ try {
     }
   };
 
-  console.log(e);
+  console.log(chalk.bold.yellow('cannot find config/dev.proxy.js use default proxy settings'));
 }
-
+console.log(chalk.cyan('proxy setting is'));
+console.log('================================================');
+Object.keys(PROXY_SETTINGS).forEach(function (urlPatten) {
+  console.log(chalk.green(urlPatten) + '->' + chalk.bold.white(PROXY_SETTINGS[urlPatten].target));
+});
+console.log('================================================');
 
 /**
  * Webpack configuration
@@ -130,6 +137,9 @@ module.exports = function (metadata) {
             emitErrors: false,
             failOnHint: false,
             resourcePath: 'src'
+          },
+          semanticUiLessModuleLoader: {
+            siteFolder:helpers.root('src/assets/site')
           }
         }
       })

@@ -14,6 +14,7 @@ import {adminRoutes} from './admin.routes';
 import {HttpModule} from '@angular/http';
 import {FeedService} from './bangumi-detail/keyword-builder/feed.service';
 import {Ng2SemanticModule} from '../../ng2-semantic';
+import {UIModule} from 'deneb-ui/src/index';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {Ng2SemanticModule} from '../../ng2-semantic';
     FormsModule,
     RouterModule.forChild(adminRoutes),
     HttpModule,
-    Ng2SemanticModule
+    Ng2SemanticModule,
+    UIModule
   ]
 })
 export class AdminModule {

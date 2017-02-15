@@ -4,7 +4,8 @@ import {Bangumi, Episode, BangumiRaw} from '../../entity';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
-import {FormControl} from '@angular/forms';
+// import {FormControl} from '@angular/forms';
+import {UIToast, ToastRef, UIToastComponent} from 'deneb-ui/src/index';
 
 @Component({
   selector: 'bangumi-detail',
@@ -40,14 +41,18 @@ export class BangumiDetail implements OnInit, OnDestroy {
   private routeParamsSubscription: Subscription;
   private bangumiSubscription: Subscription;
 
+  private toastRef: ToastRef<UIToastComponent>;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private adminService: AdminService,
-    private _titleService: Title
+    private _titleService: Title,
+    private _toastService: UIToast
   ){}
 
   ngOnInit(): any {
+    this.toastRef = this._toastService.makeText();
     this.routeParamsSubscription = this.route.params
       .flatMap((params) => {
         let id = params['id'];
@@ -70,7 +75,9 @@ export class BangumiDetail implements OnInit, OnDestroy {
             }
           }
         },
-        error => this.errorMessage = <any>error
+        error => {
+          this.toastRef.show(error);
+        }
       );
     return undefined;
   }
@@ -117,11 +124,11 @@ export class BangumiDetail implements OnInit, OnDestroy {
             if(id) {
               this.router.navigate(['/admin/bangumi', id]);
             } else {
-              this.errorMessage = 'No id return';
+              this.toastRef.show('No id return');
             }
           },
           (error:any) => {
-            this.errorMessage = <any>error;
+            this.toastRef.show(error);
             this.isSavingBangumi = false;
           }
         )
@@ -129,11 +136,11 @@ export class BangumiDetail implements OnInit, OnDestroy {
       this.bangumiSubscription = this.adminService.updateBangumi(this.bangumi)
         .subscribe(
           result => {
-            console.log(result);
+            this.toastRef.show('更新成功');
             this.isSavingBangumi = false;
           },
           error => {
-            this.errorMessage = <any> error;
+            this.toastRef.show(error);
             this.isSavingBangumi = false;
           }
         );

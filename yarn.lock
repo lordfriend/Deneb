@@ -1083,6 +1083,10 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
+deneb-ui@lordfriend/Deneb-UI:
+  version "0.0.2"
+  resolved "https://codeload.github.com/lordfriend/Deneb-UI/tar.gz/a08e31d7793715818e6781aabfd3e6b35663d077"
+
 depd@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.0.tgz#e1bd82c6aab6ced965b97b88b17ed3e528ca18c3"

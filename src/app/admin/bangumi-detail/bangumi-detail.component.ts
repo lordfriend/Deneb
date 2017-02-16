@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
 // import {FormControl} from '@angular/forms';
-import {UIToast, ToastRef, UIToastComponent} from 'deneb-ui/src/index';
+import {UIToast, UIToastRef, UIToastComponent} from 'deneb-ui/src/index';
 
 @Component({
   selector: 'bangumi-detail',
@@ -41,7 +41,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
   private routeParamsSubscription: Subscription;
   private bangumiSubscription: Subscription;
 
-  private toastRef: ToastRef<UIToastComponent>;
+  private toastRef: UIToastRef<UIToastComponent>;
 
   constructor(
     private router: Router,

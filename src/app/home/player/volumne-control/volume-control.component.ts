@@ -3,7 +3,7 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'volume-control',
-  template: require('./volume-control.html')
+  templateUrl: './volume-control.html'
 })
 export class VolumeControl {
 

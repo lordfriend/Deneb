@@ -5,7 +5,7 @@ import {AdminService} from '../../admin.service';
 
 @Component({
   selector: 'episode-detail',
-  template: require('./episode-detail.html'),
+  templateUrl: './episode-detail.html',
 })
 export class EpisodeDetail {
 

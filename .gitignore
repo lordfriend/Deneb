@@ -55,6 +55,9 @@ npm-debug.log
 /deploy
 deploy.sh
 
+# AOT #
+/compiled
+
 # Doc #
 /doc/
 

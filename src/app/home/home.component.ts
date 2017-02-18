@@ -14,7 +14,7 @@ const BREAK_POINT = 1330;
 
 @Component({
   selector: 'home',
-  template: require('./home.html')
+  templateUrl: './home.html'
 })
 export class Home implements OnInit, OnDestroy {
 

@@ -4,7 +4,7 @@ require('./admin.less');
 
 @Component({
   selector: 'admin',
-  template: require('./admin.html')
+  templateUrl: './admin.html'
 })
 export class Admin {
 

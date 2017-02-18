@@ -35,7 +35,7 @@
                    [duration]="duration"
                    [currentTime]="currentTime"
                    (onProgressUpdate)="seekTo($event)"
-                   (onPlayButtonClick)="onClickPlay()"
+                   (onPlayButtonClick)="onClickPlay($event)"
                    (onFullScreenClick)="toggleFullscreen()">
     <button class="play-button control-button" (click)="onClickPlay($event)" title="播放">
       <i class="icon" [ngClass]="playButtonIcon"></i>

@@ -8,7 +8,7 @@ import {FAVORITE_LABEL} from '../../entity/constants';
 
 @Component({
   selector: 'bangumi-list',
-  template: require('./bangumi-list.html')
+  templateUrl: './bangumi-list.html'
 })
 export class BangumiList extends HomeChild implements OnInit, OnDestroy {
 

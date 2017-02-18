@@ -9,15 +9,26 @@
     "sourceMap": true,
     "noEmit": true,
     "noEmitHelpers": true,
+    "importHelpers": true,
     "strictNullChecks": false,
     "lib": [
       "es2015",
       "dom"
     ],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "types": [
       "hammerjs",
-      "node"
-    ]
+      "jasmine",
+      "node",
+      "source-map",
+      "uglify-js",
+      "webpack"
+    ],
+    "paths": [
+    ],
+    "baseUrl": "src"
   },
   "exclude": [
     "node_modules",

@@ -6,7 +6,7 @@ import {FAVORITE_LABEL} from '../../entity/constants';
 
 @Component({
   selector: 'default-component',
-  template: require('./default.html')
+  templateUrl: './default.html'
 })
 export class DefaultComponent extends HomeChild implements OnInit {
 

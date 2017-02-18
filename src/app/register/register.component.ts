@@ -16,7 +16,7 @@ require('./register.less');
  */
 @Component({
   selector: 'register',
-  template: require('./register.html')
+  templateUrl: './register.html'
 })
 export class Register implements OnInit {
 

@@ -38,7 +38,6 @@ var DefinePlugin = require('webpack/lib/DefinePlugin');
 var DedupePlugin = require('webpack/lib/optimize/DedupePlugin');
 var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 var CompressionPlugin = require('compression-webpack-plugin');
-var WebpackMd5Hash = require('webpack-md5-hash');
 
 module.exports = function (metadata) {
   return webpackMerge(commonConfig(metadata), {
@@ -83,12 +82,6 @@ module.exports = function (metadata) {
     //
     // See: http://webpack.github.io/docs/configuration.html#plugins
     plugins: [
-
-      // Plugin: WebpackMd5Hash
-      // Description: Plugin to replace a standard webpack chunkhash with md5.
-      //
-      // See: https://www.npmjs.com/package/webpack-md5-hash
-      new WebpackMd5Hash(),
 
       // Plugin: DedupePlugin
       // Description: Prevents the inclusion of duplicate code into your bundle

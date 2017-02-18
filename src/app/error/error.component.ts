@@ -7,7 +7,7 @@ import {Subscription} from 'rxjs/Rx';
 
 @Component({
   selector: 'error-page',
-  template: require('./error.html')
+  templateUrl: './error.html'
 })
 export class ErrorComponent implements OnInit, OnDestroy {
 

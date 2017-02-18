@@ -10,7 +10,7 @@ import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'view-bangumi-detail',
-  template: require('./bangumi-detail.html'),
+  templateUrl: './bangumi-detail.html',
 })
 export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 

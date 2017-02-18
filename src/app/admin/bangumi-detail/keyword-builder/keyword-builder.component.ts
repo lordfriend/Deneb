@@ -8,7 +8,7 @@ require('./keyword-builder.less');
 
 @Component({
   selector: 'keyword-builder',
-  template: require('./keyword-builder.html'),
+  templateUrl: './keyword-builder.html',
   providers: [FeedService]
 })
 export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewInit {
@@ -24,7 +24,7 @@ export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewIn
   libykCriteria: LibykCriteria;
 
   libykCriteriaSubscription: Subscription;
-  
+
   outerClickHandler: (event: MouseEvent) => {};
 
   constructor(private feedService: FeedService) {

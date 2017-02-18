@@ -104,8 +104,8 @@ module.exports = function (metadata) {
       // See: http://webpack.github.io/docs/configuration.html#output-chunkfilename
       chunkFilename: '[id].chunk.js',
 
-      // library: 'ac_[name]',
-      // libraryTarget: 'var',
+      library: 'ac_[name]',
+      libraryTarget: 'var',
     },
 
     plugins: [

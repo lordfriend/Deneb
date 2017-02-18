@@ -31,7 +31,7 @@ const noop = () => {};
 
 @Component({
   selector: 'player',
-  template: require('./player.html')
+  templateUrl: './player.html'
 })
 export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 

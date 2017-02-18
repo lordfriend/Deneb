@@ -24,19 +24,21 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-var webpack = require('webpack');
-var helpers = require('./helpers');
-var fs = require('fs');
+const webpack = require('webpack');
+const helpers = require('./helpers');
+const fs = require('fs');
 
 /**
  * Webpack Plugins
  */
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var NormalModuleReplacementPlugin = require('webpack/lib/NormalModuleReplacementPlugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const NormalModuleReplacementPlugin = require('webpack/lib/NormalModuleReplacementPlugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
+const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const ngcWebpack = require('ngc-webpack');
 
 /**
  * Webpack configuration
@@ -44,6 +46,7 @@ var ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
 module.exports = function (metadata) {
+  const AOT = metadata.ENV === 'production';
   return {
 
     // Static metadata for index.html
@@ -64,9 +67,9 @@ module.exports = function (metadata) {
     // See: http://webpack.github.io/docs/configuration.html#entry
     entry: {
 
-      'polyfills': './src/polyfills.ts',
-      'vendor': './src/vendor.ts',
-      'main': './src/main.browser.ts',
+      'polyfills': './src/polyfills.browser.ts',
+      // 'vendor': './src/vendor.ts',
+      'main': AOT ? './src/main.browser.aot.ts': './src/main.browser.ts',
 
     },
 
@@ -96,15 +99,22 @@ module.exports = function (metadata) {
         {
           test: /\.ts$/,
           use: [
-            'awesome-typescript-loader?{configFileName: "tsconfig.webpack.json"}',
-            'angular2-template-loader',
             {
               loader: 'ng-router-loader',
               options: {
-                loader: 'async-system',
-                genDir: '.',
-                aot: false // TODO: add flag based option
+                loader: 'async-import',
+                genDir: 'compiled',
+                aot: AOT
               }
+            },
+            {
+              loader: 'awesome-typescript-loader',
+              options: {
+                configFileName: 'tsconfig.webpack.json'
+              }
+            },
+            {
+              loader: 'angular2-template-loader'
             }
           ],
           exclude: [/\.(spec|e2e)\.ts$/]
@@ -196,7 +206,7 @@ module.exports = function (metadata) {
       // Description: Do type checking in a separate process, so webpack don't need to wait.
       //
       // See: https://github.com/s-panferov/awesome-typescript-loader#forkchecker-boolean-defaultfalse
-      new ForkCheckerPlugin(),
+      new CheckerPlugin(),
 
       // Plugin: CommonsChunkPlugin
       // Description: Shares common code between the pages.
@@ -204,10 +214,26 @@ module.exports = function (metadata) {
       //
       // See: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
       // See: https://github.com/webpack/docs/wiki/optimization#multi-page-app
-      new webpack.optimize.CommonsChunkPlugin({
-        name: ['polyfills', 'vendor'].reverse()
+      new CommonsChunkPlugin({
+        name: 'polyfills',
+        chunks: ['polyfills']
       }),
 
+      // This enables tree shaking of the vendor modules
+      new CommonsChunkPlugin({
+        name: 'polyfills',
+        chunks: ['polyfills']
+      }),
+
+      new CommonsChunkPlugin({
+        name: 'vendor',
+        chunks: ['main'],
+        minChunks: module => /node_modules/.test(module.resource)
+      }),
+      // Specify the correct order the scripts will be injected in
+      new CommonsChunkPlugin({
+        name: ['polyfills', 'vendor'].reverse()
+      }),
       /**
        * Plugin: ContextReplacementPlugin
        * Description: Provides context to Angular's use of System.import
@@ -217,7 +243,7 @@ module.exports = function (metadata) {
        */
       new ContextReplacementPlugin(
         // The (\\|\/) piece accounts for path separators in *nix and Windows
-        /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+        /angular(\\|\/)core(\\|\/)src(\\|\/)linker/,
         helpers.root('src'), // location of your src
         {
           // your Angular Async Route paths relative to this root directory
@@ -274,7 +300,13 @@ module.exports = function (metadata) {
       new NormalModuleReplacementPlugin(
         /facade(\\|\/)math/,
         helpers.root('node_modules/@angular/core/src/facade/math.js')
-      )
+      ),
+
+      new ngcWebpack.NgcWebpackPlugin({
+        disabled: !AOT,
+        tsConfig: helpers.root('tsconfig.webpack.json'),
+        resourceOverride: helpers.root('config/resource-override.js')
+      })
     ],
 
     // Include polyfills or mocks for various node stuff

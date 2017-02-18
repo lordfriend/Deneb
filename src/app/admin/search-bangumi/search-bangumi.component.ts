@@ -7,7 +7,7 @@ import {AdminService} from '../admin.service';
 
 @Component({
   selector: 'search-bangumi',
-  template: require('./search-bangumi.html'),
+  templateUrl: './search-bangumi.html',
   providers: [AdminService]
 })
 export class SearchBangumi {

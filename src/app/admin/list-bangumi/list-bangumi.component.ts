@@ -7,7 +7,7 @@ import {AdminService} from '../admin.service';
 
 @Component({
   selector: 'list-bangumi',
-  template: require('./list-bangumi.html'),
+  templateUrl: './list-bangumi.html',
   providers: [AdminService]
 })
 export class ListBangumi implements OnInit {

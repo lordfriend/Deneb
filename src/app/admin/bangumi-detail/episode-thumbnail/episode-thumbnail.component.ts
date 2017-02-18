@@ -4,7 +4,7 @@ import {AdminService} from '../../admin.service';
 
 @Component({
   selector: 'episode-thumbnail',
-  template: require('./episode-thumbnail.html'),
+  templateUrl: './episode-thumbnail.html',
   host: {
     '[class.episode-thumbnail]': 'true'
   }

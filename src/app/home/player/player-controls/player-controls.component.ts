@@ -14,7 +14,7 @@ import {closest} from '../../../../helpers/dom';
 
 @Component({
   selector: 'player-controls',
-  template: require('./player-controls.html')
+  templateUrl: './player-controls.html'
 })
 export class PlayerControls implements AfterViewInit, OnDestroy {
 

@@ -7,7 +7,7 @@ import {HomeService} from '../home.service';
 
 @Component({
   selector: 'favorite-chooser',
-  template: require('./favorite-chooser.html')
+  templateUrl: './favorite-chooser.html'
 })
 export class FavoriteChooser {
   FAVORITE_LABEL = FAVORITE_LABEL;

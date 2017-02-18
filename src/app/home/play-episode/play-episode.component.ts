@@ -12,7 +12,7 @@ export const MIN_WATCHED_PERCENTAGE = 0.95;
 
 @Component({
   selector: 'play-episode',
-  template: require('./play-episode.html')
+  templateUrl: './play-episode.html'
 })
 export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 

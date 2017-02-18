@@ -11,7 +11,7 @@ require('./login.less');
 
 @Component({
   selector: 'login',
-  template: require('./login.html')
+  templateUrl: './login.html'
 })
 export class Login implements OnInit, OnDestroy {
 

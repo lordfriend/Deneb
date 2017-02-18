@@ -5,11 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
 // import {FormControl} from '@angular/forms';
-import {UIToast, UIToastRef, UIToastComponent} from 'deneb-ui/src/index';
+// import {UIToast, UIToastRef, UIToastComponent} from 'deneb-ui/src/index';
 
 @Component({
   selector: 'bangumi-detail',
-  template: require('./bangumi-detail.html'),
+  templateUrl: './bangumi-detail.html',
   providers: [AdminService],
   styles:[`
     .bangumi-image {
@@ -41,18 +41,18 @@ export class BangumiDetail implements OnInit, OnDestroy {
   private routeParamsSubscription: Subscription;
   private bangumiSubscription: Subscription;
 
-  private toastRef: UIToastRef<UIToastComponent>;
+  // private toastRef: UIToastRef<UIToastComponent>;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private adminService: AdminService,
     private _titleService: Title,
-    private _toastService: UIToast
+    // private _toastService: UIToast
   ){}
 
   ngOnInit(): any {
-    this.toastRef = this._toastService.makeText();
+    // this.toastRef = this._toastService.makeText();
     this.routeParamsSubscription = this.route.params
       .flatMap((params) => {
         let id = params['id'];
@@ -76,7 +76,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
           }
         },
         error => {
-          this.toastRef.show(error);
+          // this.toastRef.show(error);
         }
       );
     return undefined;
@@ -124,11 +124,11 @@ export class BangumiDetail implements OnInit, OnDestroy {
             if(id) {
               this.router.navigate(['/admin/bangumi', id]);
             } else {
-              this.toastRef.show('No id return');
+              // this.toastRef.show('No id return');
             }
           },
           (error:any) => {
-            this.toastRef.show(error);
+            // this.toastRef.show(error);
             this.isSavingBangumi = false;
           }
         )
@@ -136,11 +136,11 @@ export class BangumiDetail implements OnInit, OnDestroy {
       this.bangumiSubscription = this.adminService.updateBangumi(this.bangumi)
         .subscribe(
           result => {
-            this.toastRef.show('更新成功');
+            // this.toastRef.show('更新成功');
             this.isSavingBangumi = false;
           },
           error => {
-            this.toastRef.show(error);
+            // this.toastRef.show(error);
             this.isSavingBangumi = false;
           }
         );

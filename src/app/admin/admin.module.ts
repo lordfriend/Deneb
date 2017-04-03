@@ -14,18 +14,32 @@ import {adminRoutes} from './admin.routes';
 import {HttpModule} from '@angular/http';
 import {FeedService} from './bangumi-detail/keyword-builder/feed.service';
 import {Ng2SemanticModule} from '../../ng2-semantic';
+import {AdminNavbar} from './admin-navbar/admin-navbar.component';
+import {BangumiCard} from './bangumi-card/bangumi-card.component';
+import {UIModule} from 'deneb-ui';
 
 
 @NgModule({
-  declarations: [Admin, SearchBangumi, ListBangumi, BangumiDetail, KeywordBuilder, EpisodeDetail, EpisodeThumbnail],
-  providers: [AdminService, FeedService],
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule.forChild(adminRoutes),
-    HttpModule,
-    Ng2SemanticModule
-  ]
+    declarations: [
+        Admin,
+        SearchBangumi,
+        ListBangumi,
+        BangumiDetail,
+        KeywordBuilder,
+        EpisodeDetail,
+        EpisodeThumbnail,
+        AdminNavbar,
+        BangumiCard
+    ],
+    providers: [AdminService, FeedService],
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule.forChild(adminRoutes),
+        HttpModule,
+        Ng2SemanticModule,
+        UIModule
+    ]
 })
 export class AdminModule {
 }

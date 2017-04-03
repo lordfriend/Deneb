@@ -18,34 +18,36 @@ import {HOME_DECLARATIONS} from './home/index';
 import {HomeService} from './home/home.service';
 import {Ng2SemanticModule} from '../ng2-semantic';
 import {WatchService} from './home/watch.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
-  declarations: [
-    App,
-    Login,
-    Register,
-    ErrorComponent,
-    ...HOME_DECLARATIONS
-  ],
-  providers: [
-    AnalyticsService,
-    Authentication,
-    UserService,
-    HomeService,
-    WatchService,
-    Title,
-    ENV_PROVIDERS
-  ],
-  imports: [
-    RouterModule.forRoot(appRoutes, {useHash: true}),
-    BrowserModule,
-    CommonModule,
-    ReactiveFormsModule,
-    HttpModule,
-    PlayerModule,
-    Ng2SemanticModule
-  ],
-  bootstrap: [App]
+    declarations: [
+        App,
+        Login,
+        Register,
+        ErrorComponent,
+        ...HOME_DECLARATIONS
+    ],
+    providers: [
+        AnalyticsService,
+        Authentication,
+        UserService,
+        HomeService,
+        WatchService,
+        Title,
+        ENV_PROVIDERS
+    ],
+    imports: [
+        RouterModule.forRoot(appRoutes, {useHash: true}),
+        BrowserModule,
+        CommonModule,
+        ReactiveFormsModule,
+        HttpModule,
+        PlayerModule,
+        Ng2SemanticModule,
+        BrowserAnimationsModule
+    ],
+    bootstrap: [App]
 })
 export class AppModule {
 }

@@ -4,19 +4,16 @@ import {Bangumi, BangumiRaw} from '../entity';
 import {Observable} from 'rxjs/Observable';
 import {Episode} from '../entity/episode';
 import {queryString} from '../../helpers/url'
+import {BaseService} from '../../helpers/base.service';
 
 
 @Injectable()
-export class AdminService {
+export class AdminService extends BaseService {
 
     private baseUrl = '/api/admin';
 
     constructor(private http: Http) {
-    }
-
-    handleError(error: Response) {
-        console.error(error);
-        return Observable.throw(error.json().error || 'Server Error');
+        super();
     }
 
     queryBangumi(bgmId: number): Observable<BangumiRaw> {
@@ -48,7 +45,8 @@ export class AdminService {
             name: name
         });
         return this.http.get(`${this.baseUrl}/bangumi?${queryParams}`)
-            .map(res => res.json());
+            .map(res => res.json())
+            .catch(this.handleError);
     }
 
     getBangumi(id: string): Observable<Bangumi> {

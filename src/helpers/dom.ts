@@ -11,3 +11,7 @@ export function closest(el, selector) {
   }
   return null;
 }
+
+export function getRemPixel(remValue: number): number {
+    return remValue * parseFloat(window.getComputedStyle(document.body).getPropertyValue('font-size').match(/(\d+(?:\.\d+)?)px/)[1]);
+}

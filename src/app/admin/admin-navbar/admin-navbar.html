@@ -1,6 +1,9 @@
 <nav class="nav-admin">
     <div class="title">{{navTitle}}</div>
     <div class="action-container">
-        <ng-content></ng-content>
+        <ng-content select=".action-item"></ng-content>
+    </div>
+    <div class="accessor-action-container">
+        <ng-content select=".accessory-action"></ng-content>
     </div>
 </nav>

@@ -1,33 +1,33 @@
 import {Bangumi} from '../../entity';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {AdminService} from '../admin.service';
-import {BehaviorSubject, Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
+import {getRemPixel} from '../../../helpers/dom';
+import {UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
+import {BaseError} from '../../../helpers/error/BaseError';
 
 require('./list-bangumi.less');
 export const CARD_HEIGHT_REM = 16;
 @Component({
     selector: 'list-bangumi',
-    templateUrl: './list-bangumi.html',
-    providers: [AdminService]
+    templateUrl: './list-bangumi.html'
 })
-export class ListBangumi implements OnInit, OnDestroy {
+export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     private _subscription = new Subscription();
-    private _inputSubject = new BehaviorSubject<string>('');
 
     private _bangumiList: Bangumi[];
+    private _allBangumiList: Bangumi[];
+    private _toastRef: UIToastRef<UIToastComponent>;
+
+    @ViewChild('searchBox') searchBox: ElementRef;
 
     name: string;
-
-    currentPage: number = 1;
-
     total: number = 0;
-
-    numberPerPage: number = 10;
-
     orderBy: string = 'create_time';
     sort: string = 'desc';
+    type: number = -1;
 
     set bangumiList(list: Bangumi[]) {
         this._bangumiList = list;
@@ -37,7 +37,6 @@ export class ListBangumi implements OnInit, OnDestroy {
             }
             return bangumi[this.orderBy];
         });
-        console.log(this.timestampList);
     };
 
     get bangumiList(): Bangumi[] {
@@ -51,81 +50,104 @@ export class ListBangumi implements OnInit, OnDestroy {
 
     constructor(private adminService: AdminService,
                 private router: Router,
+                toastService: UIToast,
                 titleService: Title) {
         titleService.setTitle('新番管理 - ' + SITE_TITLE);
+        this._toastRef = toastService.makeText();
         if (window) {
-            this.cardHeight = CARD_HEIGHT_REM * parseFloat(window.getComputedStyle(document.body).getPropertyValue('font-size').match(/(\d+(?:\.\d+)?)px/)[1]);
+            this.cardHeight = getRemPixel(CARD_HEIGHT_REM)
         }
     }
 
-    private loadBangumiList() {
-        this.isLoading = true;
-        this.adminService.listBangumi({
-            page: this.currentPage,
-            count: this.numberPerPage,
-            orderBy: this.orderBy,
-            sort: this.sort,
-            name: this.name
-        })
-            .subscribe(
-                (result: { data: Bangumi[], total: number }) => {
-                    this.bangumiList = result.data;
-                    this.total = result.total;
-                    this.isLoading = false
-                },
-                (error: any) => {
-                    this.isLoading = false
-                },
-            );
+    private filterBangumiList() {
+        if (!this._allBangumiList) {
+            return;
+        }
+        this.bangumiList = this._allBangumiList
+            .filter(bangumi => {
+                if (this.type === -1) {
+                    return true;
+                }
+                return bangumi.type === this.type;
+            })
+            .filter(bangumi => {
+                if (this.name) {
+                    let name = this.name.trim();
+                    return bangumi.name.indexOf(name) !== -1 || bangumi.name_cn.indexOf(name) !== -1 || bangumi.summary.indexOf(name) !== -1;
+                }
+                return true;
+            })
+            .sort((bgm1: Bangumi, bgm2: Bangumi) => {
+                let t1, t2;
+                if (this.orderBy === 'air_date') {
+                    t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
+                    t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
+                } else {
+                    t1 = bgm1[this.orderBy];
+                    t2 = bgm2[this.orderBy];
+                }
+                return this.sort === 'asc' ? t1 - t2 : t2 - t1;
+            });
     }
 
-    filterBangumi(name: string): void {
-        this._inputSubject.next(name);
+    onOrderChange(orderBy: string, isSortChange: boolean) {
+        this.orderBy = orderBy;
+        if (isSortChange) {
+            this.sort = this.sort === 'desc' ? 'asc' : 'desc';
+        }
+        this.filterBangumiList();
     }
 
-    onPageChange(pageNumber: number) {
-        this.currentPage = pageNumber;
-        this.loadBangumiList();
+    onTypeChange(type: string) {
+        this.type = parseInt(type);
+        this.filterBangumiList();
     }
 
     ngOnInit(): void {
+        this.loadFromServer();
+    }
+
+    ngAfterViewInit(): void {
+        let searchBox = this.searchBox.nativeElement;
         this._subscription.add(
-            this._inputSubject
+            Observable.fromEvent(searchBox, 'keyup')
                 .debounceTime(500)
                 .distinctUntilChanged()
-                .flatMap((name: string) => {
-                    this.isLoading = true;
-                    this.currentPage = 1;
-                    this.name = name;
-                    let count;
-                    if (name) {
-                        count = this.numberPerPage;
-                    } else {
-                        count = -1;
-                    }
-                    return this.adminService.listBangumi({
-                        page: this.currentPage,
-                        count: count,
-                        orderBy: this.orderBy,
-                        sort: this.sort,
-                        name: name
-                    });
+                .subscribe(() => {
+                    this.name = searchBox.value;
+                    this.filterBangumiList();
                 })
-                .subscribe(
-                    (result: { data: Bangumi[], total: number }) => {
-                        this.bangumiList = result.data;
-                        this.total = result.total;
-                        this.isLoading = false
-                    },
-                    (error) => {
-                        this.isLoading = false
-                    }
-                )
         );
     }
 
     ngOnDestroy(): void {
         this._subscription.unsubscribe();
+    }
+
+    private loadFromServer() {
+        this.isLoading = true;
+        this._subscription.add(
+            this.adminService
+                .listBangumi({
+                    page: 1,
+                    count: -1,
+                    orderBy: this.orderBy,
+                    sort: this.sort
+                })
+                .subscribe(
+                    (result: { data: Bangumi[], total: number }) => {
+                        this._allBangumiList = result.data;
+                        this.bangumiList = this._allBangumiList;
+                        this.total = result.total;
+                        this.isLoading = false
+                    },
+                    (error: BaseError) => {
+                        console.log(error);
+                        this._toastRef.show(error.message);
+                        this.isLoading = false
+                    }
+                )
+        );
     }
 
     public editBangumi(bangumi: Bangumi): void {

@@ -1,8 +1,26 @@
 <admin-navbar navTitle="已保存的新番">
     <div class="ui icon input action-item search-action">
-        <input type="text" placeholder="按名称过滤" #searchBox (keyup)="filterBangumi(searchBox.value)">
+        <input type="text" placeholder="按名称过滤" #searchBox>
         <i class="search icon"></i>
     </div>
+    <a class="action-item anchor-button">
+        <i class="plus icon"></i>添加番组
+    </a>
+    <a class="sort-button anchor-button accessory-action" (click)="onOrderChange(orderBy, true)" [title]="sort === 'desc' ? '降序': '升序'">
+        <i class="sort content icon" [ngClass]="{ascending: sort === 'asc', descending: sort === 'desc'}"></i>
+    </a>
+    <select class="accessory-action" name="admin_orderBy" id="admin_orderBy" data-value="create_time" #orderByPicker
+            (change)="onOrderChange(orderByPicker.value, false)">
+        <option value="create_time">按创建时间</option>
+        <option value="update_time">按修改时间</option>
+        <option value="air_date">按开播日期</option>
+    </select>
+    <select class="accessory-action" name="admin_type" id="admin_type" value="-1" #typePicker
+            (change)="onTypeChange(typePicker.value)">
+        <option value="-1">全部</option>
+        <option value="2">动画</option>
+        <option value="6">电视剧</option>
+    </select>
 </admin-navbar>
 <div class="content-area">
     <div class="all-bangumi-container" *ngIf="!name && !isLoading && bangumiList && bangumiList.length > 0">
@@ -17,12 +35,9 @@
             <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="false" (click)="editBangumi(bangumi)">
             </bangumi-card>
         </div>
-        <div class="column center ui centered grid">
-            <ui-pagination [currentPage]="currentPage" [total]="total" [countPerPage]="numberPerPage" (pageChange)="onPageChange($event)"></ui-pagination>
-        </div>
     </div>
     <div class="no-result-container" *ngIf="!isLoading && bangumiList && bangumiList.length === 0">
-        <div class="no-result-tips"><i class="warning circle icon"></i>没有找到新番</div>
+        <div class="no-result-tips"><i class="warning circle icon"></i>没有找到番组</div>
     </div>
     <div class="searching-container" *ngIf="isLoading">
         <div class="ui massive text active loader">Loading...</div>

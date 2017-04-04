@@ -3,7 +3,7 @@
         <input type="text" placeholder="按名称过滤" #searchBox>
         <i class="search icon"></i>
     </div>
-    <a class="action-item anchor-button">
+    <a class="action-item anchor-button" (click)="addBangumi()">
         <i class="plus icon"></i>添加番组
     </a>
     <a class="sort-button anchor-button accessory-action" (click)="onOrderChange(orderBy, true)" [title]="sort === 'desc' ? '降序': '升序'">

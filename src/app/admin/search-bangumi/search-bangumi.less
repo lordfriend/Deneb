@@ -1,0 +1,51 @@
+.search-bangumi-modal {
+  @media(max-width: 767px) {
+    width: 100%;
+  }
+  @media(min-width: 768px) and (max-width: 991px) {
+    width: 768px;
+  }
+  @media(min-width: 992px) {
+    width: 933px;
+  }
+  @media(min-height: 900px) {
+    margin-top: 10vh;
+    height: 80%;
+  }
+  @media(min-height: 600px) and (max-height: 899px) {
+    margin-top: 5vh;
+    height: 90%;
+  }
+  @media(max-height: 599px) {
+    height: 100%;
+  }
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  background-color: #fff;
+  .search-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    background-color: #ffffff;
+    &.ui.form {
+      .inline.fields {
+        margin: 0;
+      }
+    }
+    .back-button {
+      display: inline-block;
+      padding: 0.6rem;
+      color: #333333;
+      cursor: pointer;
+    }
+  }
+
+  .bangumi-list {
+    margin-bottom: 2rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}

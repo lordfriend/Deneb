@@ -1,62 +1,124 @@
-import {Component, Output} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {Bangumi} from '../../entity';
-import {Title} from '@angular/platform-browser';
-import {Subject} from 'rxjs'
-import {Router} from '@angular/router';
 import {AdminService} from '../admin.service';
+import {Observable, Subscription} from 'rxjs';
+import {UIDialogRef} from 'deneb-ui';
+
+export const SEARCH_BAR_HEIGHT = 4.8;
 
 @Component({
-  selector: 'search-bangumi',
-  templateUrl: './search-bangumi.html',
-  providers: [AdminService]
+    selector: 'search-bangumi',
+    templateUrl: './search-bangumi.html',
+    styleUrls: ['./search-bangumi.less']
 })
-export class SearchBangumi {
+export class SearchBangumi implements AfterViewInit {
+    private _subscription = new Subscription();
 
-  private _input = new Subject<string>();
-  private _bangumiType: number = 2;
-  bangumiList = [];
-  isLoading: boolean = false;
+    @ViewChild('searchBox') searchBox: ElementRef;
+    @ViewChild('typePicker') typePicker: ElementRef;
 
-  get bangumiType(): number {
-    return this._bangumiType;
-  }
+    name: string;
+    bangumiType: number = 2;
 
-  set bangumiType(type: number) {
-    if (type != this._bangumiType) {
-      this.bangumiList = [];
+    currentPage: number = 1;
+    total: number = 0;
+    count: number = 10;
+
+    bangumiList = [];
+    isLoading: boolean = false;
+
+    typePickerOpen: boolean = false;
+
+    constructor(private adminService: AdminService,
+                private _dialogRef: UIDialogRef<SearchBangumi>) {
     }
-    this._bangumiType = type;
-  }
 
-  constructor(
-    private router: Router,
-    private adminService: AdminService,
-    titleService: Title
-  ){
-    titleService.setTitle('添加新番 - ' + SITE_TITLE);
-    this._input
-      .debounceTime(500)
-      .distinctUntilChanged()
-      .filter(name => !!name)
-      .forEach(name => {
-        this.isLoading = true;
-        this.adminService.searchBangumi(name, this.bangumiType)
-          .subscribe(
-            bangumiList => this.bangumiList = bangumiList,
-            error => console.log(error),
-            () => this.isLoading = false
-          );
-      });
-  }
+    ngAfterViewInit(): void {
+        let searchBox = <HTMLElement> this.searchBox.nativeElement;
+        let typePicker = <HTMLElement> this.typePicker.nativeElement;
 
-  searchBangumi(name: string):void {
-    this._input.next(name)
-  }
+        this._subscription.add(
+            Observable.fromEvent(typePicker, 'click')
+                .filter(() => !this.typePickerOpen)
+                .do((event: MouseEvent) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.typePickerOpen = true;
+                })
+                .flatMap(() => {
+                    return Observable.fromEvent(document.body, 'click')
+                        .do((event: MouseEvent) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        })
+                        .takeWhile(() => this.typePickerOpen)
+                })
+                .subscribe(
+                    () => {
+                        this.typePickerOpen = false;
+                    }
+                )
+        );
 
-  addBangumi(bangumi: Bangumi):void {
-    if(bangumi.id) {
-      return;
+        this._subscription.add(
+            Observable.fromEvent(searchBox, 'keyup')
+                .debounceTime(500)
+                .map(() => (searchBox as HTMLInputElement).value)
+                .distinctUntilChanged()
+                .filter(name => !!name)
+                .subscribe(
+                    (name: string) => {
+                        this.currentPage = 1;
+                        this.name = name;
+                        this.fetchData();
+                    }
+                )
+        );
+        // setTimeout(() => {
+        //     let cardHeight = getRemPixel(CARD_HEIGHT_REM);
+        //     let viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        //     let scaleFactor = viewportHeight < 600 ? 1 : 0.8;
+        //     let uiPaginationHeight = getRemPixel(1/* font-size */ + 0.92857143/* padding */ * 2 + 2 /* margin-top */);
+        //     this.bangumiListHeight = Math.floor(viewportHeight * scaleFactor) - getRemPixel(SEARCH_BAR_HEIGHT) - uiPaginationHeight;
+        //     this.count = Math.max(1, Math.floor((this.bangumiListHeight - uiPaginationHeight) / cardHeight));
+        //     console.log(this.count);
+        // });
     }
-    this.router.navigate(['/admin/search', bangumi.bgm_id]);
-  }
+
+    onPageChanged() {
+        this.fetchData();
+    }
+
+    onTypeChanged(type: number) {
+        this.bangumiType = type;
+        this.fetchData();
+    }
+
+    fetchData() {
+        if (!this.name) {
+            return;
+        }
+        let offset = (this.currentPage - 1) * this.count;
+        this.adminService.searchBangumi({
+            name: this.name,
+            type: this.bangumiType,
+            offset: offset,
+            count: this.count
+        })
+            .subscribe(
+                (result: { data: Bangumi[], total: number }) => {
+                    this.bangumiList = result.data;
+                    this.total = result.total;
+                },
+                error => console.log(error),
+                () => this.isLoading = false
+            );
+    }
+
+    addBangumi(bangumi: Bangumi): void {
+        if (bangumi.id) {
+            return;
+        }
+        // this.router.navigate(['/admin/search', bangumi.bgm_id]);
+    }
 }

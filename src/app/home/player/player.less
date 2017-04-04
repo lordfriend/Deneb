@@ -1,5 +1,7 @@
-@import './player-controls/player-controls.less';
-@import './volumne-control/volume-control.less';
+:host {
+  display: block;
+  flex: 0 1 auto;
+}
 
 .video-container {
   margin: 0;
@@ -75,5 +77,18 @@
       transform: rotate(45deg);
       background-color: #fff;
     }
+  }
+}
+
+.control-button {
+  flex: 0 0 auto;
+  color: #ffffff;
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  padding: 0.3rem 0.5rem;
+  &:active,
+  &:focus {
+    outline: none;
   }
 }

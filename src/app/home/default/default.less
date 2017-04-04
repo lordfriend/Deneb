@@ -1,17 +1,36 @@
-default-component {
-  .on-air-loading-wrapper {
-    height: 21rem;
-    position: static !important;
-  }
-  .default-container {
-    padding-top: 2rem;
-  }
+.on-air-loading-wrapper {
+  height: 21rem;
+  position: static !important;
+}
+.default-container {
+  padding-top: 2rem;
+}
 
-  .bangumi-card {
-    .ui.ribbon.label {
+.bangumi-card {
+  .ui.ribbon.label {
+    position: absolute;
+    top: 0.5rem;
+    left: -1rem;
+  }
+  ui-image-placeholder {
+    width: 100%;
+    height: 0;
+    padding-bottom: 140.5152224824%;
+    position: relative;
+    .image-wrapper {
       position: absolute;
-      top: 0.5rem;
-      left: -1rem;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      > img {
+        object-fit: cover;
+        height: 100%;
+      }
+    }
+    .icon-holder {
+      font-size: 2rem;
     }
   }
 }

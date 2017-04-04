@@ -22,9 +22,11 @@ export class AdminService extends BaseService {
             .map(res => new BangumiRaw(res.json()));
     }
 
-    searchBangumi(name: string, type: number): Observable<Bangumi[]> {
-        return this.http.get(`${this.baseUrl}/query?name=${name}&type=${type}`)
-            .map(res => <Bangumi[]> res.json().data);
+    searchBangumi(params: {name: string, type: number, offset: number, count: number}): Observable<{data: Bangumi[], total: number}> {
+        let queryParams = queryString(params);
+        return this.http.get(`${this.baseUrl}/query?${queryParams}`)
+            .map(res => <Bangumi[]> res.json())
+            .catch(this.handleError);
     }
 
     addBangumi(bangumiRaw: BangumiRaw): Observable<string> {
@@ -37,13 +39,7 @@ export class AdminService extends BaseService {
     }
 
     listBangumi(params: {page: number, count: number, orderBy: string, sort: string, name?: string}): Observable<{ data: Bangumi[], total: number }> {
-        let queryParams = queryString({
-            page: params.page,
-            count: params.count,
-            order_by: params.orderBy,
-            sort: params.sort,
-            name: name
-        });
+        let queryParams = queryString(params);
         return this.http.get(`${this.baseUrl}/bangumi?${queryParams}`)
             .map(res => res.json())
             .catch(this.handleError);

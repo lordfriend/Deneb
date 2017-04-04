@@ -1,39 +1,23 @@
-<nav class="nav-admin">
-  <h1 class="ui header">添加新的新番</h1>
-</nav>
-<div class="bangumi-container">
-  <div class="ui form">
-    <div class="inline fields">
-      <label>类型</label>
-      <div class="field">
-        <div class="ui radio checkbox">
-          <input type="radio" name="type" [(ngModel)]="bangumiType" [value]="2">
-          <label>动画</label>
+<div class="search-bangumi-modal">
+    <div class="search-bar">
+        <a class="back-button"><i class="chevron left icon"></i></a>
+        <div class="ui left action icon input">
+            <div class="ui basic floating dropdown button" #typePicker [ngClass]="{active: typePickerOpen, visible: typePickerOpen}">
+                <div class="text">{{ bangumiType | bangumiTypeName }}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu transition" [ngClass]="{visible: typePickerOpen, hidden: !typePickerOpen}">
+                    <div class="item" (click)="onTypeChanged(2)">动画</div>
+                    <div class="item" (click)="onTypeChanged(6)">电视剧</div>
+                </div>
+            </div>
+            <input type="text" placeholder="请搜索..." #searchBox>
+            <i class="search icon"></i>
         </div>
-      </div>
-      <div class="field">
-        <div class="ui radio checkbox">
-          <input type="radio" name=type [(ngModel)]="bangumiType" [value]="6">
-          <label>日剧</label>
+    </div>
+    <div class="search-result-container">
+        <div class="bangumi-list">
+            <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="true"></bangumi-card>
         </div>
-      </div>
+        <ui-pagination [currentPage]="currentPage" [total]="total" [max]="8" [countPerPage]="count" (pageChange)="onPageChanged()"></ui-pagination>
     </div>
-  </div>
-  
-  <div class="ui search" [ngClass]="{loading: isLoading}">
-    <div class="ui fluid icon input">
-      <input class="prompt" type="text" placeholder="输入番组名称搜索" #searchBox (keyup)="searchBangumi(searchBox.value)"/>
-      <i class="search icon"></i>
-    </div>
-  </div>
-  <div class="bangumi-list">
-    <div *ngFor="let bangumi of bangumiList" (click)="addBangumi(bangumi)"  class="ui segment bangumi-list-item">
-      <img [src]="bangumi.image" alt="image" class="bangumi-image">
-      <div class="md-list-item-text" layout="column">
-        <h3>{{bangumi.name_cn}}</h3>
-        <h4>{{bangumi.name}}</h4>
-        <p *ngIf="bangumi.id"><span class="ui teal tag label">已添加</span></p>
-      </div>
-    </div>
-  </div>
 </div>

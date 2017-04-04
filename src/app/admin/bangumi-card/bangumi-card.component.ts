@@ -1,11 +1,13 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {Bangumi} from '../../entity/bangumi';
 
-require('./bangumi-card.less');
+export const CARD_HEIGHT_REM = 16;
 
 @Component({
     selector: 'bangumi-card',
-    templateUrl: './bangumi-card.html'
+    templateUrl: './bangumi-card.html',
+    styleUrls: ['./bangumi-card.less'],
+    encapsulation: ViewEncapsulation.None
 })
 export class BangumiCard {
     @Input()

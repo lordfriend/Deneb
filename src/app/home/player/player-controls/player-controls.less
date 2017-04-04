@@ -22,19 +22,6 @@
     align-items: center;
     justify-content: space-around;
 
-    > .control-button {
-      flex: 0 0 auto;
-      color: #ffffff;
-      font-size: 1.2rem;
-      background: none;
-      border: none;
-      padding: 0.3rem 0.5rem;
-      &:active,
-      &:focus {
-        outline: none;
-      }
-    }
-
     > .play-progress {
       flex: 1 1 auto;
       height: 1.6rem;
@@ -86,16 +73,6 @@
       -ms-user-select: none;
       user-select: none;
       cursor: default;
-    }
-  }
-
-  volume-control {
-    display: none;
-    position: absolute;
-    right: 6rem;
-    bottom: 4rem;
-    &.show {
-      display: block;
     }
   }
 }

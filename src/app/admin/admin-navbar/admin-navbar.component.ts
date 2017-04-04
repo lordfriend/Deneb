@@ -1,10 +1,9 @@
 import {Component, Input} from '@angular/core';
 
-require('./admin-navbar.less');
-
 @Component({
     selector: 'admin-navbar',
     templateUrl: './admin-navbar.html',
+    styleUrls: ['./admin-navbar.less']
 })
 export class AdminNavbar {
     @Input()

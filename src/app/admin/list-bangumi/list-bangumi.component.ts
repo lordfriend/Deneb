@@ -5,14 +5,15 @@ import {Router} from '@angular/router';
 import {AdminService} from '../admin.service';
 import {Observable, Subscription} from 'rxjs';
 import {getRemPixel} from '../../../helpers/dom';
-import {UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
+import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
 import {BaseError} from '../../../helpers/error/BaseError';
+import {CARD_HEIGHT_REM} from '../bangumi-card/bangumi-card.component';
+import {SearchBangumi} from '../search-bangumi/search-bangumi.component';
 
-require('./list-bangumi.less');
-export const CARD_HEIGHT_REM = 16;
 @Component({
     selector: 'list-bangumi',
-    templateUrl: './list-bangumi.html'
+    templateUrl: './list-bangumi.html',
+    styleUrls: ['./list-bangumi.less']
 })
 export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     private _subscription = new Subscription();
@@ -50,6 +51,7 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
 
     constructor(private adminService: AdminService,
                 private router: Router,
+                private _dialog: UIDialog,
                 toastService: UIToast,
                 titleService: Title) {
         titleService.setTitle('新番管理 - ' + SITE_TITLE);
@@ -101,6 +103,18 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     onTypeChange(type: string) {
         this.type = parseInt(type);
         this.filterBangumiList();
+    }
+
+    addBangumi(): void {
+        let dialogRef = this._dialog.open(SearchBangumi, {stickyDialog: true});
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .subscribe(
+                    () => {
+
+                    }
+                )
+        );
     }
 
     ngOnInit(): void {

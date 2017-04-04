@@ -19,6 +19,8 @@ import {HomeService} from './home/home.service';
 import {Ng2SemanticModule} from '../ng2-semantic';
 import {WatchService} from './home/watch.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {UIImagePlaceholder} from './image-placeholder/image-placeholder';
+import {UIImagePlaceholderModule} from './image-placeholder/index';
 
 @NgModule({
     declarations: [
@@ -45,7 +47,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
         HttpModule,
         PlayerModule,
         Ng2SemanticModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        UIImagePlaceholderModule
     ],
     bootstrap: [App]
 })

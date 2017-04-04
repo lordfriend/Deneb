@@ -17,6 +17,8 @@ import {Ng2SemanticModule} from '../../ng2-semantic';
 import {AdminNavbar} from './admin-navbar/admin-navbar.component';
 import {BangumiCard} from './bangumi-card/bangumi-card.component';
 import {UIModule} from 'deneb-ui';
+import {BangumiTypeNamePipe} from './bangumi-pipes/type-name-pipe';
+import {UIImagePlaceholderModule} from '../image-placeholder/index';
 
 
 @NgModule({
@@ -29,7 +31,8 @@ import {UIModule} from 'deneb-ui';
         EpisodeDetail,
         EpisodeThumbnail,
         AdminNavbar,
-        BangumiCard
+        BangumiCard,
+        BangumiTypeNamePipe,
     ],
     providers: [AdminService, FeedService],
     imports: [
@@ -38,6 +41,7 @@ import {UIModule} from 'deneb-ui';
         RouterModule.forChild(adminRoutes),
         HttpModule,
         Ng2SemanticModule,
+        UIImagePlaceholderModule,
         UIModule
     ]
 })

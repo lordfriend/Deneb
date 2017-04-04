@@ -2,7 +2,8 @@ import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {Bangumi} from '../../entity';
 import {AdminService} from '../admin.service';
 import {Observable, Subscription} from 'rxjs';
-import {UIDialogRef} from 'deneb-ui';
+import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
+import {BaseError} from '../../../helpers/error/BaseError';
 
 export const SEARCH_BAR_HEIGHT = 4.8;
 
@@ -13,6 +14,7 @@ export const SEARCH_BAR_HEIGHT = 4.8;
 })
 export class SearchBangumi implements AfterViewInit {
     private _subscription = new Subscription();
+    private _toastRef: UIToastRef<UIToastComponent>;
 
     @ViewChild('searchBox') searchBox: ElementRef;
     @ViewChild('typePicker') typePicker: ElementRef;
@@ -24,13 +26,15 @@ export class SearchBangumi implements AfterViewInit {
     total: number = 0;
     count: number = 10;
 
-    bangumiList = [];
+    bangumiList: Bangumi[];
     isLoading: boolean = false;
 
     typePickerOpen: boolean = false;
 
     constructor(private adminService: AdminService,
-                private _dialogRef: UIDialogRef<SearchBangumi>) {
+                private _dialogRef: UIDialogRef<SearchBangumi>,
+                toastService: UIToast) {
+        this._toastRef = toastService.makeText();
     }
 
     ngAfterViewInit(): void {
@@ -99,6 +103,7 @@ export class SearchBangumi implements AfterViewInit {
             return;
         }
         let offset = (this.currentPage - 1) * this.count;
+        this.isLoading = true;
         this.adminService.searchBangumi({
             name: this.name,
             type: this.bangumiType,
@@ -109,10 +114,18 @@ export class SearchBangumi implements AfterViewInit {
                 (result: { data: Bangumi[], total: number }) => {
                     this.bangumiList = result.data;
                     this.total = result.total;
+                    this.isLoading = false;
                 },
-                error => console.log(error),
-                () => this.isLoading = false
+                (error: BaseError) => {
+                    this.bangumiList = [];
+                    this._toastRef.show(error.message);
+                    this.isLoading = false;
+                }
             );
+    }
+
+    cancelSearch() {
+        this._dialogRef.close('cancelled');
     }
 
     addBangumi(bangumi: Bangumi): void {

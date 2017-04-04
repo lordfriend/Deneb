@@ -1,9 +1,10 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 
 @Component({
     selector: 'admin-navbar',
     templateUrl: './admin-navbar.html',
-    styleUrls: ['./admin-navbar.less']
+    styleUrls: ['./admin-navbar.less'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminNavbar {
     @Input()

@@ -1,7 +1,10 @@
 <div class="ui segment">
     <div class="bangumi-list-item">
-        <div class="cover-wrapper">
+        <div class="cover-wrapper" *ngIf="bangumi.cover">
             <img [src]="bangumi.cover" alt="image" class="bangumi-image">
+        </div>
+        <div class="cover-wrapper" *ngIf="bangumi.image">
+            <img [src]="bangumi.image" alt="image" class="bangumi-image">
         </div>
         <div class="list-item-text">
             <h4 class="bangumi-title">{{bangumi.name_cn}}</h4>

@@ -110,8 +110,11 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
         this._subscription.add(
             dialogRef.afterClosed()
                 .subscribe(
-                    () => {
-
+                    (result: any) => {
+                        console.log(result);
+                        if (result === 'cancelled') {
+                            return;
+                        }
                     }
                 )
         );

@@ -1,6 +1,6 @@
 <div class="search-bangumi-modal">
     <div class="search-bar">
-        <a class="back-button"><i class="chevron left icon"></i></a>
+        <a class="back-button" (click)="cancelSearch()"><i class="chevron left icon"></i></a>
         <div class="ui left action icon input">
             <div class="ui basic floating dropdown button" #typePicker [ngClass]="{active: typePickerOpen, visible: typePickerOpen}">
                 <div class="text">{{ bangumiType | bangumiTypeName }}</div>
@@ -14,10 +14,21 @@
             <i class="search icon"></i>
         </div>
     </div>
-    <div class="search-result-container">
+    <div class="search-result-container" *ngIf="!isLoading && bangumiList?.length > 0">
         <div class="bangumi-list">
             <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="true"></bangumi-card>
         </div>
-        <ui-pagination [currentPage]="currentPage" [total]="total" [max]="8" [countPerPage]="count" (pageChange)="onPageChanged()"></ui-pagination>
+
+        <div class="pagination-wrapper" *ngIf="total > bangumiList?.length">
+            <ui-pagination [currentPage]="currentPage" [total]="total" [max]="8" [countPerPage]="count" (pageChange)="onPageChanged()"></ui-pagination>
+        </div>
+    </div>
+    <div class="no-result-container" *ngIf="!isLoading && bangumiList?.length === 0">
+        <div class="no-result-tip">没有找到番組</div>
+    </div>
+    <div class="searching-wrapper" *ngIf="isLoading">
+        <div class="ui inverted active massive text loader">
+            搜索中...
+        </div>
     </div>
 </div>

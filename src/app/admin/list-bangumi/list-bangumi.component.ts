@@ -115,6 +115,8 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
                         if (result === 'cancelled') {
                             return;
                         }
+
+                        this.router.navigate(['/admin/bangumi', result as string]);
                     }
                 )
         );

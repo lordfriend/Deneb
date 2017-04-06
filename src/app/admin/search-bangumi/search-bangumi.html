@@ -1,34 +1,42 @@
-<div class="search-bangumi-modal">
-    <div class="search-bar">
-        <a class="back-button" (click)="cancelSearch()"><i class="chevron left icon"></i></a>
-        <div class="ui left action icon input">
-            <div class="ui basic floating dropdown button" #typePicker [ngClass]="{active: typePickerOpen, visible: typePickerOpen}">
-                <div class="text">{{ bangumiType | bangumiTypeName }}</div>
-                <i class="dropdown icon"></i>
-                <div class="menu transition" [ngClass]="{visible: typePickerOpen, hidden: !typePickerOpen}">
-                    <div class="item" (click)="onTypeChanged(2)">动画</div>
-                    <div class="item" (click)="onTypeChanged(6)">电视剧</div>
+<div class="search-bangumi-modal" [ngClass]="{'show-detail': showDetail}">
+    <div class="search-list">
+        <div class="search-bar">
+            <a class="back-button" (click)="cancelSearch()"><i class="chevron left icon"></i></a>
+            <div class="ui left action icon input">
+                <div class="ui basic floating dropdown button" #typePicker [ngClass]="{active: typePickerOpen, visible: typePickerOpen}">
+                    <div class="text">{{ bangumiType | bangumiTypeName }}</div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu transition" [ngClass]="{visible: typePickerOpen, hidden: !typePickerOpen}">
+                        <div class="item" (click)="onTypeChanged(2)">动画</div>
+                        <div class="item" (click)="onTypeChanged(6)">电视剧</div>
+                    </div>
                 </div>
+                <input type="text" placeholder="请搜索..." #searchBox>
+                <i class="search icon"></i>
             </div>
-            <input type="text" placeholder="请搜索..." #searchBox>
-            <i class="search icon"></i>
         </div>
-    </div>
-    <div class="search-result-container" *ngIf="!isLoading && bangumiList?.length > 0">
-        <div class="bangumi-list">
-            <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="true"></bangumi-card>
-        </div>
+        <div class="search-result-container" *ngIf="!isLoading && bangumiList?.length > 0">
+            <div class="bangumi-list">
+                <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="true" (click)="viewDetail(bangumi)"></bangumi-card>
+            </div>
 
-        <div class="pagination-wrapper" *ngIf="total > bangumiList?.length">
-            <ui-pagination [currentPage]="currentPage" [total]="total" [max]="8" [countPerPage]="count" (pageChange)="onPageChanged()"></ui-pagination>
+            <div class="pagination-wrapper" *ngIf="total > bangumiList?.length">
+                <ui-pagination [currentPage]="currentPage" [total]="total" [max]="8" [countPerPage]="count" (pageChange)="onPageChanged()"></ui-pagination>
+            </div>
+        </div>
+        <div class="no-result-container" *ngIf="!isLoading && bangumiList?.length === 0">
+            <div class="no-result-tip">没有找到番組</div>
+        </div>
+        <div class="searching-wrapper" *ngIf="isLoading">
+            <div class="ui inverted active massive text loader">
+                搜索中...
+            </div>
         </div>
     </div>
-    <div class="no-result-container" *ngIf="!isLoading && bangumiList?.length === 0">
-        <div class="no-result-tip">没有找到番組</div>
-    </div>
-    <div class="searching-wrapper" *ngIf="isLoading">
-        <div class="ui inverted active massive text loader">
-            搜索中...
+    <result-detail [bgmId]="selectedBgmId" [showDetail]="showDetail" (finish)="fromDetail($event)"></result-detail>
+    <div class="saving-dimmer ui inverted dimmer" [ngClass]="{active: isSaving}">
+        <div class="ui massive text loader">
+            保存中...
         </div>
     </div>
 </div>

@@ -4,8 +4,9 @@ import {AdminService} from '../admin.service';
 import {Observable, Subscription} from 'rxjs';
 import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
 import {BaseError} from '../../../helpers/error/BaseError';
+import {BangumiRaw} from '../../entity/bangumi-raw';
 
-export const SEARCH_BAR_HEIGHT = 4.8;
+// export const SEARCH_BAR_HEIGHT = 4.8;
 
 @Component({
     selector: 'search-bangumi',
@@ -31,7 +32,12 @@ export class SearchBangumi implements AfterViewInit {
 
     typePickerOpen: boolean = false;
 
-    constructor(private adminService: AdminService,
+    selectedBgmId: number;
+
+    showDetail: boolean = false;
+    isSaving: boolean = false;
+
+    constructor(private _adminService: AdminService,
                 private _dialogRef: UIDialogRef<SearchBangumi>,
                 toastService: UIToast) {
         this._toastRef = toastService.makeText();
@@ -104,7 +110,7 @@ export class SearchBangumi implements AfterViewInit {
         }
         let offset = (this.currentPage - 1) * this.count;
         this.isLoading = true;
-        this.adminService.searchBangumi({
+        this._adminService.searchBangumi({
             name: this.name,
             type: this.bangumiType,
             offset: offset,
@@ -128,10 +134,31 @@ export class SearchBangumi implements AfterViewInit {
         this._dialogRef.close('cancelled');
     }
 
-    addBangumi(bangumi: Bangumi): void {
+    viewDetail(bangumi: Bangumi): void {
         if (bangumi.id) {
             return;
         }
-        // this.router.navigate(['/admin/search', bangumi.bgm_id]);
+        this.selectedBgmId = bangumi.bgm_id;
+        this.showDetail = true;
+    }
+
+    fromDetail(bangumi: BangumiRaw): void {
+        if (bangumi) {
+            this.isSaving = true;
+            this._subscription.add(
+                this._adminService.addBangumi(bangumi)
+                .subscribe(
+                    (bangumi_id: string) => {
+                        this._dialogRef.close(bangumi_id);
+                    },
+                    (error: BaseError) => {
+                        this.isSaving = false;
+                        this._toastRef.show(error.message);
+                    }
+                )
+            );
+        } else {
+            this.showDetail = false;
+        }
     }
 }

@@ -8,7 +8,7 @@ import {KeywordBuilder} from './bangumi-detail/keyword-builder/keyword-builder.c
 import {EpisodeDetail} from './bangumi-detail/episode-detail/episode-detail.component';
 import {EpisodeThumbnail} from './bangumi-detail/episode-thumbnail/episode-thumbnail.component';
 import {AdminService} from './admin.service';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {adminRoutes} from './admin.routes';
 import {HttpModule} from '@angular/http';
@@ -19,12 +19,14 @@ import {BangumiCard} from './bangumi-card/bangumi-card.component';
 import {UIModule} from 'deneb-ui';
 import {BangumiTypeNamePipe} from './bangumi-pipes/type-name-pipe';
 import {UIImagePlaceholderModule} from '../image-placeholder/index';
+import {ResultDetail} from './search-bangumi/result-detail/result-detail.component';
 
 
 @NgModule({
     declarations: [
         Admin,
         SearchBangumi,
+        ResultDetail,
         ListBangumi,
         BangumiDetail,
         KeywordBuilder,
@@ -32,12 +34,13 @@ import {UIImagePlaceholderModule} from '../image-placeholder/index';
         EpisodeThumbnail,
         AdminNavbar,
         BangumiCard,
-        BangumiTypeNamePipe,
+        BangumiTypeNamePipe
     ],
     providers: [AdminService, FeedService],
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         RouterModule.forChild(adminRoutes),
         HttpModule,
         Ng2SemanticModule,

@@ -7,7 +7,7 @@
             <img [src]="bangumi.image" alt="image" class="bangumi-image">
         </div>
         <div class="list-item-text">
-            <h4 class="bangumi-title">{{bangumi.name_cn}}</h4>
+            <h4 class="bangumi-title">{{bangumi.name_cn}}<span class="ui teal small label" *ngIf="bangumi.id && showAddedTag">已添加</span></h4>
             <h4 class="entry">
                 <span class="entry-key">日文名</span>
                 <span class="entry-value">{{bangumi.name}}</span>
@@ -24,7 +24,10 @@
                 <span class="entry-key">放送星期</span>
                 <span class="entry-value">{{bangumi.air_weekday}}</span>
             </p>
-            <p *ngIf="bangumi.id && showAddedTag"><span class="ui teal tag label">已添加</span></p>
+            <p class="entry">
+                <span class="entry-key">话数</span>
+                <span class="entry-value">{{bangumi.eps}}</span>
+            </p>
         </div>
     </div>
 </div>

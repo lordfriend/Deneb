@@ -2,76 +2,7 @@
   <h1 class="ui header">编辑新番</h1>
 </nav>
 <div class="bangumi-container">
-  <form (ngSubmit)="onSubmit()" class="bangumi-form ui form ui dimmable" [ngClass]="{dimmed: !bangumi.bgm_id}">
-    <div class="ui simple inverted dimmer">
-      <div class="ui loader"></div>
-    </div>
-    <section class="bangumi-info">
-      <div class="bangumi-image">
-        <img src="{{bangumi.cover || bangumi.image}}" alt="image">
-      </div>
-      <div class="bangumi-basic-info">
-        <div class="field">
-          <label>番组名</label>
-          <input type="text" [(ngModel)]="bangumi.name" name="name"/>
-        </div>
-        <div class="field">
-          <label>中文名</label>
-          <input type="text" [(ngModel)]="bangumi.name_cn" name="name_cn"/>
-        </div>
-        <div class="field">
-          <label>简介</label>
-          <textarea type="text" [(ngModel)]="bangumi.summary" name="summary" cols="20" rows="6"></textarea>
-        </div>
-        <div class="field">
-          <label>放送开始</label>
-          <input type="text" [(ngModel)]="bangumi.air_date" name="air_date"/>
-        </div>
-        <div class="field">
-          <label>放送星期</label>
-          <input type="text" [(ngModel)]="bangumi.air_weekday" name="air_weekday"/>
-        </div>
-        <div class="field" *ngIf="bangumi.type === 2">
-          <label>DMHY</label>
-          <keyword-builder [bangumi]="bangumi" [siteName]="'dmhy'"></keyword-builder>
-        </div>
-        <div class="field" *ngIf="bangumi.type === 2">
-          <label>ACG_RIP</label>
-          <keyword-builder [bangumi]="bangumi" [siteName]="'acg_rip'"></keyword-builder>
-        </div>
-        <div class="field" *ngIf="bangumi.type === 6">
-          <label>LIBYK_SO</label>
-          <keyword-builder [bangumi]="bangumi" [siteName]="'libyk_so'"></keyword-builder>
-        </div>
-        <div class="field">
-          <label>集数偏移（解决某些集数不是从1开始的新番）</label>
-          <input type="text" [(ngModel)]="bangumi.eps_no_offset" name="eps_no_offset"/>
-        </div>
-        <div class="inline fields" *ngIf="bangumi.id">
-          <label>状态</label>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="status" [(ngModel)]="bangumi.status" [value]="0">
-              <label>Pending</label>
-            </div>
-          </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="status" [(ngModel)]="bangumi.status" [value]="1">
-              <label>On Air</label>
-            </div>
-          </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="status" [(ngModel)]="bangumi.status" [value]="2">
-              <label>Finished</label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <button class="ui right floated primary button" [ngClass]="{loading: isSavingBangumi}" type="submit">Save</button>
-  </form>
+
   <div class="bangumi-episodes" *ngIf="bangumi.id">
     <h4 class="ui header">各话列表</h4>
     <div class="ui divider"></div>

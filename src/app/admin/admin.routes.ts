@@ -11,14 +11,6 @@ export const adminRoutes: Routes = [
     component: Admin,
     children: [
       {
-        path: 'search/:bgm_id',
-        component: BangumiDetail
-      },
-      {
-        path: 'search',
-        component: SearchBangumi
-      },
-      {
         path: 'bangumi/:id',
         component: BangumiDetail
       },

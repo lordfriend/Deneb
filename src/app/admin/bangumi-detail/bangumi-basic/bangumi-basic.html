@@ -1,0 +1,52 @@
+<form class="bangumi-form ui form" [formGroup]="bangumiForm" novalidate>
+    <div class="bangumi-image">
+        <img [src]="bangumi.cover" alt="image">
+    </div>
+    <div class="bangumi-basic-info">
+        <div class="field">
+            <label>番组名</label>
+            <input type="text" formControlName="name" name="name"/>
+        </div>
+        <div class="field">
+            <label>中文名</label>
+            <input type="text" formControlName="name_cn" name="name_cn"/>
+        </div>
+        <div class="field">
+            <label>简介</label>
+            <textarea type="text" formControlName="summary" name="summary" cols="20" rows="6"></textarea>
+        </div>
+        <div class="field">
+            <label>放送开始</label>
+            <input type="text" formControlName="air_date" name="air_date"/>
+        </div>
+        <div class="field">
+            <label>放送星期</label>
+            <input type="text" formControlName=air_weekday" name="air_weekday"/>
+        </div>
+        <div class="field">
+            <label>集数偏移（解决某些集数不是从1开始的新番, bangumi.tv的集数减去资源站的集数）</label>
+            <input type="text" formControlName="eps_no_offset" name="eps_no_offset"/>
+        </div>
+        <div class="inline fields">
+            <label>状态</label>
+            <div class="field">
+                <div class="ui radio checkbox">
+                    <input type="radio" name="status" formControlName="status" [value]="0">
+                    <label>Pending</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui radio checkbox">
+                    <input type="radio" name="status" formControlName="status" [value]="1">
+                    <label>On Air</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui radio checkbox">
+                    <input type="radio" name="status" formControlName="status" [value]="2">
+                    <label>Finished</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

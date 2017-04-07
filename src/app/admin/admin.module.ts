@@ -20,6 +20,7 @@ import {UIModule} from 'deneb-ui';
 import {BangumiTypeNamePipe} from './bangumi-pipes/type-name-pipe';
 import {UIImagePlaceholderModule} from '../image-placeholder/index';
 import {ResultDetail} from './search-bangumi/result-detail/result-detail.component';
+import {BangumiBasic} from './bangumi-detail/bangumi-basic/bangumi-basic.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import {ResultDetail} from './search-bangumi/result-detail/result-detail.compone
         EpisodeThumbnail,
         AdminNavbar,
         BangumiCard,
-        BangumiTypeNamePipe
+        BangumiTypeNamePipe,
+        BangumiBasic
     ],
     providers: [AdminService, FeedService],
     imports: [
@@ -46,6 +48,10 @@ import {ResultDetail} from './search-bangumi/result-detail/result-detail.compone
         Ng2SemanticModule,
         UIImagePlaceholderModule,
         UIModule
+    ],
+    entryComponents: [
+        SearchBangumi,
+        BangumiBasic
     ]
 })
 export class AdminModule {

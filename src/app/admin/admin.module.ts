@@ -21,6 +21,8 @@ import {BangumiTypeNamePipe} from './bangumi-pipes/type-name-pipe';
 import {UIImagePlaceholderModule} from '../image-placeholder/index';
 import {ResultDetail} from './search-bangumi/result-detail/result-detail.component';
 import {BangumiBasic} from './bangumi-detail/bangumi-basic/bangumi-basic.component';
+import {BangumiStatusNamePipe} from './bangumi-pipes/status-name-pipe';
+import {LibykPipe} from './bangumi-pipes/libyk-pipe';
 
 
 @NgModule({
@@ -36,9 +38,14 @@ import {BangumiBasic} from './bangumi-detail/bangumi-basic/bangumi-basic.compone
         AdminNavbar,
         BangumiCard,
         BangumiTypeNamePipe,
+        BangumiStatusNamePipe,
+        LibykPipe,
         BangumiBasic
     ],
-    providers: [AdminService, FeedService],
+    providers: [
+        AdminService,
+        FeedService
+    ],
     imports: [
         CommonModule,
         FormsModule,
@@ -51,7 +58,8 @@ import {BangumiBasic} from './bangumi-detail/bangumi-basic/bangumi-basic.compone
     ],
     entryComponents: [
         SearchBangumi,
-        BangumiBasic
+        BangumiBasic,
+        KeywordBuilder
     ]
 })
 export class AdminModule {

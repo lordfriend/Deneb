@@ -1,7 +1,4 @@
 <form class="bangumi-form ui form" [formGroup]="bangumiForm" novalidate>
-    <div class="bangumi-image">
-        <img [src]="bangumi.cover" alt="image">
-    </div>
     <div class="bangumi-basic-info">
         <div class="field">
             <label>番组名</label>
@@ -21,12 +18,12 @@
         </div>
         <div class="field">
             <label>放送星期</label>
-            <input type="text" formControlName=air_weekday" name="air_weekday"/>
+            <input type="text" formControlName="air_weekday" name="air_weekday"/>
         </div>
-        <div class="field">
-            <label>集数偏移（解决某些集数不是从1开始的新番, bangumi.tv的集数减去资源站的集数）</label>
-            <input type="text" formControlName="eps_no_offset" name="eps_no_offset"/>
-        </div>
+        <!--<div class="field">-->
+            <!--<label>集数偏移（解决某些集数不是从1开始的新番, bangumi.tv的集数减去资源站的集数）</label>-->
+            <!--<input type="text" formControlName="eps_no_offset" name="eps_no_offset"/>-->
+        <!--</div>-->
         <div class="inline fields">
             <label>状态</label>
             <div class="field">
@@ -48,5 +45,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="footer">
+        <button class="ui button" (click)="cancel()">取消</button>
+        <button class="ui primary button" (click)="save()">保存</button>
     </div>
 </form>

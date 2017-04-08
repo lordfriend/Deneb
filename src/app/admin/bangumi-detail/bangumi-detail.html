@@ -1,21 +1,92 @@
-<nav class="nav-admin">
-  <h1 class="ui header">编辑新番</h1>
-</nav>
-<div class="bangumi-container">
-
-  <div class="bangumi-episodes" *ngIf="bangumi.id">
-    <h4 class="ui header">各话列表</h4>
-    <div class="ui divider"></div>
-    <div class="episode-list">
-      <episode-detail class="episode-item ui segment"
-                      [episode]="episode"
-                      (onDelete)="onEpisodeDelete($event)"
-                      (onAdded)="onEpisodeAdded($event, episode)"
-                      *ngFor="let episode of orderedEpisodeList">
-      </episode-detail>
+<admin-navbar navTitle="编辑新番" backLink="/admin/bangumi">
+</admin-navbar>
+<div class="bangumi-detail-container">
+    <div class="bangumi-basic-info">
+        <div class="cover-wrapper">
+            <img [src]="bangumi.image" alt="image" class="bangumi-image">
+        </div>
+        <div class="bangumi-info-text">
+            <h3 class="bangumi-title">{{bangumi.name_cn || '暂无'}}</h3>
+            <h4 class="entry">
+                <span class="entry-key">日文名</span>
+                <span class="entry-value">{{bangumi.name || '暂无'}}</span>
+            </h4>
+            <p class="entry">
+                <span class="entry-key">简介</span>
+                <span class="entry-value">{{bangumi.summary || '暂无'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">放送开始</span>
+                <span class="entry-value">{{bangumi.air_date || '未知'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">放送星期</span>
+                <span class="entry-value">{{bangumi.air_weekday || '未知'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">状态</span>
+                <span class="entry-value">{{bangumi.status | bangumiStatusName}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">类型</span>
+                <span class="entry-value">{{bangumi.type | bangumiTypeName}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">创建时间</span>
+                <span class="entry-value">{{bangumi.create_time | date: 'medium'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">更新时间</span>
+                <span class="entry-value">{{bangumi.update_time | date: 'medium'}}</span>
+            </p>
+        </div>
+        <a class="edit-button anchor-button" (click)="editBasicInfo()"><i class="edit icon"></i></a>
     </div>
-    <div class="episode-list-control" *ngIf="bangumi.id">
-      <button class="ui primary button" (click)="addEpisode()" type="button">添加一话</button>
+    <div class="download-info">
+        <h4 class="section-header">抓取来源</h4>
+        <div class="dmhy-entry entry">
+            <div class="entry-key">DMHY</div>
+            <div class="entry-value">
+                <span class="ui horizontal label" *ngIf="bangumi.dmhy">{{bangumi.dmhy}}</span>
+                <a class="edit-button anchor-button" (click)="editKeyword('dmhy')"><i class="edit icon"></i></a>
+            </div>
+        </div>
+        <div class="acgrip-entry entry">
+            <div class="entry-key">ACG.RIP</div>
+            <div class="entry-value">
+                <span class="ui horizontal label" *ngIf="bangumi.acg_rip">{{bangumi.acg_rip}}</span>
+                <a class="edit-button anchor-button" (click)="editKeyword('acg_rip')"><i class="edit icon"></i></a>
+            </div>
+        </div>
+        <div class="libyk-entry entry">
+            <div class="entry-key">LIBYK</div>
+            <div class="entry-value">
+                <div class="ui horizontal label" *ngIf="bangumi.libyk_so">
+                    <i class="rss icon"></i>
+                    {{bangumi.libyk_so | libykFormat:'t'}}
+                    <div class="detail">{{bangumi.libyk_so | libykFormat:'q'}}</div>
+                </div>
+                <a class="edit-button anchor-button" (click)="editKeyword('libyk_so')"><i class="edit icon"></i></a>
+            </div>
+        </div>
+        <!--<div class="bangumimoe-entry entry">-->
+            <!--<span class="entry-key">BANGUMI.MOE</span>-->
+            <!--<span class="entry-value">{{bangumi.dmhy}}</span>-->
+        <!--</div>-->
     </div>
-  </div>
+    <div class="bangumi-episodes" *ngIf="bangumi.id">
+        <h4 class="ui header">各话列表</h4>
+        <div class="ui divider"></div>
+        <div class="episode-list">
+            <episode-detail class="episode-item ui segment"
+                            [episode]="episode"
+                            (onDelete)="onEpisodeDelete($event)"
+                            (onAdded)="onEpisodeAdded($event, episode)"
+                            *ngFor="let episode of orderedEpisodeList">
+            </episode-detail>
+        </div>
+        <div class="episode-list-control" *ngIf="bangumi.id">
+            <button class="ui primary button" (click)="addEpisode()" type="button">添加一话</button>
+        </div>
+    </div>
 </div>

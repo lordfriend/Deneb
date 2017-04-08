@@ -4,7 +4,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UIDialogRef} from 'deneb-ui';
 @Component({
     selector: 'bangumi-basic',
-    templateUrl: './bangumi-basic.html'
+    templateUrl: './bangumi-basic.html',
+    styleUrls: ['./bangumi-basic.less']
 })
 export class BangumiBasic implements OnInit {
 
@@ -25,12 +26,12 @@ export class BangumiBasic implements OnInit {
             summary: this.bangumi.summary,
             air_date: [this.bangumi.air_date, Validators.required],
             air_weekday: this.bangumi.air_weekday,
-            eps_no_offset: this.bangumi.eps_no_offset,
+            // eps_no_offset: this.bangumi.eps_no_offset,
             status: this.bangumi.status
         });
     }
 
-    back() {
+    cancel() {
         this._dialogRef.close(null);
     }
 

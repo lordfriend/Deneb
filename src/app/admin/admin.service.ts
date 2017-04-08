@@ -19,7 +19,8 @@ export class AdminService extends BaseService {
     queryBangumi(bgmId: number): Observable<BangumiRaw> {
         let queryUrl = this.baseUrl + '/query/' + bgmId;
         return this.http.get(queryUrl)
-            .map(res => new BangumiRaw(res.json()));
+            .map(res => new BangumiRaw(res.json()))
+            .catch(this.handleError);
     }
 
     searchBangumi(params: {name: string, type: number, offset: number, count: number}): Observable<{data: Bangumi[], total: number}> {
@@ -35,7 +36,8 @@ export class AdminService extends BaseService {
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify(bangumiRaw);
         return this.http.post(queryUrl, body, options)
-            .map(res => res.json().data.id);
+            .map(res => res.json().data.id)
+            .catch(this.handleError);
     }
 
     listBangumi(params: {page: number, count: number, orderBy: string, sort: string, name?: string}): Observable<{ data: Bangumi[], total: number }> {
@@ -48,7 +50,8 @@ export class AdminService extends BaseService {
     getBangumi(id: string): Observable<Bangumi> {
         let queryUrl = this.baseUrl + '/bangumi/' + id;
         return this.http.get(queryUrl)
-            .map(res => res.json().data);
+            .map(res => res.json().data)
+            .catch(this.handleError)
     }
 
     updateBangumi(bangumi: Bangumi): Observable<any> {
@@ -58,12 +61,14 @@ export class AdminService extends BaseService {
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify(bangumi);
         return this.http.put(queryUrl, body, options)
-            .map(res => res.json());
+            .map(res => res.json())
+            .catch(this.handleError);
     }
 
     getEpisode(episode_id: string): Observable<Episode> {
         return this.http.get(`${this.baseUrl}/episode/${episode_id}`)
-            .map(res => <Episode> res.json().data);
+            .map(res => <Episode> res.json().data)
+            .catch(this.handleError);
     }
 
     addEpisode(episode: Episode): Observable<string> {
@@ -71,7 +76,8 @@ export class AdminService extends BaseService {
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify(episode);
         return this.http.post(`${this.baseUrl}/episode`, body, options)
-            .map(res => <string> res.json().data.id);
+            .map(res => <string> res.json().data.id)
+            .catch(this.handleError);
     }
 
     updateEpisode(episode: Episode): Observable<any> {
@@ -81,7 +87,8 @@ export class AdminService extends BaseService {
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify(episode);
         return this.http.put(queryUrl, body, options)
-            .map(res => res.json());
+            .map(res => res.json())
+            .catch(this.handleError);
     }
 
     updateThumbnail(episode: Episode, time: string): Observable<any> {
@@ -91,6 +98,7 @@ export class AdminService extends BaseService {
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({time: time});
         return this.http.put(queryUrl, body, options)
-            .map(res => res.json());
+            .map(res => res.json())
+            .catch(this.handleError);
     }
 }

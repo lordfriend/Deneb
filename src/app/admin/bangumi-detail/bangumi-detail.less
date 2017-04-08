@@ -1,25 +1,129 @@
-
-.bangumi-form {
-  display: block;
-  padding: 1rem 2rem 3rem 2rem;
-  margin-bottom: 3em;
-  .bangumi-info {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-    .bangumi-image {
-      width: 30%;
-      flex: 0 1 auto;
+.bangumi-detail-container {
+  position: fixed;
+  top: 4.8rem;
+  left: 260px;
+  bottom: 0;
+  right: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #f0f0f0;
+}
+.anchor-button {
+  cursor: pointer;
+  color: #9f9f9f;
+  &:hover,
+  &:focus {
+    color: #5f94c5;
+  }
+}
+.bangumi-basic-info {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin: 1rem;
+  background-color: #fff;
+  box-shadow:  0 0 2px rgba(0, 0, 0, 0.2);
+  .cover-wrapper {
+    width: 20%;
+    padding: 1rem 0.5rem 1rem 1rem;
+    overflow: hidden;
+    > .bangumi-image {
+      display: block;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
     }
+  }
 
-    .bangumi-basic-info {
-      flex: 1 1 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      padding-left: 0.8rem;
-      padding-right: 1rem;
+  .bangumi-info-text {
+    width: 80%;
+    padding: 1rem 2.5rem 1rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    .bangumi-title {
+      overflow: hidden;
+      margin: 0 3rem 1rem 1.5rem;
+      white-space: normal;
+      word-break: break-all;
+    }
+    h4.entry {
+      margin: 0 0 0.6rem 0;
+      .entry-value {
+        padding-left: 7.4em;
+      }
+    }
+    .entry {
+      position: relative;
+      margin: 0 0 0.6em 0;
+      .entry-key {
+        width: 7em;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        text-align: right;
+        padding-right: 1em;
+        font-size: 1rem;
+        color: #828574;
+        font-weight: normal;
+      }
+      .entry-value {
+        display: block;
+        padding-left: 8em;
+        width: 100%;
+        white-space: normal;
+        word-break: break-all;
+      }
+    }
+  }
+
+  .edit-button {
+    position: absolute;
+    top: 1.2rem;
+    right: 1rem;
+    font-size: 1.5rem;
+  }
+}
+.download-info {
+  position: relative;
+  margin: 1rem;
+  background-color: #fff;
+  box-shadow:  0 0 2px rgba(0, 0, 0, 0.2);
+  padding: 1rem 0;
+  .section-header {
+    margin: 0;
+    padding: 0 1rem 1rem 1.5rem;
+  }
+  .entry {
+    position: relative;
+    margin: 0 0 0.8em 0;
+    font-size: 1.5rem;
+    line-height: 1.14285714em;
+    .entry-key {
+      width: 7em;
+      display: block;
+      position: absolute;
+      top: 0.25rem;
+      left: 0;
+      text-align: right;
+      padding-right: 1em;
+      color: #828574;
+      font-weight: normal;
+    }
+    .entry-value {
+      display: block;
+      padding-left: 8em;
+      width: 100%;
+      white-space: normal;
+      word-break: break-all;
+      .edit-button {
+        display: inline-block;
+        vertical-align: middle;
+      }
     }
   }
 }

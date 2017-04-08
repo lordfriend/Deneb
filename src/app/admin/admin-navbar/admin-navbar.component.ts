@@ -9,4 +9,7 @@ import {Component, Input, ViewEncapsulation} from '@angular/core';
 export class AdminNavbar {
     @Input()
     navTitle: string;
+
+    @Input()
+    backLink: string;
 }

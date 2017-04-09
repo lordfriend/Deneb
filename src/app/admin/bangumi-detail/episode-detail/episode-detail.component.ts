@@ -88,33 +88,4 @@ export class EpisodeDetail implements OnInit, OnDestroy {
             )
         );
     }
-
-    // onFileSelect(files: File[]) {
-    //     if (files.length > 0) {
-    //         let formData: FormData = new FormData();
-    //         let xhr: XMLHttpRequest = new XMLHttpRequest();
-    //         let intervalId;
-    //         formData.append('file', files[0], files[0].name);
-    //         xhr.onreadystatechange = () => {
-    //             if (xhr.readyState === 4) {
-    //                 if (xhr.status === 200) {
-    //                     console.log('upload success');
-    //                 } else {
-    //                     console.log(xhr.response);
-    //                 }
-    //                 clearInterval(intervalId);
-    //             }
-    //         };
-    //
-    //         intervalId = setInterval(() => {
-    //         }, 500);
-    //
-    //         xhr.upload.onprogress = (event) => {
-    //             this.uploadProgress = Math.round(event.loaded / event.total * 100);
-    //         };
-    //
-    //         xhr.open('POST', `/api/admin/episode/${this.episode.id}/upload`, true);
-    //         xhr.send(formData);
-    //     }
-    // }
 }

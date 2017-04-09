@@ -30,6 +30,18 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     sort: string = 'desc';
     type: number = -1;
 
+    orderByMenuLabel = {
+        create_time: '按创建时间',
+        update_time: '按修改时间',
+        air_date: '按开播日期'
+    };
+
+    typeMenuLabel = {
+        '-1': '全部',
+        '2': '动画',
+        '6': '电视剧'
+    };
+
     set bangumiList(list: Bangumi[]) {
         this._bangumiList = list;
         this.timestampList = list.map((bangumi: Bangumi) => {
@@ -100,8 +112,8 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
         this.filterBangumiList();
     }
 
-    onTypeChange(type: string) {
-        this.type = parseInt(type);
+    onTypeChange(type: number) {
+        this.type = type;
         this.filterBangumiList();
     }
 

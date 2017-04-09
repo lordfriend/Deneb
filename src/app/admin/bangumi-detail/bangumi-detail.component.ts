@@ -8,6 +8,7 @@ import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
 import {BangumiBasic} from './bangumi-basic/bangumi-basic.component';
 import {BaseError} from '../../../helpers/error/BaseError';
 import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
+import {EpisodeDetail} from './episode-detail/episode-detail.component';
 
 @Component({
     selector: 'bangumi-detail',
@@ -16,7 +17,12 @@ import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
 })
 export class BangumiDetail implements OnInit, OnDestroy {
 
+    private _subscription = new Subscription();
+    private _toastRef: UIToastRef<UIToastComponent>;
+
     bangumi: Bangumi = <Bangumi>{};
+
+    isLoading: boolean = false;
 
     get orderedEpisodeList(): Episode[] {
         if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
@@ -26,9 +32,6 @@ export class BangumiDetail implements OnInit, OnDestroy {
         }
         return [];
     }
-
-    private _subscription = new Subscription();
-    private _toastRef: UIToastRef<UIToastComponent>;
 
     constructor(private _route: ActivatedRoute,
                 private _adminService: AdminService,
@@ -71,20 +74,24 @@ export class BangumiDetail implements OnInit, OnDestroy {
                 .filter((basicInfo: any) => !!basicInfo)
                 .flatMap(
                     (basicInfo: any) => {
+                        this.isLoading = true;
                         this.bangumi.name = basicInfo.name as string;
                         this.bangumi.name_cn = basicInfo.name_cn as string;
                         this.bangumi.summary = basicInfo.summary as string;
                         this.bangumi.air_date = basicInfo.air_date as string;
                         this.bangumi.air_weekday = basicInfo.air_weekday as number;
+                        this.bangumi.eps_no_offset = basicInfo.eps_no_offset as number;
                         this.bangumi.status = basicInfo.status as number;
                         return this._adminService.updateBangumi(this.bangumi);
                     }
                 )
                 .subscribe(
                     () => {
+                        this.isLoading = false;
                         this._toastRef.show('更新成功');
                     },
                     (error: BaseError) => {
+                        this.isLoading = false;
                         this._toastRef.show(error.message);
                     }
                 )
@@ -99,49 +106,43 @@ export class BangumiDetail implements OnInit, OnDestroy {
             dialogRef.afterClosed()
                 .filter((result: any) => !!result)
                 .flatMap((result: any) => {
+                    this.isLoading = true;
                     this.bangumi[siteName] = result.keyword as string;
                     return this._adminService.updateBangumi(this.bangumi);
                 })
                 .subscribe(
                     () => {
+                        this.isLoading = false;
                         this._toastRef.show('更新成功');
                     },
                     (error: BaseError) => {
+                        this.isLoading = false;
                         this._toastRef.show(error.message);
                     }
                 )
         );
     }
 
-    addEpisode() {
-        let episode = new Episode();
-        episode.bangumi_id = this.bangumi.id;
-        episode.status = Episode.STATUS_NOT_DOWNLOADED;
-        if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
-            episode.episode_no = this.bangumi.episodes[this.bangumi.episodes.length - 1].episode_no + 1;
-        } else {
-            episode.episode_no = 1;
-        }
-        this.bangumi.episodes.push(episode);
-    }
-
-    onEpisodeDelete(episode: Episode) {
-        let index = this.bangumi.episodes.indexOf(episode);
-        if (index !== -1) {
-            this.bangumi.episodes.splice(index, 1);
-        }
-    }
-
-    onEpisodeAdded(episode_id: string, episode: Episode) {
-        this._adminService.getEpisode(episode_id)
-            .subscribe(
-                (refreshedEpisode: Episode) => {
-                    let index = this.bangumi.episodes.indexOf(episode);
-                    if (index !== -1) {
-                        this.bangumi.episodes[index] = refreshedEpisode;
+    editEpisode(episode?: Episode) {
+        let dialogRef = this._uiDialog.open(EpisodeDetail, {stickyDialog: true})
+        dialogRef.componentInstance.episode = episode;
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .filter((result: boolean) => result)
+                .flatMap(() => {
+                    this.isLoading = true;
+                    return this._adminService.getBangumi(this.bangumi.id);
+                })
+                .subscribe(
+                    (bangumi: Bangumi) => {
+                        this.isLoading = false;
+                        this.bangumi = bangumi;
+                    },
+                    (error: BaseError) => {
+                        this.isLoading = false;
+                        this._toastRef.show(error.message);
                     }
-                },
-                error => console.log(error)
-            );
+                )
+        )
     }
 }

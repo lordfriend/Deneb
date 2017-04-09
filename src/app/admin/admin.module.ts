@@ -6,7 +6,6 @@ import {ListBangumi} from './list-bangumi/list-bangumi.component';
 import {BangumiDetail} from './bangumi-detail/bangumi-detail.component';
 import {KeywordBuilder} from './bangumi-detail/keyword-builder/keyword-builder.component';
 import {EpisodeDetail} from './bangumi-detail/episode-detail/episode-detail.component';
-import {EpisodeThumbnail} from './bangumi-detail/episode-thumbnail/episode-thumbnail.component';
 import {AdminService} from './admin.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
@@ -34,7 +33,6 @@ import {LibykPipe} from './bangumi-pipes/libyk-pipe';
         BangumiDetail,
         KeywordBuilder,
         EpisodeDetail,
-        EpisodeThumbnail,
         AdminNavbar,
         BangumiCard,
         BangumiTypeNamePipe,
@@ -59,7 +57,8 @@ import {LibykPipe} from './bangumi-pipes/libyk-pipe';
     entryComponents: [
         SearchBangumi,
         BangumiBasic,
-        KeywordBuilder
+        KeywordBuilder,
+        EpisodeDetail
     ]
 })
 export class AdminModule {

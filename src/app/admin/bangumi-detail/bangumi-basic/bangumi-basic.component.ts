@@ -26,7 +26,7 @@ export class BangumiBasic implements OnInit {
             summary: this.bangumi.summary,
             air_date: [this.bangumi.air_date, Validators.required],
             air_weekday: this.bangumi.air_weekday,
-            // eps_no_offset: this.bangumi.eps_no_offset,
+            eps_no_offset: this.bangumi.eps_no_offset,
             status: this.bangumi.status
         });
     }

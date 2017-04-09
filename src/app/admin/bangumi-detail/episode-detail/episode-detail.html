@@ -1,46 +1,49 @@
-<div class="ui ribbon label episode-status-label" [ngClass]="episodeStatus[episode.status].labelColor">
-  {{episodeStatus[episode.status].text}}
-</div>
-<div class="episode-no-wrapper">
-  <h1 class="episode-no"><span>#</span>{{episode.episode_no}}</h1>
-</div>
-<episode-thumbnail [episode]="episode"></episode-thumbnail>
-<div class="content">
-  <form class="ui form" (ngSubmit)="saveEpisode(episode)">
-    <div class="fields">
-      <div class="one wide field">
-        <label>序号</label>
-        <input type="text" placeholder="序号" [(ngModel)]="episode.episode_no" name="episode_no">
-      </div>
-      <div class="four wide field">
-        <label>标题</label>
-        <input type="text" placeholder="标题" [(ngModel)]="episode.name" name="name">
-      </div>
-      <div class="four wide field">
-        <label>标题(中文)</label>
-        <input type="text" placeholder="中文标题" [(ngModel)]="episode.name_cn" name="name_cn">
-      </div>
-      <div class="four wide field">
-        <label>bgm id</label>
-        <input type="text" placeholder="bgm.tv的对应id" [(ngModel)]="episode.bgm_eps_id" name="bgm_eps_id">
-      </div>
+<div class="episode-detail-modal">
+    <div class="content">
+        <form class="ui form" [formGroup]="episodeForm">
+            <div class="fields">
+                <div class="four wide field">
+                    <label>序号</label>
+                    <input type="number" placeholder="序号" formControlName="episode_no" name="episode_no">
+                </div>
+                <div class="twelve wide field">
+                    <label>bgm id</label>
+                    <input type="text" placeholder="bgm.tv的对应id" formControlName="bgm_eps_id" name="bgm_eps_id">
+                </div>
+            </div>
+            <div class="field">
+                <label>标题</label>
+                <input type="text" placeholder="标题" formControlName="name" name="name">
+            </div>
+            <div class="field">
+                <label>标题(中文)</label>
+                <input type="text" placeholder="中文标题" formControlName="name_cn" name="name_cn">
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>放送日期(YYYY-MM-DD)</label>
+                    <input type="text" placeholder="放送日期" formControlName="airdate" name="airdate">
+                </div>
+                <div class="field">
+                    <label>时长(HH:mm:dd)</label>
+                    <input type="text" placeholder="时长" formControlName="duration" name="duration">
+                </div>
+                <!--<div class="two wide field">-->
+                    <!--<label>上传文件</label>-->
+                    <!--<input type="file" #filePikcer (change)="onFileSelect(filePikcer.files)">-->
+                    <!--<span *ngIf="uploadProgress">{{uploadProgress}}%</span>-->
+                <!--</div>-->
+            </div>
+        </form>
     </div>
-    <div class="fields">
-      <div class="four wide field">
-        <label>放送日期(YYYY-MM-DD)</label>
-        <input type="text" placeholder="放送日期" [(ngModel)]="episode.airdate" name="airdate">
-      </div>
-      <div class="four wide field">
-        <label>时长(HH:mm:dd)</label>
-        <input type="text" placeholder="时长" [(ngModel)]="episode.duration" name="duration">
-      </div>
-      <div class="two wide field">
-        <label>上传文件</label>
-        <input type="file" #filePikcer (change)="onFileSelect(filePikcer.files)">
-        <span *ngIf="uploadProgress">{{uploadProgress}}%</span>
-      </div>
+    <div class="footer">
+        <div class="ui label episode-status-label" [ngClass]="episodeStatus[episode.status].labelColor" *ngIf="episode">
+            {{episodeStatus[episode.status].text}}
+        </div>
+        <button class="ui button" (click)="cancel()">取消</button>
+        <button class="ui primary button" (click)="saveEpisode()">保存</button>
     </div>
-    <button class="ui primary button" type="submit">保存</button>
-    <button class="ui red button" [attr.disabled]="episode.id" (click)="deleteEpisode()" type="button">删除</button>
-  </form>
+    <div class="ui inverted dimmer" [ngClass]="{active: isSaving}">
+        <div class="ui loader"></div>
+    </div>
 </div>

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {Bangumi, Episode} from '../../entity';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
 import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
@@ -9,6 +9,7 @@ import {BangumiBasic} from './bangumi-basic/bangumi-basic.component';
 import {BaseError} from '../../../helpers/error/BaseError';
 import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
 import {EpisodeDetail} from './episode-detail/episode-detail.component';
+import {BangumiMoeBuilder} from './bangumi-moe-builder/bangumi-moe-builder.component';
 
 @Component({
     selector: 'bangumi-detail',
@@ -108,6 +109,30 @@ export class BangumiDetail implements OnInit, OnDestroy {
                 .flatMap((result: any) => {
                     this.isLoading = true;
                     this.bangumi[siteName] = result.keyword as string;
+                    return this._adminService.updateBangumi(this.bangumi);
+                })
+                .subscribe(
+                    () => {
+                        this.isLoading = false;
+                        this._toastRef.show('更新成功');
+                    },
+                    (error: BaseError) => {
+                        this.isLoading = false;
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
+    editBangumiMoe() {
+        let dialogRef = this._uiDialog.open(BangumiMoeBuilder, {stickyDialog: true});
+        dialogRef.componentInstance.bangumi = this.bangumi;
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .filter((result: any) => !!result)
+                .flatMap((result: any) => {
+                    this.isLoading = true;
+                    this.bangumi.bangumi_moe = result.result as string;
                     return this._adminService.updateBangumi(this.bangumi);
                 })
                 .subscribe(

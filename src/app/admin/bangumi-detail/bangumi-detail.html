@@ -55,7 +55,7 @@
                 <a class="edit-button anchor-button" (click)="editKeyword('dmhy')"><i class="edit icon"></i></a>
             </div>
         </div>
-        <div class="acgrip-entry entry">
+        <div class="acg-rip-entry entry">
             <div class="entry-key">ACG.RIP</div>
             <div class="entry-value">
                 <span class="ui horizontal label" *ngIf="bangumi.acg_rip">{{bangumi.acg_rip}}</span>
@@ -73,10 +73,15 @@
                 <a class="edit-button anchor-button" (click)="editKeyword('libyk_so')"><i class="edit icon"></i></a>
             </div>
         </div>
-        <!--<div class="bangumimoe-entry entry">-->
-            <!--<span class="entry-key">BANGUMI.MOE</span>-->
-            <!--<span class="entry-value">{{bangumi.dmhy}}</span>-->
-        <!--</div>-->
+        <div class="bangumi-moe-entry entry">
+            <div class="entry-key">BANGUMI.MOE</div>
+            <div class="entry-value">
+                <div class="ui horizontal label" *ngIf="bangumi.bangumi_moe">
+                    {{bangumi.bangumi_moe}
+                </div>
+                <a class="edit-button anchor-button" (click)="editBangumiMoe()"><i class="edit icon"></i></a>
+            </div>
+        </div>
     </div>
     <div class="bangumi-episodes">
         <h4 class="section-header">各话列表</h4>

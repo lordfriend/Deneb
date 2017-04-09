@@ -22,6 +22,8 @@ import {ResultDetail} from './search-bangumi/result-detail/result-detail.compone
 import {BangumiBasic} from './bangumi-detail/bangumi-basic/bangumi-basic.component';
 import {BangumiStatusNamePipe} from './bangumi-pipes/status-name-pipe';
 import {LibykPipe} from './bangumi-pipes/libyk-pipe';
+import {BangumiMoeBuilder} from './bangumi-detail/bangumi-moe-builder/bangumi-moe-builder.component';
+import {BangumiMoeService} from './bangumi-detail/bangumi-moe-builder/bangumi-moe.service';
 
 
 @NgModule({
@@ -38,11 +40,13 @@ import {LibykPipe} from './bangumi-pipes/libyk-pipe';
         BangumiTypeNamePipe,
         BangumiStatusNamePipe,
         LibykPipe,
-        BangumiBasic
+        BangumiBasic,
+        BangumiMoeBuilder
     ],
     providers: [
         AdminService,
-        FeedService
+        FeedService,
+        BangumiMoeService
     ],
     imports: [
         CommonModule,
@@ -58,7 +62,8 @@ import {LibykPipe} from './bangumi-pipes/libyk-pipe';
         SearchBangumi,
         BangumiBasic,
         KeywordBuilder,
-        EpisodeDetail
+        EpisodeDetail,
+        BangumiMoeBuilder,
     ]
 })
 export class AdminModule {

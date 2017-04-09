@@ -1,0 +1,49 @@
+<div class="bangumi-moe-builder-modal">
+    <div class="search-bar">
+        <div class="ui large label">
+            <i class="rss icon"></i>
+            Bangumi.moe
+        </div>
+        <div class="search-box ui input">
+            <input type="text" name="query" placeholder="请输入搜索关键词以搜索标签" #searchBox>
+        </div>
+        <div class="selected-tag">
+            <div class="ui label" *ngFor="let tag of selectedTags">
+                {{tag.locale.zh_cn}}
+                <a class="detail"><i class="delete icon"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="tag-search-result">
+    </div>
+    <div class="format-tags">
+        <a class="ui label" *ngFor="let tag of formatTags">
+            {{tag.name}}
+        </a>
+    </div>
+    <div class="lang-tags">
+        <a class="ui label" *ngFor="let tag of langTags">
+            {{tag.locale.zh_cn || tag.name}}
+        </a>
+    </div>
+    <div class="misc-tags">
+        <a class="ui label" *ngFor="let tag of miscTags">
+            {{tag.locale.zh_cn || tag.name}}
+        </a>
+    </div>
+    <div class="category-tags">
+        <a class="ui label" *ngFor="let tag of categoryTags">
+            {{tag.locale.zh_cn || tag.name}}
+        </a>
+    </div>
+    <div class="popular-team-tags">
+        <a class="ui label" *ngFor="let tag of popularTeamTags">
+            {{tag.locale.zh_cn || tag.name}}
+        </a>
+    </div>
+    <div class="popular-bangumi-tags">
+        <a class="ui label" *ngFor="let tag of popularBangumiTags">
+            {{tag.locale.zh_cn || tag.name}}
+        </a>
+    </div>
+</div>

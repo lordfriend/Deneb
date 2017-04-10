@@ -1,9 +1,9 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {Bangumi} from '../../../entity/bangumi';
 import {BangumiMoeService} from './bangumi-moe.service';
-import {Tag} from './bangum-moe-entity';
+import {Tag, Torrent} from './bangum-moe-entity';
 import {Response} from '@angular/http';
 
 
@@ -12,9 +12,11 @@ import {Response} from '@angular/http';
     templateUrl: './bangumi-moe-builder.html',
     styleUrls: ['./bangumi-moe-builder.less']
 })
-export class BangumiMoeBuilder implements OnInit, OnDestroy {
+export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
+
+    @ViewChild('searchBox') searchBox: ElementRef;
 
     @Input()
     bangumi: Bangumi;
@@ -27,6 +29,12 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy {
     popularTeamTags: Tag[];
     popularBangumiTags: Tag[];
 
+    searchResultTags: Tag[];
+
+    torrentList: Torrent[];
+    page: number = 1;
+    total: number = 0;
+
     constructor(private _bangumiMoeService: BangumiMoeService,
                 private _dialogRef: UIDialogRef<BangumiMoeBuilder>,
                 toastService: UIToast) {
@@ -35,17 +43,7 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         if (this.bangumi.bangumi_moe) {
-            this._subscription.add(
-                this._bangumiMoeService.fetchTagData(this.bangumi.bangumi_moe)
-                    .subscribe(
-                        (tags: Tag[]) => {
-                            this.selectedTags = tags;
-                        },
-                        (error: Response) => {
-                            this._toastRef.show(error.json());
-                        }
-                    )
-            );
+            this.selectedTags = JSON.parse(this.bangumi.bangumi_moe);
         } else {
             this.selectedTags = [];
         }
@@ -101,6 +99,29 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy {
         this._subscription.unsubscribe();
     }
 
+    ngAfterViewInit(): void {
+        let searchBox = this.searchBox.nativeElement;
+        this._subscription.add(
+            Observable.fromEvent(searchBox, 'input')
+                .map(() => {
+                    return (searchBox as HTMLInputElement).value;
+                })
+                .debounceTime(500)
+                .distinctUntilChanged()
+                .filter(value => !!value)
+                .flatMap(
+                    (name: string) => {
+                        return this._bangumiMoeService.searchTag(name)
+                    }
+                )
+                .subscribe(
+                    (result: {success: boolean, found: boolean, tag: Tag[]}) => {
+                        this.searchResultTags = result.tag;
+                    }
+                )
+        )
+    }
+
     cancel() {
         this._dialogRef.close(null);
     }
@@ -113,5 +134,32 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy {
             tags = null;
         }
         this._dialogRef.close({result: tags});
+    }
+
+    selectTag(tag: Tag) {
+        this.selectedTags.push(tag);
+        this.searchTorrent();
+    }
+
+    removeTag(tag: Tag) {
+        this.selectedTags.splice(this.selectedTags.indexOf(tag), 1);
+        this.searchTorrent();
+    }
+
+    searchTorrent() {
+        if(this.selectedTags.length === 0) {
+            return;
+        }
+        let tag_ids = this.selectedTags.map(tag => tag._id);
+        this._subscription.add(
+            this._bangumiMoeService
+                .searchTorrent(tag_ids, this.page)
+                .subscribe(
+                    (result) => {
+                        this.torrentList = result.torrents;
+                        this.total = result.count;
+                    }
+                )
+        );
     }
 }

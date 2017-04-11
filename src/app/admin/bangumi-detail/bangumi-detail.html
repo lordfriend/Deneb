@@ -6,7 +6,12 @@
             <img [src]="bangumi.image" alt="image" class="bangumi-image">
         </div>
         <div class="bangumi-info-text">
-            <h3 class="bangumi-title">{{bangumi.name_cn || '暂无'}}</h3>
+            <h3 class="bangumi-title">
+                {{bangumi.name_cn || '暂无'}}
+                <a class="external-link" [href]="'https://bgm.tv/subject/' + bangumi.bgm_id" target="_blank" title="在bgm.tv页面查看">
+                    <i class="external icon"></i>
+                </a>
+            </h3>
             <h4 class="entry">
                 <span class="entry-key">日文名</span>
                 <span class="entry-value">{{bangumi.name || '暂无'}}</span>
@@ -76,8 +81,8 @@
         <div class="bangumi-moe-entry entry">
             <div class="entry-key">BANGUMI.MOE</div>
             <div class="entry-value">
-                <div class="ui horizontal label" *ngIf="bangumi.bangumi_moe">
-                    {{bangumi.bangumi_moe}
+                <div class="ui horizontal label" *ngFor="let tag of bangumi.bangumi_moe | bangumiMoe">
+                    {{tag.locale.zh_cn || tag.name}}
                 </div>
                 <a class="edit-button anchor-button" (click)="editBangumiMoe()"><i class="edit icon"></i></a>
             </div>

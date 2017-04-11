@@ -8,47 +8,60 @@
             <input type="text" name="query" placeholder="请输入搜索关键词以搜索标签" #searchBox>
         </div>
         <div class="selected-tag">
-            <div class="ui label" *ngFor="let tag of selectedTags">
+            <div class="ui blue label" *ngFor="let tag of selectedTags">
                 {{tag.locale.zh_cn || tag.name}}
                 <a class="detail" (click)="removeTag(tag)"><i class="delete icon"></i></a>
             </div>
         </div>
     </div>
     <div class="tag-container">
-        <div class="tag-search-result">
-            <a class="ui label" *ngFor="let tag of searchResultTags" (click)="selectTag(tag)">
+        <div class="tag-search-result" *ngIf="searchResultTags?.length > 0">
+            <div class="tag-search-header">搜索结果</div>
+            <a class="ui grey label" *ngFor="let tag of searchResultTags" (click)="selectTag(tag)">
                 {{tag.locale.zh_cn || tag.name}}
             </a>
         </div>
-        <div class="format-tags">
+        <div class="format-tags tag-list">
+            <div class="tag-list-header">格式标签</div>
             <a class="ui label" *ngFor="let tag of formatTags" (click)="selectTag(tag)">
                 {{tag.name}}
             </a>
+            <div class="loading-tips" *ngIf="!formatTags">加载中...</div>
         </div>
-        <div class="lang-tags">
+        <div class="lang-tags tag-list">
+            <div class="tag-list-header">语言</div>
             <a class="ui label" *ngFor="let tag of langTags" (click)="selectTag(tag)">
                 {{tag.locale.zh_cn || tag.name}}
             </a>
+            <div class="ui active centered inline loader" *ngIf="!langTags">加载中...</div>
         </div>
-        <div class="misc-tags">
+        <div class="misc-tags tag-list">
+            <div class="tag-list-header">杂项</div>
             <a class="ui label" *ngFor="let tag of miscTags" (click)="selectTag(tag)">
                 {{tag.locale.zh_cn || tag.name}}
             </a>
+            <div class="loading-tips" *ngIf="!miscTags">加载中...</div>
         </div>
-        <div class="category-tags">
+        <div class="category-tags tag-list">
+            <div class="tag-list-header">类别</div>
             <a class="ui label" *ngFor="let tag of categoryTags" (click)="selectTag(tag)">
                 {{tag.locale.zh_cn || tag.name}}
             </a>
+            <div class="loading-tips" *ngIf="!categoryTags">加载中...</div>
         </div>
-        <div class="popular-team-tags">
+        <div class="popular-team-tags tag-list">
+            <div class="tag-list-header">热门字幕组</div>
             <a class="ui label" *ngFor="let tag of popularTeamTags" (click)="selectTag(tag)">
                 {{tag.locale.zh_cn || tag.name}}
             </a>
+            <div class="loading-tips" *ngIf="!popularTeamTags">加载中...</div>
         </div>
-        <div class="popular-bangumi-tags">
+        <div class="popular-bangumi-tags tag-list">
+            <div class="tag-list-header">热门番組</div>
             <a class="ui label" *ngFor="let tag of popularBangumiTags" (click)="selectTag(tag)">
                 {{tag.locale.zh_cn || tag.name}}
             </a>
+            <div class="loading-tips" *ngIf="!popularBangumiTags">加载中...</div>
         </div>
         <div class="torrent-result">
             <table class="ui table">

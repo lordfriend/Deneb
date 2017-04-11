@@ -24,6 +24,7 @@ import {BangumiStatusNamePipe} from './bangumi-pipes/status-name-pipe';
 import {LibykPipe} from './bangumi-pipes/libyk-pipe';
 import {BangumiMoeBuilder} from './bangumi-detail/bangumi-moe-builder/bangumi-moe-builder.component';
 import {BangumiMoeService} from './bangumi-detail/bangumi-moe-builder/bangumi-moe.service';
+import {BangumiMoePipe} from './bangumi-pipes/bangumi-moe-pipe';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import {BangumiMoeService} from './bangumi-detail/bangumi-moe-builder/bangumi-mo
         BangumiTypeNamePipe,
         BangumiStatusNamePipe,
         LibykPipe,
+        BangumiMoePipe,
         BangumiBasic,
         BangumiMoeBuilder
     ],

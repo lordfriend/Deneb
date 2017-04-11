@@ -47,6 +47,9 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
         } else {
             this.selectedTags = [];
         }
+        if (Array.isArray(this.selectedTags) && this.selectedTags.length > 0) {
+            this.searchTorrent();
+        }
         this._subscription.add(
             this._bangumiMoeService.commonTags()
             .subscribe(

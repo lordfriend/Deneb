@@ -12,6 +12,8 @@ export class VideoFile {
     resolution_h: number;
     duration: number;
     label: string;
+    // optional, only available at end-user api
+    url: string;
 
 
     static STATUS_DOWNLOAD_PENDING = 1;

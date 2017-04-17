@@ -1,0 +1,61 @@
+<admin-navbar navTitle="任务管理"></admin-navbar>
+<div class="content-area">
+    <div class="task-list">
+        <div class="ui segment">
+            <h4>即将删除的番組</h4>
+            <table class="ui very basic table pending-delete-bangumi">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名字</th>
+                    <th>中文名</th>
+                    <th>bgm.tv Id</th>
+                    <th>删除时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let bangumi of pendingDeleteBangumi">
+                    <td>{{bangumi.id}}</td>
+                    <td>{{bangumi.name}}</td>
+                    <td>{{bangumi.name_cn}}</td>
+                    <td>{{bangumi.bgm_id}}</td>
+                    <td>{{bangumi.delete_eta > 0 ? '约' + bangumi.delete_eta + '分钟之后': '约' + (0 - bangumi.delete_eta) + '分钟之前'}}</td>
+                    <td>
+                        <a confirmDialog dialogTitle="确认恢复该番組吗" (onConfirm)="restoreBangumi(bangumi.id)" class="anchor-button"><i class="undo icon"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="ui segment">
+            <h4>即将删除的Episode</h4>
+            <table class="ui very basic table pending-delete-episode">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名字</th>
+                    <th>中文名</th>
+                    <th>bgm.tv Id</th>
+                    <th>对应番組信息</th>
+                    <th>删除时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let episode of pendingDeleteEpisode">
+                    <td>{{episode.id}}</td>
+                    <td>{{episode.name}}</td>
+                    <td>{{episode.name_cn}}</td>
+                    <td>{{episode.bgm_eps_id}}</td>
+                    <td>{{episode.bangumi.name + '('+ episode.bangumi.id + ')'}}</td>
+                    <td>{{episode.delete_eta > 0 ? '约' + episode.delete_eta + '分钟之后': '约' + (0 - episode.delete_eta) + '分钟之前'}}</td>
+                    <td>
+                        <a confirmDialog dialogTitle="确认恢复该Episode吗" (onConfirm)="restoreEpisode(episode.id)" class="anchor-button"><i class="undo icon"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

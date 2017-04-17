@@ -21,6 +21,7 @@ import {WatchService} from './home/watch.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UIImagePlaceholder} from './image-placeholder/image-placeholder';
 import {UIImagePlaceholderModule} from './image-placeholder/index';
+import {TaskService} from './admin/task-manager/task.service';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import {UIImagePlaceholderModule} from './image-placeholder/index';
         HomeService,
         WatchService,
         Title,
+        TaskService,
         ENV_PROVIDERS
     ],
     imports: [

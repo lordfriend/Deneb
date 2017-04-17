@@ -433,7 +433,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     }
 
     private setVideoUrl() {
-        this.videoUrl = this.episode.videos[0];
+        this.videoUrl = this.episode.video_files[0].url;
         this.videoType = 'video/' + this.getExtname(this.videoUrl);
     }
 

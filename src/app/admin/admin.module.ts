@@ -26,6 +26,7 @@ import {BangumiMoeBuilder} from './bangumi-detail/bangumi-moe-builder/bangumi-mo
 import {BangumiMoeService} from './bangumi-detail/bangumi-moe-builder/bangumi-moe.service';
 import {BangumiMoePipe} from './bangumi-pipes/bangumi-moe-pipe';
 import {ConfirmDialogModule} from '../confirm-dialog/index';
+import {TaskManager} from './task-manager/task-manager.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import {ConfirmDialogModule} from '../confirm-dialog/index';
         BangumiMoePipe,
         BangumiBasic,
         BangumiMoeBuilder,
-        VideoFileStatusNamePipe
+        VideoFileStatusNamePipe,
+        TaskManager
     ],
     providers: [
         AdminService,

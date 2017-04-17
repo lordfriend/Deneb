@@ -118,7 +118,7 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     }
 
     addBangumi(): void {
-        let dialogRef = this._dialog.open(SearchBangumi, {stickyDialog: true});
+        let dialogRef = this._dialog.open(SearchBangumi, {stickyDialog: true, backdrop: true});
         this._subscription.add(
             dialogRef.afterClosed()
                 .subscribe(

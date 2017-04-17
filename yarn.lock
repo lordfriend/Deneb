@@ -34,6 +34,10 @@
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@angular/http/-/http-4.0.1.tgz#bf87e7da9dc1f1567f246f9a09723e1cc3543d32"
 
+"@angular/language-service@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-4.0.2.tgz#68324cbfacda41d44d267e553d6f866f52d307c8"
+
 "@angular/platform-browser-dynamic@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.0.1.tgz#fd5debb2d3f6474350965e71c2674e2170d7cfcb"
@@ -1190,9 +1194,9 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
-deneb-ui@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/deneb-ui/-/deneb-ui-0.2.0.tgz#9a81f31ed67f3f25a8786b5342071978ac043cfa"
+deneb-ui@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/deneb-ui/-/deneb-ui-0.2.2.tgz#2f1ef381e4cfab4a3b2ba2e3e18c5cdf9ed1a563"
 
 depd@~1.1.0:
   version "1.1.0"

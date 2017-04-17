@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {Bangumi, Episode} from '../../entity';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
 import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
@@ -35,6 +35,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
     }
 
     constructor(private _route: ActivatedRoute,
+                private _router: Router,
                 private _adminService: AdminService,
                 private _uiDialog: UIDialog,
                 titleService: Title,
@@ -67,7 +68,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
     }
 
     editBasicInfo() {
-        let dialogRef = this._uiDialog.open(BangumiBasic, {stickyDialog: false});
+        let dialogRef = this._uiDialog.open(BangumiBasic, {stickyDialog: false, backdrop: true});
         dialogRef.componentInstance.bangumi = this.bangumi;
         this._subscription.add(
             dialogRef
@@ -100,7 +101,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
     }
 
     editKeyword(siteName: string) {
-        let dialogRef = this._uiDialog.open(KeywordBuilder, {stickyDialog: true});
+        let dialogRef = this._uiDialog.open(KeywordBuilder, {stickyDialog: true, backdrop: true});
         dialogRef.componentInstance.keyword = this.bangumi[siteName];
         dialogRef.componentInstance.siteName = siteName;
         this._subscription.add(
@@ -125,7 +126,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
     }
 
     editBangumiMoe() {
-        let dialogRef = this._uiDialog.open(BangumiMoeBuilder, {stickyDialog: true});
+        let dialogRef = this._uiDialog.open(BangumiMoeBuilder, {stickyDialog: true, backdrop: true});
         dialogRef.componentInstance.bangumi = this.bangumi;
         this._subscription.add(
             dialogRef.afterClosed()
@@ -149,8 +150,9 @@ export class BangumiDetail implements OnInit, OnDestroy {
     }
 
     editEpisode(episode?: Episode) {
-        let dialogRef = this._uiDialog.open(EpisodeDetail, {stickyDialog: true})
+        let dialogRef = this._uiDialog.open(EpisodeDetail, {stickyDialog: true, backdrop: true});
         dialogRef.componentInstance.episode = episode;
+        dialogRef.componentInstance.bangumi_id = this.bangumi.id;
         this._subscription.add(
             dialogRef.afterClosed()
                 .filter((result: boolean) => result)
@@ -170,4 +172,44 @@ export class BangumiDetail implements OnInit, OnDestroy {
                 )
         )
     }
+
+    deleteEpisode(episode_id: string) {
+        this._subscription.add(
+            this._adminService.deleteEpisode(episode_id)
+                .subscribe(
+                    ({delete_delay}) => {
+                        this._toastRef.show(`将在${delete_delay}分钟后删除，你可以在任务管理中取消删除`);
+                    },
+                    (error: BaseError) => {
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
+    deleteBangumi() {
+        this._subscription.add(
+            this._adminService.deleteBangumi(this.bangumi.id)
+                .subscribe(
+                    ({delete_delay}) => {
+                        this._toastRef.show(`将在${delete_delay}分钟后删除，你可以在任务管理中取消删除`);
+                        this._router.navigate(['/admin/bangumi']);
+                    },
+                    (error: BaseError) => {
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
+    // getVideoFiles(episode: Episode) {
+    //     this._subscription.add(
+    //         this._adminService.getEpisodeVideoFiles(episode.id)
+    //             .subscribe(
+    //                 (videoFiles => {
+    //                     episode.video_files = videoFiles;
+    //                 })
+    //             )
+    //     );
+    // }
 }

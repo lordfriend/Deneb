@@ -25,22 +25,26 @@ export class EpisodeDetail implements OnInit, OnDestroy {
     @Input()
     episode: Episode;
 
+    @Input()
+    bangumi_id: string;
+
     episodeForm: FormGroup;
 
-    isSaving: boolean = false;
+    busy: boolean = false;
 
     constructor(private _adminService: AdminService,
                 private _dialogRef: UIDialogRef<EpisodeDetail>,
                 toastService: UIToast,
-                fb: FormBuilder) {
+                private _fb: FormBuilder) {
         this._toastRef = toastService.makeText();
-        this.episodeForm = fb.group({
+        this.episodeForm = _fb.group({
             episode_no: 0,
             name: '',
             name_cn: '',
             bgm_eps_id: 0,
             airdate: '',
-            duration: ''
+            duration: '',
+            status: 0
         });
     }
 
@@ -59,14 +63,19 @@ export class EpisodeDetail implements OnInit, OnDestroy {
     }
 
     saveEpisode(): void {
-        this.isSaving = true;
+        this.busy = true;
         let modelValue = this.episodeForm.value;
         let episode = Object.assign({}, this.episode);
+        episode.bangumi_id = this.bangumi_id;
         episode.episode_no = modelValue.episode_no as number;
         episode.bgm_eps_id = modelValue.bgm_eps_id as number;
         episode.name = modelValue.name as string;
         episode.name_cn = modelValue.name_cn as string;
         episode.airdate = modelValue.airdate as string;
+        episode.status = modelValue.status as number;
+        if (!episode.airdate) {
+            episode.airdate = null;
+        }
         episode.duration = modelValue.duration as string;
         let saveObservable;
         if (episode.id) {
@@ -77,12 +86,12 @@ export class EpisodeDetail implements OnInit, OnDestroy {
         this._subscription.add(saveObservable
             .subscribe(
                 () => {
-                    this.isSaving = false;
+                    this.busy = false;
                     this._toastRef.show(episode.id ? '添加成功' : '更新成功');
                     this._dialogRef.close(true);
                 },
                 (error: BaseError) => {
-                    this.isSaving = false;
+                    this.busy = false;
                     this._toastRef.show(error.message);
                 }
             )

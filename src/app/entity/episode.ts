@@ -1,5 +1,6 @@
 import {Bangumi} from './bangumi';
 import {WatchProgress} from './watch-progress';
+import {VideoFile} from './video-file';
 
 export class Episode {
 
@@ -20,7 +21,7 @@ export class Episode {
   update_time: number;
   bangumi: Bangumi; // optional
   thumbnail: string; // optional
-  videos: string[]; // optional
+  video_files: VideoFile[]; // optional
 
   // optional
   watch_progress: WatchProgress;

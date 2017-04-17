@@ -84,7 +84,12 @@ export class KeywordBuilder implements OnInit {
                 result = null;
             }
         } else {
-            result = keywordModel
+            if(keywordModel) {
+                result = keywordModel;
+            } else {
+                result = null;
+            }
+
         }
         this._dialogRef.close({keyword: result});
     }

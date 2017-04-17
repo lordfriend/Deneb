@@ -34,6 +34,27 @@
                     <!--<span *ngIf="uploadProgress">{{uploadProgress}}%</span>-->
                 <!--</div>-->
             </div>
+            <div class="inline fields">
+                <label>状态</label>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="status" formControlName="status" [value]="0">
+                        <label>未下载</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="status" formControlName="status" [value]="1">
+                        <label>下载中</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="status" formControlName="status" [value]="2">
+                        <label>已下载</label>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
     <div class="footer">
@@ -43,7 +64,7 @@
         <button class="ui button" (click)="cancel()">取消</button>
         <button class="ui primary button" (click)="saveEpisode()">保存</button>
     </div>
-    <div class="ui inverted dimmer" [ngClass]="{active: isSaving}">
+    <div class="ui inverted dimmer" [ngClass]="{active: busy}">
         <div class="ui loader"></div>
     </div>
 </div>

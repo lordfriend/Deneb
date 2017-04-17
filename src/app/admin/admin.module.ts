@@ -20,11 +20,12 @@ import {BangumiTypeNamePipe} from './bangumi-pipes/type-name-pipe';
 import {UIImagePlaceholderModule} from '../image-placeholder/index';
 import {ResultDetail} from './search-bangumi/result-detail/result-detail.component';
 import {BangumiBasic} from './bangumi-detail/bangumi-basic/bangumi-basic.component';
-import {BangumiStatusNamePipe} from './bangumi-pipes/status-name-pipe';
+import {BangumiStatusNamePipe, VideoFileStatusNamePipe} from './bangumi-pipes/status-name-pipe';
 import {LibykPipe} from './bangumi-pipes/libyk-pipe';
 import {BangumiMoeBuilder} from './bangumi-detail/bangumi-moe-builder/bangumi-moe-builder.component';
 import {BangumiMoeService} from './bangumi-detail/bangumi-moe-builder/bangumi-moe.service';
 import {BangumiMoePipe} from './bangumi-pipes/bangumi-moe-pipe';
+import {ConfirmDialogModule} from '../confirm-dialog/index';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import {BangumiMoePipe} from './bangumi-pipes/bangumi-moe-pipe';
         LibykPipe,
         BangumiMoePipe,
         BangumiBasic,
-        BangumiMoeBuilder
+        BangumiMoeBuilder,
+        VideoFileStatusNamePipe
     ],
     providers: [
         AdminService,
@@ -58,7 +60,8 @@ import {BangumiMoePipe} from './bangumi-pipes/bangumi-moe-pipe';
         HttpModule,
         Ng2SemanticModule,
         UIImagePlaceholderModule,
-        UIModule
+        UIModule,
+        ConfirmDialogModule
     ],
     entryComponents: [
         SearchBangumi,

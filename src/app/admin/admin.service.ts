@@ -5,6 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {Episode} from '../entity/episode';
 import {queryString} from '../../helpers/url'
 import {BaseService} from '../../helpers/base.service';
+import {VideoFile} from '../entity/video-file';
 
 
 @Injectable()
@@ -65,6 +66,12 @@ export class AdminService extends BaseService {
             .catch(this.handleError);
     }
 
+    deleteBangumi(bangumi_id: string): Observable<{delete_delay: number}> {
+        return this.http.delete(`${this.baseUrl}/bangumi/${bangumi_id}`)
+            .map(res => res.json().data as {delete_delay: number})
+            .catch(this.handleError)
+    }
+
     getEpisode(episode_id: string): Observable<Episode> {
         return this.http.get(`${this.baseUrl}/episode/${episode_id}`)
             .map(res => <Episode> res.json().data)
@@ -91,6 +98,12 @@ export class AdminService extends BaseService {
             .catch(this.handleError);
     }
 
+    deleteEpisode(episode_id: string): Observable<{delete_delay: number}> {
+        return this.http.delete(`${this.baseUrl}/episode/${episode_id}`)
+            .map(res => res.json().data as {delete_delay: number})
+            .catch(this.handleError)
+    }
+
     updateThumbnail(episode: Episode, time: string): Observable<any> {
         let id = episode.id;
         let queryUrl = this.baseUrl + '/episode/' + id + '/thumbnail';
@@ -99,6 +112,12 @@ export class AdminService extends BaseService {
         let body = JSON.stringify({time: time});
         return this.http.put(queryUrl, body, options)
             .map(res => res.json())
+            .catch(this.handleError);
+    }
+
+    getEpisodeVideoFiles(episode_id: string): Observable<VideoFile[]> {
+        return this.http.get(`${this.baseUrl}/episode/${episode_id}/video_file`)
+            .map(res => res.json().data as VideoFile[])
             .catch(this.handleError);
     }
 }

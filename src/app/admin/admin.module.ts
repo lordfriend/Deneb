@@ -27,6 +27,11 @@ import {BangumiMoeService} from './bangumi-detail/bangumi-moe-builder/bangumi-mo
 import {BangumiMoePipe} from './bangumi-pipes/bangumi-moe-pipe';
 import {ConfirmDialogModule} from '../confirm-dialog/index';
 import {TaskManager} from './task-manager/task-manager.component';
+import {UserManager} from './user-manager/user-manager.component';
+import {TaskService} from './task-manager/task.service';
+import {UserManagerSerivce} from './user-manager/user-manager.service';
+import {UserPromoteModal} from './user-manager/user-promote-modal/user-promote-modal.component';
+import {DenebCommonPipes} from '../pipes/index';
 
 
 @NgModule({
@@ -47,12 +52,16 @@ import {TaskManager} from './task-manager/task-manager.component';
         BangumiBasic,
         BangumiMoeBuilder,
         VideoFileStatusNamePipe,
-        TaskManager
+        TaskManager,
+        UserManager,
+        UserPromoteModal
     ],
     providers: [
         AdminService,
         FeedService,
-        BangumiMoeService
+        BangumiMoeService,
+        TaskService,
+        UserManagerSerivce,
     ],
     imports: [
         CommonModule,
@@ -63,7 +72,8 @@ import {TaskManager} from './task-manager/task-manager.component';
         Ng2SemanticModule,
         UIImagePlaceholderModule,
         UIModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        DenebCommonPipes
     ],
     entryComponents: [
         SearchBangumi,
@@ -71,6 +81,7 @@ import {TaskManager} from './task-manager/task-manager.component';
         KeywordBuilder,
         EpisodeDetail,
         BangumiMoeBuilder,
+        UserPromoteModal
     ]
 })
 export class AdminModule {

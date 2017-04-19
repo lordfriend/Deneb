@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Bangumi} from '../../entity/bangumi';
 import {TaskService} from './task.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -11,7 +11,7 @@ import {Episode} from '../../entity/episode';
     templateUrl: './task-manager.html',
     styleUrls: ['./task-manager.less']
 })
-export class TaskManager implements OnInit {
+export class TaskManager implements OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
@@ -30,6 +30,10 @@ export class TaskManager implements OnInit {
     ngOnInit(): void {
         this.refreshBangumiList();
         this.refreshEpisodeList();
+    }
+
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 
     refreshBangumiList() {

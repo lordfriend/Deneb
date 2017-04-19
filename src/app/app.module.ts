@@ -19,9 +19,9 @@ import {HomeService} from './home/home.service';
 import {Ng2SemanticModule} from '../ng2-semantic';
 import {WatchService} from './home/watch.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {UIImagePlaceholder} from './image-placeholder/image-placeholder';
 import {UIImagePlaceholderModule} from './image-placeholder/index';
 import {TaskService} from './admin/task-manager/task.service';
+import {DenebCommonPipes} from './pipes/index';
 
 @NgModule({
     declarations: [
@@ -50,7 +50,8 @@ import {TaskService} from './admin/task-manager/task.service';
         PlayerModule,
         Ng2SemanticModule,
         BrowserAnimationsModule,
-        UIImagePlaceholderModule
+        UIImagePlaceholderModule,
+        DenebCommonPipes
     ],
     bootstrap: [App]
 })

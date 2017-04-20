@@ -42,7 +42,9 @@ import {DenebCommonPipes} from './pipes/index';
         ENV_PROVIDERS
     ],
     imports: [
-        RouterModule.forRoot(appRoutes, {useHash: true}),
+        RouterModule.forRoot(appRoutes, {
+            useHash: false
+        }),
         BrowserModule,
         CommonModule,
         ReactiveFormsModule,

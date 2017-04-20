@@ -21,8 +21,8 @@
             <input type="text" formControlName="invite_code" placeholder="邀请码">
           </div>
           <div>
-            <button *ngIf="urlPath === '/forget'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">重置密码</button>
-            <button *ngIf="urlPath === '/register'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
+            <button *ngIf="mode === 'forget'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">重置密码</button>
+            <button *ngIf="mode === 'register'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
           </div>
         </form>
         <div class="login-link additional-info">

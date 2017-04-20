@@ -1,6 +1,6 @@
 {
   "name": "Deneb",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Web client for Albireo",
   "author": "Nyasoft<about@nya.io>",
   "homepage": "https://github.com/lordfriend/Deneb",
@@ -66,7 +66,7 @@
     "@angular/platform-server": "^4.0.1",
     "@angular/router": "^4.0.1",
     "core-js": "^2.4.1",
-    "deneb-ui": "^0.2.2",
+    "deneb-ui": "^0.2.3",
     "ie-shim": "0.1.0",
     "reflect-metadata": "^0.1.9",
     "rxjs": "5.0.2",

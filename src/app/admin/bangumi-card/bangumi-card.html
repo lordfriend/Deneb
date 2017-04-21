@@ -4,7 +4,7 @@
             <img [src]="bangumi.cover" alt="image" class="bangumi-image">
         </div>
         <div class="cover-wrapper" *ngIf="bangumi.image">
-            <img [src]="bangumi.image" alt="image" class="bangumi-image">
+            <img [src]="bangumi.cover || bangumi.image" alt="image" class="bangumi-image">
         </div>
         <div class="list-item-text">
             <h4 class="bangumi-title">{{bangumi.name_cn || '暂无'}}<span class="ui teal small label" *ngIf="bangumi.id && showAddedTag">已添加</span></h4>

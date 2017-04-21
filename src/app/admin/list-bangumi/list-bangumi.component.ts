@@ -162,7 +162,7 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
                 .listBangumi({
                     page: 1,
                     count: -1,
-                    orderBy: this.orderBy,
+                    order_by: this.orderBy,
                     sort: this.sort
                 })
                 .subscribe(

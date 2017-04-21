@@ -1,62 +1,164 @@
-import {Component, Output} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {Bangumi} from '../../entity';
-import {Title} from '@angular/platform-browser';
-import {Subject} from 'rxjs'
-import {Router} from '@angular/router';
 import {AdminService} from '../admin.service';
+import {Observable, Subscription} from 'rxjs';
+import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
+import {BaseError} from '../../../helpers/error/BaseError';
+import {BangumiRaw} from '../../entity/bangumi-raw';
+
+// export const SEARCH_BAR_HEIGHT = 4.8;
 
 @Component({
-  selector: 'search-bangumi',
-  templateUrl: './search-bangumi.html',
-  providers: [AdminService]
+    selector: 'search-bangumi',
+    templateUrl: './search-bangumi.html',
+    styleUrls: ['./search-bangumi.less']
 })
-export class SearchBangumi {
+export class SearchBangumi implements AfterViewInit {
+    private _subscription = new Subscription();
+    private _toastRef: UIToastRef<UIToastComponent>;
 
-  private _input = new Subject<string>();
-  private _bangumiType: number = 2;
-  bangumiList = [];
-  isLoading: boolean = false;
+    @ViewChild('searchBox') searchBox: ElementRef;
+    @ViewChild('typePicker') typePicker: ElementRef;
 
-  get bangumiType(): number {
-    return this._bangumiType;
-  }
+    name: string;
+    bangumiType: number = 2;
 
-  set bangumiType(type: number) {
-    if (type != this._bangumiType) {
-      this.bangumiList = [];
+    currentPage: number = 1;
+    total: number = 0;
+    count: number = 10;
+
+    bangumiList: Bangumi[];
+    isLoading: boolean = false;
+
+    typePickerOpen: boolean = false;
+
+    selectedBgmId: number;
+
+    showDetail: boolean = false;
+    isSaving: boolean = false;
+
+    constructor(private _adminService: AdminService,
+                private _dialogRef: UIDialogRef<SearchBangumi>,
+                toastService: UIToast) {
+        this._toastRef = toastService.makeText();
     }
-    this._bangumiType = type;
-  }
 
-  constructor(
-    private router: Router,
-    private adminService: AdminService,
-    titleService: Title
-  ){
-    titleService.setTitle('添加新番 - ' + SITE_TITLE);
-    this._input
-      .debounceTime(500)
-      .distinctUntilChanged()
-      .filter(name => !!name)
-      .forEach(name => {
+    ngAfterViewInit(): void {
+        let searchBox = <HTMLElement> this.searchBox.nativeElement;
+        let typePicker = <HTMLElement> this.typePicker.nativeElement;
+
+        this._subscription.add(
+            Observable.fromEvent(typePicker, 'click')
+                .filter(() => !this.typePickerOpen)
+                .do((event: MouseEvent) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.typePickerOpen = true;
+                })
+                .flatMap(() => {
+                    return Observable.fromEvent(document.body, 'click')
+                        .do((event: MouseEvent) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        })
+                        .takeWhile(() => this.typePickerOpen)
+                })
+                .subscribe(
+                    () => {
+                        this.typePickerOpen = false;
+                    }
+                )
+        );
+
+        this._subscription.add(
+            Observable.fromEvent(searchBox, 'keyup')
+                .debounceTime(500)
+                .map(() => (searchBox as HTMLInputElement).value)
+                .distinctUntilChanged()
+                .filter(name => !!name)
+                .subscribe(
+                    (name: string) => {
+                        this.currentPage = 1;
+                        this.name = name;
+                        this.fetchData();
+                    }
+                )
+        );
+        // setTimeout(() => {
+        //     let cardHeight = getRemPixel(CARD_HEIGHT_REM);
+        //     let viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        //     let scaleFactor = viewportHeight < 600 ? 1 : 0.8;
+        //     let uiPaginationHeight = getRemPixel(1/* font-size */ + 0.92857143/* padding */ * 2 + 2 /* margin-top */);
+        //     this.bangumiListHeight = Math.floor(viewportHeight * scaleFactor) - getRemPixel(SEARCH_BAR_HEIGHT) - uiPaginationHeight;
+        //     this.count = Math.max(1, Math.floor((this.bangumiListHeight - uiPaginationHeight) / cardHeight));
+        //     console.log(this.count);
+        // });
+    }
+
+    onPageChanged() {
+        this.fetchData();
+    }
+
+    onTypeChanged(type: number) {
+        this.bangumiType = type;
+        this.fetchData();
+    }
+
+    fetchData() {
+        if (!this.name) {
+            return;
+        }
+        let offset = (this.currentPage - 1) * this.count;
         this.isLoading = true;
-        this.adminService.searchBangumi(name, this.bangumiType)
-          .subscribe(
-            bangumiList => this.bangumiList = bangumiList,
-            error => console.log(error),
-            () => this.isLoading = false
-          );
-      });
-  }
-
-  searchBangumi(name: string):void {
-    this._input.next(name)
-  }
-
-  addBangumi(bangumi: Bangumi):void {
-    if(bangumi.id) {
-      return;
+        this._adminService.searchBangumi({
+            name: this.name,
+            type: this.bangumiType,
+            offset: offset,
+            count: this.count
+        })
+            .subscribe(
+                (result: { data: Bangumi[], total: number }) => {
+                    this.bangumiList = result.data;
+                    this.total = result.total;
+                    this.isLoading = false;
+                },
+                (error: BaseError) => {
+                    this.bangumiList = [];
+                    this._toastRef.show(error.message);
+                    this.isLoading = false;
+                }
+            );
     }
-    this.router.navigate(['/admin/search', bangumi.bgm_id]);
-  }
+
+    cancelSearch() {
+        this._dialogRef.close('cancelled');
+    }
+
+    viewDetail(bangumi: Bangumi): void {
+        if (bangumi.id) {
+            return;
+        }
+        this.selectedBgmId = bangumi.bgm_id;
+        this.showDetail = true;
+    }
+
+    fromDetail(bangumi: BangumiRaw): void {
+        if (bangumi) {
+            this.isSaving = true;
+            this._subscription.add(
+                this._adminService.addBangumi(bangumi)
+                .subscribe(
+                    (bangumi_id: string) => {
+                        this._dialogRef.close(bangumi_id);
+                    },
+                    (error: BaseError) => {
+                        this.isSaving = false;
+                        this._toastRef.show(error.message);
+                    }
+                )
+            );
+        } else {
+            this.showDetail = false;
+        }
+    }
 }

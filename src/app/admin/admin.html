@@ -1,14 +1,17 @@
 <div class="admin-container">
-  <aside class="ui left inverted vertical sidebar fixed menu visible">
-    <a class="item" [routerLink]="['/']">Home</a>
-    <a class="item" [routerLink]="['/admin/bangumi']">
-      已添加的新番
-    </a>
-    <a class="item" [routerLink]="['/admin/search']">
-      添加新的新番
-    </a>
-  </aside>
-  <div class="admin-content">
+    <aside class="ui left inverted vertical sidebar fixed menu visible">
+        <div class="sidebar-header">
+            <a class="brand" [routerLink]="['/']">{{site_title}}</a>
+        </div>
+        <a class="item" [routerLink]="['/admin/bangumi']">
+            新番管理
+        </a>
+        <a class="item" [routerLink]="['/admin/user']">
+            用户管理
+        </a>
+        <a class="item" [routerLink]="['/admin/task']">
+            任务管理
+        </a>
+    </aside>
     <router-outlet></router-outlet>
-  </div>
 </div>

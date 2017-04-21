@@ -1,167 +1,219 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
-import {Bangumi, Episode, BangumiRaw} from '../../entity';
+import {Bangumi, Episode} from '../../entity';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Rx';
 import {AdminService} from '../admin.service';
-// import {FormControl} from '@angular/forms';
-// import {UIToast, UIToastRef, UIToastComponent} from 'deneb-ui/src/index';
+import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
+import {BangumiBasic} from './bangumi-basic/bangumi-basic.component';
+import {BaseError} from '../../../helpers/error/BaseError';
+import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
+import {EpisodeDetail} from './episode-detail/episode-detail.component';
+import {BangumiMoeBuilder} from './bangumi-moe-builder/bangumi-moe-builder.component';
 
 @Component({
-  selector: 'bangumi-detail',
-  templateUrl: './bangumi-detail.html',
-  providers: [AdminService],
-  styles:[`
-    .bangumi-image {
-      margin-right: 20px;
-      margin-bottom: 30px;
-    }
-    .bangumi-image > img {
-      width: 100%;
-    }
-  `]
+    selector: 'bangumi-detail',
+    templateUrl: './bangumi-detail.html',
+    styleUrls: ['./bangumi-detail.less']
 })
 export class BangumiDetail implements OnInit, OnDestroy {
 
-  bangumi: Bangumi = <Bangumi>{};
+    private _subscription = new Subscription();
+    private _toastRef: UIToastRef<UIToastComponent>;
 
-  get orderedEpisodeList(): Episode[] {
-    if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
-      return this.bangumi.episodes.sort((episode1, episode2) => {return episode1.episode_no - episode2.episode_no});
-    }
-    return [];
-  }
+    bangumi: Bangumi = <Bangumi>{};
 
-  episodeList: Episode[] = [];
-  errorMessage: any;
+    isLoading: boolean = false;
 
-  isSavingBangumi: boolean = false;
-
-  private from: string;
-  private routeParamsSubscription: Subscription;
-  private bangumiSubscription: Subscription;
-
-  // private toastRef: UIToastRef<UIToastComponent>;
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private adminService: AdminService,
-    private _titleService: Title,
-    // private _toastService: UIToast
-  ){}
-
-  ngOnInit(): any {
-    // this.toastRef = this._toastService.makeText();
-    this.routeParamsSubscription = this.route.params
-      .flatMap((params) => {
-        let id = params['id'];
-        let bgm_id = Number(params['bgm_id']);
-        this.from = id ? 'list' : 'search';
-        if(bgm_id) {
-          this._titleService.setTitle('添加新番 - ' + SITE_TITLE);
-          return this.adminService.queryBangumi(bgm_id);
-        } else if(id) {
-          this._titleService.setTitle('编辑新番 - ' + SITE_TITLE);
-          return this.adminService.getBangumi(id);
+    get orderedEpisodeList(): Episode[] {
+        if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
+            return this.bangumi.episodes.sort((episode1, episode2) => {
+                return episode1.episode_no - episode2.episode_no
+            });
         }
-      })
-      .subscribe(
-        (bangumi: BangumiRaw | Bangumi) => {
-          this.bangumi = bangumi;
-          if(this.from === 'search') {
-            if(Array.isArray(bangumi.episodes) && bangumi.episodes.length > 0) {
-              this.episodeList = bangumi.episodes;
-            }
-          }
-        },
-        error => {
-          // this.toastRef.show(error);
-        }
-      );
-    return undefined;
-  }
-
-  addEpisode() {
-    let episode = new Episode();
-    episode.bangumi_id = this.bangumi.id;
-    episode.status = Episode.STATUS_NOT_DOWNLOADED;
-    if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
-      episode.episode_no = this.bangumi.episodes[this.bangumi.episodes.length - 1].episode_no + 1;
-    } else {
-      episode.episode_no = 1;
+        return [];
     }
-    this.bangumi.episodes.push(episode);
-  }
 
-  onEpisodeDelete(episode: Episode) {
-      let index = this.bangumi.episodes.indexOf(episode);
-      if (index !== -1) {
-        this.bangumi.episodes.splice(index, 1);
-      }
-  }
+    constructor(private _route: ActivatedRoute,
+                private _router: Router,
+                private _adminService: AdminService,
+                private _uiDialog: UIDialog,
+                titleService: Title,
+                toastService: UIToast
+    ) {
+        this._toastRef = toastService.makeText();
+        titleService.setTitle('编辑新番 - ' + SITE_TITLE);
+    }
 
-  onEpisodeAdded(episode_id: string, episode: Episode) {
-      this.adminService.getEpisode(episode_id)
-        .subscribe(
-          (refreshedEpisode: Episode) => {
-            let index = this.bangumi.episodes.indexOf(episode);
-            if (index !== -1) {
-              this.bangumi.episodes[index] = refreshedEpisode;
-            }
-          },
-          error => console.log(error)
+    ngOnInit(): void {
+        this._subscription.add(
+            this._route.params
+                .flatMap((params) => {
+                    let id = params['id'];
+                    return this._adminService.getBangumi(id);
+                })
+                .subscribe(
+                    (bangumi: Bangumi) => {
+                        this.bangumi = bangumi;
+                    },
+                    (error: BaseError) => {
+                        this._toastRef.show(error.message);
+                    }
+                )
         );
-  }
+    }
 
-  onSubmit(): void {
-    this.isSavingBangumi = true;
-    if(!this.bangumi.id) {
-      this.bangumiSubscription = this.adminService.addBangumi(<BangumiRaw>this.bangumi)
-        .subscribe(
-          (id: string) => {
-            this.isSavingBangumi = false;
-            if(id) {
-              this.router.navigate(['/admin/bangumi', id]);
-            } else {
-              // this.toastRef.show('No id return');
-            }
-          },
-          (error:any) => {
-            // this.toastRef.show(error);
-            this.isSavingBangumi = false;
-          }
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
+    }
+
+    editBasicInfo() {
+        let dialogRef = this._uiDialog.open(BangumiBasic, {stickyDialog: false, backdrop: true});
+        dialogRef.componentInstance.bangumi = this.bangumi;
+        this._subscription.add(
+            dialogRef
+                .afterClosed()
+                .filter((basicInfo: any) => !!basicInfo)
+                .flatMap(
+                    (basicInfo: any) => {
+                        this.isLoading = true;
+                        this.bangumi.name = basicInfo.name as string;
+                        this.bangumi.name_cn = basicInfo.name_cn as string;
+                        this.bangumi.summary = basicInfo.summary as string;
+                        this.bangumi.air_date = basicInfo.air_date as string;
+                        this.bangumi.air_weekday = basicInfo.air_weekday as number;
+                        this.bangumi.eps_no_offset = basicInfo.eps_no_offset as number;
+                        this.bangumi.status = basicInfo.status as number;
+                        return this._adminService.updateBangumi(this.bangumi);
+                    }
+                )
+                .subscribe(
+                    () => {
+                        this.isLoading = false;
+                        this._toastRef.show('更新成功');
+                    },
+                    (error: BaseError) => {
+                        this.isLoading = false;
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
+    editKeyword(siteName: string) {
+        let dialogRef = this._uiDialog.open(KeywordBuilder, {stickyDialog: true, backdrop: true});
+        dialogRef.componentInstance.keyword = this.bangumi[siteName];
+        dialogRef.componentInstance.siteName = siteName;
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .filter((result: any) => !!result)
+                .flatMap((result: any) => {
+                    this.isLoading = true;
+                    this.bangumi[siteName] = result.keyword as string;
+                    return this._adminService.updateBangumi(this.bangumi);
+                })
+                .subscribe(
+                    () => {
+                        this.isLoading = false;
+                        this._toastRef.show('更新成功');
+                    },
+                    (error: BaseError) => {
+                        this.isLoading = false;
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
+    editBangumiMoe() {
+        let dialogRef = this._uiDialog.open(BangumiMoeBuilder, {stickyDialog: true, backdrop: true});
+        dialogRef.componentInstance.bangumi = this.bangumi;
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .filter((result: any) => !!result)
+                .flatMap((result: any) => {
+                    this.isLoading = true;
+                    this.bangumi.bangumi_moe = result.result as string;
+                    return this._adminService.updateBangumi(this.bangumi);
+                })
+                .subscribe(
+                    () => {
+                        this.isLoading = false;
+                        this._toastRef.show('更新成功');
+                    },
+                    (error: BaseError) => {
+                        this.isLoading = false;
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
+    editEpisode(episode?: Episode) {
+        let dialogRef = this._uiDialog.open(EpisodeDetail, {stickyDialog: true, backdrop: true});
+        dialogRef.componentInstance.episode = episode;
+        dialogRef.componentInstance.bangumi_id = this.bangumi.id;
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .filter((result: boolean) => result)
+                .flatMap(() => {
+                    this.isLoading = true;
+                    return this._adminService.getBangumi(this.bangumi.id);
+                })
+                .subscribe(
+                    (bangumi: Bangumi) => {
+                        this.isLoading = false;
+                        this.bangumi = bangumi;
+                    },
+                    (error: BaseError) => {
+                        this.isLoading = false;
+                        this._toastRef.show(error.message);
+                    }
+                )
         )
-    } else {
-      this.bangumiSubscription = this.adminService.updateBangumi(this.bangumi)
-        .subscribe(
-          result => {
-            // this.toastRef.show('更新成功');
-            this.isSavingBangumi = false;
-          },
-          error => {
-            // this.toastRef.show(error);
-            this.isSavingBangumi = false;
-          }
+    }
+
+    deleteEpisode(episode_id: string) {
+        this._subscription.add(
+            this._adminService.deleteEpisode(episode_id)
+                .flatMap(({delete_delay}) => {
+                    this._toastRef.show(`将在${delete_delay}分钟后删除，你可以在任务管理中取消删除`);
+                    return this._adminService.getBangumi(this.bangumi.id);
+                })
+                .subscribe(
+                    (bangumi) => {
+                        this.bangumi = bangumi;
+                    },
+                    (error: BaseError) => {
+                        this._toastRef.show(error.message);
+                    }
+                )
         );
     }
-  }
 
-  back(): void {
-    if(this.from === 'search') {
-      this.router.navigate(['/admin/search']);
-    } else if(this.from === 'list') {
-      this.router.navigate(['/admin/bangumi']);
+    deleteBangumi() {
+        this._subscription.add(
+            this._adminService.deleteBangumi(this.bangumi.id)
+                .subscribe(
+                    ({delete_delay}) => {
+                        this._toastRef.show(`将在${delete_delay}分钟后删除，你可以在任务管理中取消删除`);
+                        this._router.navigate(['/admin/bangumi']);
+                    },
+                    (error: BaseError) => {
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
     }
-  }
 
-  ngOnDestroy():any {
-    if(this.routeParamsSubscription) {
-      this.routeParamsSubscription.unsubscribe();
-    }
-    if(this.bangumiSubscription) {
-      this.bangumiSubscription.unsubscribe();
-    }
-    return null;
-  }
+    // getVideoFiles(episode: Episode) {
+    //     this._subscription.add(
+    //         this._adminService.getEpisodeVideoFiles(episode.id)
+    //             .subscribe(
+    //                 (videoFiles => {
+    //                     episode.video_files = videoFiles;
+    //                 })
+    //             )
+    //     );
+    // }
 }

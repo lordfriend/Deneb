@@ -1,90 +1,162 @@
-<nav class="nav-admin">
-  <h1 class="ui header">编辑新番</h1>
-</nav>
-<div class="bangumi-container">
-  <form (ngSubmit)="onSubmit()" class="bangumi-form ui form ui dimmable" [ngClass]="{dimmed: !bangumi.bgm_id}">
-    <div class="ui simple inverted dimmer">
-      <div class="ui loader"></div>
+<admin-navbar navTitle="编辑新番" backLink="/admin/bangumi">
+    <a class="accessory-action anchor-button"
+       title="删除番組"
+       confirmDialog
+       dialogTitle="确定删除番組么"
+       dialogContent="删除该番組将删除与之有关的所有视频文件，torrent，用户收藏，观看进度等信息"
+       (onConfirm)="deleteBangumi()">
+        <i class="trash icon"></i>
+    </a>
+</admin-navbar>
+<div class="bangumi-detail-container" *ngIf="bangumi">
+    <div class="bangumi-basic-info">
+        <div class="cover-wrapper">
+            <img [src]="bangumi.image" alt="image" class="bangumi-image">
+        </div>
+        <div class="bangumi-info-text">
+            <h3 class="bangumi-title">
+                {{bangumi.name_cn || '暂无'}}
+                <a class="external-link" [href]="'https://bgm.tv/subject/' + bangumi.bgm_id" target="_blank" title="在bgm.tv页面查看">
+                    <i class="external icon"></i>
+                </a>
+            </h3>
+            <h4 class="entry">
+                <span class="entry-key">日文名</span>
+                <span class="entry-value">{{bangumi.name || '暂无'}}</span>
+            </h4>
+            <p class="entry">
+                <span class="entry-key">简介</span>
+                <span class="entry-value">{{bangumi.summary || '暂无'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">放送开始</span>
+                <span class="entry-value">{{bangumi.air_date || '未知'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">放送星期</span>
+                <span class="entry-value">{{bangumi.air_weekday || '未知'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">集数偏移</span>
+                <span class="entry-value">{{bangumi.eps_no_offset || '0'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">状态</span>
+                <span class="entry-value">{{bangumi.status | bangumiStatusName}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">类型</span>
+                <span class="entry-value">{{bangumi.type | bangumiTypeName}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">创建时间</span>
+                <span class="entry-value">{{bangumi.create_time | date: 'medium'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">更新时间</span>
+                <span class="entry-value">{{bangumi.update_time | date: 'medium'}}</span>
+            </p>
+        </div>
+        <a class="edit-button anchor-button" (click)="editBasicInfo()"><i class="edit icon"></i></a>
     </div>
-    <section class="bangumi-info">
-      <div class="bangumi-image">
-        <img src="{{bangumi.cover || bangumi.image}}" alt="image">
-      </div>
-      <div class="bangumi-basic-info">
-        <div class="field">
-          <label>番组名</label>
-          <input type="text" [(ngModel)]="bangumi.name" name="name"/>
-        </div>
-        <div class="field">
-          <label>中文名</label>
-          <input type="text" [(ngModel)]="bangumi.name_cn" name="name_cn"/>
-        </div>
-        <div class="field">
-          <label>简介</label>
-          <textarea type="text" [(ngModel)]="bangumi.summary" name="summary" cols="20" rows="6"></textarea>
-        </div>
-        <div class="field">
-          <label>放送开始</label>
-          <input type="text" [(ngModel)]="bangumi.air_date" name="air_date"/>
-        </div>
-        <div class="field">
-          <label>放送星期</label>
-          <input type="text" [(ngModel)]="bangumi.air_weekday" name="air_weekday"/>
-        </div>
-        <div class="field" *ngIf="bangumi.type === 2">
-          <label>DMHY</label>
-          <keyword-builder [bangumi]="bangumi" [siteName]="'dmhy'"></keyword-builder>
-        </div>
-        <div class="field" *ngIf="bangumi.type === 2">
-          <label>ACG_RIP</label>
-          <keyword-builder [bangumi]="bangumi" [siteName]="'acg_rip'"></keyword-builder>
-        </div>
-        <div class="field" *ngIf="bangumi.type === 6">
-          <label>LIBYK_SO</label>
-          <keyword-builder [bangumi]="bangumi" [siteName]="'libyk_so'"></keyword-builder>
-        </div>
-        <div class="field">
-          <label>集数偏移（解决某些集数不是从1开始的新番）</label>
-          <input type="text" [(ngModel)]="bangumi.eps_no_offset" name="eps_no_offset"/>
-        </div>
-        <div class="inline fields" *ngIf="bangumi.id">
-          <label>状态</label>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="status" [(ngModel)]="bangumi.status" [value]="0">
-              <label>Pending</label>
+    <div class="download-info">
+        <h4 class="section-header">抓取来源</h4>
+        <div class="bangumi-moe-entry entry">
+            <div class="entry-key">BANGUMI.MOE</div>
+            <div class="entry-value">
+                <div class="ui horizontal label" *ngFor="let tag of bangumi.bangumi_moe | bangumiMoe">
+                    {{tag.locale.zh_cn || tag.name}}
+                </div>
+                <a class="edit-button anchor-button" (click)="editBangumiMoe()"><i class="edit icon"></i></a>
             </div>
-          </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="status" [(ngModel)]="bangumi.status" [value]="1">
-              <label>On Air</label>
-            </div>
-          </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="status" [(ngModel)]="bangumi.status" [value]="2">
-              <label>Finished</label>
-            </div>
-          </div>
         </div>
-      </div>
-    </section>
-    <button class="ui right floated primary button" [ngClass]="{loading: isSavingBangumi}" type="submit">Save</button>
-  </form>
-  <div class="bangumi-episodes" *ngIf="bangumi.id">
-    <h4 class="ui header">各话列表</h4>
-    <div class="ui divider"></div>
-    <div class="episode-list">
-      <episode-detail class="episode-item ui segment"
-                      [episode]="episode"
-                      (onDelete)="onEpisodeDelete($event)"
-                      (onAdded)="onEpisodeAdded($event, episode)"
-                      *ngFor="let episode of orderedEpisodeList">
-      </episode-detail>
+        <div class="dmhy-entry entry">
+            <div class="entry-key">DMHY</div>
+            <div class="entry-value">
+                <span class="ui horizontal label" *ngIf="bangumi.dmhy">{{bangumi.dmhy}}</span>
+                <a class="edit-button anchor-button" (click)="editKeyword('dmhy')"><i class="edit icon"></i></a>
+            </div>
+        </div>
+        <div class="acg-rip-entry entry">
+            <div class="entry-key">ACG.RIP</div>
+            <div class="entry-value">
+                <span class="ui horizontal label" *ngIf="bangumi.acg_rip">{{bangumi.acg_rip}}</span>
+                <a class="edit-button anchor-button" (click)="editKeyword('acg_rip')"><i class="edit icon"></i></a>
+            </div>
+        </div>
+        <div class="libyk-entry entry">
+            <div class="entry-key">LIBYK</div>
+            <div class="entry-value">
+                <div class="ui horizontal label" *ngIf="bangumi.libyk_so">
+                    <i class="rss icon"></i>
+                    {{bangumi.libyk_so | libykFormat:'t'}}
+                    <div class="detail">{{bangumi.libyk_so | libykFormat:'q'}}</div>
+                </div>
+                <a class="edit-button anchor-button" (click)="editKeyword('libyk_so')"><i class="edit icon"></i></a>
+            </div>
+        </div>
     </div>
-    <div class="episode-list-control" *ngIf="bangumi.id">
-      <button class="ui primary button" (click)="addEpisode()" type="button">添加一话</button>
+    <div class="bangumi-episodes">
+        <h4 class="section-header">各话列表</h4>
+        <ul class="notice">
+            <li><span class="ui green horizontal tiny label">&nbsp;</span> = 已下载</li>
+            <li><span class="ui blue horizontal tiny label">&nbsp;</span> = 下载中</li>
+        </ul>
+        <div class="table-wrapper">
+            <table class="ui celled padded table">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th style="width: 7rem;">预览图</th>
+                    <th>标题</th>
+                    <th>放送日期</th>
+                    <th>时长</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let episode of orderedEpisodeList" [ngClass]="{downloaded: episode.status === 2, downloading: episode.status === 1}">
+                    <td>{{episode.episode_no}}</td>
+                    <td>
+                        <div class="image-wrapper" *ngIf="episode.status !== 2">
+                            <div class="image-fallback">
+                                <h4 class="ui icon film icon-holder">
+                                    <i class="film icon"></i>
+                                </h4>
+                            </div>
+                        </div>
+                        <ui-image-placeholder [imageUrl]="episode.thumbnail" *ngIf="episode.status === 2">
+                            <div class="ui-image-fallback">
+                                <div class="ui icon film icon-holder">
+                                    <i class="film icon"></i>
+                                </div>
+                            </div>
+                        </ui-image-placeholder>
+                    </td>
+                    <td class="title">
+                        <span class="key">日文:</span><span class="value">{{episode.name}}</span> <br>
+                        <span class="key">中文:</span><span class="value">{{episode.name_cn}}</span>
+                    </td>
+                    <td>{{episode.airdate}}</td>
+                    <td>{{episode.duration}}</td>
+                    <td>
+                        <a class="anchor-button" (click)="editEpisode(episode)"><i class="edit icon"></i></a>
+                        <a class="anchor-button"
+                           confirmDialog
+                           dialogTitle="确定删除该话么"
+                           dialogContent="删除该话将会同时删除与该话有关的torrent信息，文件，用户进度信息"
+                           (onConfirm)="deleteEpisode(episode.id)"><i class="remove icon"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
+    <button class="ui circular icon primary button float-action-button" (click)="editEpisode()" type="button"><i class="plus icon"></i></button>
+    <div class="ui inverted dimmer" [ngClass]="{active: isLoading}">
+        <div class="ui large loader"></div>
+    </div>
+</div>
+<div class="initial-placeholder" *ngIf="!bangumi">
+    <div class="placeholder-text">加载中...</div>
 </div>

@@ -34,6 +34,10 @@
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@angular/http/-/http-4.0.1.tgz#bf87e7da9dc1f1567f246f9a09723e1cc3543d32"
 
+"@angular/language-service@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-4.0.2.tgz#68324cbfacda41d44d267e553d6f866f52d307c8"
+
 "@angular/platform-browser-dynamic@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.0.1.tgz#fd5debb2d3f6474350965e71c2674e2170d7cfcb"
@@ -1189,6 +1193,10 @@ delayed-stream@~1.0.0:
 delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
+
+deneb-ui@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/deneb-ui/-/deneb-ui-0.2.3.tgz#52d030b3dbe7a4ab2301313626bc27ac109eb821"
 
 depd@~1.1.0:
   version "1.1.0"
@@ -4638,9 +4646,13 @@ typedoc@^0.5.3:
     typedoc-default-themes "^0.4.2"
     typescript "2.1.6"
 
-typescript@2.1.6, typescript@~2.1.6:
+typescript@2.1.6:
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.1.6.tgz#40c7e6e9e5da7961b7718b55505f9cac9487a607"
+
+typescript@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"
 
 uglify-js@2.7.x, uglify-js@^2.6, uglify-js@^2.7.5:
   version "2.7.5"

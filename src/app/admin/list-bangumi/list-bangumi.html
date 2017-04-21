@@ -1,50 +1,51 @@
-<nav class="nav-admin">
-  <h1 class="ui header">已保存的新番</h1>
-</nav>
-<div class="bangumi-container ui one column grid">
-  <div class="column">
-    <div class="ui search" [ngClass]="{loading: isLoading}">
-      <div class="ui fluid icon input">
-        <input class="prompt" type="text" placeholder="按名称过滤" #searchBox (keyup)="filterBangumi(searchBox.value)">
+<admin-navbar navTitle="已保存的新番">
+    <div class="ui icon input action-item search-action">
+        <input type="text" placeholder="按名称过滤" #searchBox>
         <i class="search icon"></i>
-      </div>
     </div>
-  </div>
-  <div class="column">
-    <div class="bangumi-list">
-      <div *ngFor="let bangumi of bangumiList" (click)="editBangumi(bangumi)" class="ui segment bangumi-list-item">
-        <img [src]="bangumi.cover" alt="image" class="bangumi-image">
-        <div class="md-list-item-text">
-          <h3 class="bangumi-title">{{bangumi.name_cn}}</h3>
-          <h4 class="entry">
-            <span class="entry-key">日文名</span>
-            <span class="entry-value">{{bangumi.name}}</span>
-          </h4>
-          <p class="entry">
-            <span class="entry-key">简介</span>
-            <span class="entry-value">{{bangumi.summary}}</span>
-          </p>
-          <p class="entry">
-            <span class="entry-key">放送开始</span>
-            <span class="entry-value">{{bangumi.air_date}}</span>
-          </p>
-          <p class="entry">
-            <span class="entry-key">放送星期</span>
-            <span class="entry-value">{{bangumi.air_weekday}}</span>
-          </p>
-          <p class="entry">
-            <span class="entry-key">DMHY</span>
-            <span class="entry-value">{{bangumi.dmhy}}</span>
-          </p>
-          <p class="entry">
-            <span class="entry-key">ACG.RIP</span>
-            <span class="entry-value">{{bangumi.acg_rip}}</span>
-          </p>
+    <a class="action-item anchor-button" (click)="addBangumi()">
+        <i class="plus icon"></i>添加番组
+    </a>
+    <a class="sort-button anchor-button accessory-action" (click)="onOrderChange(orderBy, true)" [title]="sort === 'desc' ? '降序': '升序'">
+        <i class="sort content icon" [ngClass]="{ascending: sort === 'asc', descending: sort === 'desc'}"></i>
+    </a>
+    <div class="accessory-action ui inline dropdown" uiDropdown="click">
+        <div class="text">{{orderByMenuLabel[orderBy]}}</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item" (click)="onOrderChange('create_time', false)">按创建时间</div>
+            <div class="item" (click)="onOrderChange('update_time', false)">按修改时间</div>
+            <div class="item" (click)="onOrderChange('air_date', false)">按开播日期</div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="column center ui centered grid">
-    <ui-pagination [currentPage]="currentPage" [total]="total" [countPerPage]="numberPerPage" (pageChange)="onPageChange($event)"></ui-pagination>
-  </div>
+    <div class="accessory-action ui inline dropdown" uiDropdown="click">
+        <div class="text">{{typeMenuLabel[type]}}</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item" (click)="onTypeChange(-1)">全部</div>
+            <div class="item" (click)="onTypeChange(2)">动画</div>
+            <div class="item" (click)="onTypeChange(6)">电视剧</div>
+        </div>
+    </div>
+</admin-navbar>
+<div class="content-area">
+    <div class="all-bangumi-container" *ngIf="!name && !isLoading && bangumiList && bangumiList.length > 0">
+        <ui-timeline-meter [rowHeight]="cardHeight" [timestampList]="timestampList">
+            <infinite-list [rowHeight]="cardHeight">
+                <bangumi-card *infiniteFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="false" (click)="editBangumi(bangumi)"></bangumi-card>
+            </infinite-list>
+        </ui-timeline-meter>
+    </div>
+    <div class="search-result-container" *ngIf="!!name && !isLoading && bangumiList && bangumiList.length > 0">
+        <div class="bangumi-list">
+            <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="false" (click)="editBangumi(bangumi)">
+            </bangumi-card>
+        </div>
+    </div>
+    <div class="no-result-container" *ngIf="!isLoading && bangumiList && bangumiList.length === 0">
+        <div class="no-result-tips"><i class="warning circle icon"></i>没有找到番组</div>
+    </div>
+    <div class="searching-container" *ngIf="isLoading">
+        <div class="ui inverted massive text active loader">Loading...</div>
+    </div>
 </div>

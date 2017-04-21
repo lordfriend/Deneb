@@ -1,81 +1,17 @@
 @import "./bangumi-detail/bangumi-detail.less";
 
-.nav-admin {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  padding: 1.5em 2em 1.5em 1.5em;
-}
-
 .admin-container {
   display: block;
-  .admin-content {
-    margin-left: 260px;
-    padding: 0 33px 0 20px;
+  .sidebar-header {
+    height: 10rem;
+    border-bottom: 1px solid rgba(225, 225, 225, 0.08);
   }
-}
-
-.bangumi-container {
-  margin-top: 1rem;
-  .bangumi-list {
-    margin-top: 1.2rem;
-    margin-bottom: 2rem;
-  }
-}
-
-.bangumi-list-item {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin: 5px;
-
-  .bangumi-image {
-    flex: 0 1 150px;
-    margin: 0.8rem 1rem 2rem 0.6rem;
-    width: 150px;
-    height: auto;
-  }
-
-  .md-list-item-text {
-    flex: 3 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 0.5rem;
-    .bangumi-title {
-      margin-left: 1rem;
-    }
-    > h3, h4 {
-      word-break: break-all;
-      white-space: normal;
-      margin: 0 0 1rem 0;
-    }
-    .entry-value {
-      word-break: break-all;
-      white-space: normal;
-    }
-
-    .entry {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-    }
-
-    .entry-key {
-      flex: 0 0 7em;
-      display: inline-block;
-      text-align: right;
-      padding-right: 1em;
-      width: 7em;
-      font-size: 1rem;
-      color: #828574;
-      font-weight: normal;
-    }
-  }
-
-
-  .exist-indicator {
-    color: #f44336 !important;
+  .brand {
+    font-size: 2.2rem;
+    color: #fff;
+    display: block;
+    width: 100%;
+    line-height: 5rem;
+    padding-left: 1.1428rem;
   }
 }

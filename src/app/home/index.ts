@@ -12,6 +12,5 @@ export const HOME_DECLARATIONS = [
   PlayEpisode,
   BangumiList,
   BangumiDetail,
-  WeekdayPipe,
   FavoriteChooser
 ];

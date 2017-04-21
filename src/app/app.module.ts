@@ -18,34 +18,44 @@ import {HOME_DECLARATIONS} from './home/index';
 import {HomeService} from './home/home.service';
 import {Ng2SemanticModule} from '../ng2-semantic';
 import {WatchService} from './home/watch.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {UIImagePlaceholderModule} from './image-placeholder/index';
+import {TaskService} from './admin/task-manager/task.service';
+import {DenebCommonPipes} from './pipes/index';
 
 @NgModule({
-  declarations: [
-    App,
-    Login,
-    Register,
-    ErrorComponent,
-    ...HOME_DECLARATIONS
-  ],
-  providers: [
-    AnalyticsService,
-    Authentication,
-    UserService,
-    HomeService,
-    WatchService,
-    Title,
-    ENV_PROVIDERS
-  ],
-  imports: [
-    RouterModule.forRoot(appRoutes, {useHash: true}),
-    BrowserModule,
-    CommonModule,
-    ReactiveFormsModule,
-    HttpModule,
-    PlayerModule,
-    Ng2SemanticModule
-  ],
-  bootstrap: [App]
+    declarations: [
+        App,
+        Login,
+        Register,
+        ErrorComponent,
+        ...HOME_DECLARATIONS
+    ],
+    providers: [
+        AnalyticsService,
+        Authentication,
+        UserService,
+        HomeService,
+        WatchService,
+        Title,
+        TaskService,
+        ENV_PROVIDERS
+    ],
+    imports: [
+        RouterModule.forRoot(appRoutes, {
+            useHash: false
+        }),
+        BrowserModule,
+        CommonModule,
+        ReactiveFormsModule,
+        HttpModule,
+        PlayerModule,
+        Ng2SemanticModule,
+        BrowserAnimationsModule,
+        UIImagePlaceholderModule,
+        DenebCommonPipes
+    ],
+    bootstrap: [App]
 })
 export class AppModule {
 }

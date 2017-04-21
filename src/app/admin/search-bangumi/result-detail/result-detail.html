@@ -1,0 +1,42 @@
+<div class="result-detail" [ngClass]="{'show-detail': showDetail}">
+    <div class="action-bar">
+        <a class="back-button" (click)="back()"><i class="chevron left icon"></i></a>
+        <div class="title">番組详情</div>
+        <a class="confirm-button" (click)="done()">
+            <i class="checkmark icon"></i> 确定保存
+        </a>
+    </div>
+    <div class="detail-container">
+        <form class="bangumi-form ui form" novalidate [formGroup]="bangumiForm">
+            <div class="bangumi-image">
+                <img [src]="bangumi?.image" alt="image">
+            </div>
+            <div class="bangumi-basic-info">
+                <div class="field">
+                    <label>番组名</label>
+                    <input type="text" formControlName="name" name="name"/>
+                </div>
+                <div class="field">
+                    <label>中文名</label>
+                    <input type="text" formControlName="name_cn" name="name_cn"/>
+                </div>
+                <div class="field">
+                    <label>简介</label>
+                    <textarea type="text" formControlName="summary" name="summary" cols="20" rows="6"></textarea>
+                </div>
+                <div class="field">
+                    <label>放送开始</label>
+                    <input type="text" formControlName="air_date" name="air_date"/>
+                </div>
+                <div class="field">
+                    <label>放送星期</label>
+                    <input type="text" formControlName="air_weekday" name="air_weekday"/>
+                </div>
+                <div class="field">
+                    <label>话数</label>
+                    <input type="text" formControlName="eps" name="eps" readonly>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

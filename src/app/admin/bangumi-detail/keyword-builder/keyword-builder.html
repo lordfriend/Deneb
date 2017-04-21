@@ -1,32 +1,42 @@
 <div class="keyword-builder-container">
-    <div class="editor-wrapper" *ngIf="isEditorOpen">
-      <div class="input-box-wrapper">
-        <select [(ngModel)]="libykCriteria.t" name="table" *ngIf="siteName === 'libyk_so'">
-          <option *ngFor="let table of availableTable" [value]="table">{{table}}</option>
-        </select>
-        <input type="text" [(ngModel)]="libykCriteria.q" name="query" *ngIf="siteName === 'libyk_so'">
-        <input type="text" [(ngModel)]="bangumi[siteName]" *ngIf="siteName !== 'libyk_so'">
-        <button class="ui primary button" type="button" (click)="testFeed()">Test</button>
-        <button class="ui negative button" type="button" (click)="removeKeyword()">DEL</button>
-      </div>
-      <div class="search-result-wrapper" *ngIf="itemList && itemList.length > 0">
-        <table class="search-result ui striped collapsing table">
-          <thead>
-          <tr>
-            <th>标题</th>
-            <th style="width: 5em;">集数</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let item of itemList">
-            <td>{{item.title}}</td>
-            <td>{{item.eps_no}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="search-bar">
+        <div class="ui large label">
+            <i class="rss icon"></i>
+            {{siteName}}
+        </div>
+        <div class="input-box-wrapper ui left action input" *ngIf="siteName === 'libyk_so'">
+            <div class="ui basic dropdown button" uiDropdown="click">
+                <div class="text">{{libykCriteria.t}}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" *ngFor="let table of availableTable" (click)="selectTable(table)">{{table}}</div>
+                </div>
+            </div>
+            <input type="text" [formControl]="keywordControl" name="query" placeholder="请输入搜索关键词" (keyup.enter)="testFeed()">
+        </div>
+        <div class="input-box-wrapper ui input" *ngIf="siteName !== 'libyk_so'">
+            <input type="text" [formControl]="keywordControl" name="query" placeholder="请输入搜索关键词" (keyup.enter)="testFeed()">
+        </div>
+        <button class="ui primary button test-button" type="button" (click)="testFeed()">Test</button>
     </div>
-    <div class="add-button-wrapper" *ngIf="!isEditorOpen">
-      <button class="ui primary button" type="button" (click)="addKeyword()">+</button>
+    <div class="search-result-wrapper" *ngIf="itemList && itemList.length > 0">
+        <table class="search-result ui striped collapsing table">
+            <thead>
+            <tr>
+                <th>标题</th>
+                <th style="width: 5em;">集数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of itemList">
+                <td>{{item.title}}</td>
+                <td>{{item.eps_no}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footer">
+        <button class="ui button" (click)="cancel()">取消</button>
+        <button class="ui primary button" (click)="save()">保存</button>
     </div>
 </div>

@@ -1,165 +1,96 @@
-import {Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit, OnDestroy, EventEmitter} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Bangumi} from '../../../entity/bangumi';
+import {Component, Input, OnInit} from '@angular/core';
 import {FeedService} from './feed.service';
-import {closest} from '../../../../helpers/dom';
-
-require('./keyword-builder.less');
+import {FormControl} from '@angular/forms';
+import {UIDialogRef} from 'deneb-ui';
 
 @Component({
-  selector: 'keyword-builder',
-  templateUrl: './keyword-builder.html',
-  providers: [FeedService]
+    selector: 'keyword-builder',
+    templateUrl: './keyword-builder.html',
+    styleUrls: ['./keyword-builder.less']
 })
-export class KeywordBuilder implements OnInit, OnDestroy, OnChanges, AfterViewInit {
-  isEditorOpen: boolean;
+export class KeywordBuilder implements OnInit {
 
-  @Input() bangumi: Bangumi;
-  @Input() siteName: string;
+    @Input()
+    keyword: string;
+    @Input()
+    siteName: string;
 
-  itemList: {title: string, eps_no: number}[];
+    libykCriteria: { t: string, q: string };
 
-  availableTable = ['yyets', 'tokyo', 'dmhy'];
+    itemList: { title: string, eps_no: number }[];
 
-  libykCriteria: LibykCriteria;
+    availableTable = ['yyets', 'tokyo', 'dmhy'];
 
-  libykCriteriaSubscription: Subscription;
+    keywordControl: FormControl;
 
-  outerClickHandler: (event: MouseEvent) => {};
-
-  constructor(private feedService: FeedService) {
-    this.outerClickHandler = this.outerClick.bind(this);
-  }
-
-
-  ngOnInit(): any {
-    this.isEditorOpen = Boolean(this.bangumi[this.siteName]);
-  }
-
-  ngOnDestroy(): any {
-    document.body.removeEventListener('click', this.outerClickHandler);
-    if (this.libykCriteriaSubscription) {
-      this.libykCriteriaSubscription.unsubscribe();
+    constructor(private _feedService: FeedService,
+                private _dialogRef: UIDialogRef<KeywordBuilder>) {
+        this.keywordControl = new FormControl('');
     }
-  }
 
-  ngOnChanges(changes: SimpleChanges): any {
-    if (changes['bangumi']) {
-      this.isEditorOpen = Boolean(this.bangumi[this.siteName]);
-      if (this.isEditorOpen && this.siteName === 'libyk_so') {
-        this.libykCriteria = new LibykCriteria(this.bangumi[this.siteName]);
-        this.libykCriteriaSubscription = this.libykCriteria.criteriaUpdate.subscribe(
-          (criteria: string) => {
-            this.bangumi[this.siteName] = criteria;
-          }, () => {}
-        );
-      }
+    ngOnInit(): void {
+        if (this.siteName === 'libyk_so') {
+            if (this.keyword) {
+                this.libykCriteria = JSON.parse(this.keyword);
+                this.keywordControl.patchValue(this.libykCriteria.q);
+            } else {
+                this.libykCriteria = {
+                    t: this.availableTable[0],
+                    q: ''
+                };
+            }
+        } else {
+            this.keywordControl.patchValue(this.keyword);
+        }
     }
-  }
 
-  ngAfterViewInit(): any {
-    document.body.addEventListener('click', this.outerClickHandler, true);
-  }
-
-  outerClick(event: MouseEvent) {
-    let target = event.target;
-    if (this.itemList && this.itemList.length > 0 && closest(target, '.search-result-wrapper') === null) {
-      this.itemList = [];
-      event.preventDefault();
-      event.stopPropagation();
+    selectTable(table: string) {
+        this.libykCriteria.t = table;
     }
-  }
 
-  addKeyword() {
-    this.isEditorOpen = true;
-    this.libykCriteria = new LibykCriteria();
-    this.libykCriteria.t = this.availableTable[0];
-    this.libykCriteriaSubscription = this.libykCriteria.criteriaUpdate.subscribe(
-          (criteria: string) => {
-            this.bangumi[this.siteName] = criteria;
-          }, () => {}
-        );
-  }
-
-  removeKeyword() {
-    this.bangumi[this.siteName] = undefined;
-    this.libykCriteria = undefined;
-    this.isEditorOpen = false;
-    this.libykCriteriaSubscription.unsubscribe();
-  }
-
-  testFeed() {
-    let keyword = this.bangumi[this.siteName];
-    if (this.siteName === 'dmhy') {
-      this.feedService.queryDmhy(keyword)
-        .subscribe((result) => {
-          this.itemList = result;
-        }, () => {
-        });
-    } else if (this.siteName === 'acg_rip') {
-      this.feedService.queryAcgrip(keyword)
-        .subscribe((result) => {
-          this.itemList = result;
-        }, () => {
-        });
-    } else if (this.siteName === 'libyk_so') {
-      this.feedService.queryLibyk_so(this.libykCriteria)
-        .subscribe((result) => {
-          this.itemList = result;
-        }, () => {});
+    testFeed() {
+        if (this.siteName === 'dmhy') {
+            this._feedService.queryDmhy(this.keywordControl.value)
+                .subscribe((result) => {
+                    this.itemList = result;
+                }, () => {
+                });
+        } else if (this.siteName === 'acg_rip') {
+            this._feedService.queryAcgrip(this.keywordControl.value)
+                .subscribe((result) => {
+                    this.itemList = result;
+                }, () => {
+                });
+        } else if (this.siteName === 'libyk_so') {
+            this._feedService.queryLibyk_so({t: this.libykCriteria.t, q: this.keywordControl.value})
+                .subscribe((result) => {
+                    this.itemList = result;
+                }, () => {
+                });
+        }
     }
-  }
-}
 
-class LibykCriteria {
-  private _t: string;
-  private _q: string;
-
-  criteriaUpdate: EventEmitter<string> = new EventEmitter();
-
-  constructor(public criteria?: string) {
-    if (! this.criteria) {
-      return;
+    cancel() {
+        this._dialogRef.close(null);
     }
-    try {
-      let obj = JSON.parse(this.criteria);
-      this._t = obj.t;
-      this._q = obj.q;
-    } catch (error) {
-      console.log(error);
-      this.criteria = undefined;
+
+    save() {
+        let keywordModel = this.keywordControl.value;
+        let result;
+        if (this.siteName === 'libyk_so') {
+            if (keywordModel) {
+                result = JSON.stringify({t: this.libykCriteria.t, q: keywordModel});
+            } else {
+                result = null;
+            }
+        } else {
+            if(keywordModel) {
+                result = keywordModel;
+            } else {
+                result = null;
+            }
+
+        }
+        this._dialogRef.close({keyword: result});
     }
-  }
-
-  get t(): string {
-    return this._t;
-  }
-
-  set t(table: string) {
-    this._t = table;
-    this._updateCriteria();
-  }
-
-  get q(): string {
-    return this._q;
-  }
-
-  set q(query: string) {
-    this._q = query;
-    this._updateCriteria();
-  }
-
-  private _updateCriteria() {
-    if (this._t && this._q) {
-      try {
-        this.criteria = JSON.stringify({t: this._t, q: this._q});
-      } catch(error) {
-        console.log(error);
-        this.criteria = undefined;
-      }
-    } else {
-      this.criteria = undefined;
-    }
-    this.criteriaUpdate.emit(this.criteria);
-  }
 }

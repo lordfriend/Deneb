@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+  text-align: left;
+  @media(max-width: 639px) {
+    width: 90%;
+  }
+  @media(min-width: 640px) {
+    width: 500px;
+  }
+  @media(min-height: 650px) {
+    height: 600px;
+  }
+  @media(max-height: 649px) {
+    height: 90%;
+  }
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  border-radius: 4px;
+  background-color: #fff;
+  overflow: hidden;
+  padding-bottom: 5rem;
+}
+.episode-detail-modal {
+  width: 100%;
+  height: 100%;
+  padding: 1.2rem 1.5rem 0.5rem 1.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.footer {
+  position: absolute;
+  width: 100%;
+  height: 5rem;
+  left: 0;
+  bottom: 0;
+  border-top: 1px solid #e2e2e2;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 1.6rem;
+  > .ui.button {
+    margin-right: 2rem;
+  }
+  .episode-status-label {
+    position: absolute;
+    top: 1.6rem;
+    left: 2rem;
+  }
+}

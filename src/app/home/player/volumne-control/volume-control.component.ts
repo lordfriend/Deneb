@@ -2,35 +2,36 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 
 
 @Component({
-  selector: 'volume-control',
-  templateUrl: './volume-control.html'
+    selector: 'volume-control',
+    templateUrl: './volume-control.html',
+    styleUrls: ['./volume-control.less']
 })
 export class VolumeControl {
 
-  /**
-   * indicates the volume on slider
-   */
-  private _volumeLevel: number = 100;
+    /**
+     * indicates the volume on slider
+     */
+    private _volumeLevel: number = 100;
 
-  @Input() set volume(vol: number) {
-    this._volumeLevel = vol;
-  }
-
-  @Input() set muted(muted: boolean) {
-    if(muted) {
-      this._volumeLevel = 0;
+    @Input() set volume(vol: number) {
+        this._volumeLevel = vol;
     }
-  }
 
-  @Output() volumeChanges = new EventEmitter<number>();
+    @Input() set muted(muted: boolean) {
+        if (muted) {
+            this._volumeLevel = 0;
+        }
+    }
 
-  get volumeLevel(): number {
-    return this._volumeLevel;
-  }
+    @Output() volumeChanges = new EventEmitter<number>();
 
-  volumeChange(level: number) {
-    this._volumeLevel = level;
-    this.volumeChanges.emit(this._volumeLevel);
-  }
+    get volumeLevel(): number {
+        return this._volumeLevel;
+    }
+
+    volumeChange(level: number) {
+        this._volumeLevel = level;
+        this.volumeChanges.emit(this._volumeLevel);
+    }
 
 }

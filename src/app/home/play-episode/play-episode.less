@@ -1,54 +1,97 @@
-play-episode {
-  .loading-wrapper {
-    position: static !important;
+.loading-wrapper {
+  position: static !important;
+}
+.theater-backdrop {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  background-color: #000;
+
+  .player-width {
+    width: 854px
   }
-  .theater-backdrop {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: stretch;
-    width: 100%;
-    background-color: #000;
 
-    player {
-      display: block;
-      flex: 0 1 auto;
-    }
+  .player-height {
+    height: 480px
+  }
 
+  @media screen and (max-width: 656px) {
     .player-width {
-      width: 854px
+      width:426px
     }
 
     .player-height {
-      height: 480px
-    }
-
-    @media screen and (max-width: 656px) {
-      .player-width {
-        width:426px
-      }
-
-      .player-height {
-        height: 240px
-      }
-    }
-
-    @media screen and (min-width: 1320px) and (min-height:870px) {
-      .player-width {
-        width:1280px
-      }
-
-      .player-height {
-        height: 720px
-      }
+      height: 240px
     }
   }
-  .episode-info-container {
-    margin-top: 2rem;
+
+  @media screen and (min-width: 1320px) and (min-height:870px) {
+    .player-width {
+      width:1280px
+    }
+
+    .player-height {
+      height: 720px
+    }
+  }
+}
+.episode-info-container {
+  margin-top: 2rem;
+
+  .episode-title {
+    .episode-name-cn {
+      padding-left: 1em;
+      font-size: 0.8em;
+      color: lighten(#000, 50%);
+    }
+  }
+
+  .bangumi-info {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
+    .bangumi-cover {
+      width: 25%;
+      flex: 1 1 auto;
+      display: inline-block;
+    }
+    .bangumi-basic-info {
+      width: 75%;
+      flex: 1 1 auto;
+      display: inline-block;
+      padding: 0 1rem 0 2.5rem;
+
+      .bangumi-title {
+        margin: 0;
+
+        &.name-cn {
+          margin-bottom: 0.8rem;
+        }
+
+        &.name {
+          font-size: 1em;
+          color: #696969;
+        }
+      }
+
+      .summary {
+        margin-top: 2.5rem;
+      }
+
+    }
+  }
+
+  @media(max-width: 767px) {
 
     .episode-title {
       .episode-name-cn {
-        padding-left: 1em;
+        display: block;
+        padding-left: 0;
         font-size: 0.8em;
         color: lighten(#000, 50%);
       }
@@ -56,93 +99,39 @@ play-episode {
 
     .bangumi-info {
       width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: stretch;
-      flex-wrap: wrap;
+      display: block;
       .bangumi-cover {
-        width: 25%;
-        flex: 1 1 auto;
-        display: inline-block;
+        display: none;
       }
       .bangumi-basic-info {
-        width: 75%;
-        flex: 1 1 auto;
-        display: inline-block;
-        padding: 0 1rem 0 2.5rem;
-
-        .bangumi-title {
-          margin: 0;
-
-          &.name-cn {
-            margin-bottom: 0.8rem;
-          }
-
-          &.name {
-            font-size: 1em;
-            color: #696969;
-          }
-        }
-
-        .favorite-wrapper {
-          margin-top: 1.8rem;
-        }
-
-        .summary {
-          margin-top: 2.5rem;
-        }
-
-      }
-    }
-
-    @media(max-width: 767px) {
-
-      .episode-title {
-        .episode-name-cn {
-          display: block;
-          padding-left: 0;
-          font-size: 0.8em;
-          color: lighten(#000, 50%);
-        }
-      }
-
-      .bangumi-info {
         width: 100%;
         display: block;
-        .bangumi-cover {
-          display: none;
+        padding: 1rem;
+        .bangumi-title {
+          &.name-cn {
+            font-size: 1.2rem;
+          }
+          &.name {
+            font-size: 0.8rem;
+          }
         }
-        .bangumi-basic-info {
-          width: 100%;
-          display: block;
-          padding: 1rem;
-          .bangumi-title {
-            &.name-cn {
-              font-size: 1.2rem;
-            }
-            &.name {
-              font-size: 0.8rem;
-            }
-          }
-          .summary {
-            margin-top: 1.5rem;
-          }
+        .summary {
+          margin-top: 1.5rem;
         }
       }
     }
+  }
 
-    .episode-list {
-      .episode-link {
-        display: block;
-        text-align: center;
-      }
+  .episode-list {
+    .episode-link {
+      display: block;
+      text-align: center;
     }
+  }
 
-    .episode-list-loading-wrapper {
-      position: relative;
-      width: 100%;
-      height: 8rem;
-    }
+  .episode-list-loading-wrapper {
+    position: relative;
+    width: 100%;
+    height: 8rem;
   }
 }

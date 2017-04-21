@@ -1,0 +1,55 @@
+<admin-navbar navTitle="用户管理"></admin-navbar>
+<div class="content-area">
+    <div class="ui segment">
+        <h4>用户列表</h4>
+        <table class="ui very basic table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>名字</th>
+                <th>Level</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let user of userList">
+                <td>{{user.id}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.level}}</td>
+                <td>
+                    <a class="anchor-button" title="修改用户等级" (click)="promoteUser(user)"><i class="wizard icon"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container" *ngIf="userTotal > userCount">
+            <ui-pagination [currentPage]="userPage" [total]="userTotal" [countPerPage]="userCount" [max]="6" (pageChange)="getUserList($event)"></ui-pagination>
+        </div>
+    </div>
+    <div class="ui segment">
+        <h4>未使用的邀请码</h4>
+        <div class="ui action input">
+            <input type="number" placeholder="生成邀请码数量" [value]="1" [min]="1" #inviteCodeNumInput (change)="inviteCodeNum = inviteCodeNumInput.value">
+            <button class="ui button" (click)="generateInviteCode()">生成{{inviteCodeNum}}个邀请码</button>
+        </div>
+        <table class="ui very basic table">
+            <thead>
+            <tr>
+                <th>Code</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let code of inviteCodeList">
+                <td>
+                    {{code}}
+                </td>
+                <td>
+                    <a class="anchor-button" title="分享" (click)="shareCode(code)"><i class="share alternate icon"></i></a>
+                    <!--<a class="anchor-button" title=""></a>-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

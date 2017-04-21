@@ -1,0 +1,12 @@
+<nav class="nav-admin">
+    <a class="back-button" [routerLink]="backLink" *ngIf="backLink">
+        <i class="chevron left icon"></i>
+    </a>
+    <div class="title">{{navTitle}}</div>
+    <div class="action-container">
+        <ng-content select=".action-item"></ng-content>
+    </div>
+    <div class="accessor-action-container">
+        <ng-content select=".accessory-action"></ng-content>
+    </div>
+</nav>

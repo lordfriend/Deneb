@@ -95,7 +95,7 @@ export class HomeService extends BaseService {
 
     listBangumi(params: {name?: string, page: number, count: number, order_by: string, sort: string}): Observable<{ data: Bangumi[], total: number }> {
         let query = queryString(params);
-        return this.http.get(`${this._baseUrl}/bangumi?query`)
+        return this.http.get(`${this._baseUrl}/bangumi?${query}`)
             .map(res => res.json() as {data: Bangumi[], total: number})
             .catch(this.handleError);
     }

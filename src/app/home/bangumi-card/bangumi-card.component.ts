@@ -74,6 +74,7 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
         if (this.imageLoaded || !this.bangumi || !image) {
             return;
         }
+        image.src = "";
         let imageUrl = this.bangumi.cover;
         if (this.scrollState === SCROLL_STATE.IDLE) {
             image.onload = () => {

@@ -46,7 +46,7 @@
   <router-outlet></router-outlet>
 </main>
 
-<footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
+<footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')" *ngIf="currentRouteName === 'bangumi'">
   <div class="copyright-content">&copy;2016 Nyasoft, All rights reserved.</div>
   <div class="credits">Powered By <a target="_blank" href="https://github.com/lordfriend/Albireo">Albireo</a></div>
 </footer>

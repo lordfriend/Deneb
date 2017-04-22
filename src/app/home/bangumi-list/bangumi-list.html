@@ -1,39 +1,31 @@
-<div class="ui container bangumi-list-container">
-  <a class="ui segment ui grid bangumi-segment" *ngFor="let bangumi of bangumiList" [routerLink]="['/bangumi', bangumi.id]">
-    <div class="three wide column">
-      <ui-image-placeholder [imageUrl]="bangumi.cover">
-        <div class="ui-image-fallback">
-          <h4 class="ui icon film icon-holder">
-            <i class="film icon"></i>
-          </h4>
+<div class="bangumi-list-container" *ngIf="!name && !isLoading">
+    <div class="filter-container">
+        <div class="ui container">
+            <a class="sort-button anchor-button" (click)="onOrderChange()" [title]="sort === 'desc' ? '降序': '升序'">
+                <i class="sort content icon" [ngClass]="{ascending: sort === 'asc', descending: sort === 'desc'}"></i>
+            </a>
+            <div class="ui inline dropdown" uiDropdown="click">
+                <div class="text">{{typeMenuLabel[type]}}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" (click)="onTypeChange(-1)">全部</div>
+                    <div class="item" (click)="onTypeChange(2)">动画</div>
+                    <div class="item" (click)="onTypeChange(6)">电视剧</div>
+                </div>
+            </div>
         </div>
-      </ui-image-placeholder>
     </div>
-    <div class="thirteen wide column bangumi-info">
-      <h3 class="bangumi-title">
-        <span class="name-cn">{{bangumi.name_cn}}</span>
-        <span class="name">{{bangumi.name}}</span>
-      </h3>
-      <div class="summary">{{bangumi.summary}}</div>
-      <p class="air-date">
-        <span class="entry-key">放送开始</span>
-        <span class="entry-value">{{bangumi.air_date}}</span>
-      </p>
-      <p class="air-weekday">
-        <span class="entry-key">放送星期</span>
-        <span class="entry-value">{{bangumi.air_weekday}}</span>
-      </p>
-      <div *ngIf="bangumi.favorite_status" class="ui tag label"
-           [ngClass]="{
-           orange: bangumi.favorite_status === 1,
-           olive: bangumi.favorite_status === 2,
-           blue: bangumi.favorite_status === 3,
-           brown: bangumi.favorite_status === 4,
-           grey: bangumi.favorite_status === 5
-           }">{{FAVORITE_LABEL[bangumi.favorite_status]}}</div>
+    <div class="timeline-container">
+        <ui-timeline-meter [rowHeight]="cardHeight" [timestampList]="timestampList">
+            <infinite-list [rowHeight]="cardHeight">
+                <bangumi-card *infiniteFor="let bangumi of bangumiList" [bangumi]="bangumi"></bangumi-card>
+            </infinite-list>
+        </ui-timeline-meter>
     </div>
-  </a>
 </div>
-<div class="load-more-indicator ui container">
-  <button #loadMore class="ui fluid button" [ngClass]="{loading: isLoading, hide: page >= (total / countPerPage)}" (click)="loadMoreContent()">加载更多</button>
+<div class="search-result" *ngIf="!!name && !isLoading">
+    <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi"></bangumi-card>
+</div>
+<div class="loading-container" *ngIf="isLoading">
+    <div class="ui inverted massive text active loader">Loading...</div>
 </div>

@@ -1,12 +1,12 @@
-#Web App client for [Albireo](https://github.com/lordfriend/Albireo)
+# Web App client for [Albireo](https://github.com/lordfriend/Albireo)
 
 Built with Angular2 using angular2-webpack-starter
 
-###Building requirements
+### Building requirements
 
 Nodejs 4.0 and above, npm 3 and above
 
-###Development
+### Development
 
 Clone this repo, install dependencies
 
@@ -23,7 +23,7 @@ to start up an dev server, run `npm start` in current directory.
 
 the backend server aka [Albireo](https://github.com/lordfriend/Albireo) server must be started. see the readme of that project.
 
-###Deployment
+### Deployment
 
 To deploy on production server, a compiled and minfied bundle is needed, to build this project, just run the following command.
 

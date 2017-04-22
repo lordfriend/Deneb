@@ -1,0 +1,42 @@
+<div class="ui container">
+    <div class="ui segment" (click)="jumpTo(bangumi.id)">
+        <div class="bangumi-list-item">
+            <div class="cover-wrapper" #imageWrapper>
+                <img src="" alt="image" class="bangumi-image" #image>
+            </div>
+            <div class="list-item-text">
+                <h4 class="bangumi-title">{{bangumi.name_cn || '暂无'}}</h4>
+                <h4 class="entry">
+                    <span class="entry-key">日文名</span>
+                    <span class="entry-value">{{bangumi.name || '暂无'}}</span>
+                </h4>
+                <p class="entry">
+                    <span class="entry-key">简介</span>
+                    <span class="entry-value">{{bangumi.summary || '暂无'}}</span>
+                </p>
+                <p class="entry">
+                    <span class="entry-key">放送开始</span>
+                    <span class="entry-value">{{bangumi.air_date || '未知'}}</span>
+                </p>
+                <p class="entry">
+                    <span class="entry-key">放送星期</span>
+                    <span class="entry-value">{{bangumi.air_weekday || '未知'}}</span>
+                </p>
+                <p class="entry">
+                    <span class="entry-key">话数</span>
+                    <span class="entry-value">{{bangumi.eps || '0'}}</span>
+                </p>
+            </div>
+        </div>
+        <div *ngIf="bangumi.favorite_status" class="ui right ribbon label"
+            [ngClass]="{
+            orange: bangumi.favorite_status === 1,
+            olive: bangumi.favorite_status === 2,
+            blue: bangumi.favorite_status === 3,
+            brown: bangumi.favorite_status === 4,
+            grey: bangumi.favorite_status === 5
+            }">
+            {{FAVORITE_LABEL[bangumi.favorite_status]}}
+        </div>
+    </div>
+</div>

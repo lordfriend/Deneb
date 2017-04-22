@@ -30,13 +30,9 @@
   <div class="ui five doubling cards" *ngIf="onAirBangumi">
     <div class="card bangumi-card" *ngFor="let bangumi of onAirBangumi">
       <a class="image" [routerLink]="['/bangumi', bangumi.id]">
-        <ui-image-placeholder [imageUrl]="bangumi.cover">
-          <div class="ui-image-fallback">
-            <h4 class="ui icon film icon-holder">
-              <i class="film icon"></i>
-            </h4>
+          <div class="image-wrapper">
+              <img [src]="bangumi.cover" alt="image">
           </div>
-        </ui-image-placeholder>
       </a>
       <div *ngIf="bangumi.favorite_status" class="ui ribbon label"
            [ngClass]="{

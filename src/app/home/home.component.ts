@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {HomeService} from './home.service';
 import {Observable, Subscription, Subject} from "rxjs/Rx";
@@ -16,6 +16,8 @@ const BREAK_POINT = 1330;
 })
 export class Home implements OnInit, OnDestroy {
 
+    private _subscription = new Subscription();
+
     siteTitle: string = SITE_TITLE;
 
     currentRouteName: string = '';
@@ -30,9 +32,7 @@ export class Home implements OnInit, OnDestroy {
 
     showFloatSearchFrame: boolean;
 
-    private sidebarClickSubscription: Subscription;
-    private resizeSubscription: Subscription;
-    private userServiceSubscription: Subscription;
+    sidebarToggle = new EventEmitter<boolean>();
 
     constructor(titleService: Title, private homeService: HomeService, private userService: UserService, private router: Router) {
         this.checkOverlapMode();
@@ -64,6 +64,7 @@ export class Home implements OnInit, OnDestroy {
         event.preventDefault();
         event.stopPropagation();
         this.sidebarActive = !this.sidebarActive;
+        this.sidebarToggle.emit(this.sidebarActive);
     }
 
     private checkOverlapMode() {
@@ -80,15 +81,15 @@ export class Home implements OnInit, OnDestroy {
             );
     }
 
-    ngOnInit(): any {
-        this.userServiceSubscription = this.userService.getUserInfo()
+    ngOnInit(): void {
+        this._subscription.add(this.userService.getUserInfo()
             .subscribe(
                 (user: User) => {
                     this.user = user;
                 }
-            );
+            ));
 
-        this.sidebarClickSubscription = Observable.fromEvent(document, 'click')
+        this._subscription.add(Observable.fromEvent(document, 'click')
             .filter(() => {
                 return this.sidebarOverlap && this.sidebarActive;
             })
@@ -96,41 +97,35 @@ export class Home implements OnInit, OnDestroy {
                 () => {
                     this.sidebarActive = false;
                 }
-            );
+            ));
 
-        this.resizeSubscription = Observable.fromEvent(window, 'resize')
+        this._subscription.add(Observable.fromEvent(window, 'resize')
             .subscribe(
                 () => {
                     this.checkOverlapMode();
                 }
-            );
+            ));
 
-        this.homeService.watchProgressChanges.subscribe((bangumi_id) => {
-            if (Array.isArray(this.myBangumiList)) {
-                let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
-                if (bangumi && bangumi.unwatched_count > 0) {
-                    bangumi.unwatched_count--;
+        this._subscription.add(
+            this.homeService.watchProgressChanges.subscribe((bangumi_id) => {
+                if (Array.isArray(this.myBangumiList)) {
+                    let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
+                    if (bangumi && bangumi.unwatched_count > 0) {
+                        bangumi.unwatched_count--;
+                    }
                 }
-            }
-        });
+            })
+        );
 
         this.updateMyBangumi();
 
-        this.homeService.favoriteChanges.subscribe(() => {
+        this._subscription.add(this.homeService.favoriteChanges.subscribe(() => {
             this.updateMyBangumi();
-        });
-
-        return null;
+        }));
     }
 
 
-    ngOnDestroy(): any {
-        if (this.userServiceSubscription) {
-            this.userServiceSubscription.unsubscribe();
-        }
-        if (this.sidebarClickSubscription) {
-            this.sidebarClickSubscription.unsubscribe();
-        }
-        return null;
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 }

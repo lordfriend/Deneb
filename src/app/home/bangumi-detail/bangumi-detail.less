@@ -139,12 +139,22 @@
 }
 
 .episode-card {
-
+  overflow: hidden;
   .image-wrapper {
+    display: block;
     position: relative;
     width: 100%;
     height: 0;
     padding-bottom: 56.25%;
+    overflow: hidden;
+    > img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .image-fallback{

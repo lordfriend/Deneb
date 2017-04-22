@@ -51,13 +51,9 @@
           <span>第{{episode.episode_no}}话</span>
         </div>
         <a *ngIf="episode.status===2" class="image" [routerLink]="['/play', episode.id]">
-          <ui-image-placeholder [imageUrl]="episode.thumbnail">
-            <div class="ui-image-fallback">
-              <h4 class="ui icon film icon-holder">
-                <i class="film icon"></i>
-              </h4>
-            </div>
-          </ui-image-placeholder>
+          <span class="image-wrapper">
+              <img [src]="episode.thumbnail" alt="image">
+          </span>
         </a>
         <a *ngIf="episode.status===2" class="content" [routerLink]="['/play', episode.id]">
           <span>第{{episode.episode_no}}话</span>

@@ -29,11 +29,14 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
     scrollState: SCROLL_STATE;
     imageLoaded: boolean = false;
 
+    lazy: boolean;
+
     @ViewChild('image') imageRef: ElementRef;
 
     constructor(@Optional() private _infiniteList: InfiniteList,
                 private _router: Router,
                 private _imageLoadingStrategy: ImageLoadingStrategy) {
+        this.lazy = !!_infiniteList;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -46,19 +49,21 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnInit(): void {
-        this._subscription.add(
-            this._infiniteList.scrollStateChange
-                .subscribe(
-                    (state) => {
-                        this.scrollState = state;
-                        if (state === SCROLL_STATE.SCROLLING) {
-                            this.checkIfCanloadImage();
-                        } else if (state === SCROLL_STATE.IDLE) {
-                            this.checkIfCanloadImage();
+        if (this.lazy) {
+            this._subscription.add(
+                this._infiniteList.scrollStateChange
+                    .subscribe(
+                        (state) => {
+                            this.scrollState = state;
+                            if (state === SCROLL_STATE.SCROLLING) {
+                                this.checkIfCanloadImage();
+                            } else if (state === SCROLL_STATE.IDLE) {
+                                this.checkIfCanloadImage();
+                            }
                         }
-                    }
-                )
-        );
+                    )
+            );
+        }
     }
 
     ngOnDestroy(): void {
@@ -74,8 +79,12 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
         if (this.imageLoaded || !this.bangumi || !image) {
             return;
         }
-        image.src = "";
         let imageUrl = this.bangumi.cover;
+        if (!this.lazy) {
+            image.src = imageUrl;
+            return;
+        }
+        image.src = "";
         if (this.scrollState === SCROLL_STATE.IDLE) {
             image.onload = () => {
                 this._imageLoadingStrategy.addLoadedUrl(imageUrl)

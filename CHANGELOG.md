@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0
+
+Add video files edit dialog
+
 ## 0.8.0
 
 all bangumi list refactor

@@ -115,7 +115,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let episode of orderedEpisodeList" [ngClass]="{downloaded: episode.status === 2, downloading: episode.status === 1}">
+                <tr *ngFor="let episode of orderedEpisodeList"
+                    [ngClass]="{downloaded: episode.status === 2, downloading: episode.status === 1}">
                     <td>{{episode.episode_no}}</td>
                     <td>
                         <div class="image-wrapper" *ngIf="episode.status !== 2">
@@ -140,8 +141,10 @@
                     <td>{{episode.airdate}}</td>
                     <td>{{episode.duration}}</td>
                     <td>
-                        <a class="anchor-button" (click)="editEpisode(episode)"><i class="edit icon"></i></a>
+                        <a class="anchor-button" (click)="editEpisode(episode)" title="编辑"><i class="edit icon"></i></a>
+                        <a class="anchor-button" (click)="editVideoFile(episode)" title="文件列表"><i class="server icon"></i></a>
                         <a class="anchor-button"
+                           title="删除"
                            confirmDialog
                            dialogTitle="确定删除该话么"
                            dialogContent="删除该话将会同时删除与该话有关的torrent信息，文件，用户进度信息"

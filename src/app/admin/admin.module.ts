@@ -32,6 +32,7 @@ import {TaskService} from './task-manager/task.service';
 import {UserManagerSerivce} from './user-manager/user-manager.service';
 import {UserPromoteModal} from './user-manager/user-promote-modal/user-promote-modal.component';
 import {DenebCommonPipes} from '../pipes/index';
+import {VideoFileModal} from './bangumi-detail/video-file-modal/video-file-modal.component';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import {DenebCommonPipes} from '../pipes/index';
         VideoFileStatusNamePipe,
         TaskManager,
         UserManager,
-        UserPromoteModal
+        UserPromoteModal,
+        VideoFileModal
     ],
     providers: [
         AdminService,
@@ -81,7 +83,8 @@ import {DenebCommonPipes} from '../pipes/index';
         KeywordBuilder,
         EpisodeDetail,
         BangumiMoeBuilder,
-        UserPromoteModal
+        UserPromoteModal,
+        VideoFileModal
     ]
 })
 export class AdminModule {

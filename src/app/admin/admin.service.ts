@@ -116,8 +116,32 @@ export class AdminService extends BaseService {
     }
 
     getEpisodeVideoFiles(episode_id: string): Observable<VideoFile[]> {
-        return this.http.get(`${this.baseUrl}/episode/${episode_id}/video_file`)
+        return this.http.get(`${this.baseUrl}/video-file?episode_id=${episode_id}`)
             .map(res => res.json().data as VideoFile[])
+            .catch(this.handleError);
+    }
+
+    deleteVideoFile(video_file_id: string): Observable<any> {
+        return this.http.delete(`${this.baseUrl}/video-file/${video_file_id}`)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
+    addVideoFile(videoFile: VideoFile): Observable<string> {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let body = JSON.stringify(videoFile);
+        return this.http.post(`${this.baseUrl}/video-file`, body, options)
+            .map(res => res.json().data as string)
+            .catch(this.handleError);
+    }
+
+    updateVideoFile(videoFile: VideoFile): Observable<any> {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let body = JSON.stringify(videoFile);
+        return this.http.put(`${this.baseUrl}/video-file/${videoFile.id}`, body, options)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 }

@@ -10,6 +10,7 @@ import {BaseError} from '../../../helpers/error/BaseError';
 import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
 import {EpisodeDetail} from './episode-detail/episode-detail.component';
 import {BangumiMoeBuilder} from './bangumi-moe-builder/bangumi-moe-builder.component';
+import {VideoFileModal} from './video-file-modal/video-file-modal.component';
 
 @Component({
     selector: 'bangumi-detail',
@@ -171,6 +172,11 @@ export class BangumiDetail implements OnInit, OnDestroy {
                     }
                 )
         )
+    }
+
+    editVideoFile(episode: Episode) {
+        let dialogRef = this._uiDialog.open(VideoFileModal, {stickyDialog: true, backdrop: true});
+        dialogRef.componentInstance.episode = episode;
     }
 
     deleteEpisode(episode_id: string) {

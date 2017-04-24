@@ -449,7 +449,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     ngOnChanges(changes: SimpleChanges): any {
         if ('episode' in changes) {
             this.setVideoUrl();
-            if (changes['episode'].previousValue && changes['episode'].previousValue['videos']) {
+            if (changes['episode'].previousValue && changes['episode'].previousValue['video_files']) {
                 this.videoElementRef.nativeElement.load();
                 this.videoElementRef.nativeElement.play();
             }

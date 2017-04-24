@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.1
+
+Fix a bug in play list #44
+
 ## 0.9.0
 
 Add video files edit dialog

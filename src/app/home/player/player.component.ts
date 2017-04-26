@@ -55,7 +55,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
     private _isError: boolean = false;
     private _lastStalledPosition: number;
-    private _isStalled: boolean = false;
 
     @Input()
     episode: Episode;
@@ -148,7 +147,7 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     get showLoader(): boolean {
         if (this.videoElementRef) {
             let videoElement = this.videoElementRef.nativeElement;
-            return (this._isStalled || videoElement.readyState < HAVE_FUTURE_DATA) && !videoElement.paused;
+            return (videoElement.readyState < HAVE_FUTURE_DATA) && !videoElement.paused;
         } else {
             return false;
         }
@@ -170,7 +169,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     }
 
     onStalled() {
-        this._isStalled = true;
         console.log('stalled');
     }
 
@@ -318,9 +316,6 @@ export class Player implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     }
 
     onChunkLoad() {
-        if (this._isStalled) {
-            this._isStalled = false;
-        }
         if (this.videoElementRef) {
             let videoElement: HTMLVideoElement = this.videoElementRef.nativeElement;
             if (videoElement.buffered.length > 0) {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.2
+
+Remove stalled state and loader visibility is no longer depending on that state
+
 ## 0.9.1
 
 Fix a bug in play list #44

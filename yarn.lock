@@ -1194,9 +1194,9 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
-deneb-ui@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/deneb-ui/-/deneb-ui-0.3.1.tgz#ea13fbf6e0986ae1b39f5082ca803bd1646e6aa2"
+deneb-ui@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/deneb-ui/-/deneb-ui-0.3.2.tgz#a2a4afc36904ec5069b00020afcc8db095c5628d"
 
 depd@~1.1.0:
   version "1.1.0"
@@ -2922,9 +2922,9 @@ ng-router-loader@^2.1.0:
     loader-utils "^0.2.16"
     recast "^0.11.20"
 
-ngc-webpack@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/ngc-webpack/-/ngc-webpack-1.2.0.tgz#d4b71f733997b8ee26c669ffb77dbfae21c221ba"
+ngc-webpack@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ngc-webpack/-/ngc-webpack-2.0.0.tgz#ebd1f6937b7b81cbcd6d9d1bd1fa9001c6be145f"
   dependencies:
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"

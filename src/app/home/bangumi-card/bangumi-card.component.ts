@@ -12,6 +12,8 @@ import {Router} from '@angular/router';
 
 export const CARD_HEIGHT_REM = 16;
 
+export const IMAGE_LOAD_DELAY = 1000;
+
 @Component({
     selector: 'bangumi-card',
     templateUrl: './bangumi-card.html',
@@ -21,6 +23,8 @@ export const CARD_HEIGHT_REM = 16;
 })
 export class BangumiCard implements OnInit, OnDestroy, OnChanges {
     private _subscription = new Subscription();
+    private _imageLoadDelayTimerId: number;
+
     @Input()
     bangumi: Bangumi;
 
@@ -85,15 +89,18 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
             return;
         }
         image.src = "";
+        if (this._imageLoadingStrategy.hasLoaded(imageUrl)) {
+            image.src = imageUrl;
+        }
         if (this.scrollState === SCROLL_STATE.IDLE) {
             image.onload = () => {
                 this._imageLoadingStrategy.addLoadedUrl(imageUrl)
             };
-            image.src = imageUrl;
-        } else if (this.scrollState === SCROLL_STATE.SCROLLING) {
-            if (this._imageLoadingStrategy.hasLoaded(imageUrl)) {
+            this._imageLoadDelayTimerId = window.setTimeout(() => {
                 image.src = imageUrl;
-            }
+            }, IMAGE_LOAD_DELAY);
+        } else if (this.scrollState === SCROLL_STATE.SCROLLING) {
+            clearTimeout(this._imageLoadDelayTimerId);
         }
     }
 }

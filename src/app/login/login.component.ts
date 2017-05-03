@@ -83,6 +83,6 @@ export class Login implements OnInit, OnDestroy {
                         this.errorMessage = '未知错误';
                     }
                 }
-            )
+            );
     }
 }

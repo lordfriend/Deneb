@@ -51,15 +51,6 @@ export class Register implements OnInit {
         );
     }
 
-    private buildForm(inviteCode?: string): void {
-        this.registerForm = this.formBuilder.group({
-            name: ['', Validators.required],
-            password: ['', Validators.required],
-            password_repeat: ['', Validators.required],
-            invite_code: [inviteCode || '', Validators.required]
-        }, {validator: passwordMatch('password', 'password_repeat')});
-    }
-
     ngOnInit(): void {
         let inviteCode;
         if (location.search) {
@@ -68,7 +59,6 @@ export class Register implements OnInit {
         }
 
         this.buildForm(inviteCode);
-        return undefined;
     }
 
     onSubmit() {
@@ -127,5 +117,15 @@ export class Register implements OnInit {
                     }
                 }
             );
+    }
+
+    private buildForm(inviteCode?: string): void {
+        this.registerForm = this.formBuilder.group({
+            name: ['', Validators.required],
+            password: ['', Validators.required],
+            password_repeat: ['', Validators.required],
+            email: ['', Validators.required],
+            invite_code: [inviteCode || '', Validators.required]
+        }, {validator: passwordMatch('password', 'password_repeat')});
     }
 }

@@ -1,9 +1,9 @@
-import {Injectable} from "@angular/core";
-import {UserService} from "./user.service";
-import {User} from "../entity";
-import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from '@angular/router';
-import {Observable} from 'rxjs/Rx';
-import {AuthError} from '../../helpers/error/AuthError';
+import { Injectable } from '@angular/core';
+import { UserService } from './user.service';
+import { User } from '../entity';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { Observable } from 'rxjs/Rx';
+import { AuthError } from '../../helpers/error/AuthError';
 
 
 @Injectable()
@@ -28,14 +28,14 @@ export class Authentication implements CanActivate {
       } else {
         this.userService.getUserInfo()
           .subscribe(
-            (user: User) => {
-              this.user = user;
-              resolve(user);
-            },
-            (error: any) => {
-              reject(error);
-            }
-          )
+          (user: User) => {
+            this.user = user;
+            resolve(user);
+          },
+          (error: any) => {
+            reject(error);
+          }
+          );
       }
     });
   }
@@ -48,7 +48,7 @@ export class Authentication implements CanActivate {
         .map((user: User) => {
           this.user = user;
           return user;
-        })
+        });
     }
   }
 
@@ -58,30 +58,29 @@ export class Authentication implements CanActivate {
     } else {
       return true;
     }
-
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>|boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
     let sourceUrl = state.url;
     return this.getUserInfo()
       .map(() => {
         if (this.hasPermission(route)) {
           return true;
         } else {
-          this.router.navigate(['/error', {message: AuthError.PERMISSION_DENIED, status: 403}]);
+          this.router.navigate(['/error', { message: AuthError.PERMISSION_DENIED, status: 403 }]);
           return false;
         }
       })
       .catch((error) => {
         console.log(error, `Is AuthError: ${error instanceof AuthError}`);
-        if(error instanceof AuthError) {
-          if(sourceUrl === '/') {
+        if (error instanceof AuthError) {
+          if (sourceUrl === '/') {
             this.router.navigate(['/login']);
           } else {
-            this.router.navigate(['/login', {sourceUrl: sourceUrl}]);
+            this.router.navigate(['/login', { sourceUrl: sourceUrl }]);
           }
         } else {
-          this.router.navigate(['/error', {message: error.message, status: error.status}]);
+          this.router.navigate(['/error', { message: error.message, status: error.status }]);
         }
         return Observable.of(false);
       });

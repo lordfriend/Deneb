@@ -17,6 +17,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TaskService} from './admin/task-manager/task.service';
 import {DenebCommonPipes} from './pipes/index';
 import {HomeModule} from './home/home.module';
+import { EmailConfirmModule } from './email-confirm/email-confirm.module';
 
 @NgModule({
     declarations: [
@@ -41,7 +42,8 @@ import {HomeModule} from './home/home.module';
         HttpModule,
         Ng2SemanticModule,
         BrowserAnimationsModule,
-        HomeModule
+        HomeModule,
+        EmailConfirmModule
     ],
     bootstrap: [App]
 })

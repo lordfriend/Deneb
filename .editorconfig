@@ -14,5 +14,13 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.{yml,json}]
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.html]
 indent_size = 4
+trim_trailing_whitespace = true
+
+[*.less]
+indent_size = 2
 trim_trailing_whitespace = true

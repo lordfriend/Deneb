@@ -1,40 +1,40 @@
 <div class="center-box-background">
-  <div class="center-box-frame">
-    <div class="center-box">
-      <header class="center-box-header">
-        <h1>
-          <span>{{title}}</span>
-        </h1>
-      </header>
-      <div class="center-box-body">
-        <form class="ui form" (ngSubmit)="onSubmit()" [formGroup]="registerForm" [ngClass]="{error: !registerForm.valid}">
-          <div class="ui field">
-            <input type="text" formControlName="name" placeholder="用户名">
-          </div>
-          <div class="ui field">
-            <input type="password" formControlName="password" placeholder="密码">
-          </div>
-          <div class="ui field">
-            <input type="password" formControlName="password_repeat" placeholder="重复密码">
-          </div>
-          <div class="ui field">
-            <input type="text" formControlName="email" placeholder="Email">
-          </div>
-          <div class="ui field">
-            <input type="text" formControlName="invite_code" placeholder="邀请码">
-          </div>
-          <div>
-            <button *ngIf="mode === 'forget'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">重置密码</button>
-            <button *ngIf="mode === 'register'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
-          </div>
-        </form>
-        <div class="login-link additional-info">
-          <a [routerLink]="['/login']">{{urlPath === '/register' ? '已有帐号?登录' : '登录'}}</a>
+    <div class="center-box-frame">
+        <div class="center-box">
+            <header class="center-box-header">
+                <h1>
+                    <span>{{title}}</span>
+                </h1>
+            </header>
+            <div class="center-box-body">
+                <form class="ui form" (ngSubmit)="onSubmit()" [formGroup]="registerForm" [ngClass]="{error: !registerForm.valid}">
+                    <div class="ui field">
+                        <input type="text" formControlName="name" placeholder="用户名">
+                    </div>
+                    <div class="ui field">
+                        <input type="password" formControlName="password" placeholder="密码">
+                    </div>
+                    <div class="ui field">
+                        <input type="password" formControlName="password_repeat" placeholder="重复密码">
+                    </div>
+                    <div class="ui field">
+                        <input type="text" formControlName="email" placeholder="Email">
+                    </div>
+                    <div class="ui field">
+                        <input type="text" formControlName="invite_code" placeholder="邀请码">
+                    </div>
+                    <div>
+                        <button *ngIf="mode === 'forget'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">重置密码</button>
+                        <button *ngIf="mode === 'register'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
+                    </div>
+                </form>
+                <div class="login-link additional-info">
+                    <a [routerLink]="['/login']">{{urlPath === '/register' ? '已有帐号?登录' : '登录'}}</a>
+                </div>
+                <div class="ui error message" *ngIf="errorMessage">
+                    <p>{{errorMessage}}</p>
+                </div>
+            </div>
         </div>
-        <div class="ui error message" *ngIf="errorMessage">
-          <p>{{errorMessage}}</p>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

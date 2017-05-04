@@ -10,6 +10,7 @@ export class AuthError extends BaseError {
   static INVALID_INVITE_CODE = 'invalid invite code';
   static DUPLICATE_NAME = 'duplicate name';
   static PASSWORD_MISMATCH = 'password not match';
+  static INVALID_EMAIL = 'invalid email';
 
   // update pass error
   static PASSWORD_INCORRECT = 'password incorrect';

@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {UserService} from "../user-service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {passwordMatch} from "../form-utils";
-import {register} from "ts-node/dist/ts-node";
-import {AuthError} from "../../helpers/error/AuthError";
-import {Title} from '@angular/platform-browser';
-import {Router, NavigationEnd} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user-service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { passwordMatch } from '../form-utils';
+import { register } from 'ts-node/dist/ts-node';
+import { AuthError } from './../helpers/error/AuthError';
+import { Title } from '@angular/platform-browser';
+import { Router, NavigationEnd } from '@angular/router';
 
 
 /**
@@ -30,9 +30,9 @@ export class Register implements OnInit {
     mode: string;
 
     constructor(private userService: UserService,
-                private formBuilder: FormBuilder,
-                private router: Router,
-                titleService: Title) {
+        private formBuilder: FormBuilder,
+        private router: Router,
+        titleService: Title) {
         router.events.subscribe(
             (event) => {
                 if (event instanceof NavigationEnd) {
@@ -49,6 +49,11 @@ export class Register implements OnInit {
                 }
             }
         );
+        // if user already login, redirect to home, user must logout to visit this page.
+        userService.getUserInfo()
+            .subscribe(() => {
+                router.navigateByUrl('/');
+            });
     }
 
     ngOnInit(): void {
@@ -72,50 +77,53 @@ export class Register implements OnInit {
     resetPassword() {
         this.userService.resetPassword(this.registerForm.value)
             .subscribe(
-                () => {
-                    this.router.navigate(['/login']);
-                },
-                error => {
-                    if (error instanceof AuthError) {
-                        switch (error.message) {
-                            case AuthError.INVALID_INVITE_CODE:
-                                this.errorMessage = '邀请码不合法';
-                                break;
-                            default:
-                                this.errorMessage = error.message;
-                        }
-                    } else {
-                        this.errorMessage = error.message;
+            () => {
+                this.router.navigate(['/login']);
+            },
+            error => {
+                if (error instanceof AuthError) {
+                    switch (error.message) {
+                        case AuthError.INVALID_INVITE_CODE:
+                            this.errorMessage = '邀请码不合法';
+                            break;
+                        default:
+                            this.errorMessage = error.message;
                     }
+                } else {
+                    this.errorMessage = error.message;
                 }
+            }
             );
     }
 
     registerUser() {
         this.userService.register(this.registerForm.value)
             .subscribe(
-                () => {
-                    this.router.navigate(['/login']);
-                },
-                error => {
-                    if (error instanceof AuthError) {
-                        switch (error.message) {
-                            case AuthError.DUPLICATE_NAME:
-                                this.errorMessage = '用户名已存在';
-                                break;
-                            case AuthError.INVALID_INVITE_CODE:
-                                this.errorMessage = '邀请码不合法';
-                                break;
-                            case AuthError.PASSWORD_MISMATCH:
-                                this.errorMessage = '密码不匹配';
-                                break;
-                            default:
-                                this.errorMessage = error.message;
-                        }
-                    } else {
-                        this.errorMessage = error.message;
+            () => {
+                this.router.navigate(['/login']);
+            },
+            error => {
+                if (error instanceof AuthError) {
+                    switch (error.message) {
+                        case AuthError.DUPLICATE_NAME:
+                            this.errorMessage = '用户名已存在';
+                            break;
+                        case AuthError.INVALID_INVITE_CODE:
+                            this.errorMessage = '邀请码不合法';
+                            break;
+                        case AuthError.PASSWORD_MISMATCH:
+                            this.errorMessage = '密码不匹配';
+                            break;
+                        case AuthError.INVALID_EMAIL:
+                            this.errorMessage = '邮件格式不合法';
+                            break;
+                        default:
+                            this.errorMessage = error.message;
                     }
+                } else {
+                    this.errorMessage = error.message;
                 }
+            }
             );
     }
 
@@ -124,8 +132,8 @@ export class Register implements OnInit {
             name: ['', Validators.required],
             password: ['', Validators.required],
             password_repeat: ['', Validators.required],
-            email: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
             invite_code: [inviteCode || '', Validators.required]
-        }, {validator: passwordMatch('password', 'password_repeat')});
+        }, { validator: passwordMatch('password', 'password_repeat') });
     }
 }

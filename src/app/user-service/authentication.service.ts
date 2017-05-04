@@ -18,28 +18,6 @@ export class Authentication implements CanActivate {
         this.user = null;
     }
 
-    /**
-     * @deprecated
-     */
-    public isAuthenticated(): Promise<User | Error> {
-        return new Promise((resolve, reject) => {
-            if (this.user) {
-                resolve(this.user);
-            } else {
-                this.userService.getUserInfo()
-                    .subscribe(
-                        (user: User) => {
-                            this.user = user;
-                            resolve(user);
-                        },
-                        (error: any) => {
-                            reject(error);
-                        }
-                    );
-            }
-        });
-    }
-
     private getUserInfo(): Observable<User> {
         if (this.user) {
             return Observable.of(this.user);

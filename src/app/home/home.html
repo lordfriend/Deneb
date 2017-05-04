@@ -1,52 +1,52 @@
 <nav class="navbar">
-  <a class="sidebar-toggle" (click)="toggleSidebar($event)">
-    <i class="icon sidebar"></i>
-  </a>
-  <a class="brand" [routerLink]="['/']">
-    <h2>{{siteTitle}}</h2>
-  </a>
-  <div class="ui static-search small action input">
-    <input type="text" placeholder="Search..." #staticSearch (keyup.enter)="searchBangumi(staticSearch.value)">
-    <button class="ui basic icon button" (click)="searchBangumi(staticSearch.value)">
+    <a class="sidebar-toggle" (click)="toggleSidebar($event)">
+        <i class="icon sidebar"></i>
+    </a>
+    <a class="brand" [routerLink]="['/']">
+        <h2>{{siteTitle}}</h2>
+    </a>
+    <div class="ui static-search small action input">
+        <input type="text" placeholder="Search..." #staticSearch (keyup.enter)="searchBangumi(staticSearch.value)">
+        <button class="ui basic icon button" (click)="searchBangumi(staticSearch.value)">
       <i class="search icon"></i>
     </button>
-  </div>
-  <div class="right-area">
-    <a class="search-toggle-button" (click)="toggleFloatSearchFrame()">
-      <i class="search icon"></i>
-    </a>
-  </div>
-  <div class="float-search-frame" *ngIf="showFloatSearchFrame">
-    <a class="close-button" (click)="toggleFloatSearchFrame()">
-      <i class="close icon"></i>
-    </a>
-    <div class="ui float-search transparent icon input">
-      <input type="text" placeholder="Search..." #floatSearch (keyup.enter)="searchBangumi(floatSearch.value)">
-      <i class="search icon"></i>
     </div>
-  </div>
+    <div class="right-area">
+        <a class="search-toggle-button" (click)="toggleFloatSearchFrame()">
+            <i class="search icon"></i>
+        </a>
+    </div>
+    <div class="float-search-frame" *ngIf="showFloatSearchFrame">
+        <a class="close-button" (click)="toggleFloatSearchFrame()">
+            <i class="close icon"></i>
+        </a>
+        <div class="ui float-search transparent icon input">
+            <input type="text" placeholder="Search..." #floatSearch (keyup.enter)="searchBangumi(floatSearch.value)">
+            <i class="search icon"></i>
+        </div>
+    </div>
 </nav>
 <div class="ui sidebar ui vertical menu home-sidebar" [ngClass]="{visible: sidebarActive}">
-  <a class="item" [routerLink]="['/']">首页</a>
-  <a class="item" [routerLink]="['/bangumi']">所有番组</a>
-  <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
-  <div class="item">
-    <div class="header">我的收藏</div>
-    <div class="menu favorite-list" *ngIf="myBangumiList && myBangumiList.length > 0">
-      <a class="item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">
-        <span class="bangumi-name">
+    <a class="item" [routerLink]="['/']">首页</a>
+    <a class="item" [routerLink]="['/bangumi']">所有番组</a>
+    <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
+    <div class="item">
+        <div class="header">我的收藏</div>
+        <div class="menu favorite-list" *ngIf="myBangumiList && myBangumiList.length > 0">
+            <a class="item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">
+                <span class="bangumi-name">
           {{bangumi.name_cn}}
         </span>
-        <span *ngIf="bangumi.unwatched_count" class="ui orange small label">{{bangumi.unwatched_count}}</span>
-      </a>
+                <span *ngIf="bangumi.unwatched_count" class="ui orange small label">{{bangumi.unwatched_count}}</span>
+            </a>
+        </div>
     </div>
-  </div>
 </div>
 <main class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 </main>
 
 <footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')" *ngIf="currentRouteName !== 'Bangumi'">
-  <div class="copyright-content">&copy;2016 - 2017 Nyasoft, All rights reserved.</div>
-  <div class="credits">Powered By <a target="_blank" href="https://github.com/lordfriend/Albireo">Albireo</a></div>
+    <div class="copyright-content">&copy;2016 - 2017 Nyasoft, All rights reserved.</div>
+    <div class="credits">Powered By <a target="_blank" href="https://github.com/lordfriend/Albireo">Albireo</a></div>
 </footer>

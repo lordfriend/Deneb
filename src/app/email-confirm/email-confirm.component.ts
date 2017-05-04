@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EmailConfirmService } from './email-confirm.service';
 import { Subscription } from 'rxjs/Subscription';
+import { Router } from '@angular/router';
+
 @Component({
     selector: 'email-confirm',
     templateUrl: './email-confirm.html'
@@ -8,11 +10,12 @@ import { Subscription } from 'rxjs/Subscription';
 export class EmailConfirm implements OnInit, OnDestroy {
     private _subscription = new Subscription();
 
-    isLoading = false;
+    isLoading = true;
 
     emailValid = false;
 
-    constructor(private _confirmService: EmailConfirmService) {
+    constructor(private _confirmService: EmailConfirmService,
+                private _router: Router) {
     }
 
     ngOnInit(): void {
@@ -32,5 +35,10 @@ export class EmailConfirm implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this._subscription.unsubscribe();
+    }
+
+    returnToHome() {
+        this._router.navigateByUrl('/');
     }
 }

@@ -3,7 +3,7 @@ import { UserService } from '../user-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { passwordMatch } from '../form-utils';
 import { register } from 'ts-node/dist/ts-node';
-import { AuthError } from './../helpers/error/AuthError';
+import { AuthError } from '../../helpers/error/AuthError';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd } from '@angular/router';
 

@@ -60,6 +60,12 @@
     flex-direction: row;
     justify-content: flex-end;
     padding: 0 1.5rem;
+    .user-action {
+      margin-right: 2rem;
+      @media (max-width: 639px) {
+        margin-right: 1rem;
+      }
+    }
     .search-toggle-button {
       display: none;
       color: #101010;
@@ -94,6 +100,7 @@
 
 .home-sidebar {
   padding-top: 3.5rem;
+
   &.ui.vertical.menu {
     > .item {
       > .header {

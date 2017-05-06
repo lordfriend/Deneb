@@ -45,6 +45,12 @@ export class UserService extends BaseService {
             .catch(this.handleError);
     }
 
+    logout(): Observable<any> {
+        return this._http.post(`${this.baseUrl}/logout`, null, null)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
     getUserInfo(): Observable<User> {
         let queryUrl = this.baseUrl + '/info';
         return this._http.get(queryUrl)

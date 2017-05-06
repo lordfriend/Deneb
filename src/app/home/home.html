@@ -12,6 +12,16 @@
     </button>
     </div>
     <div class="right-area">
+        <div class="ui inline dropdown user-action" uiDropdown="click">
+            <div class="text">
+                {{user?.name}}
+            </div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <a class="item" routerLink="/settings/user">用户设置</a>
+                <a class="item" (click)="logout()">登出</a>
+            </div>
+        </div>
         <a class="search-toggle-button" (click)="toggleFloatSearchFrame()">
             <i class="search icon"></i>
         </a>

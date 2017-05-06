@@ -33,6 +33,7 @@ export const appRoutes: Routes = [
     },
     {
         path: 'email-confirm',
+        canActivate: [Authentication],
         component: EmailConfirm
     }
 ];

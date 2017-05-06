@@ -6,7 +6,7 @@
         <p>Congratulations! You have completed email address confirmation.</p>
         <p><button class="ui button" (click)="returnToHome()">Click To Return</button></p>
     </div>
-    <div class="failed" *ngIf="!isLoading && emailValid">
+    <div class="failed" *ngIf="!isLoading && !emailValid">
         <p>Something went wrong!</p>
     </div>
 </div>

@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { EmailConfirmService } from './email-confirm.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Router } from '@angular/router';
 
 @Component({
     selector: 'email-confirm',
-    templateUrl: './email-confirm.html'
+    templateUrl: './email-confirm.html',
+    styleUrls: ['./email-confirm.less'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EmailConfirm implements OnInit, OnDestroy {
     private _subscription = new Subscription();
@@ -20,9 +22,10 @@ export class EmailConfirm implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.isLoading = true;
-        if (window.location.search) {
+        let searchString = window.location.search;
+        if (searchString) {
             this._subscription.add(
-                this._confirmService.confirmEmail(window.location.search)
+                this._confirmService.confirmEmail(searchString.substring(1, searchString.length))
                     .subscribe(() => {
                         this.isLoading = false;
                         this.emailValid = true;
@@ -31,6 +34,9 @@ export class EmailConfirm implements OnInit, OnDestroy {
                         this.emailValid = false;
                     })
             );
+        } else {
+            this.isLoading = false;
+            this.emailValid = false;
         }
     }
 

@@ -1,5 +1,20 @@
+:host {
+  background-color: #f0f0f0;
+  display: block;
+  box-sizing: border-box;
+  position: fixed;
+  top: 3.5rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 .user-center-container {
   width: 700px;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+
   @media (max-width: 479px) {
     width: 100%;
   }
@@ -8,5 +23,25 @@
   }
   @media (min-width: 768px) {
     width: 700px;
+  }
+
+  .ui.form {
+    .inline.field {
+      > label {
+        width: 8em;
+        text-align: right;
+      }
+      .warning.text {
+        display: inline-block;
+        margin-left: 1em;
+        color: #573a08;
+      }
+    }
+    .ui.button {
+      margin-left: 8em;
+    }
+    .inline.field + .ui.error.message {
+      margin-left: 8.4em;
+    }
   }
 }

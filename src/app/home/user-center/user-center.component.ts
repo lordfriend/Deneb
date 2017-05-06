@@ -17,14 +17,17 @@ export class UserCenter implements OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
-    private _basicInfoValidationMessages = {
+    emailValidationMessages = {
+        current_pass: {
+            'required': '密码不能为空'
+        },
         email: {
             'required': '邮件地址不能为空',
             'email': '邮件地址格式错误'
         }
     };
 
-    private _passwordValidationMessages = {
+    passwordValidationMessages = {
         current_pass: {
             'required': '当前密码不能为空'
         },
@@ -38,10 +41,11 @@ export class UserCenter implements OnInit, OnDestroy {
 
     user: User;
 
-    basicInfoForm: FormGroup;
+    emailForm: FormGroup;
     passwordForm: FormGroup;
 
-    basicInfoFormErrors = {
+    emailFormErrors = {
+        current_pass: [],
         email: []
     };
 
@@ -64,7 +68,7 @@ export class UserCenter implements OnInit, OnDestroy {
                 .subscribe(
                     user => {
                         this.user = user;
-                        this.basicInfoForm.patchValue({email: 'a@b.com'});
+                        this.emailForm.patchValue(this.user);
                     },
                     (error: BaseError) => {
                         this._toastRef.show(error.message);
@@ -78,8 +82,41 @@ export class UserCenter implements OnInit, OnDestroy {
         this._subscription.unsubscribe();
     }
 
+    updateEmail() {
+        let emailModel = this.emailForm.value;
+        this._subscription.add(
+            this._userSerivce.updateEmail(emailModel.email, emailModel.current_pass)
+            .subscribe(
+                () => {
+                    this._toastRef.show('更新成功, 请到邮箱确认邮件地址');
+                    this.user.email = emailModel.email;
+                    this.user.email_confirmed = false;
+                },
+                (error: BaseError) => {
+                    this._toastRef.show(error.message);
+                }
+            )
+        );
+    }
+
+    updatePass() {
+        let passModel = this.passwordForm.value;
+        this._subscription.add(
+            this._userSerivce.updatePass(passModel.current_pass, passModel.new_pass, passModel.new_pass_repeat)
+                .subscribe(
+                    () => {
+                        this._toastRef.show('密码修改成功');
+                    },
+                    (error: BaseError) => {
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
     private buildForm() {
-        this.basicInfoForm = this._fb.group({
+        this.emailForm = this._fb.group({
+            current_pass: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]]
         });
         this.passwordForm = this._fb.group({
@@ -88,55 +125,35 @@ export class UserCenter implements OnInit, OnDestroy {
             new_pass_repeat: ['', Validators.required]
         }, {validator: passwordMatch('new_pass', 'new_pass_repeat')});
 
-        this._subscription.add(
-            this.basicInfoForm.valueChanges.subscribe(
-                data => this.onBasicFormChanged({data})
-            )
-        );
+        // this._subscription.add(
+        //     this.emailForm.valueChanges.subscribe(
+        //         () => {
+        //             this.onFormChanged(this.emailFormErrors, this._emailValidationMessages, this.emailForm);
+        //         }
+        //     )
+        // );
+        //
+        // this._subscription.add(
+        //     this.passwordForm.valueChanges.subscribe(
+        //         () => {
+        //             this.onFormChanged(this.passwordFormErrors, this._passwordValidationMessages, this.passwordForm);
+        //         }
+        //     )
+        // );
 
-        this._subscription.add(
-            this.passwordForm.valueChanges.subscribe(
-                data => this.onPasswordFormChanged({data})
-            )
-        );
-
-        this.onBasicFormChanged();
+        this.onFormChanged(this.emailFormErrors, this.emailValidationMessages, this.emailForm);
+        this.onFormChanged(this.passwordFormErrors, this.passwordValidationMessages, this.passwordForm);
     }
 
-    private onBasicFormChanged(data?: any) {
-        if (!this.basicInfoForm) {
-            return;
-        }
-        const form = this.basicInfoForm;
-
-        for (const field in this.basicInfoFormErrors) {
-            // clear previous error message (if any)
-            this.basicInfoFormErrors[field] = [];
+    private onFormChanged(errors: any, errorMessages, form: FormGroup) {
+        for (const field in errors) {
+            // clear previous error message array
+            this.emailFormErrors[field] = [];
             const control = form.get(field);
-
-            if (control && control.dirty && !control.valid) {
-                const messages = this._basicInfoValidationMessages[field];
+            if (control && control.dirty && control.invalid) {
                 for (const key in control.errors) {
-                    this.basicInfoFormErrors[field].push(messages[key]);
-                }
-            }
-        }
-    }
-
-    private onPasswordFormChanged(data?: any) {
-        if (!this.passwordForm) {
-            return;
-        }
-        const form = this.passwordForm;
-        for (const field in this.passwordFormErrors) {
-            // clear previous error message (if any)
-            this.passwordFormErrors[field] = [];
-            const control = form.get(field);
-
-            if (control && control.dirty && !control.valid) {
-                const messages = this._passwordValidationMessages[field];
-                for (const key in control.errors) {
-                    this.passwordFormErrors[field].push(messages[key]);
+                    let messages = errorMessages[field];
+                    errors[field].push(messages[key]);
                 }
             }
         }

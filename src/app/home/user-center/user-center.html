@@ -1,51 +1,78 @@
 <div class="user-center-container ui container">
-    <div class="ui segment">
+    <div class="ui segment basic-info">
         <h4>基本信息</h4>
-        <form class="ui form" novalidate [formGroup]="basicInfoForm" [ngClass]="{error: basicInfoForm.invalid}">
-            <div class="field">
+        <div class="ui form">
+            <div class="inline field">
                 <label>用户名</label>
-                <p>{{user?.name}}</p>
+                <span>{{user?.name}}</span>
             </div>
-            <div class="field">
+            <div class="inline field">
                 <label>Level</label>
-                 <p>{{user?.level}}</p>
+                <span>{{user?.level}}</span>
             </div>
-            <div class="field" [ngClass]="{error: basicInfoFormErrors.email.length > 0}">
+        </div>
+    </div>
+    <div class="ui segment">
+        <form class="ui form" novalidate autocomplete="off" [formGroup]="emailForm" [ngClass]="{error: emailForm.invalid}">
+            <div class="inline field" [ngClass]="{error: emailFormErrors.email.length > 0}">
                 <label>Email</label>
-                <input type="text" placeholder="email" formControlName="email">
+                <input type="text"
+                       placeholder="example: some@example.com"
+                       formControlName="email"
+                       autocomplete="off"
+                       (blur)="onFormChanged(emailFormErrors, emailValidationMessages, emailForm)">
+                <span class="warning text" *ngIf="user && user.email && !user.email_confirmed">邮箱地址未验证</span>
             </div>
-            <div class="ui error message">
+            <div class="ui error message" *ngIf="emailFormErrors.email.length > 0">
                 <ul class="list">
-                    <li *ngFor="let error of basicInfoFormErrors.email">{{error}}</li>
+                    <li *ngFor="let error of emailFormErrors.email">{{error}}</li>
                 </ul>
             </div>
-            <button type="button" class="ui button" [disabled]="basicInfoForm.invalid || basicInfoForm.pristine">保存更改</button>
+            <div class="inline field" [ngClass]="{error: emailFormErrors.current_pass.length > 0}">
+                <label>当前密码</label>
+                <input type="password"
+                       formControlName="current_pass"
+                       autocomplete="new-password"
+                       (blur)="onFormChanged(emailFormErrors, emailValidationMessages, emailForm)">
+            </div>
+            <div class="ui error message" *ngIf="emailFormErrors.current_pass.length > 0">
+                <ul class="list">
+                    <li *ngFor="let error of emailFormErrors.current_pass">{{error}}</li>
+                </ul>
+            </div>
+            <button type="button" class="ui button" [disabled]="emailForm.invalid || emailForm.pristine" (click)="updateEmail()">保存更改</button>
         </form>
     </div>
     <div class="ui segment">
         <h4>密码</h4>
         <form class="ui form" novalidate [formGroup]="passwordForm" [ngClass]="{error: passwordForm.invalid}">
-            <div class="field" [ngClass]="{error: passwordFormErrors.current_pass.length > 0}">
+            <div class="inline field" [ngClass]="{error: passwordFormErrors.current_pass.length > 0}">
                 <label>当前密码</label>
-                <input type="password" formControlName="current_pass">
+                <input type="password"
+                       formControlName="current_pass"
+                       (blur)="onFormChanged(passwordFormErrors, passwordValidationMessages, passwordForm)">
             </div>
             <div class="ui error message" *ngIf="passwordFormErrors.current_pass.length > 0">
                 <ul class="list">
                     <li *ngFor="let error of passwordFormErrors.current_pass">{{error}}</li>
                 </ul>
             </div>
-            <div class="field" [ngClass]="{error: passwordFormErrors.new_pass.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
+            <div class="inline field" [ngClass]="{error: passwordFormErrors.new_pass.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
                 <label>新密码</label>
-                <input type="password" formControlName="new_pass">
+                <input type="password"
+                       formControlName="new_pass"
+                       (blur)="onFormChanged(passwordFormErrors, passwordValidationMessages, passwordForm)">
             </div>
             <div class="ui error message" *ngIf="passwordFormErrors.new_pass.length > 0">
                 <ul class="list">
                     <li *ngFor="let error of passwordFormErrors.new_pass">{{error}}</li>
                 </ul>
             </div>
-            <div class="field" [ngClass]="{error: passwordFormErrors.new_pass_repeat.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
+            <div class="inline field" [ngClass]="{error: passwordFormErrors.new_pass_repeat.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
                 <label>重复密码</label>
-                <input type="password" formControlName="new_pass_repeat">
+                <input type="password"
+                       formControlName="new_pass_repeat"
+                       (blur)="onFormChanged(passwordFormErrors, passwordValidationMessages, passwordForm)">
             </div>
             <div class="ui error message" *ngIf="passwordFormErrors.new_pass_repeat.length > 0">
                 <ul class="list">
@@ -55,7 +82,7 @@
             <div class="ui error message" *ngIf="passwordForm.errors && passwordForm.errors['mismatchedPasswords']">
                 <p>密码不一致</p>
             </div>
-            <button type="button" class="ui button" [disabled]="passwordForm.invalid || passwordForm.pristine">保存更改</button>
+            <button type="button" class="ui button" [disabled]="passwordForm.invalid || passwordForm.pristine" (click)="updatePass()">保存更改</button>
         </form>
     </div>
 </div>

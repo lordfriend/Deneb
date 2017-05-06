@@ -6,6 +6,8 @@ export class User {
   level: number;
   invite_code: string;
   remember: boolean;
+  email: string;
+  email_confirmed: boolean;
 
   static LEVEL_DEFAULT = 0;
   static LEVEL_USER = 1;

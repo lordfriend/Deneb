@@ -52,4 +52,22 @@ export class UserService extends BaseService {
             .catch(this.handleError);
     }
 
+    updateEmail(email, current_pass): Observable<any> {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let body = JSON.stringify({email: email, password: current_pass});
+        return this._http.post(`${this.baseUrl}/email`, body, options)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
+    updatePass(current_pass, new_pass, new_pass_repeat): Observable<any> {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let body = JSON.stringify({new_pass: new_pass, new_pass_repeat: new_pass_repeat, password: current_pass});
+        return this._http.post(`${this.baseUrl}/update_pass`, body, options)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
 }

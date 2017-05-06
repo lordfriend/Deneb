@@ -1,7 +1,7 @@
 <div class="user-center-container ui container">
     <div class="ui segment">
         <h4>基本信息</h4>
-        <form class="ui form" novalidate [formGroup]="basicInfoForm">
+        <form class="ui form" novalidate [formGroup]="basicInfoForm" [ngClass]="{error: basicInfoForm.invalid}">
             <div class="field">
                 <label>用户名</label>
                 <p>{{user?.name}}</p>
@@ -10,29 +10,52 @@
                 <label>Level</label>
                  <p>{{user?.level}}</p>
             </div>
-            <div class="field">
+            <div class="field" [ngClass]="{error: basicInfoFormErrors.email.length > 0}">
                 <label>Email</label>
                 <input type="text" placeholder="email" formControlName="email">
             </div>
-            <button type="button" class="ui button">保存更改</button>
+            <div class="ui error message">
+                <ul class="list">
+                    <li *ngFor="let error of basicInfoFormErrors.email">{{error}}</li>
+                </ul>
+            </div>
+            <button type="button" class="ui button" [disabled]="basicInfoForm.invalid || basicInfoForm.pristine">保存更改</button>
         </form>
     </div>
     <div class="ui segment">
         <h4>密码</h4>
-        <form class="ui form" novalidate [formGroup]="passwordForm">
-            <div class="field">
+        <form class="ui form" novalidate [formGroup]="passwordForm" [ngClass]="{error: passwordForm.invalid}">
+            <div class="field" [ngClass]="{error: passwordFormErrors.current_pass.length > 0}">
                 <label>当前密码</label>
                 <input type="password" formControlName="current_pass">
             </div>
-            <div class="field">
+            <div class="ui error message" *ngIf="passwordFormErrors.current_pass.length > 0">
+                <ul class="list">
+                    <li *ngFor="let error of passwordFormErrors.current_pass">{{error}}</li>
+                </ul>
+            </div>
+            <div class="field" [ngClass]="{error: passwordFormErrors.new_pass.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
                 <label>新密码</label>
                 <input type="password" formControlName="new_pass">
             </div>
-            <div class="field">
+            <div class="ui error message" *ngIf="passwordFormErrors.new_pass.length > 0">
+                <ul class="list">
+                    <li *ngFor="let error of passwordFormErrors.new_pass">{{error}}</li>
+                </ul>
+            </div>
+            <div class="field" [ngClass]="{error: passwordFormErrors.new_pass_repeat.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
                 <label>重复密码</label>
                 <input type="password" formControlName="new_pass_repeat">
             </div>
-            <button type="button" class="ui button">保存更改</button>
+            <div class="ui error message" *ngIf="passwordFormErrors.new_pass_repeat.length > 0">
+                <ul class="list">
+                    <li *ngFor="let error of passwordFormErrors.new_pass_repeat">{{error}}</li>
+                </ul>
+            </div>
+            <div class="ui error message" *ngIf="passwordForm.errors && passwordForm.errors['mismatchedPasswords']">
+                <p>密码不一致</p>
+            </div>
+            <button type="button" class="ui button" [disabled]="passwordForm.invalid || passwordForm.pristine">保存更改</button>
         </form>
     </div>
 </div>

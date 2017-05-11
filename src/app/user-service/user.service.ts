@@ -3,11 +3,14 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { User } from '../entity';
 import { BaseService } from '../../helpers/base.service';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 
 @Injectable()
 export class UserService extends BaseService {
-    private baseUrl = '/api/user';
+    private _baseUrl = '/api/user';
+
+    private _userInfoSubject = new BehaviorSubject(null);
 
     constructor(
         private _http: Http
@@ -15,8 +18,12 @@ export class UserService extends BaseService {
         super();
     }
 
+    get userInfo(): Observable<User> {
+        return this._userInfoSubject.asObservable();
+    }
+
     register(user: User): Observable<any> {
-        let queryUrl = this.baseUrl + '/register';
+        let queryUrl = this._baseUrl + '/register';
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         let body = JSON.stringify(user);
@@ -26,7 +33,7 @@ export class UserService extends BaseService {
     }
 
     resetPassword(user: User): Observable<any> {
-        let queryUrl = this.baseUrl + '/reset_pass';
+        let queryUrl = this._baseUrl + '/reset_pass';
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         let body = JSON.stringify(user);
@@ -36,7 +43,7 @@ export class UserService extends BaseService {
     }
 
     login(user: User): Observable<any> {
-        let queryUrl = this.baseUrl + '/login';
+        let queryUrl = this._baseUrl + '/login';
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         let body = JSON.stringify(user);
@@ -46,15 +53,21 @@ export class UserService extends BaseService {
     }
 
     logout(): Observable<any> {
-        return this._http.post(`${this.baseUrl}/logout`, null, null)
+        return this._http.post(`${this._baseUrl}/logout`, null, null)
             .map(res => res.json())
+            .do(() => {
+                this._userInfoSubject.next(null);
+            })
             .catch(this.handleError);
     }
 
     getUserInfo(): Observable<User> {
-        let queryUrl = this.baseUrl + '/info';
+        let queryUrl = this._baseUrl + '/info';
         return this._http.get(queryUrl)
             .map(res => <User>res.json().data)
+            .do(user => {
+                this._userInfoSubject.next(user);
+            })
             .catch(this.handleError);
     }
 
@@ -62,8 +75,10 @@ export class UserService extends BaseService {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({email: email, password: current_pass});
-        return this._http.post(`${this.baseUrl}/email`, body, options)
-            .map(res => res.json())
+        return this._http.post(`${this._baseUrl}/email`, body, options)
+            .flatMap(() => {
+                return this.getUserInfo();
+            })
             .catch(this.handleError);
     }
 
@@ -71,7 +86,7 @@ export class UserService extends BaseService {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({new_pass: new_pass, new_pass_repeat: new_pass_repeat, password: current_pass});
-        return this._http.post(`${this.baseUrl}/update_pass`, body, options)
+        return this._http.post(`${this._baseUrl}/update_pass`, body, options)
             .map(res => res.json())
             .catch(this.handleError);
     }

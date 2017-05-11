@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { EmailConfirmService } from './email-confirm.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Router } from '@angular/router';
+import { UserService } from '../user-service/user.service';
 
 @Component({
     selector: 'email-confirm',
@@ -17,6 +18,7 @@ export class EmailConfirm implements OnInit, OnDestroy {
     emailValid = false;
 
     constructor(private _confirmService: EmailConfirmService,
+                private _userService: UserService,
                 private _router: Router) {
     }
 
@@ -26,6 +28,9 @@ export class EmailConfirm implements OnInit, OnDestroy {
         if (searchString) {
             this._subscription.add(
                 this._confirmService.confirmEmail(searchString.substring(1, searchString.length))
+                    .flatMap(() => {
+                        return this._userService.getUserInfo();
+                    })
                     .subscribe(() => {
                         this.isLoading = false;
                         this.emailValid = true;

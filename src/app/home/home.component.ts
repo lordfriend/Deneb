@@ -50,6 +50,11 @@ export class Home implements OnInit, OnDestroy {
             } else if (!this.sidebarOverlap) {
                 this.sidebarActive = true;
             }
+
+            if (routeName === 'Default' && !this.user.email_confirmed) {
+                console.log('please input your email');
+            }
+
             this.currentRouteName = routeName;
 
             if (routeName === 'Bangumi') {
@@ -90,7 +95,7 @@ export class Home implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this._subscription.add(this._userService.getUserInfo()
+        this._subscription.add(this._userService.userInfo
             .subscribe(
                 (user: User) => {
                     this.user = user;

@@ -16,6 +16,7 @@ export class UserService extends BaseService {
         private _http: Http
     ) {
         super();
+        this.getUserInfo().subscribe(() => {});
     }
 
     get userInfo(): Observable<User> {

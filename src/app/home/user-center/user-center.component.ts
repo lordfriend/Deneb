@@ -91,6 +91,7 @@ export class UserCenter implements OnInit, OnDestroy {
                     this._toastRef.show('更新成功, 请到邮箱确认邮件地址');
                     this.user.email = emailModel.email;
                     this.user.email_confirmed = false;
+                    this.emailForm.markAsPristine();
                 },
                 (error: BaseError) => {
                     this._toastRef.show(error.message);
@@ -106,6 +107,7 @@ export class UserCenter implements OnInit, OnDestroy {
                 .subscribe(
                     () => {
                         this._toastRef.show('密码修改成功');
+                        this.passwordForm.markAsPristine();
                     },
                     (error: BaseError) => {
                         this._toastRef.show(error.message);

@@ -118,7 +118,7 @@ export class UserCenter implements OnInit, OnDestroy {
 
     private buildForm() {
         this.emailForm = this._fb.group({
-            current_pass: ['', Validators.required],
+            // current_pass: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]]
         });
         this.passwordForm = this._fb.group({

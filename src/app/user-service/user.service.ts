@@ -92,4 +92,13 @@ export class UserService extends BaseService {
             .catch(this.handleError);
     }
 
+    requestResetPass(email: string) {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let body = JSON.stringify({email: email});
+        return this._http.post(`${this._baseUrl}/request-reset-pass`, body, options)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
 }

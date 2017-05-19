@@ -28,18 +28,18 @@
                     <li *ngFor="let error of emailFormErrors.email">{{error}}</li>
                 </ul>
             </div>
-            <div class="inline field" [ngClass]="{error: emailFormErrors.current_pass.length > 0}">
-                <label>当前密码</label>
-                <input type="password"
-                       formControlName="current_pass"
-                       autocomplete="new-password"
-                       (blur)="onFormChanged(emailFormErrors, emailValidationMessages, emailForm)">
-            </div>
-            <div class="ui error message" *ngIf="emailFormErrors.current_pass.length > 0">
-                <ul class="list">
-                    <li *ngFor="let error of emailFormErrors.current_pass">{{error}}</li>
-                </ul>
-            </div>
+            <!--<div class="inline field" [ngClass]="{error: emailFormErrors.current_pass.length > 0}">-->
+                <!--<label>当前密码</label>-->
+                <!--<input type="password"-->
+                       <!--formControlName="current_pass"-->
+                       <!--autocomplete="new-password"-->
+                       <!--(blur)="onFormChanged(emailFormErrors, emailValidationMessages, emailForm)">-->
+            <!--</div>-->
+            <!--<div class="ui error message" *ngIf="emailFormErrors.current_pass.length > 0">-->
+                <!--<ul class="list">-->
+                    <!--<li *ngFor="let error of emailFormErrors.current_pass">{{error}}</li>-->
+                <!--</ul>-->
+            <!--</div>-->
             <button type="button" class="ui button" [disabled]="emailForm.invalid || emailForm.pristine" (click)="updateEmail()">保存更改</button>
         </form>
     </div>

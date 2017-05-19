@@ -1,10 +1,11 @@
 <div class="forget-pass">
-    <div class="form-wrapper">
-        <form class="ui form" (submit)="onSubmit()">
+    <div class="form-wrapper ui segment">
+        <h4>重置密码</h4>
+        <form class="ui form" (submit)="onSubmit()" *ngIf="!result">
             <div class="field">
-                <input type="text" placeholder="请输入你的邮件地址...">
+                <input class="email-input" type="text" placeholder="请输入你的邮件地址..." #emailInput>
             </div>
-            <button type="submit"></button>
+            <button class="ui primary button" type="submit" [disabled]="result">{{result ? '重置密码邮件已发送': '发送重置密码邮件'}}</button>
         </form>
     </div>
 </div>

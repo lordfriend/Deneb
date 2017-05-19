@@ -15,9 +15,9 @@ import {HttpModule} from '@angular/http';
 import {Ng2SemanticModule} from '../ng2-semantic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TaskService} from './admin/task-manager/task.service';
-import {DenebCommonPipes} from './pipes/index';
 import {HomeModule} from './home/home.module';
 import { EmailConfirmModule } from './email-confirm/email-confirm.module';
+import {ForgetPassModule} from './forget-pass/forget-pass.module';
 
 @NgModule({
     declarations: [
@@ -43,7 +43,8 @@ import { EmailConfirmModule } from './email-confirm/email-confirm.module';
         Ng2SemanticModule,
         BrowserAnimationsModule,
         HomeModule,
-        EmailConfirmModule
+        EmailConfirmModule,
+        ForgetPassModule
     ],
     bootstrap: [App]
 })

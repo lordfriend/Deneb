@@ -1,7 +1,7 @@
 <div class="forget-pass">
     <div class="form-wrapper ui segment">
         <h4>重置密码</h4>
-        <form class="ui form" (submit)="onSubmit()" *ngIf="!result">
+        <form class="ui form" (submit)="onSubmit($event)" novalidate>
             <div class="field">
                 <input class="email-input" type="text" placeholder="请输入你的邮件地址..." #emailInput>
             </div>

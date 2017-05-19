@@ -22,7 +22,9 @@ export class ForgetPass {
         this._toastRef = toast.makeText();
     }
 
-    onSubmit() {
+    onSubmit(event: Event) {
+        event.stopPropagation();
+        event.preventDefault();
         let value = (this.emailInput.nativeElement as HTMLInputElement).value;
         this._subscription.add(this._userService.requestResetPass(value)
             .subscribe(

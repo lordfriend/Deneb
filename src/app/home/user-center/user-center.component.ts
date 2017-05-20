@@ -116,6 +116,19 @@ export class UserCenter implements OnInit, OnDestroy {
         );
     }
 
+    onFormChanged(errors: any, errorMessages, form: FormGroup) {
+        for (const field in errors) {
+            // clear previous error message array
+            errors[field] = [];
+            const control = form.get(field);
+            if (control && control.dirty && control.invalid) {
+                for (const key in control.errors) {
+                    let messages = errorMessages[field];
+                    errors[field].push(messages[key]);
+                }
+            }
+        }
+    }
     private buildForm() {
         this.emailForm = this._fb.group({
             // current_pass: ['', Validators.required],
@@ -145,19 +158,5 @@ export class UserCenter implements OnInit, OnDestroy {
 
         this.onFormChanged(this.emailFormErrors, this.emailValidationMessages, this.emailForm);
         this.onFormChanged(this.passwordFormErrors, this.passwordValidationMessages, this.passwordForm);
-    }
-
-    private onFormChanged(errors: any, errorMessages, form: FormGroup) {
-        for (const field in errors) {
-            // clear previous error message array
-            errors[field] = [];
-            const control = form.get(field);
-            if (control && control.dirty && control.invalid) {
-                for (const key in control.errors) {
-                    let messages = errorMessages[field];
-                    errors[field].push(messages[key]);
-                }
-            }
-        }
     }
 }

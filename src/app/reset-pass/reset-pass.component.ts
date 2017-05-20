@@ -85,7 +85,7 @@ export class ResetPass implements OnInit, OnDestroy {
         )
     }
 
-    private onFormChanged(errors: any, errorMessages, form: FormGroup) {
+    onFormChanged(errors: any, errorMessages, form: FormGroup) {
         for (const field in errors) {
             // clear previous error message array
             errors[field] = [];

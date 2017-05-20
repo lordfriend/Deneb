@@ -12,7 +12,7 @@ Clone this repo, install dependencies
 
 ```shell
 cd Deneb
-npm install
+yarn install
 ```
 
 Copy `config/dev.proxy.js.example` to `config/dev.proxy.js`, If your backend server is running on a different host, you need update the target to your backend host
@@ -30,7 +30,7 @@ To deploy on production server, a compiled and minfied bundle is needed, to buil
 ```shell
 export SITE_TITLE="Your site name"
 export GA="You google analytics Tracking ID" # if you want to use google analytics, export this environment variable.
-npm run build:prod
+npm run build:aot:prod
 ```
 
 After building process finished, you will have a **dist** directory in your project root. copy this project to your static file server.

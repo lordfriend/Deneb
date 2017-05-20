@@ -18,6 +18,7 @@ import {TaskService} from './admin/task-manager/task.service';
 import {HomeModule} from './home/home.module';
 import { EmailConfirmModule } from './email-confirm/email-confirm.module';
 import {ForgetPassModule} from './forget-pass/forget-pass.module';
+import { ResetPassModule } from './reset-pass/reset-pass.module';
 
 @NgModule({
     declarations: [
@@ -44,7 +45,8 @@ import {ForgetPassModule} from './forget-pass/forget-pass.module';
         BrowserAnimationsModule,
         HomeModule,
         EmailConfirmModule,
-        ForgetPassModule
+        ForgetPassModule,
+        ResetPassModule
     ],
     bootstrap: [App]
 })

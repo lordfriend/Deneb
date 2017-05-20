@@ -6,6 +6,7 @@ import { Routes } from '@angular/router';
 import { Authentication } from './user-service/authentication.service';
 import { EmailConfirm } from './email-confirm/email-confirm.component';
 import {ForgetPass} from './forget-pass/forget-pass.component';
+import { ResetPass } from './reset-pass/reset-pass.component';
 
 
 export const appRoutes: Routes = [
@@ -27,6 +28,10 @@ export const appRoutes: Routes = [
     {
         path: 'forget',
         component: ForgetPass
+    },
+    {
+        path: 'reset-pass',
+        component: ResetPass
     },
     {
         path: 'error',

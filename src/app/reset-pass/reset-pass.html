@@ -1,0 +1,45 @@
+<div class="reset-pass">
+    <div class="reset-pass-wrapper">
+        <header class="reset-header">
+            <h1>
+                <span>重置密码</span>
+            </h1>
+        </header>
+        <form class="ui form" [formGroup]="passForm" novalidate [ngClass]="{error: passForm.invalid}">
+            <div class="field" [ngClass]="{error: passFormErrors.new_pass.length > 0 || passForm.errors && passForm.errors['mismatchedPasswords']}">
+                <label>新密码</label>
+                <input type="password"
+                       placeholder="请输入密码"
+                       autocomplete="off"
+                       formControlName="new_pass"
+                       (blur)="onFormChanged(passFormErrors, passValidationMessages, passForm)">
+            </div>
+            <div class="ui error message" *ngIf="passFormErrors.new_pass.length > 0">
+                <ul class="list">
+                    <li *ngFor="let error of passFormErrors.new_pass">{{error}}</li>
+                </ul>
+            </div>
+            <div class="field" [ngClass]="{error: passFormErrors.new_pass_repeat.length > 0 || passForm.errors && passForm.errors['mismatchedPasswords']}">
+                <label>重复密码</label>
+                <input type="password"
+                       placeholder="请再次输入密码"
+                       autocomplete="off"
+                       formControlName="new_pass_repeat"
+                       (blur)="onFormChanged(passFormErrors, passValidationMessages, passForm)">
+            </div>
+            <div class="ui error message" *ngIf="passFormErrors.new_pass_repeat.length > 0">
+                <ul class="list">
+                    <li *ngFor="let error of passFormErrors.new_pass_repeat">{{error}}</li>
+                </ul>
+            </div>
+            <div class="ui error message" *ngIf="passForm.errors && passForm.errors['mismatchedPasswords']">
+                <p>密码不一致</p>
+            </div>
+        </form>
+        <button class="ui primary button large fluid submit"
+                [ngClass]="{loading: isPending}"
+                type="button"
+                (click)="onSubmit()"
+                [disabled]="passForm.invalid || passForm.pristine">重置密码</button>
+    </div>
+</div>

@@ -3,7 +3,7 @@
         <div class="center-box">
             <header class="center-box-header">
                 <h1>
-                    <span>{{title}}</span>
+                    <span>注册</span>
                 </h1>
             </header>
             <div class="center-box-body">
@@ -24,12 +24,11 @@
                         <input type="text" formControlName="invite_code" placeholder="邀请码">
                     </div>
                     <div>
-                        <button *ngIf="mode === 'forget'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">重置密码</button>
-                        <button *ngIf="mode === 'register'" class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
+                        <button class="ui primary button large fluid submit" type="submit" [disabled]="!registerForm.valid">注册</button>
                     </div>
                 </form>
                 <div class="login-link additional-info">
-                    <a [routerLink]="['/login']">{{urlPath === '/register' ? '已有帐号?登录' : '登录'}}</a>
+                    <a [routerLink]="['/login']">已有帐号?登录</a>
                 </div>
                 <div class="ui error message" *ngIf="errorMessage">
                     <p>{{errorMessage}}</p>

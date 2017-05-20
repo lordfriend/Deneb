@@ -33,16 +33,6 @@ export class UserService extends BaseService {
             .catch(this.handleError);
     }
 
-    resetPassword(user: User): Observable<any> {
-        let queryUrl = this._baseUrl + '/reset_pass';
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-        let body = JSON.stringify(user);
-        return this._http.post(queryUrl, body, options)
-            .map(res => res.json())
-            .catch(this.handleError);
-    }
-
     login(user: User): Observable<any> {
         let queryUrl = this._baseUrl + '/login';
         let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -101,4 +91,16 @@ export class UserService extends BaseService {
             .catch(this.handleError);
     }
 
+    resetPassword(new_pass: string, new_pass_repeat: string, token: string): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let body = JSON.stringify({
+            new_pass: new_pass,
+            new_pass_repeat: new_pass_repeat,
+            token: token
+        });
+        return this._http.post(`${this._baseUrl}/reset-pass`, body, options)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
 }

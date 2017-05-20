@@ -5,7 +5,10 @@
             <div class="field">
                 <input class="email-input" type="text" placeholder="请输入你的邮件地址..." #emailInput>
             </div>
-            <button class="ui primary button" type="submit" [disabled]="result">{{result ? '重置密码邮件已发送': '发送重置密码邮件'}}</button>
+            <button class="ui primary button"
+                    [ngClass]="{loading: isPending}"
+                    type="submit"
+                    [disabled]="result">{{result ? '重置密码邮件已发送': '发送重置密码邮件'}}</button>
         </form>
     </div>
 </div>

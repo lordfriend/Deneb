@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from '../user-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { passwordMatch } from '../form-utils';
@@ -6,6 +6,7 @@ import { register } from 'ts-node/dist/ts-node';
 import { AuthError } from '../../helpers/error/AuthError';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
 
 /**
@@ -17,38 +18,20 @@ import { Router, NavigationEnd } from '@angular/router';
     templateUrl: './register.html',
     styleUrls: ['./register.less']
 })
-export class Register implements OnInit {
+export class Register implements OnInit, OnDestroy {
+    private _subscription = new Subscription();
 
     registerForm: FormGroup;
 
     urlPath: string;
 
-    title: string;
-
     errorMessage: string;
-
-    mode: string;
 
     constructor(private userService: UserService,
         private formBuilder: FormBuilder,
         private router: Router,
         titleService: Title) {
-        router.events.subscribe(
-            (event) => {
-                if (event instanceof NavigationEnd) {
-                    this.urlPath = event.url;
-                    if (/^\/register/ig.test(this.urlPath)) {
-                        this.mode = 'register';
-                        this.title = '注册';
-                    } else if (/^\/forget/ig.test(this.urlPath)) {
-                        this.mode = 'forget';
-                        this.title = '找回密码';
-                    }
-
-                    titleService.setTitle(`${this.title} - ${SITE_TITLE}`);
-                }
-            }
-        );
+        titleService.setTitle(`注册 - ${SITE_TITLE}`);
         // if user already login, redirect to home, user must logout to visit this page.
         userService.getUserInfo()
             .subscribe(() => {
@@ -66,65 +49,40 @@ export class Register implements OnInit {
         this.buildForm(inviteCode);
     }
 
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
+    }
+
     onSubmit() {
-        if (this.mode === 'register') {
-            this.registerUser();
-        } else {
-            this.resetPassword();
-        }
-    }
-
-    resetPassword() {
-        this.userService.resetPassword(this.registerForm.value)
+        this._subscription.add(this.userService.register(this.registerForm.value)
             .subscribe(
-            () => {
-                this.router.navigate(['/login']);
-            },
-            error => {
-                if (error instanceof AuthError) {
-                    switch (error.message) {
-                        case AuthError.INVALID_INVITE_CODE:
-                            this.errorMessage = '邀请码不合法';
-                            break;
-                        default:
-                            this.errorMessage = error.message;
+                () => {
+                    this.router.navigate(['/login']);
+                },
+                error => {
+                    if (error instanceof AuthError) {
+                        switch (error.message) {
+                            case AuthError.DUPLICATE_NAME:
+                                this.errorMessage = '用户名已存在';
+                                break;
+                            case AuthError.INVALID_INVITE_CODE:
+                                this.errorMessage = '邀请码不合法';
+                                break;
+                            case AuthError.PASSWORD_MISMATCH:
+                                this.errorMessage = '密码不匹配';
+                                break;
+                            case AuthError.INVALID_EMAIL:
+                                this.errorMessage = '邮件格式不合法';
+                                break;
+                            default:
+                                this.errorMessage = error.message;
+                        }
+                    } else {
+                        this.errorMessage = error.message;
                     }
-                } else {
-                    this.errorMessage = error.message;
                 }
-            }
-            );
-    }
-
-    registerUser() {
-        this.userService.register(this.registerForm.value)
-            .subscribe(
-            () => {
-                this.router.navigate(['/login']);
-            },
-            error => {
-                if (error instanceof AuthError) {
-                    switch (error.message) {
-                        case AuthError.DUPLICATE_NAME:
-                            this.errorMessage = '用户名已存在';
-                            break;
-                        case AuthError.INVALID_INVITE_CODE:
-                            this.errorMessage = '邀请码不合法';
-                            break;
-                        case AuthError.PASSWORD_MISMATCH:
-                            this.errorMessage = '密码不匹配';
-                            break;
-                        case AuthError.INVALID_EMAIL:
-                            this.errorMessage = '邮件格式不合法';
-                            break;
-                        default:
-                            this.errorMessage = error.message;
-                    }
-                } else {
-                    this.errorMessage = error.message;
-                }
-            }
-            );
+            )
+        );
     }
 
     private buildForm(inviteCode?: string): void {

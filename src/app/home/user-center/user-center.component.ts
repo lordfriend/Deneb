@@ -150,7 +150,7 @@ export class UserCenter implements OnInit, OnDestroy {
     private onFormChanged(errors: any, errorMessages, form: FormGroup) {
         for (const field in errors) {
             // clear previous error message array
-            this.emailFormErrors[field] = [];
+            errors[field] = [];
             const control = form.get(field);
             if (control && control.dirty && control.invalid) {
                 for (const key in control.errors) {

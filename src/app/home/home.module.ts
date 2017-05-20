@@ -20,6 +20,7 @@ import { DenebCommonPipes } from '../pipes/index';
 import { ImageLoadingStrategy } from './bangumi-card/image-loading-strategy.service';
 import { UserCenter } from './user-center/user-center.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { ReactiveFormsModule } from '@angular/forms';
         UIModule,
         CommonModule,
         DenebCommonPipes,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        AlertDialogModule
     ]
 })
 export class HomeModule {

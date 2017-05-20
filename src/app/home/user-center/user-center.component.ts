@@ -28,13 +28,13 @@ export class UserCenter implements OnInit, OnDestroy {
     };
 
     passwordValidationMessages = {
-        current_pass: {
+        password: {
             'required': '当前密码不能为空'
         },
-        new_pass: {
+        new_password: {
             'required': '新密码不能为空'
         },
-        new_pass_repeat: {
+        new_password_repeat: {
             'required': '重复密码不能为空'
         }
     };
@@ -50,9 +50,9 @@ export class UserCenter implements OnInit, OnDestroy {
     };
 
     passwordFormErrors = {
-        current_pass: [],
-        new_pass: [],
-        new_pass_repeat: []
+        password: [],
+        new_password: [],
+        new_password_repeat: []
     };
 
     constructor(private _userSerivce: UserService,
@@ -103,7 +103,7 @@ export class UserCenter implements OnInit, OnDestroy {
     updatePass() {
         let passModel = this.passwordForm.value;
         this._subscription.add(
-            this._userSerivce.updatePass(passModel.current_pass, passModel.new_pass, passModel.new_pass_repeat)
+            this._userSerivce.updatePass(passModel.password, passModel.new_password, passModel.new_password_repeat)
                 .subscribe(
                     () => {
                         this._toastRef.show('密码修改成功');
@@ -135,10 +135,10 @@ export class UserCenter implements OnInit, OnDestroy {
             email: ['', [Validators.required, Validators.email]]
         });
         this.passwordForm = this._fb.group({
-            current_pass: ['', Validators.required],
-            new_pass: ['', Validators.required],
-            new_pass_repeat: ['', Validators.required]
-        }, {validator: passwordMatch('new_pass', 'new_pass_repeat')});
+            password: ['', Validators.required],
+            new_password: ['', Validators.required],
+            new_password_repeat: ['', Validators.required]
+        }, {validator: passwordMatch('new_password', 'new_password_repeat')});
 
         // this._subscription.add(
         //     this.emailForm.valueChanges.subscribe(

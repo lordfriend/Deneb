@@ -73,10 +73,10 @@ export class UserService extends BaseService {
             .catch(this.handleError);
     }
 
-    updatePass(current_pass, new_pass, new_pass_repeat): Observable<any> {
+    updatePass(password, new_password, new_password_repeat): Observable<any> {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        let body = JSON.stringify({new_pass: new_pass, new_pass_repeat: new_pass_repeat, password: current_pass});
+        let body = JSON.stringify({new_password: new_password, new_password_repeat: new_password_repeat, password: password});
         return this._http.post(`${this._baseUrl}/update-pass`, body, options)
             .map(res => res.json())
             .catch(this.handleError);

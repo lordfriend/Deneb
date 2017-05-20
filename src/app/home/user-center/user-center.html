@@ -46,37 +46,37 @@
     <div class="ui segment">
         <h4>密码</h4>
         <form class="ui form" novalidate [formGroup]="passwordForm" [ngClass]="{error: passwordForm.invalid}">
-            <div class="inline field" [ngClass]="{error: passwordFormErrors.current_pass.length > 0}">
+            <div class="inline field" [ngClass]="{error: passwordFormErrors.password.length > 0}">
                 <label>当前密码</label>
                 <input type="password"
-                       formControlName="current_pass"
+                       formControlName="password"
                        (blur)="onFormChanged(passwordFormErrors, passwordValidationMessages, passwordForm)">
             </div>
-            <div class="ui error message" *ngIf="passwordFormErrors.current_pass.length > 0">
+            <div class="ui error message" *ngIf="passwordFormErrors.password.length > 0">
                 <ul class="list">
-                    <li *ngFor="let error of passwordFormErrors.current_pass">{{error}}</li>
+                    <li *ngFor="let error of passwordFormErrors.password">{{error}}</li>
                 </ul>
             </div>
-            <div class="inline field" [ngClass]="{error: passwordFormErrors.new_pass.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
+            <div class="inline field" [ngClass]="{error: passwordFormErrors.new_password.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
                 <label>新密码</label>
                 <input type="password"
-                       formControlName="new_pass"
+                       formControlName="new_password"
                        (blur)="onFormChanged(passwordFormErrors, passwordValidationMessages, passwordForm)">
             </div>
-            <div class="ui error message" *ngIf="passwordFormErrors.new_pass.length > 0">
+            <div class="ui error message" *ngIf="passwordFormErrors.new_password.length > 0">
                 <ul class="list">
-                    <li *ngFor="let error of passwordFormErrors.new_pass">{{error}}</li>
+                    <li *ngFor="let error of passwordFormErrors.new_password">{{error}}</li>
                 </ul>
             </div>
-            <div class="inline field" [ngClass]="{error: passwordFormErrors.new_pass_repeat.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
+            <div class="inline field" [ngClass]="{error: passwordFormErrors.new_password_repeat.length > 0 || passwordForm.errors && passwordForm.errors['mismatchedPasswords']}">
                 <label>重复密码</label>
                 <input type="password"
-                       formControlName="new_pass_repeat"
+                       formControlName="new_password_repeat"
                        (blur)="onFormChanged(passwordFormErrors, passwordValidationMessages, passwordForm)">
             </div>
-            <div class="ui error message" *ngIf="passwordFormErrors.new_pass_repeat.length > 0">
+            <div class="ui error message" *ngIf="passwordFormErrors.new_password_repeat.length > 0">
                 <ul class="list">
-                    <li *ngFor="let error of passwordFormErrors.new_pass_repeat">{{error}}</li>
+                    <li *ngFor="let error of passwordFormErrors.new_password_repeat">{{error}}</li>
                 </ul>
             </div>
             <div class="ui error message" *ngIf="passwordForm.errors && passwordForm.errors['mismatchedPasswords']">

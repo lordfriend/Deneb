@@ -7,6 +7,8 @@
             <tr>
                 <th>ID</th>
                 <th>名字</th>
+                <th>Email</th>
+                <th>邮箱已验证</th>
                 <th>Level</th>
                 <th>操作</th>
             </tr>
@@ -15,6 +17,8 @@
             <tr *ngFor="let user of userList">
                 <td>{{user.id}}</td>
                 <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.email_confirmed ? 'YES': 'NO'}}</td>
                 <td>{{user.level}}</td>
                 <td>
                     <a class="anchor-button" title="修改用户等级" (click)="promoteUser(user)"><i class="wizard icon"></i></a>

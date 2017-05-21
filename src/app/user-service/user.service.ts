@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { User } from '../entity';
 import { BaseService } from '../../helpers/base.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Router } from '@angular/router';
 
 
 @Injectable()
@@ -13,7 +14,8 @@ export class UserService extends BaseService {
     private _userInfoSubject = new BehaviorSubject(null);
 
     constructor(
-        private _http: Http
+        private _http: Http,
+        private _router: Router
     ) {
         super();
         this.getUserInfo().subscribe(() => {});
@@ -47,8 +49,8 @@ export class UserService extends BaseService {
 
     logout(): Observable<any> {
         return this._http.post(`${this._baseUrl}/logout`, null, null)
-            .map(res => res.json())
             .do(() => {
+                this._router.navigateByUrl('/login');
                 this._userInfoSubject.next(null);
             })
             .catch(this.handleError);

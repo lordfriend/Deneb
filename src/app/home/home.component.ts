@@ -100,9 +100,7 @@ export class Home implements OnInit, OnDestroy {
         this._subscription.add(
             this._userService.logout()
                 .subscribe(
-                    () => {
-                        this._router.navigateByUrl('/login');
-                    },
+                    () => {},
                     (error: BaseError) => {
                         this._toastRef.show(error.message);
                     }

@@ -1,11 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {UserService} from '../user-service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {User} from '../entity';
-import {AuthError} from '../../helpers/error/AuthError';
-import {Title} from '@angular/platform-browser';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs/Rx';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UserService } from '../user-service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { User } from '../entity';
+import { AuthError } from '../../helpers/error/AuthError';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs/Rx';
 
 
 @Component({
@@ -14,6 +14,7 @@ import {Subscription} from 'rxjs/Rx';
     styleUrls: ['./login.less']
 })
 export class Login implements OnInit, OnDestroy {
+    private _subscription = new Subscription();
 
     loginForm: FormGroup;
 
@@ -26,8 +27,6 @@ export class Login implements OnInit, OnDestroy {
     siteTitle: string = SITE_TITLE;
 
     sourceUrl: string;
-
-    private routeParamsSubscription: Subscription;
 
     constructor(private userService: UserService,
                 private route: ActivatedRoute,
@@ -45,44 +44,48 @@ export class Login implements OnInit, OnDestroy {
         });
     };
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.title.setTitle(`登录 - ${this.siteTitle}`);
         this.buildForm();
-        this.routeParamsSubscription = this.route.params
-            .subscribe((params) => {
-                this.sourceUrl = params['source'];
-            });
+        this._subscription.add(
+            this.route.params
+                .subscribe((params) => {
+                    console.log(params);
+                    this.sourceUrl = params['sourceUrl'];
+                })
+        );
     }
 
-    ngOnDestroy(): any {
-        this.routeParamsSubscription.unsubscribe();
-        return null;
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 
     login(): void {
         this.inProgress = true;
-        this.userService.login(this.loginForm.value)
-            .subscribe(
-                () => {
-                    if (this.sourceUrl) {
-                        this.router.navigateByUrl(this.sourceUrl);
-                    } else {
-                        this.router.navigateByUrl('/');
-                    }
-
-                },
-                error => {
-                    this.inProgress = false;
-                    if (error instanceof AuthError) {
-                        if (error.isLoginFailed()) {
-                            this.errorMessage = '用户名或密码错误';
+        this._subscription.add(
+            this.userService.login(this.loginForm.value)
+                .subscribe(
+                    () => {
+                        if (this.sourceUrl) {
+                            this.router.navigateByUrl(this.sourceUrl);
                         } else {
-                            this.errorMessage = 'Something Happened';
+                            this.router.navigateByUrl('/');
                         }
-                    } else {
-                        this.errorMessage = '未知错误';
+
+                    },
+                    error => {
+                        this.inProgress = false;
+                        if (error instanceof AuthError) {
+                            if (error.isLoginFailed()) {
+                                this.errorMessage = '用户名或密码错误';
+                            } else {
+                                this.errorMessage = 'Something Happened';
+                            }
+                        } else {
+                            this.errorMessage = '未知错误';
+                        }
                     }
-                }
-            );
+                )
+        );
     }
 }

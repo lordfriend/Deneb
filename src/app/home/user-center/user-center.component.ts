@@ -71,11 +71,12 @@ export class UserCenter implements OnInit, OnDestroy {
         this.buildForm();
         this._subscription.add(
             this._userSerivce.userInfo
+                .filter(user => !!user)
                 .subscribe(
                     user => {
+                        console.log(user);
                         this.user = user;
                         this.emailForm.patchValue(this.user);
-                        console.log(this.user);
                         this.resendMailTimeLeft = MAIL_SEND_INTERVAL - Math.floor((Date.now() - this.getLastMailSendTime())/1000);
                         if (this.resendMailTimeLeft > 0) {
                             this.startCountdown();

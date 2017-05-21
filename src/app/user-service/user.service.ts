@@ -39,7 +39,9 @@ export class UserService extends BaseService {
         let options = new RequestOptions({ headers: headers });
         let body = JSON.stringify(user);
         return this._http.post(queryUrl, body, options)
-            .map(res => res.json())
+            .flatMap(() => {
+                return this.getUserInfo();
+            })
             .catch(this.handleError);
     }
 
@@ -100,6 +102,14 @@ export class UserService extends BaseService {
             token: token
         });
         return this._http.post(`${this._baseUrl}/reset-pass`, body, options)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
+    resendMail() {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        return this._http.post(`${this._baseUrl}/email/resend`, null, options)
             .map(res => res.json())
             .catch(this.handleError);
     }

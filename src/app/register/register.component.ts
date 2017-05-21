@@ -7,6 +7,7 @@ import { AuthError } from '../../helpers/error/AuthError';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { ClientError } from '../../helpers/error/ClientError';
 
 
 /**
@@ -74,6 +75,8 @@ export class Register implements OnInit, OnDestroy {
                             case AuthError.INVALID_EMAIL:
                                 this.errorMessage = '邮件格式不合法';
                                 break;
+                            case ClientError.DUPLICATE_EMAIL:
+                                this.errorMessage = '邮件地址已经被使用';
                             default:
                                 this.errorMessage = error.message;
                         }

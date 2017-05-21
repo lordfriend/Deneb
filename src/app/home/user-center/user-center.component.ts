@@ -6,6 +6,9 @@ import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { BaseError } from '../../../helpers/error/BaseError';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { passwordMatch } from '../../form-utils/validators';
+import { ClientError } from '../../../helpers/error/ClientError';
+
+export const MAIL_SEND_INTERVAL = 60;
 
 @Component({
     selector: 'user-center',
@@ -16,6 +19,9 @@ export class UserCenter implements OnInit, OnDestroy {
 
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
+
+    resendMailTimeLeft: number;
+    timerId: number;
 
     emailValidationMessages = {
         current_pass: {
@@ -64,18 +70,22 @@ export class UserCenter implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.buildForm();
         this._subscription.add(
-            this._userSerivce.getUserInfo()
+            this._userSerivce.userInfo
                 .subscribe(
                     user => {
                         this.user = user;
                         this.emailForm.patchValue(this.user);
+                        console.log(this.user);
+                        this.resendMailTimeLeft = MAIL_SEND_INTERVAL - Math.floor((Date.now() - this.getLastMailSendTime())/1000);
+                        if (this.resendMailTimeLeft > 0) {
+                            this.startCountdown();
+                        }
                     },
                     (error: BaseError) => {
                         this._toastRef.show(error.message);
                     }
                 )
         );
-
     }
 
     ngOnDestroy(): void {
@@ -84,17 +94,22 @@ export class UserCenter implements OnInit, OnDestroy {
 
     updateEmail() {
         let emailModel = this.emailForm.value;
+        this.setLastMailSendTime();
         this._subscription.add(
             this._userSerivce.updateEmail(emailModel.email, emailModel.current_pass)
             .subscribe(
                 () => {
                     this._toastRef.show('更新成功, 请到邮箱确认邮件地址');
-                    this.user.email = emailModel.email;
-                    this.user.email_confirmed = false;
+                    // this.user.email = emailModel.email;
+                    // this.user.email_confirmed = false;
                     this.emailForm.markAsPristine();
                 },
                 (error: BaseError) => {
-                    this._toastRef.show(error.message);
+                    if (error.message === ClientError.DUPLICATE_EMAIL) {
+                        this._toastRef.show('邮件地址已被使用');
+                    } else {
+                        this._toastRef.show(error.message);
+                    }
                 }
             )
         );
@@ -116,6 +131,24 @@ export class UserCenter implements OnInit, OnDestroy {
         );
     }
 
+    resendMail() {
+
+        this._subscription.add(
+            this._userSerivce.resendMail()
+                .subscribe(
+                    () => {
+                        this._toastRef.show('验证邮件发送成功');
+                        this.resendMailTimeLeft = MAIL_SEND_INTERVAL;
+                        this.startCountdown();
+                        this.setLastMailSendTime();
+                    },
+                    (error: BaseError) => {
+                        this._toastRef.show(error.message);
+                    }
+                )
+        );
+    }
+
     onFormChanged(errors: any, errorMessages, form: FormGroup) {
         for (const field in errors) {
             // clear previous error message array
@@ -129,6 +162,7 @@ export class UserCenter implements OnInit, OnDestroy {
             }
         }
     }
+
     private buildForm() {
         this.emailForm = this._fb.group({
             // current_pass: ['', Validators.required],
@@ -158,5 +192,28 @@ export class UserCenter implements OnInit, OnDestroy {
 
         this.onFormChanged(this.emailFormErrors, this.emailValidationMessages, this.emailForm);
         this.onFormChanged(this.passwordFormErrors, this.passwordValidationMessages, this.passwordForm);
+    }
+
+    private startCountdown() {
+
+        if (this.resendMailTimeLeft <= 0) {
+            clearInterval(this.timerId);
+            return;
+        }
+        this.timerId = window.setInterval(() => {
+            this.resendMailTimeLeft -= 1;
+        }, 1000);
+    }
+
+    private getLastMailSendTime(): number {
+        let last_mail_send_time = parseInt(localStorage.getItem('last_mail_send_time'));
+        if (!last_mail_send_time) {
+            last_mail_send_time = 0;
+        }
+        return last_mail_send_time;
+    }
+
+    private setLastMailSendTime(): void {
+        localStorage.setItem('last_mail_send_time', Date.now() + '');
     }
 }

@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { UserService } from '../user-service/user.service';
 import {BaseError} from '../../helpers/error/BaseError';
+import { ClientError } from '../../helpers/error/ClientError';
 
 @Component({
     selector: 'forget-pass',
@@ -44,7 +45,11 @@ export class ForgetPass implements OnDestroy {
                 },
                 (error: BaseError) => {
                     this.isPending = false;
-                    this._toastRef.show(error.message);
+                    if (error.message === ClientError.MAIL_NOT_EXISTS) {
+                        this._toastRef.show('邮件地址不错在或错误');
+                    } else {
+                        this._toastRef.show(error.message);
+                    }
                 }
             ));
     }

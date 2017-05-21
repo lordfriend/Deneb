@@ -22,6 +22,13 @@
                        autocomplete="off"
                        (blur)="onFormChanged(emailFormErrors, emailValidationMessages, emailForm)">
                 <span class="warning text" *ngIf="user && user.email && !user.email_confirmed">邮箱地址未验证</span>
+                <button *ngIf="user && user.email && !user.email_confirmed"
+                        type="button"
+                        class="ui button"
+                        [disabled]="resendMailTimeLeft > 0"
+                        (click)="resendMail()">
+                    {{resendMailTimeLeft > 0 ? resendMailTimeLeft + '秒后': ''}}重新发送验证邮件
+                </button>
             </div>
             <div class="ui error message" *ngIf="emailFormErrors.email.length > 0">
                 <ul class="list">

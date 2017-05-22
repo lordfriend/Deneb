@@ -6,6 +6,7 @@ import {User} from '../../entity/user';
 import {BaseError} from '../../../helpers/error/BaseError';
 import {UserPromoteModal} from './user-promote-modal/user-promote-modal.component';
 import {ClientError} from '../../../helpers/error/ClientError';
+import {UserService} from '../../user-service/user.service';
 
 @Component({
     selector: 'user-manager',
@@ -24,7 +25,10 @@ export class UserManager implements OnInit, OnDestroy {
     inviteCodeList: string[];
     inviteCodeNum = 1;
 
+    currentAdmin: User;
+
     constructor(
+        private _userService: UserService,
         private _userManageService: UserManagerSerivce,
         private _dialog: UIDialog,
         toast: UIToast
@@ -33,6 +37,14 @@ export class UserManager implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this._subscription.add(
+            this._userService.userInfo
+                .subscribe(
+                    user => {
+                        this.currentAdmin = user;
+                    }
+                )
+        );
         this.getUserList(this.userPage);
         this.getInviteCodeList();
     }

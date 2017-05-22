@@ -1,8 +1,6 @@
 import {NgModule} from '@angular/core';
 import {App} from './app.component';
 import {AnalyticsService} from './analytics.service';
-import {Authentication} from './user-service/authentication.service';
-import {UserService} from './user-service/user.service';
 import {RouterModule} from '@angular/router';
 import {BrowserModule} from '@angular/platform-browser';
 import {appRoutes} from './app.routes';
@@ -19,6 +17,7 @@ import {HomeModule} from './home/home.module';
 import { EmailConfirmModule } from './email-confirm/email-confirm.module';
 import {ForgetPassModule} from './forget-pass/forget-pass.module';
 import { ResetPassModule } from './reset-pass/reset-pass.module';
+import {UserServiceModule} from './user-service/index';
 
 @NgModule({
     declarations: [
@@ -29,8 +28,6 @@ import { ResetPassModule } from './reset-pass/reset-pass.module';
     ],
     providers: [
         AnalyticsService,
-        Authentication,
-        UserService,
         TaskService,
         ENV_PROVIDERS
     ],
@@ -46,7 +43,8 @@ import { ResetPassModule } from './reset-pass/reset-pass.module';
         HomeModule,
         EmailConfirmModule,
         ForgetPassModule,
-        ResetPassModule
+        ResetPassModule,
+        UserServiceModule
     ],
     bootstrap: [App]
 })

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0
+
+- Add user-center page for user settings. refactor register, forget password, reset password, remove invite code reset password support.
+
+- Update Readme
+
 ## 0.9.2
 
 Remove stalled state and loader visibility is no longer depending on that state

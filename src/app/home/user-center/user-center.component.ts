@@ -74,7 +74,6 @@ export class UserCenter implements OnInit, OnDestroy {
                 .filter(user => !!user)
                 .subscribe(
                     user => {
-                        console.log(user);
                         this.user = user;
                         this.emailForm.patchValue(this.user);
                         this.resendMailTimeLeft = MAIL_SEND_INTERVAL - Math.floor((Date.now() - this.getLastMailSendTime())/1000);

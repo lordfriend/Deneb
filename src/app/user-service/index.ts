@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {UserService} from './user.service';
-import {HttpModule} from '@angular/http';
-import {RouterModule} from '@angular/router';
-import {Authentication} from './authentication.service';
+import { NgModule } from '@angular/core';
+import { UserService } from './user.service';
+import { HttpModule } from '@angular/http';
+import { RouterModule } from '@angular/router';
+import { Authentication } from './authentication.service';
 
 @NgModule({
     providers: [UserService, Authentication],

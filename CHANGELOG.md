@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+
+
 ## 1.0.0
 
 - Add user-center page for user settings. refactor register, forget password, reset password, remove invite code reset password support.

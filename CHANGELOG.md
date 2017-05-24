@@ -2,7 +2,8 @@
 
 ## 1.0.1
 
-
+- Fix bug when logout a user, authentication still uses the previous use information to authenticate current user permission.
+- Hide operation in user-manage page when current user don't have that permission.
 
 ## 1.0.0
 

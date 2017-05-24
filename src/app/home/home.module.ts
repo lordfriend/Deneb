@@ -21,6 +21,8 @@ import { ImageLoadingStrategy } from './bangumi-card/image-loading-strategy.serv
 import { UserCenter } from './user-center/user-center.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
+import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
+import { ResponsiveImage } from '../responsive-image/responsive-image.directive';
 
 
 @NgModule({
@@ -49,7 +51,8 @@ import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
         CommonModule,
         DenebCommonPipes,
         ReactiveFormsModule,
-        AlertDialogModule
+        AlertDialogModule,
+        ResponsiveImageModule
     ]
 })
 export class HomeModule {

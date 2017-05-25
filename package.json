@@ -68,6 +68,7 @@
     "core-js": "^2.4.1",
     "deneb-ui": "^0.3.2",
     "ie-shim": "0.1.0",
+    "intersection-observer": "^0.2.1",
     "reflect-metadata": "^0.1.9",
     "rxjs": "5.0.2",
     "semantic-ui-less": "^2.2.4",

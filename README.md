@@ -1,12 +1,10 @@
 # Web App client for [Albireo](https://github.com/lordfriend/Albireo)
 
-Built with Angular2 using angular2-webpack-starter
+## Building requirements
 
-### Building requirements
+Nodejs 7.0 and above, npm 3 and above, Yarn (I recommend this package manager to manage npm packages)
 
-Nodejs 4.0 and above, npm 3 and above
-
-### Development
+## Development
 
 Clone this repo, install dependencies
 
@@ -23,7 +21,7 @@ to start up an dev server, run `npm start` in current directory.
 
 the backend server aka [Albireo](https://github.com/lordfriend/Albireo) server must be started. see the readme of that project.
 
-### Deployment
+## Deployment
 
 To deploy on production server, a compiled and minfied bundle is needed, to build this project, just run the following command.
 
@@ -34,3 +32,24 @@ npm run build:aot:prod
 ```
 
 After building process finished, you will have a **dist** directory in your project root. copy this project to your static file server.
+
+### Nginx Configuration for SPA
+
+To support SPA which using HTML5 History API. there are a little configuration need be done in Nginx or other your HTTP static server. Here we will
+demonstrate with Nginx.
+
+You can also see other reference for this common case: [https://www.linkedin.com/pulse/decouple-your-single-page-app-from-backend-nginx-tom-bray](https://www.linkedin.com/pulse/decouple-your-single-page-app-from-backend-nginx-tom-bray)
+
+You need fallback all request except the path start with /api to /index.html which will make the SPA be able to handle the route in browser.
+
+```
+location / {
+    try_files $uri $uri/ /index.html;
+}
+
+# Proxy requests to "/auth" and "/api" to the server.
+location /api {
+    proxy_pass http://application_upstream;
+    proxy_redirect off;
+}
+```

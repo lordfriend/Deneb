@@ -18,6 +18,7 @@ export class UserService extends BaseService {
         private _router: Router
     ) {
         super();
+        console.log('init user service: #' + (Math.random()* 1000));
         this.getUserInfo().subscribe(() => {});
     }
 

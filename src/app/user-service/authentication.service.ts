@@ -11,7 +11,13 @@ export class Authentication implements CanActivate {
 
     user: User;
 
-    constructor(private userService: UserService, private router: Router) {
+    constructor(private _userService: UserService, private router: Router) {
+        this._userService.userInfo
+            .subscribe(
+                user => {
+                    this.user = user;
+                }
+            );
     }
 
     public invalidateUser(): void {
@@ -22,7 +28,7 @@ export class Authentication implements CanActivate {
         if (this.user) {
             return Observable.of(this.user);
         } else {
-            return this.userService.getUserInfo()
+            return this._userService.getUserInfo()
                 .map((user: User) => {
                     this.user = user;
                     return user;

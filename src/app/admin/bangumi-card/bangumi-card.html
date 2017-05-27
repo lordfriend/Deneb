@@ -1,7 +1,7 @@
 <div class="ui segment">
     <div class="bangumi-list-item">
         <div class="cover-wrapper" *ngIf="!!bangumi.cover">
-            <img [src]="bangumi.cover" alt="image" class="bangumi-image">
+            <img [originalSrc]="bangumi.cover" [dimension]="{width: '10rem', height: '13rem'}" alt="image" class="bangumi-image">
         </div>
         <div class="cover-wrapper" *ngIf="!!bangumi.image && !bangumi.cover">
             <img [src]="bangumi.image" alt="image" class="bangumi-image">

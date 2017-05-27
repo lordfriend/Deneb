@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 export interface ObservableStub {
     target: Element;
     callback(rect: ClientRect): void;
+    unobserveOnVisible: boolean;
 }
 
 @Injectable()
@@ -20,6 +21,9 @@ export class ResponsiveService {
             let stub = this.getStub(entry.target);
             if (stub) {
                 stub.callback(entry.boundingClientRect);
+                if (stub.unobserveOnVisible) {
+                    this.unobserve(stub);
+                }
             }
         })
     }
@@ -37,8 +41,6 @@ export class ResponsiveService {
         if (index !== -1) {
             this._observableStubList.splice(index, 1);
             this._observer.unobserve(stub.target);
-        } else {
-            throw new Error('Cannot find that ObservableStub');
         }
     }
 

@@ -55,9 +55,9 @@
                     <span>第{{episode.episode_no}}话</span>
                 </div>
                 <a *ngIf="episode.status===2" class="image" [routerLink]="['/play', episode.id]">
-          <span class="image-wrapper">
-              <img [src]="episode.thumbnail" alt="image">
-          </span>
+                    <span class="image-wrapper">
+                        <img [originalSrc]="episode.thumbnail" alt="image">
+                    </span>
                 </a>
                 <a *ngIf="episode.status===2" class="content" [routerLink]="['/play', episode.id]">
                     <span>第{{episode.episode_no}}话</span>

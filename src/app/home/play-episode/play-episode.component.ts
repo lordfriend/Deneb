@@ -19,7 +19,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
     episode: Episode;
 
-    private isBangumiReady: boolean;
+    isBangumiReady: boolean;
 
     private routeParamsSubscription: Subscription;
     private positionChangeSubscription: Subscription;

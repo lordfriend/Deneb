@@ -31,7 +31,7 @@
     <div class="card bangumi-card" *ngFor="let bangumi of onAirBangumi">
       <a class="image" [routerLink]="['/bangumi', bangumi.id]">
           <div class="image-wrapper">
-              <img [src]="bangumi.cover" alt="image">
+              <img [originalSrc]="bangumi.cover" alt="image">
           </div>
       </a>
       <div *ngIf="bangumi.favorite_status" class="ui ribbon label"

@@ -33,6 +33,7 @@ import {UserManagerSerivce} from './user-manager/user-manager.service';
 import {UserPromoteModal} from './user-manager/user-promote-modal/user-promote-modal.component';
 import {DenebCommonPipes} from '../pipes/index';
 import {VideoFileModal} from './bangumi-detail/video-file-modal/video-file-modal.component';
+import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import {VideoFileModal} from './bangumi-detail/video-file-modal/video-file-modal
         UIImagePlaceholderModule,
         UIModule,
         ConfirmDialogModule,
-        DenebCommonPipes
+        DenebCommonPipes,
+        ResponsiveImageModule
     ],
     entryComponents: [
         SearchBangumi,

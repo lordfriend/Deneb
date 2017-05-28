@@ -31,6 +31,8 @@ export class Episode {
     // optional
     watch_progress: WatchProgress;
 
+    thumbnail_color: string;
+
 
     static fromRawData(rawData: any, episode_no?: number) {
         let episode = new Episode();

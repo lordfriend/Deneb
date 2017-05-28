@@ -1,50 +1,28 @@
 <div class="ui container default-container">
-  <div class="ui fluid two item secondary pointing menu">
-    <a class="item" [ngClass]="{active: bangumiType === 2}" (click)="changeBangumiType(2)">动画</a>
-    <a class="item" [ngClass]="{active: bangumiType === 6}" (click)="changeBangumiType(6)">日剧</a>
-  </div>
-  <!--<h4>最近更新</h4>-->
-  <!--<div class="ui divider"></div>-->
-  <!--<div class="ui five doubling cards">-->
-    <!--<div class="card episode-card" *ngFor="let episode of recentEpisodes">-->
-      <!--<a class="image" [routerLink]="['Play', {episode_id: episode.id}]">-->
-        <!--<ui-image-placeholder [imageUrl]="episode.thumbnail">-->
-          <!--<div class="ui-image-fallback">-->
-            <!--<h4 class="ui icon film icon-holder">-->
-              <!--<i class="film icon"></i>-->
-            <!--</h4>-->
-          <!--</div>-->
-        <!--</ui-image-placeholder>-->
-      <!--</a>-->
-      <!--<a class="content" [routerLink]="['Play', {episode_id: episode.id}]">-->
-        <!--<span>{{episode.bangumi.name_cn}}</span>-->
-        <!--<span>第{{episode.episode_no}}话</span>-->
-      <!--</a>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<h4>ON AIR</h4>-->
-  <!--<div class="ui divider"></div>-->
-  <div class="ui active inverted dimmer on-air-loading-wrapper" *ngIf="!onAirBangumi">
-    <div class="ui medium loader"></div>
-  </div>
-  <div class="ui five doubling cards" *ngIf="onAirBangumi">
-    <div class="card bangumi-card" *ngFor="let bangumi of onAirBangumi">
-      <a class="image" [routerLink]="['/bangumi', bangumi.id]">
-          <div class="image-wrapper">
-              <img [src]="bangumi.cover" alt="image">
-          </div>
-      </a>
-      <div *ngIf="bangumi.favorite_status" class="ui ribbon label"
-           [ngClass]="{
-           orange: bangumi.favorite_status === 1,
-           olive: bangumi.favorite_status === 2,
-           blue: bangumi.favorite_status === 3,
-           brown: bangumi.favorite_status === 4,
-           grey: bangumi.favorite_status === 5
-           }">{{FAVORITE_LABEL[bangumi.favorite_status]}}</div>
-      <a class="content" [routerLink]="['/bangumi', bangumi.id]">
-        <span>{{bangumi.name_cn}}</span>
-      </a>
+    <div class="ui fluid two item secondary pointing menu">
+        <a class="item" [ngClass]="{active: bangumiType === 2}" (click)="changeBangumiType(2)">动画</a>
+        <a class="item" [ngClass]="{active: bangumiType === 6}" (click)="changeBangumiType(6)">日剧</a>
     </div>
-  </div>
+    <div class="ui active inverted dimmer on-air-loading-wrapper" *ngIf="!onAirBangumi">
+        <div class="ui medium loader"></div>
+    </div>
+    <div class="ui five doubling cards" *ngIf="onAirBangumi">
+        <div class="card bangumi-card" *ngFor="let bangumi of onAirBangumi">
+            <a class="image" [routerLink]="['/bangumi', bangumi.id]">
+                <responsive-image [src]="bangumi.cover" [size]="{width: '100%', ratio: 1.405152224824}" [background]="bangumi.cover_color"></responsive-image>
+            </a>
+            <div *ngIf="bangumi.favorite_status" class="ui ribbon label"
+                 [ngClass]="{
+                   orange: bangumi.favorite_status === 1,
+                   olive: bangumi.favorite_status === 2,
+                   blue: bangumi.favorite_status === 3,
+                   brown: bangumi.favorite_status === 4,
+                   grey: bangumi.favorite_status === 5
+                   }">{{FAVORITE_LABEL[bangumi.favorite_status]}}
+            </div>
+            <a class="content" [routerLink]="['/bangumi', bangumi.id]">
+                <span>{{bangumi.name_cn}}</span>
+            </a>
+        </div>
+    </div>
 </div>

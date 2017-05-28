@@ -17,7 +17,6 @@ import {AdminNavbar} from './admin-navbar/admin-navbar.component';
 import {BangumiCard} from './bangumi-card/bangumi-card.component';
 import {UIModule} from 'deneb-ui';
 import {BangumiTypeNamePipe} from './bangumi-pipes/type-name-pipe';
-import {UIImagePlaceholderModule} from '../image-placeholder/index';
 import {ResultDetail} from './search-bangumi/result-detail/result-detail.component';
 import {BangumiBasic} from './bangumi-detail/bangumi-basic/bangumi-basic.component';
 import {BangumiStatusNamePipe, VideoFileStatusNamePipe} from './bangumi-pipes/status-name-pipe';
@@ -33,6 +32,7 @@ import {UserManagerSerivce} from './user-manager/user-manager.service';
 import {UserPromoteModal} from './user-manager/user-promote-modal/user-promote-modal.component';
 import {DenebCommonPipes} from '../pipes/index';
 import {VideoFileModal} from './bangumi-detail/video-file-modal/video-file-modal.component';
+import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
 
 
 @NgModule({
@@ -72,10 +72,10 @@ import {VideoFileModal} from './bangumi-detail/video-file-modal/video-file-modal
         RouterModule.forChild(adminRoutes),
         HttpModule,
         Ng2SemanticModule,
-        UIImagePlaceholderModule,
         UIModule,
         ConfirmDialogModule,
-        DenebCommonPipes
+        DenebCommonPipes,
+        ResponsiveImageModule
     ],
     entryComponents: [
         SearchBangumi,

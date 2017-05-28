@@ -9,6 +9,7 @@ import {InfiniteList, SCROLL_STATE} from 'deneb-ui';
 import {Subscription} from 'rxjs/Subscription';
 import {ImageLoadingStrategy} from './image-loading-strategy.service';
 import {Router} from '@angular/router';
+import { getRemPixel } from '../../../helpers/dom';
 
 export const CARD_HEIGHT_REM = 16;
 
@@ -83,18 +84,19 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
         if (this.imageLoaded || !this.bangumi || !image) {
             return;
         }
-        let imageUrl = this.bangumi.cover;
+        let {width, height} = BangumiCard.getImageDimension();
+        let imageUrl = `${this.bangumi.cover}?size=${width}x${height}`;
         if (!this.lazy) {
             image.src = imageUrl;
             return;
         }
-        image.src = "";
+        image.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQI12NgYAAAAAMAASDVlMcAAAAASUVORK5CYII=';
         if (this._imageLoadingStrategy.hasLoaded(imageUrl)) {
             image.src = imageUrl;
         }
         if (this.scrollState === SCROLL_STATE.IDLE) {
             image.onload = () => {
-                this._imageLoadingStrategy.addLoadedUrl(imageUrl)
+                this._imageLoadingStrategy.addLoadedUrl(imageUrl);
             };
             this._imageLoadDelayTimerId = window.setTimeout(() => {
                 image.src = imageUrl;
@@ -102,5 +104,12 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
         } else if (this.scrollState === SCROLL_STATE.SCROLLING) {
             clearTimeout(this._imageLoadDelayTimerId);
         }
+    }
+
+    static getImageDimension(): {width: number, height: number} {
+        return {
+            width: getRemPixel(10),
+            height: getRemPixel(13)
+        };
     }
 }

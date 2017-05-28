@@ -96,7 +96,7 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
         }
         if (this.scrollState === SCROLL_STATE.IDLE) {
             image.onload = () => {
-                this._imageLoadingStrategy.addLoadedUrl(imageUrl)
+                this._imageLoadingStrategy.addLoadedUrl(imageUrl);
             };
             this._imageLoadDelayTimerId = window.setTimeout(() => {
                 image.src = imageUrl;

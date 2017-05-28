@@ -15,7 +15,9 @@
     </div>
     <div class="bangumi-info">
         <div class="bangumi-cover">
-            <responsive-image [src]="episode.bangumi.cover" [size]="{width: '100%', height: 'auto'}"></responsive-image>
+            <responsive-image [src]="episode.bangumi.cover"
+                              [size]="{width: '100%', height: 'auto'}"
+                              [background]="episode.bangumi.cover_color"></responsive-image>
         </div>
         <div class="bangumi-basic-info">
             <h2 class="bangumi-title name-cn"><a [routerLink]="['/bangumi', episode.bangumi_id]">{{episode.bangumi.name_cn}}</a>

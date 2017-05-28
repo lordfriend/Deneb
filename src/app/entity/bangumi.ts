@@ -37,6 +37,8 @@ export class Bangumi {
     // @Optional
     delete_eta: number;
 
+    cover_color: string;
+
     static WISH = 1;
     static WATCHED = 2;
     static WATCHING = 3;

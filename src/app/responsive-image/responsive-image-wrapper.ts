@@ -26,7 +26,8 @@ export const DEFAULT_HIDDEN_OPACITY = 0.01;
                     [originalSrc]="src"
                     [dimension]="dimension"
                     [style.width]="imageWidth"
-                    [style.height]="imageHeight" [style.position]="imagePosition"
+                    [style.height]="imageHeight" 
+                    [style.position]="imagePosition"
                     [style.opacity]="imageOpacity"
                     (load)="onLoad()"
                     (error)="onError()">`,
@@ -66,7 +67,7 @@ export class ResponsiveImageWrapper {
             this.imageHeight = '100%';
             this.hostWidth = s.width;
             this.hostHeight = '0';
-            this.hostPaddingBottom = `${s.ratio}%`;
+            this.hostPaddingBottom = `${s.ratio * 100}%`;
             this.imagePosition = 'absolute';
             let widthInPixel = ResponsiveImage.getPx(s.width);
             if (widthInPixel !== 0) {

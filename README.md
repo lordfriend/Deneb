@@ -53,3 +53,20 @@ location /api {
     proxy_redirect off;
 }
 ```
+
+### Image Resize service
+
+From 1.1.0, we support responsive image feature which will request a resize image by appending query string `?size={width}x{height}`.
+This will significantly reduce the network usage and increase the loading performance.
+
+We assume the image service support the following method:
+
+- size={width}x{height} will return a image in dimension of {width}x{height} which is a resize version of original image.
+- size={width}x0 will return an image with a resize width but keeping the ratio of height.
+- size=0x{height} will return an image with a resize height but keeping the ratio of width.
+- without size query string will return the original image.
+
+
+To support this feature, we use [Picfit](https://github.com/thoas/picfit) and some nginx configuration.
+
+But this is not a part of this project, you need to setup your own image service.

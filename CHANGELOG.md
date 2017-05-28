@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+- Add support for responsive image request. every image request will append size={width}x{height} and return the resized image according
+ to layout dimension. this will significantly reduce the network usage in image transmission. To support this feature, please read the readme
+- Add background color for image placeholder which is dominant color extracted from certain image. this feature require the backend version > 2.1.0
+
 ## 1.0.1
 
 - Fix bug when logout a user, authentication still uses the previous use information to authenticate current user permission.

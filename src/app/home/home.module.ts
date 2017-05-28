@@ -8,7 +8,6 @@ import { NgModule } from '@angular/core';
 import { HomeService } from './home.service';
 import { PlayerModule } from './player/player.module';
 import { HttpModule } from '@angular/http';
-import { UIImagePlaceholderModule } from '../image-placeholder/index';
 import { UIModule } from 'deneb-ui';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -22,7 +21,6 @@ import { UserCenter } from './user-center/user-center.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
 import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
-import { ResponsiveImage } from '../responsive-image/responsive-image.directive';
 
 
 @NgModule({
@@ -46,7 +44,6 @@ import { ResponsiveImage } from '../responsive-image/responsive-image.directive'
         BrowserModule,
         PlayerModule,
         HttpModule,
-        UIImagePlaceholderModule,
         UIModule,
         CommonModule,
         DenebCommonPipes,

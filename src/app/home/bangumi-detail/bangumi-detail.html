@@ -4,13 +4,9 @@
 <div class="ui container bangumi-default-container" *ngIf="bangumi">
     <div class="bangumi-info">
         <div #bangumiCover class="bangumi-cover" *ngIf="bangumi.cover">
-            <ui-image-placeholder [imageUrl]="bangumi.cover">
-                <div class="ui-image-fallback">
-                    <h4 class="ui icon film icon-holder">
-                        <i class="film icon"></i>
-                    </h4>
-                </div>
-            </ui-image-placeholder>
+            <responsive-image [src]="bangumi.cover"
+                              [size]="{width: '100%', height: 'auto'}"
+                              [background]="bangumi.cover_color"></responsive-image>
         </div>
         <div class="bangumi-cover-revealer" [style.height]="coverRevealerHeight" (click)="toggleCover()">
         </div>
@@ -55,9 +51,9 @@
                     <span>第{{episode.episode_no}}话</span>
                 </div>
                 <a *ngIf="episode.status===2" class="image" [routerLink]="['/play', episode.id]">
-                    <span class="image-wrapper">
-                        <img [originalSrc]="episode.thumbnail" alt="image">
-                    </span>
+                    <responsive-image [src]="episode.thumbnail"
+                                      [size]="{width: '100%', ratio: 0.5625}"
+                                      [background]="episode.thumbnail_color"></responsive-image>
                 </a>
                 <a *ngIf="episode.status===2" class="content" [routerLink]="['/play', episode.id]">
                     <span>第{{episode.episode_no}}话</span>

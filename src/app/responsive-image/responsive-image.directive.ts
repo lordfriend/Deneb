@@ -6,8 +6,8 @@ import { ObservableStub, ResponsiveService } from './responsive.service';
 import { getRemPixel, getVhInPixel, getVwInPixel } from '../../helpers/dom';
 
 export interface ResponsiveDimension {
-    width: string; // px, rem, vw, auto
-    height: string; // px, rem, vh, auto
+    width: string; // px, rem, vw, auto, 100%
+    height: string; // px, rem, vh, auto, 100%
 }
 /**
  * This directive will let a normal HTMLImageElement load a resized image from source url according to its current dimension.
@@ -55,19 +55,20 @@ export class ResponsiveImage implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        if (!this.dimension || (this.dimension.width === 'auto' && this.dimension.height === 'auto')) {
+        if (!this.dimension ||
+            this.dimension.width === '100%' || this.dimension.height === '100%') {
             this.needMeasure();
             return;
         }
         let width = this.dimension.width;
         let height = this.dimension.height;
         if (width !== 'auto') {
-            this._width = this.getPx(width);
+            this._width = ResponsiveImage.getPx(width);
         } else {
             this._width = 0;
         }
         if (height !== 'auto') {
-            this._height = this.getPx(height);
+            this._height = ResponsiveImage.getPx(height);
         } else {
             this._height = 0;
         }
@@ -85,8 +86,16 @@ export class ResponsiveImage implements OnInit, OnDestroy {
             target: this._element.nativeElement,
             callback: (rect: ClientRect) => {
                 console.log(rect);
-                this._width = rect.width;
-                this._height = rect.height;
+                if (!this.dimension || this.dimension.width !== 'auto') {
+                    this._width = rect.width;
+                } else {
+                    this._width = 0;
+                }
+                if (!this.dimension || this.dimension.height !== 'auto') {
+                    this._height = rect.height;
+                } else {
+                    this._height = 0;
+                }
                 this.makeRespSrc(true);
             },
             unobserveOnVisible: true
@@ -94,9 +103,11 @@ export class ResponsiveImage implements OnInit, OnDestroy {
         this._responsiveService.observe(this.observableStub);
     }
 
-    //noinspection JSMethodCanBeStatic
-    private getPx(dimen: string): number {
+    static getPx(dimen: string): number {
         let match = dimen.match(/(\d*(?:.\d+)?)(px|rem|em|vw|vh)$/);
+        if (!match) {
+            return 0;
+        }
         let value = parseInt(match[1]);
         let unit = match[2];
         switch (unit) {

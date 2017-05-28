@@ -11,7 +11,7 @@
 <div class="bangumi-detail-container" *ngIf="bangumi">
     <div class="bangumi-basic-info">
         <div class="cover-wrapper">
-            <img [src]="bangumi.cover" alt="image" class="bangumi-image">
+            <responsive-image [src]="bangumi.cover" [size]="{width: '100%', height: 'auto'}"></responsive-image>
         </div>
         <div class="bangumi-info-text">
             <h3 class="bangumi-title">
@@ -126,13 +126,10 @@
                                 </h4>
                             </div>
                         </div>
-                        <ui-image-placeholder [imageUrl]="episode.thumbnail" *ngIf="episode.status === 2">
-                            <div class="ui-image-fallback">
-                                <div class="ui icon film icon-holder">
-                                    <i class="film icon"></i>
-                                </div>
-                            </div>
-                        </ui-image-placeholder>
+                        <responsive-image
+                            [src]="episode.thumbnail"
+                            [size]="{width: '6rem', height: '3.375rem'}"
+                            display="table" *ngIf="episode.status === 2"></responsive-image>
                     </td>
                     <td class="title">
                         <span class="key">日文:</span><span class="value">{{episode.name}}</span> <br>

@@ -20,6 +20,9 @@ import { VideoVolumeControl } from './controls/volume-control/volume-control.com
     ],
     imports: [
         CommonModule
+    ],
+    exports: [
+        VideoPlayer
     ]
 })
 export class VideoPlayerModule {

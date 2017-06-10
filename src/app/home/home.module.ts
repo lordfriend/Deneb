@@ -21,6 +21,7 @@ import { UserCenter } from './user-center/user-center.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
 import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
+import { VideoPlayerModule } from '../video-player/video-player.module';
 
 
 @NgModule({
@@ -42,14 +43,14 @@ import { ResponsiveImageModule } from '../responsive-image/responsive-image.modu
     imports: [
         RouterModule.forChild(homeRoutes),
         BrowserModule,
-        PlayerModule,
         HttpModule,
         UIModule,
         CommonModule,
         DenebCommonPipes,
         ReactiveFormsModule,
         AlertDialogModule,
-        ResponsiveImageModule
+        ResponsiveImageModule,
+        VideoPlayerModule
     ]
 })
 export class HomeModule {

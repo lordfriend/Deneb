@@ -1,9 +1,9 @@
 <video #media
+       [id]="playerId"
        preload="metadata"
-       autoplay
-       crossorigin="anonymous">
+       crossorigin>
     <source [src]="mediaUrl" [type]="mediaType">
 </video>
-<video-controls>
+<div class="video-control-container" #controlContainer>
 
-</video-controls>
+</div>

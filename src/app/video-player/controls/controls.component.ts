@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, Self } from '@angular/
 import { VideoPlayer } from '../video-player.component';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
 export const CONTROL_FADE_OUT_TIME = 3000;
 
@@ -12,18 +11,17 @@ export const CONTROL_FADE_OUT_TIME = 3000;
 })
 export class VideoControls implements OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
-    private _motions = new Subject<any>();
 
     showControls = true;
 
-    constructor(@Self() private _hostRef: ElementRef) {
+    constructor(@Self() private _hostRef: ElementRef,
+                private _videoPlayer: VideoPlayer) {
     }
 
-    /**
-     * this item is used for any component which trigger a motion can make the controls show or disrupt the fade timeout
-     */
-    emitMotion(item: any) {
-        this._motions.next(item);
+    onClickVideo(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+
     }
 
     ngAfterViewInit(): void {
@@ -44,17 +42,10 @@ export class VideoControls implements OnDestroy, AfterViewInit {
                     }
                 )
         );
-        this._subscription.add(
-            Observable.fromEvent(hosteElement, 'mousemove')
-                .subscribe(
-                    () => {
-                        this.emitMotion(1);
-                    }
-                )
-        );
 
         this._subscription.add(
-            this._motions.asObservable()
+            this._videoPlayer.motion
+                .merge(Observable.fromEvent(hosteElement, 'mousemove'))
                 .timeout(CONTROL_FADE_OUT_TIME)
                 .do(() => {
                     },

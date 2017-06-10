@@ -2,8 +2,9 @@
     <div class="ui medium loader"></div>
 </div>
 <div class="theater-backdrop" *ngIf="episode">
-    <player class="player-width player-height" [episode]="episode" (onProgress)="onWatchPositionUpdate($event)"
-            (onDurationUpdate)="onDurationUpdate($event)"></player>
+    <!--<player class="player-width player-height" [episode]="episode" (onProgress)="onWatchPositionUpdate($event)"-->
+            <!--(onDurationUpdate)="onDurationUpdate($event)"></player>-->
+    <video-player class="player-width player-height" [videoFile]="episode.video_files[0]"></video-player>
 </div>
 <div class="ui container episode-info-container" *ngIf="episode">
     <h3 class=episode-title>

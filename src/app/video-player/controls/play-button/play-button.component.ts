@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
     styles: [`
         :host {
             display: inline-block;
+            box-sizing: border-box;
             flex: 0 0 auto;
             margin-left: 0.5rem;
             margin-right: 0.5rem;

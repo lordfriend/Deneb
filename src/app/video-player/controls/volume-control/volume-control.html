@@ -2,6 +2,7 @@
     <i class="icon" [ngClass]="volumeLevelClass"></i>
 </div>
 <div class="volume-slider-wrapper" #slider>
-    <div class="volume-slider"></div>
+    <div class="volume-slider-bg"></div>
+    <div class="volume-slider-current" [style.width]="(volume * 100) + '%'"></div>
     <div class="slider-handler"></div>
 </div>

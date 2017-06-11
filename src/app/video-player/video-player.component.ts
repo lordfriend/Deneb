@@ -34,6 +34,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private _state = new BehaviorSubject(PlayState.PAUSED);
     private _buffered = new BehaviorSubject(0);
     private _volume = new BehaviorSubject(1);
+    private _muted = new BehaviorSubject(false);
     private _seeking = new BehaviorSubject(false);
 
     @Input()
@@ -79,6 +80,10 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     get volume(): Observable<number> {
         return this._volume.asObservable();
+    }
+
+    get muted(): Observable<boolean> {
+        return this._muted.asObservable();
     }
 
     get seeking(): Observable<boolean> {
@@ -139,54 +144,42 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this.fullscreenAPI = new FullScreenAPI(mediaElement, this.videoPlayerRef.nativeElement);
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'durationchange')
-                .subscribe(
-                    () => {
-                        this._durationSubject.next(mediaElement.duration);
-                    }
-                )
+                .subscribe(() => {
+                    this._durationSubject.next(mediaElement.duration);
+                })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'loadedmetadata')
-                .subscribe(
-                    () => {
-                        // TODO: set seeking position
-                    }
-                )
+                .subscribe(() => {
+                    // TODO: set seeking position
+                })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'timeupdate')
-                .subscribe(
-                    () => {
-                        this._currentTimeSubject.next(mediaElement.currentTime);
-                    }
-                )
+                .subscribe(() => {
+                    this._currentTimeSubject.next(mediaElement.currentTime);
+                })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'progress')
-                .subscribe(
-                    () => {
-                        let end = mediaElement.buffered.length - 1;
-                        if (end >= 0) {
-                            this._buffered.next(mediaElement.buffered.end(end));
-                        }
+                .subscribe(() => {
+                    let end = mediaElement.buffered.length - 1;
+                    if (end >= 0) {
+                        this._buffered.next(mediaElement.buffered.end(end));
                     }
-                )
+                })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'play')
-                .subscribe(
-                    () => {
-                        this._state.next(PlayState.PLAYING);
-                    }
-                )
+                .subscribe(() => {
+                    this._state.next(PlayState.PLAYING);
+                })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'pause')
-                .subscribe(
-                    () => {
-                        this._state.next(PlayState.PAUSED)
-                    }
-                )
+                .subscribe(() => {
+                    this._state.next(PlayState.PAUSED)
+                })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'eneded')
@@ -198,20 +191,23 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'seeking')
-                .subscribe(
-                    () => {
-                        this._seeking.next(true);
-                    }
-                )
+                .subscribe(() => {
+                    this._seeking.next(true);
+                })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'seeked')
-                .subscribe(
-                    () => {
-                        this._seeking.next(false);
-                    }
-                )
-        )
+                .subscribe(() => {
+                    this._seeking.next(false);
+                })
+        );
+        this._subscription.add(
+            Observable.fromEvent(mediaElement, 'volumechange')
+                .subscribe(() => {
+                    this._volume.next(mediaElement.volume);
+                    this._muted.next(mediaElement.muted);
+                })
+        );
     }
 
     ngOnDestroy(): void {

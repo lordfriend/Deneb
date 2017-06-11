@@ -1,3 +1,5 @@
+@sliderHandlerRadius: 5px;
+
 :host {
   display: flex;
   flex-direction: row;
@@ -14,6 +16,16 @@
   flex: 0 0 auto;
   padding: 0.4rem;
   cursor: pointer;
+  line-height: 1;
+  > .icon.volume {
+    position: relative;
+  }
+  > .icon.volume.down {
+    left: -2px;
+  }
+  > .icon.volume.off {
+    left: -3px;
+  }
 }
 
 .volume-slider-wrapper {
@@ -23,7 +35,7 @@
   width: 4rem;
   height: 1rem;
   cursor: pointer;
-  .volume-slider {
+  .volume-slider-bg {
     width: 100%;
     height: 0.3rem;
     position: relative;
@@ -36,7 +48,22 @@
     top: 0.35rem;
     background-color: #f8f8f8;
   }
-  .slider-handler {
-
+  .slider-handler-slot {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: @sliderHandlerRadius;
+    bottom: 0;
+    right: @sliderHandlerRadius;
+    > .slider-handler {
+      position: relative;
+      margin-left: -@sliderHandlerRadius;
+      margin-top: 0.15rem;
+      border-radius: @sliderHandlerRadius;
+      width: 2 * @sliderHandlerRadius;
+      height: 2 * @sliderHandlerRadius;
+      background-color: #f8f8f8;
+    }
   }
+
 }

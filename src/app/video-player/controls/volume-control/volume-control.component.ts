@@ -16,10 +16,25 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _dragEventEmitSubscription: Subscription;
     private _isDragging = false;
+    private _volume: number;
 
-    volume: number;
+    muted: boolean;
 
-    volumeLevelClass: string;
+    get volume(): number {
+        if (this.muted) {
+            return 0;
+        }
+        return this._volume;
+    }
+
+    get volumeLevelClass(): string {
+        if (this._volume === 0 || this.muted) {
+            return 'off';
+        } else if (this._volume < 0.5) {
+            return 'down';
+        }
+        return 'up';
+    }
 
     @Output()
     motion = new EventEmitter<any>();
@@ -29,9 +44,22 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     constructor(private _videoPlayer: VideoPlayer) {
     }
 
+    onMuteButtonClick(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this._videoPlayer.setMuted(!this.muted);
+    }
+
     ngOnInit(): void {
         this._subscription.add(
-            this._videoPlayer.volume.subscribe(vol => this.volume = vol)
+            this._videoPlayer.volume
+                .distinctUntilChanged()
+                .subscribe(vol => this._volume = vol)
+        );
+        this._subscription.add(
+            this._videoPlayer.muted
+                .distinctUntilChanged()
+                .subscribe(muted => this.muted = muted)
         );
     }
 
@@ -40,6 +68,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
         this._subscription.add(
             Observable.fromEvent(sliderElement, 'mousedown')
                 .do((event: MouseEvent) => {
+                    this.unmute();
                     this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event));
                     this.startDrag();
                 })
@@ -51,6 +80,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
                             }));
                 })
                 .subscribe((event: MouseEvent) => {
+                    this.unmute();
                     this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event));
                 })
         );
@@ -70,5 +100,9 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     private stopDrag() {
         this._isDragging = false;
         this._dragEventEmitSubscription.unsubscribe();
+    }
+
+    private unmute() {
+        this._videoPlayer.setMuted(false);
     }
 }

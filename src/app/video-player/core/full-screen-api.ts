@@ -56,8 +56,8 @@ export class FullScreenAPI {
     polyfill: any;
     isAvailable: boolean;
     isFullscreen: boolean;
-    nativeFullscreen: boolean = true;
-    onChangeFullscreen: EventEmitter<any> = new EventEmitter();
+    nativeFullscreen = true;
+    onChangeFullscreen = new EventEmitter<boolean>();
 
     constructor(private _mediaElement: HTMLMediaElement, private _hostElement: Element) {
         for (let browser in BROWSER_FULLSCREEN_API) {

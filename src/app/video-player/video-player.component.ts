@@ -42,6 +42,8 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     fullscreenAPI: FullScreenAPI;
 
+    isFullscreen: boolean;
+
     mediaUrl: string;
     mediaType: string;
 
@@ -128,6 +130,10 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         mediaElement.currentTime = Math.round(playProgressRatio * mediaElement.duration);
     }
 
+    toggleFullscreen() {
+        this.fullscreenAPI.toggleFullscreen();
+    }
+
     ngOnInit(): void {
         // if (VideoPlayerHelpers.isMobileDevice()) {
         //    TODO: for mobile device, should init a touch controls
@@ -142,6 +148,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     ngAfterViewInit(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         this.fullscreenAPI = new FullScreenAPI(mediaElement, this.videoPlayerRef.nativeElement);
+        this.fullscreenAPI.onChangeFullscreen.subscribe(isFullscreen => this.isFullscreen);
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'durationchange')
                 .subscribe(() => {
@@ -182,7 +189,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'eneded')
+            Observable.fromEvent(mediaElement, 'ended')
                 .subscribe(
                     () => {
                         this._state.next(PlayState.PLAY_END)

@@ -7,7 +7,18 @@ import { Subscription } from 'rxjs/Subscription';
     selector: 'video-play-button',
     template: `
         <i class="icon" [ngClass]="iconClass"></i>
-    `
+    `,
+    styles: [`
+        :host {
+            display: inline-block;
+            flex: 0 0 auto;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+            padding: 0.4rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+    `]
 })
 export class VideoPlayButton implements OnInit, OnDestroy{
     private _subscription = new Subscription();

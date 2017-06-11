@@ -1,10 +1,10 @@
 export class VideoPlayerHelpers {
     static isiOSDevice(): boolean {
-        return true;
+        return (navigator.userAgent.match(/ip(hone|ad|od)/i) && !navigator.userAgent.match(/(iemobile)[\/\s]?([\w\.]*)/i));
     }
 
     static isMobileDevice(): boolean {
-        return true;
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf("IEMobile") !== -1);
     }
 
     static calcSliderRatio(sliderElement: HTMLElement, event: MouseEvent): number {

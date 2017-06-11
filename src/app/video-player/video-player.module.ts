@@ -23,6 +23,9 @@ import { VideoVolumeControl } from './controls/volume-control/volume-control.com
     ],
     exports: [
         VideoPlayer
+    ],
+    entryComponents: [
+        VideoControls
     ]
 })
 export class VideoPlayerModule {

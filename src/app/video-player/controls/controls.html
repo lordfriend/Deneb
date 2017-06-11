@@ -1,9 +1,9 @@
 <div class="control-wrapper">
-    <div class="control-bar">
-        <video-player-scrub-bar></video-player-scrub-bar>
+    <div class="control-bar" (click)="onControlBarClick($event)">
+        <video-player-scrub-bar (motion)="onMotion()"></video-player-scrub-bar>
         <div class="control-buttons">
             <video-play-button></video-play-button>
-            <video-volume-control></video-volume-control>
+            <video-volume-control (motion)="onMotion()"></video-volume-control>
             <video-time-indicator></video-time-indicator>
         </div>
     </div>

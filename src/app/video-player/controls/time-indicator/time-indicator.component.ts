@@ -1,15 +1,31 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { VideoPlayer } from '../../video-player.component';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'video-time-indicator',
     template: `
-        <div class="time-indicator">
-            <span class="current-time">{{currentTimeClock}}</span>
-            <span class="duration">{{durationClock}}</span>
-        </div>
-    `
+        <span class="current-time">{{currentTimeClock}}</span>
+        <span class="separator">&#47;</span>
+        <span class="duration">{{durationClock}}</span>
+    `,
+    styles: [`
+        :host {
+            display: inline-block;
+            flex: 0 0 auto;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+            padding: 0.4rem;
+            line-height: 1;
+            cursor: default;
+        }
+    `]
 })
-export class VideoTimeIndicator {
+export class VideoTimeIndicator implements OnInit, OnDestroy {
+    private _subscription = new Subscription();
+
+    currentTime = Number.NaN;
+    duration = Number.NaN;
 
     get durationClock(): string {
         if (Number.isNaN(this.duration)) {
@@ -25,11 +41,21 @@ export class VideoTimeIndicator {
         return VideoTimeIndicator.convertTime(this.currentTime);
     }
 
-    @Input()
-    currentTime = Number.NaN;
+    constructor(private _videoPlayer: VideoPlayer) {
+    }
 
-    @Input()
-    duration = Number.NaN;
+    ngOnInit(): void {
+        this._subscription.add(
+            this._videoPlayer.currentTime.subscribe(time => this.currentTime = time)
+        );
+        this._subscription.add(
+            this._videoPlayer.duration.subscribe(duration => this.duration = duration)
+        )
+    }
+
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
+    }
 
     static convertTime(timeInSeconds: number): string {
         let hours = Math.floor(timeInSeconds / 3600);

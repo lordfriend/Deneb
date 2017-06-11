@@ -1,4 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output,
+    ViewChild
+} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { VideoPlayerHelpers } from '../../core/helpers';
@@ -16,6 +19,9 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     volume: number;
 
     volumeLevelClass: string;
+
+    @Output()
+    motion = new EventEmitter<any>();
 
     @ViewChild('slider') slider: ElementRef;
 
@@ -56,7 +62,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     private startDrag() {
         this._isDragging = true;
         this._dragEventEmitSubscription = Observable.interval(100).subscribe(() => {
-            this._videoPlayer.onControlMotion();
+            this.motion.emit(1);
         })
     }
 

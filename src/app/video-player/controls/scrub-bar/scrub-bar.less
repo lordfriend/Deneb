@@ -1,0 +1,43 @@
+@progressBarColor: rgb(77, 149, 214);
+@bufferedBarColor: rgb(153, 161, 175);
+
+:host {
+  display: block;
+  box-sizing: border-box;
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 0.45rem;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    .scrub-bar-wrapper {
+      background-color: rgba(255, 255, 255, 0.3);
+      .buffered-bar {
+        background-color: lighten(@bufferedBarColor, 10%);
+      }
+      .play-progress-bar {
+        background-color: lighten(@progressBarColor, 10%);
+      }
+    }
+  }
+}
+
+.scrub-bar-wrapper {
+  width: 100%;
+  height: 80%;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.1);
+
+  .buffered-bar {
+    background-color: @bufferedBarColor;
+    position: absolute;
+    height: 100%;
+  }
+
+  .play-progress-bar {
+    background-color: @progressBarColor;
+    position: absolute;
+    height: 100%;
+  }
+}

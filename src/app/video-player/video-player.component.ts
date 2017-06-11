@@ -1,11 +1,12 @@
 import {
     AfterViewInit,
-    Component,
-    ElementRef,
+    Component, ComponentFactoryResolver,
+    ElementRef, Injector,
     Input,
     OnChanges,
-    OnDestroy,
-    Self, SimpleChanges,
+    OnDestroy, OnInit,
+    Self,
+    SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
@@ -14,9 +15,9 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { PlayState } from './core/state';
 import { FullScreenAPI } from './core/full-screen-api';
-import { Subject } from 'rxjs/Subject';
 import { VideoFile } from '../entity/video-file';
 import { VideoPlayerHelpers } from './core/helpers';
+import { VideoControls } from './controls/controls.component';
 
 let nextId = 0;
 
@@ -25,7 +26,7 @@ let nextId = 0;
     templateUrl: './video-player.html',
     styleUrls: ['./video-player.less']
 })
-export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
+export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges {
     private _subscription = new Subscription();
 
     private _currentTimeSubject = new BehaviorSubject(0);
@@ -33,8 +34,7 @@ export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
     private _state = new BehaviorSubject(PlayState.PAUSED);
     private _buffered = new BehaviorSubject(0);
     private _volume = new BehaviorSubject(1);
-
-    private _motion = new Subject<any>();
+    private _seeking = new BehaviorSubject(false);
 
     @Input()
     videoFile: VideoFile;
@@ -47,7 +47,7 @@ export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
     playerId = 'videoPlayerId' + (nextId++);
 
     @ViewChild('media') mediaRef: ElementRef;
-    @ViewChild('controlContainer', {read: ViewContainerRef}) controlContainer: ViewContainerRef;
+    @ViewChild('media', {read: ViewContainerRef}) controlContainer: ViewContainerRef;
 
     /**
      * currentTime of media element.
@@ -77,12 +77,12 @@ export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
         return this._buffered.asObservable();
     }
 
-    get motion(): Observable<any> {
-        return this._motion.asObservable();
-    }
-
     get volume(): Observable<number> {
         return this._volume.asObservable();
+    }
+
+    get seeking(): Observable<boolean> {
+        return this._seeking.asObservable();
     }
 
     setVolume(vol: number) {
@@ -99,7 +99,9 @@ export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
         }
     }
 
-    constructor(@Self() public videoPlayerRef: ElementRef) {
+    constructor(@Self() public videoPlayerRef: ElementRef,
+                private _injector: Injector,
+                private _componentFactoryResolver: ComponentFactoryResolver) {
     }
 
     pause() {
@@ -121,8 +123,15 @@ export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
         mediaElement.currentTime = Math.round(playProgressRatio * mediaElement.duration);
     }
 
-    onControlMotion() {
-        this._motion.next(1);
+    ngOnInit(): void {
+        // if (VideoPlayerHelpers.isMobileDevice()) {
+        //    TODO: for mobile device, should init a touch controls
+        // } else {
+
+        // }
+        let controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoControls);
+        let componentRef = controlsComponentFactory.create(this._injector);
+        this.controlContainer.insert(componentRef.hostView);
     }
 
     ngAfterViewInit(): void {
@@ -157,7 +166,7 @@ export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
                 .subscribe(
                     () => {
                         let end = mediaElement.buffered.length - 1;
-                        if (end > 0) {
+                        if (end >= 0) {
                             this._buffered.next(mediaElement.buffered.end(end));
                         }
                     }
@@ -187,6 +196,22 @@ export class VideoPlayer implements AfterViewInit, OnDestroy, OnChanges {
                     }
                 )
         );
+        this._subscription.add(
+            Observable.fromEvent(mediaElement, 'seeking')
+                .subscribe(
+                    () => {
+                        this._seeking.next(true);
+                    }
+                )
+        );
+        this._subscription.add(
+            Observable.fromEvent(mediaElement, 'seeked')
+                .subscribe(
+                    () => {
+                        this._seeking.next(false);
+                    }
+                )
+        )
     }
 
     ngOnDestroy(): void {

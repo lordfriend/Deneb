@@ -2,20 +2,22 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, Self } from '@angular/
 import { VideoPlayer } from '../video-player.component';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 export const CONTROL_FADE_OUT_TIME = 3000;
 
 @Component({
     selector: 'video-controls',
-    templateUrl: './controls.html'
+    templateUrl: './controls.html',
+    styleUrls: ['./controls.less']
 })
 export class VideoControls implements OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
+    private _motion = new Subject();
 
     showControls = true;
 
-    constructor(@Self() private _hostRef: ElementRef,
-                private _videoPlayer: VideoPlayer) {
+    constructor(@Self() private _hostRef: ElementRef) {
     }
 
     onClickVideo(event: Event) {
@@ -24,8 +26,21 @@ export class VideoControls implements OnDestroy, AfterViewInit {
 
     }
 
+    onMotion() {
+        this._motion.next(1);
+    }
+
+    onControlBarClick(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     ngAfterViewInit(): void {
         let hosteElement = this._hostRef.nativeElement;
+        this._subscription.add(
+            Observable.fromEvent(hosteElement, 'mousedown')
+                .subscribe((event: MouseEvent) => event.preventDefault())
+        );
         this._subscription.add(
             Observable.fromEvent(hosteElement, 'mouseenter')
                 .subscribe(
@@ -44,7 +59,7 @@ export class VideoControls implements OnDestroy, AfterViewInit {
         );
 
         this._subscription.add(
-            this._videoPlayer.motion
+            this._motion.asObservable()
                 .merge(Observable.fromEvent(hosteElement, 'mousemove'))
                 .timeout(CONTROL_FADE_OUT_TIME)
                 .do(() => {

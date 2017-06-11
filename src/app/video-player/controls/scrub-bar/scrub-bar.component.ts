@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Self } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, Self } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { VideoPlayerHelpers } from '../../core/helpers';
@@ -6,13 +6,15 @@ import { VideoPlayer } from '../../video-player.component';
 
 @Component({
     selector: 'video-player-scrub-bar',
-    templateUrl: './scrub-bar.html'
+    templateUrl: './scrub-bar.html',
+    styleUrls: ['./scrub-bar.less']
 })
 export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _dragEventEmitSubscription: Subscription;
     private _playProgressRatio = 0;
     private _isDragging = false;
+    private _isSeeking = false;
 
     buffered = 0;
 
@@ -20,8 +22,13 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
 
     duration = Number.NaN;
 
+    notMobileDevice = !VideoPlayerHelpers.isMobileDevice();
+
+    @Output()
+    motion = new EventEmitter<any>();
+
     get playProgressRatio(): number {
-        if (this._isDragging) {
+        if (this._isDragging || this._isSeeking) {
             return this._playProgressRatio;
         } else if (Number.isNaN(this.duration)) {
             return 0;
@@ -33,7 +40,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         if (Number.isNaN(this.duration)) {
             return 0;
         }
-        return this.buffered / this.duration;
+        return Math.round(this.buffered / this.duration * 1000) / 10;
     }
 
     constructor(@Self() private _hostRef: ElementRef, private _videoPlayer: VideoPlayer) {
@@ -48,6 +55,9 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         );
         this._subscription.add(
             this._videoPlayer.buffered.subscribe(buffered => this.buffered = buffered)
+        );
+        this._subscription.add(
+            this._videoPlayer.seeking.subscribe(isSeeking => this._isSeeking = isSeeking)
         )
     }
 
@@ -56,6 +66,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         this._subscription.add(
             Observable.fromEvent(hostElement, 'mousedown')
                 .do((event: MouseEvent) => {
+                    event.preventDefault();
                     this._playProgressRatio = Math.round(VideoPlayerHelpers.calcSliderRatio(hostElement, event) * 1000) / 10;
                     this.startDrag();
                 })
@@ -63,6 +74,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
                     return Observable.fromEvent(document, 'mousemove')
                         .takeUntil(Observable.fromEvent(document, 'mouseup')
                             .do((event: MouseEvent) => {
+                                this._isSeeking = true;
                                 this._videoPlayer.seek(VideoPlayerHelpers.calcSliderRatio(hostElement, event));
                                 this.stopDrag();
                             }))
@@ -82,7 +94,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     private startDrag() {
         this._isDragging = true;
         this._dragEventEmitSubscription = Observable.interval(100).subscribe(() => {
-            this._videoPlayer.onControlMotion();
+            this.motion.emit(1);
         })
     }
 

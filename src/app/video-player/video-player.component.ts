@@ -18,6 +18,7 @@ import { FullScreenAPI } from './core/full-screen-api';
 import { VideoFile } from '../entity/video-file';
 import { VideoPlayerHelpers } from './core/helpers';
 import { VideoControls } from './controls/controls.component';
+import { VideoCapture } from './core/video-capture.service';
 
 let nextId = 0;
 
@@ -108,6 +109,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     constructor(@Self() public videoPlayerRef: ElementRef,
+                private _videoCapture: VideoCapture,
                 private _injector: Injector,
                 private _componentFactoryResolver: ComponentFactoryResolver) {
     }
@@ -148,8 +150,13 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     ngAfterViewInit(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+
+        this._videoCapture.registerVideoElement(mediaElement as HTMLVideoElement);
+
+        // init fullscreen API
         this.fullscreenAPI = new FullScreenAPI(mediaElement, this.videoPlayerRef.nativeElement);
         this.fullscreenAPI.onChangeFullscreen.subscribe(isFullscreen => this.isFullscreen = isFullscreen);
+
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'durationchange')
                 .subscribe(() => {
@@ -220,6 +227,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     ngOnDestroy(): void {
         this._subscription.unsubscribe();
+        this._videoCapture.unregisterVideoElement();
     }
 
     ngOnChanges(changes: SimpleChanges): void {

@@ -7,6 +7,9 @@ import { CommonModule } from '@angular/common';
 import { VideoFullscreenButton } from './controls/fullscreen-button/fullscreen-button.component';
 import { VideoTimeIndicator } from './controls/time-indicator/time-indicator.component';
 import { VideoVolumeControl } from './controls/volume-control/volume-control.component';
+import { VideoCapture } from './core/video-capture.service';
+import { CapturedFrameList } from './captured-frame-list/captured-frame-list.component';
+import { VideoCaptureButton } from './controls/capture-button/capture-button.component';
 
 @NgModule({
     declarations: [
@@ -16,7 +19,12 @@ import { VideoVolumeControl } from './controls/volume-control/volume-control.com
         VideoPlayButton,
         VideoFullscreenButton,
         VideoTimeIndicator,
-        VideoVolumeControl
+        VideoVolumeControl,
+        CapturedFrameList,
+        VideoCaptureButton
+    ],
+    providers: [
+        VideoCapture
     ],
     imports: [
         CommonModule

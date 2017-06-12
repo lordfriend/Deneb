@@ -1,7 +1,7 @@
 import {
     AfterViewInit,
     Component, ComponentFactoryResolver,
-    ElementRef, Injector,
+    ElementRef, HostBinding, Injector,
     Input,
     OnChanges,
     OnDestroy, OnInit,
@@ -42,6 +42,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     fullscreenAPI: FullScreenAPI;
 
+    @HostBinding('class.fullscreen')
     isFullscreen: boolean;
 
     mediaUrl: string;
@@ -148,7 +149,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     ngAfterViewInit(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         this.fullscreenAPI = new FullScreenAPI(mediaElement, this.videoPlayerRef.nativeElement);
-        this.fullscreenAPI.onChangeFullscreen.subscribe(isFullscreen => this.isFullscreen);
+        this.fullscreenAPI.onChangeFullscreen.subscribe(isFullscreen => this.isFullscreen = isFullscreen);
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'durationchange')
                 .subscribe(() => {

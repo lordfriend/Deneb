@@ -1,5 +1,7 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { VideoCapture } from '../../core/video-capture.service';
+import { VideoPlayer } from '../../video-player.component';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'video-capture-button',
@@ -17,15 +19,32 @@ import { VideoCapture } from '../../core/video-capture.service';
         }
     `]
 })
-export class VideoCaptureButton {
+export class VideoCaptureButton implements OnInit, OnDestroy{
+    private _subscription = new Subscription();
 
-    constructor(private _videoCapture: VideoCapture) {
+    private _currentTime: number = 0;
+
+    constructor(private _videoCapture: VideoCapture,
+                private _videoPlayer: VideoPlayer) {
     }
 
     @HostListener('click', ['$event'])
     onClick(event: Event) {
         event.preventDefault();
         event.stopPropagation();
-        this._videoCapture.capture();
+        let bangumi_name = 'test';
+        let episode_no = 1;
+        this._videoCapture.capture(bangumi_name, episode_no, this._currentTime);
+    }
+
+    ngOnInit(): void {
+        this._subscription.add(
+            this._videoPlayer.currentTime
+                .subscribe(time => this._currentTime = time)
+        );
+    }
+
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 }

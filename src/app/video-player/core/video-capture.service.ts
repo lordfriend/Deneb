@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 
+export type PreviewImageParams = {bangumi_name: string, episode_no: number, currentPlayTime: number};
+
+export const IMAGE_PROPERTY_NAME = 'previewParams';
+
 export interface PreviewContainer {
     /**
      * invoked by VideoCapture, implement class should use the given data uri generate a preview image.
      * @param dataURI - converted image by calling toDataURI with captured frame in canvas
      */
-    addImage(dataURI: string);
+    addImage(dataURI: string, params: PreviewImageParams);
 }
 
 @Injectable()
@@ -35,9 +39,11 @@ export class VideoCapture {
         canvas.getContext('2d').drawImage(videoElement, 0, 0);
     }
 
-    capture(): void {
+    capture(bangumi_name: string, episode_no: number, currentPlayTime: number): void {
         if (this._previewContainer) {
-            this._previewContainer.addImage(this.getCapturedData());
+            this._previewContainer.addImage(this.getCapturedData(), {
+                bangumi_name, episode_no, currentPlayTime
+            });
         }
     }
 

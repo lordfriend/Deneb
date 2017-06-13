@@ -8,8 +8,9 @@ import { VideoFullscreenButton } from './controls/fullscreen-button/fullscreen-b
 import { VideoTimeIndicator } from './controls/time-indicator/time-indicator.component';
 import { VideoVolumeControl } from './controls/volume-control/volume-control.component';
 import { VideoCapture } from './core/video-capture.service';
-import { CapturedFrameList } from './captured-frame-list/captured-frame-list.component';
+import { CapturedFrameList } from './controls/captured-frame-list/captured-frame-list.component';
 import { VideoCaptureButton } from './controls/capture-button/capture-button.component';
+import { CapturedImageOperationDialog } from './controls/captured-frame-list/operation-dialog/operation-dialog.component';
 
 @NgModule({
     declarations: [
@@ -20,8 +21,9 @@ import { VideoCaptureButton } from './controls/capture-button/capture-button.com
         VideoFullscreenButton,
         VideoTimeIndicator,
         VideoVolumeControl,
+        VideoCaptureButton,
         CapturedFrameList,
-        VideoCaptureButton
+        CapturedImageOperationDialog
     ],
     providers: [
         VideoCapture
@@ -33,7 +35,8 @@ import { VideoCaptureButton } from './controls/capture-button/capture-button.com
         VideoPlayer
     ],
     entryComponents: [
-        VideoControls
+        VideoControls,
+        CapturedImageOperationDialog
     ]
 })
 export class VideoPlayerModule {

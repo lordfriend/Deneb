@@ -11,6 +11,7 @@ import { VideoCapture } from './core/video-capture.service';
 import { CapturedFrameList } from './controls/captured-frame-list/captured-frame-list.component';
 import { VideoCaptureButton } from './controls/capture-button/capture-button.component';
 import { CapturedImageOperationDialog } from './controls/captured-frame-list/operation-dialog/operation-dialog.component';
+import { VideoPlayerConfigButton } from './controls/config-button/config-button.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { CapturedImageOperationDialog } from './controls/captured-frame-list/ope
         VideoTimeIndicator,
         VideoVolumeControl,
         VideoCaptureButton,
+        VideoPlayerConfigButton,
         CapturedFrameList,
         CapturedImageOperationDialog
     ],

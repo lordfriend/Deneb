@@ -2,12 +2,11 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { IMAGE_PROPERTY_NAME } from '../../../core/video-capture.service';
 import { UIDialogRef } from 'deneb-ui';
 import { PersistStorage } from '../../../../user-service/persist-storage';
+import { Capture } from '../../../core/settings';
 
 export const RESULT_TWITTER = 'twitter';
 export const RESULT_DOWNLOAD = 'download';
 export const RESULT_TRASH = 'trash';
-
-export const SETTING_AUTO_REMOTE = 'VideoPlayer:CaptureList:AutoRemove';
 
 @Component({
     selector: 'captured-image-operation-dialog',
@@ -22,7 +21,7 @@ export class CapturedImageOperationDialog implements AfterViewInit {
 
     constructor(private _dialogRef: UIDialogRef<CapturedImageOperationDialog>,
                 private _persistStorage: PersistStorage) {
-        let savedAutoRemove = this._persistStorage.getItem(SETTING_AUTO_REMOTE, 'true');
+        let savedAutoRemove = this._persistStorage.getItem(Capture.AUTO_REMOVE, 'true');
         this.autoRemove = savedAutoRemove === 'true';
     }
 
@@ -53,14 +52,14 @@ export class CapturedImageOperationDialog implements AfterViewInit {
     trash(event: Event) {
         event.preventDefault();
         event.stopPropagation();
-        this._dialogRef.close({result: RESULT_DOWNLOAD, remove: true});
+        this._dialogRef.close({result: RESULT_TRASH, remove: true});
     }
 
     toggleDefaultOperation(event: Event) {
         event.preventDefault();
         event.stopPropagation();
         this.autoRemove = !this.autoRemove;
-        this._persistStorage.setItem(SETTING_AUTO_REMOTE, this.autoRemove + '');
+        this._persistStorage.setItem(Capture.AUTO_REMOVE, this.autoRemove + '');
     }
 
     ngAfterViewInit(): void {

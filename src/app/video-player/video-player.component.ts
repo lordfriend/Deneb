@@ -13,7 +13,7 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { PlayState } from './core/state';
+import { NetworkState, PlayState } from './core/state';
 import { FullScreenAPI } from './core/full-screen-api';
 import { VideoFile } from '../entity/video-file';
 import { VideoPlayerHelpers } from './core/helpers';
@@ -37,6 +37,8 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private _volume = new BehaviorSubject(1);
     private _muted = new BehaviorSubject(false);
     private _seeking = new BehaviorSubject(false);
+
+    private _pendingState = null;
 
     @Input()
     videoFile: VideoFile;
@@ -114,17 +116,26 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 private _componentFactoryResolver: ComponentFactoryResolver) {
     }
 
+    /**
+     * pause the playback of current video. By checking the network state is HAVE_ENOUGH_DATA,
+     * the player will make a actual call of pause operation or set a pending state to PlayState.PAUSED.
+     * This may help to release the sockets holding by Chrome.
+     */
     pause() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-        if (mediaElement) {
+        if (mediaElement && mediaElement.networkState >= NetworkState.HAVE_ENOUGH_DATA) {
             mediaElement.pause();
+        } else {
+            this._pendingState = PlayState.PAUSED;
         }
     }
 
     play() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-        if (mediaElement) {
+        if (mediaElement && mediaElement.networkState >= NetworkState.HAVE_ENOUGH_DATA) {
             mediaElement.play();
+        } else {
+            this._pendingState = PlayState.PLAYING;
         }
     }
 
@@ -223,6 +234,22 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                     this._muted.next(mediaElement.muted);
                 })
         );
+        this._subscription.add(
+            Observable.fromEvent(mediaElement, 'canplaythrough')
+                .subscribe(() => {
+                    if (this._pendingState) {
+                        switch (this._pendingState) {
+                            case PlayState.PLAYING:
+                                mediaElement.play();
+                                break;
+                            case PlayState.PAUSED:
+                                mediaElement.pause();
+                                break;
+                            // no default
+                        }
+                    }
+                })
+        );
     }
 
     ngOnDestroy(): void {
@@ -236,7 +263,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
             this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
             let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
             mediaElement.load();
-            mediaElement.play();
+            this._pendingState = PlayState.PLAYING;
         }
     }
 }

@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
+import { UIDialog } from 'deneb-ui';
+import { VideoPlayerConfigDialog } from './config-dialog/config-dialog.component';
 
 @Component({
     selector: 'video-player-config-button',
@@ -17,8 +19,18 @@ import { Component } from '@angular/core';
     `]
 })
 export class VideoPlayerConfigButton {
-    constructor() {
 
+    constructor(private _dialogService: UIDialog) {
+    }
+
+    @HostListener('click', ['$event'])
+    onClick(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this._dialogService.open(VideoPlayerConfigDialog, {
+            stickyDialog: false,
+            backdrop: true
+        });
     }
 }
 

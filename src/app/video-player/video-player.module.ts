@@ -12,6 +12,7 @@ import { CapturedFrameList } from './controls/captured-frame-list/captured-frame
 import { VideoCaptureButton } from './controls/capture-button/capture-button.component';
 import { CapturedImageOperationDialog } from './controls/captured-frame-list/operation-dialog/operation-dialog.component';
 import { VideoPlayerConfigButton } from './controls/config-button/config-button.component';
+import { VideoPlayerConfigDialog } from './controls/config-button/config-dialog/config-dialog.component';
 
 @NgModule({
     declarations: [
@@ -23,9 +24,10 @@ import { VideoPlayerConfigButton } from './controls/config-button/config-button.
         VideoTimeIndicator,
         VideoVolumeControl,
         VideoCaptureButton,
-        VideoPlayerConfigButton,
         CapturedFrameList,
-        CapturedImageOperationDialog
+        CapturedImageOperationDialog,
+        VideoPlayerConfigButton,
+        VideoPlayerConfigDialog
     ],
     providers: [
         VideoCapture
@@ -38,7 +40,8 @@ import { VideoPlayerConfigButton } from './controls/config-button/config-button.
     ],
     entryComponents: [
         VideoControls,
-        CapturedImageOperationDialog
+        CapturedImageOperationDialog,
+        VideoPlayerConfigDialog
     ]
 })
 export class VideoPlayerModule {

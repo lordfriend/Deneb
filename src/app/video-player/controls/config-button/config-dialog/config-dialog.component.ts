@@ -1,8 +1,9 @@
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
-
-import { Component } from 'typedoc/dist/lib/utils';
 @Component({
-
+    selector: 'video-player-config-dialog',
+    templateUrl: './config-dialog.html',
+    styleUrls: ['./config-dialog.less']
 })
 export class VideoPlayerConfigDialog {
 

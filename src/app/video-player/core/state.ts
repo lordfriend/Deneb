@@ -1,10 +1,11 @@
 export class PlayState {
-    static PLAYING = 0;
-    static PLAY_END = 1;
-    static PAUSED = 2;
+    static INVALID = 0;
+    static PLAYING = 1;
+    static PLAY_END = 2;
+    static PAUSED = 3;
 }
 
-export class NetworkState {
+export class ReadyState {
     static HAVE_NOTHING = 0;
     static HAVE_METADATA = 1;
     static HAVE_CURRENT_DATA = 2;

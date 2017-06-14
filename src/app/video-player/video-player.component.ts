@@ -13,7 +13,7 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { NetworkState, PlayState } from './core/state';
+import { ReadyState, PlayState } from './core/state';
 import { FullScreenAPI } from './core/full-screen-api';
 import { VideoFile } from '../entity/video-file';
 import { VideoPlayerHelpers } from './core/helpers';
@@ -32,13 +32,14 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     private _currentTimeSubject = new BehaviorSubject(0);
     private _durationSubject = new BehaviorSubject(Number.NaN);
-    private _state = new BehaviorSubject(PlayState.PAUSED);
+    private _stateSubject = new BehaviorSubject(PlayState.PAUSED);
+    private _pendingStateSubject = new BehaviorSubject(PlayState.INVALID);
     private _buffered = new BehaviorSubject(0);
     private _volume = new BehaviorSubject(1);
     private _muted = new BehaviorSubject(false);
     private _seeking = new BehaviorSubject(false);
 
-    private _pendingState = null;
+    private _pendingState = PlayState.INVALID;
 
     @Input()
     videoFile: VideoFile;
@@ -77,7 +78,11 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      * @returns {Observable<PlayState>}
      */
     get state(): Observable<PlayState> {
-        return this._state.asObservable();
+        return this._stateSubject.asObservable();
+    }
+
+    get pendingState(): Observable<PlayState> {
+        return this._pendingStateSubject.asObservable();
     }
 
     get buffered(): Observable<number> {
@@ -94,6 +99,11 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     get seeking(): Observable<boolean> {
         return this._seeking.asObservable();
+    }
+
+    setPendingState(state: number) {
+        this._pendingStateSubject.next(state);
+        this._pendingState = state;
     }
 
     setVolume(vol: number) {
@@ -123,19 +133,21 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      */
     pause() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-        if (mediaElement && mediaElement.networkState >= NetworkState.HAVE_ENOUGH_DATA) {
+        console.log(mediaElement.readyState);
+        if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
             mediaElement.pause();
         } else {
-            this._pendingState = PlayState.PAUSED;
+            this.setPendingState(PlayState.PAUSED);
         }
     }
 
     play() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-        if (mediaElement && mediaElement.networkState >= NetworkState.HAVE_ENOUGH_DATA) {
+        console.log(mediaElement.readyState);
+        if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
             mediaElement.play();
         } else {
-            this._pendingState = PlayState.PLAYING;
+            this.setPendingState(PlayState.PLAYING);
         }
     }
 
@@ -198,20 +210,20 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'play')
                 .subscribe(() => {
-                    this._state.next(PlayState.PLAYING);
+                    this._stateSubject.next(PlayState.PLAYING);
                 })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'pause')
                 .subscribe(() => {
-                    this._state.next(PlayState.PAUSED)
+                    this._stateSubject.next(PlayState.PAUSED)
                 })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'ended')
                 .subscribe(
                     () => {
-                        this._state.next(PlayState.PLAY_END)
+                        this._stateSubject.next(PlayState.PLAY_END)
                     }
                 )
         );
@@ -237,13 +249,16 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'canplaythrough')
                 .subscribe(() => {
-                    if (this._pendingState) {
+                    console.log('canplaythrough');
+                    if (this._pendingState !== PlayState.INVALID) {
                         switch (this._pendingState) {
                             case PlayState.PLAYING:
                                 mediaElement.play();
+                                this.setPendingState(PlayState.INVALID);
                                 break;
                             case PlayState.PAUSED:
                                 mediaElement.pause();
+                                this.setPendingState(PlayState.INVALID);
                                 break;
                             // no default
                         }
@@ -263,7 +278,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
             this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
             let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
             mediaElement.load();
-            this._pendingState = PlayState.PLAYING;
+            this.play();
         }
     }
 }

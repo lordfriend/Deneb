@@ -60,7 +60,9 @@ export class VideoPlayButton implements OnInit, OnDestroy{
 
     ngOnInit(): void {
         this._subscription.add(
-            this._videoPlayer.state
+            this._videoPlayer.pendingState
+                .filter(state => state !== PlayState.INVALID)
+                .merge(this._videoPlayer.state)
                 .subscribe((state) => {
                     this.state = state;
                 })

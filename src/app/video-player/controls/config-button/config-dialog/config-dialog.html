@@ -1,8 +1,5 @@
 <form class="ui form">
     <div class="inline field">
-        <div class="ui checkbox">
-            <input type="checkbox" tabindex="0" #directDownload>
-            <label>截图之后直接下载图片</label>
-        </div>
+        <ui-toggle text="截图之后直接下载图片" [(ngModel)]="directDownload" name="direct_download"></ui-toggle>
     </div>
 </form>

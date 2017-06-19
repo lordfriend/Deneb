@@ -2,6 +2,8 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { VideoCapture } from '../../core/video-capture.service';
 import { VideoPlayer } from '../../video-player.component';
 import { Subscription } from 'rxjs/Subscription';
+import { PersistStorage } from '../../../user-service/persist-storage';
+import { Capture } from '../../core/settings';
 
 @Component({
     selector: 'video-capture-button',
@@ -25,7 +27,8 @@ export class VideoCaptureButton implements OnInit, OnDestroy{
     private _currentTime: number = 0;
 
     constructor(private _videoCapture: VideoCapture,
-                private _videoPlayer: VideoPlayer) {
+                private _videoPlayer: VideoPlayer,
+                private _persistStorage: PersistStorage) {
     }
 
     @HostListener('click', ['$event'])
@@ -34,6 +37,10 @@ export class VideoCaptureButton implements OnInit, OnDestroy{
         event.stopPropagation();
         let bangumi_name = 'test';
         let episode_no = 1;
+        if (this.getConfigDirectDownload()) {
+            this._videoCapture.download(bangumi_name, episode_no, this._currentTime);
+            return;
+        }
         this._videoCapture.capture(bangumi_name, episode_no, this._currentTime);
     }
 
@@ -46,5 +53,10 @@ export class VideoCaptureButton implements OnInit, OnDestroy{
 
     ngOnDestroy(): void {
         this._subscription.unsubscribe();
+    }
+
+    private getConfigDirectDownload() {
+        let savedDirectDownload = this._persistStorage.getItem(Capture.DIRECT_DOWNLOAD, 'false');
+        return savedDirectDownload === 'true';
     }
 }

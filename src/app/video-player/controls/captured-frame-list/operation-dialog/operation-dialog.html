@@ -14,9 +14,8 @@
         <a class="operation-button right" (click)="trash($event)"><i class="trash icon"></i></a>
     </div>
 </div>
-<div class="default-operation">
-    <a class="auto-remove-toggle" (click)="toggleDefaultOperation($event)">
-        <i class="toggle icon" [ngClass]="{on: autoRemove, off: !autoRemove}"></i>
-        自动从队列中删除
-    </a>
-</div>
+<form class="ui form default-operation">
+    <div class="field">
+        <ui-toggle text="自动从队列中删除" [(ngModel)]="autoRemove" name="autoRemoveToggle"></ui-toggle>
+    </div>
+</form>

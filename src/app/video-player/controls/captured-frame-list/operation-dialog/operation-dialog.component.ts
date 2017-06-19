@@ -14,15 +14,25 @@ export const RESULT_TRASH = 'trash';
     styleUrls: ['./operation-dialog.less']
 })
 export class CapturedImageOperationDialog implements AfterViewInit {
+    private _autoRemove: boolean;
+
     image: HTMLImageElement;
-    autoRemove: boolean;
+
+    set autoRemove(v: boolean) {
+        this._autoRemove = v;
+        this._persistStorage.setItem(Capture.AUTO_REMOVE, v + '');
+    }
+
+    get autoRemove(): boolean {
+        return this._autoRemove;
+    }
 
     @ViewChild('imageWrapper') imageWrapper: ElementRef;
 
     constructor(private _dialogRef: UIDialogRef<CapturedImageOperationDialog>,
                 private _persistStorage: PersistStorage) {
         let savedAutoRemove = this._persistStorage.getItem(Capture.AUTO_REMOVE, 'true');
-        this.autoRemove = savedAutoRemove === 'true';
+        this._autoRemove = savedAutoRemove === 'true';
     }
 
     shareToTwitter(event: Event) {
@@ -53,13 +63,6 @@ export class CapturedImageOperationDialog implements AfterViewInit {
         event.preventDefault();
         event.stopPropagation();
         this._dialogRef.close({result: RESULT_TRASH, remove: true});
-    }
-
-    toggleDefaultOperation(event: Event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.autoRemove = !this.autoRemove;
-        this._persistStorage.setItem(Capture.AUTO_REMOVE, this.autoRemove + '');
     }
 
     ngAfterViewInit(): void {

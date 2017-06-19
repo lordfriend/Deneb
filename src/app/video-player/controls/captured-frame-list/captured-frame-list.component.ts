@@ -1,17 +1,39 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PreviewContainer, VideoCapture, PreviewImageParams, IMAGE_PROPERTY_NAME } from '../../core/video-capture.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { UIDialog } from 'deneb-ui';
 import { CapturedImageOperationDialog } from './operation-dialog/operation-dialog.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
     selector: 'video-captured-frame-list',
     templateUrl: './captured-frame-list.html',
-    styleUrls: ['./captured-frame-list.less']
+    styleUrls: ['./captured-frame-list.less'],
+    animations: [
+        trigger('showState', [
+            state('in', style({
+                transform: 'translateY(0)'
+            })),
+            state('out', style({
+                transform: 'translateY(-100%)'
+            })),
+            transition('out => in', animate('100ms ease-in')),
+            transition('in => out', animate('100ms ease-out'))
+        ])
+    ]
 })
 export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, PreviewContainer {
     private _subscription = new Subscription();
+    private _imageCount = 0;
+
+    @Input()
+    showControls: boolean;
+
+    @HostBinding('@showState')
+    get showState(): string {
+        return this.showControls && this._imageCount > 0 ? 'in' : 'out';
+    }
 
     @ViewChild('wrapper') previewWrapper: ElementRef;
 
@@ -31,6 +53,7 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
         image.style.marginRight = '0.3rem';
         image[IMAGE_PROPERTY_NAME] = params;
         previewWrapperElement.appendChild(image);
+        this._imageCount++;
     }
 
     ngOnInit(): void {
@@ -62,7 +85,11 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
                             }
                         })
                 })
-                .subscribe(() => {})
+                .subscribe((result) => {
+                    if (result && result.remove) {
+                        this._imageCount--;
+                    }
+                })
         );
     }
 

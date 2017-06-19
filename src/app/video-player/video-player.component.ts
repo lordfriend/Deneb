@@ -55,7 +55,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     playerId = 'videoPlayerId' + (nextId++);
 
     @ViewChild('media') mediaRef: ElementRef;
-    @ViewChild('media', {read: ViewContainerRef}) controlContainer: ViewContainerRef;
+    @ViewChild('overlay', {read: ViewContainerRef}) controlContainer: ViewContainerRef;
 
     /**
      * currentTime of media element.
@@ -101,6 +101,15 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         return this._seeking.asObservable();
     }
 
+    get showLoader(): boolean {
+        if (this.mediaRef) {
+            let mediaElement = this.mediaRef.nativeElement;
+            return (mediaElement.readyState < ReadyState.HAVE_FUTURE_DATA) && !mediaElement.paused;
+        } else {
+            return false;
+        }
+    }
+
     setPendingState(state: number) {
         this._pendingStateSubject.next(state);
         this._pendingState = state;
@@ -133,7 +142,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      */
     pause() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-        console.log(mediaElement.readyState);
         if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
             mediaElement.pause();
         } else {
@@ -143,7 +151,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     play() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-        console.log(mediaElement.readyState);
         if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
             mediaElement.play();
         } else {
@@ -249,7 +256,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'canplaythrough')
                 .subscribe(() => {
-                    console.log('canplaythrough');
                     if (this._pendingState !== PlayState.INVALID) {
                         switch (this._pendingState) {
                             case PlayState.PLAYING:

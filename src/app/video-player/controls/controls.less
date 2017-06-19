@@ -5,6 +5,10 @@
   left: 0;
   right: 0;
   bottom: 0;
+
+  &.hide-cursor {
+    cursor: none;
+  }
 }
 
 .reflect-state-indicator {
@@ -35,10 +39,6 @@
   overflow: hidden;
   position: relative;
   z-index: 100;
-
-  &.hide-cursor {
-    cursor: none;
-  }
 
   > .control-bar {
     display: flex;

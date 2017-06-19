@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Injector, OnDestroy, OnInit, Self } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, Injector, OnDestroy, OnInit, Self } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -38,7 +38,10 @@ export const CONTROL_FADE_OUT_TIME = 3000;
                 style({opacity: 0, transform: 'scale(2)', offset: 1})
             ]))),
         ])
-    ]
+    ],
+    host: {
+        '[class.hide-cursor]': '!showControls'
+    }
 })
 export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
@@ -103,13 +106,13 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        let hosteElement = this._hostRef.nativeElement;
+        let hostElement = this._hostRef.nativeElement;
         this._subscription.add(
-            Observable.fromEvent(hosteElement, 'mousedown')
+            Observable.fromEvent(hostElement, 'mousedown')
                 .subscribe((event: MouseEvent) => event.preventDefault())
         );
         this._subscription.add(
-            Observable.fromEvent(hosteElement, 'mouseenter')
+            Observable.fromEvent(hostElement, 'mouseenter')
                 .subscribe(
                     () => {
                         this.showControls = true;
@@ -117,7 +120,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
                 )
         );
         this._subscription.add(
-            Observable.fromEvent(hosteElement, 'mouseleave')
+            Observable.fromEvent(hostElement, 'mouseleave')
                 .subscribe(
                     () => {
                         this.showControls = false;
@@ -127,7 +130,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
 
         this._subscription.add(
             this._motion.asObservable()
-                .merge(Observable.fromEvent(hosteElement, 'mousemove'))
+                .merge(Observable.fromEvent(hostElement, 'mousemove'))
                 .timeout(CONTROL_FADE_OUT_TIME)
                 .do(() => {},
                     () => {

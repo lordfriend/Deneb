@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { UIDialog } from 'deneb-ui';
 import { CapturedImageOperationDialog } from './operation-dialog/operation-dialog.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { VideoControls } from '../controls.component';
 
 @Component({
     selector: 'video-captured-frame-list',
@@ -38,6 +39,7 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
     @ViewChild('wrapper') previewWrapper: ElementRef;
 
     constructor(private _videoCapture: VideoCapture,
+                private _controls: VideoControls,
                 private _dialogService: UIDialog) {
     }
 
@@ -75,7 +77,7 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
                     let dialogRef = this._dialogService.open(CapturedImageOperationDialog, {
                         stickyDialog: false,
                         backdrop: true
-                    });
+                    }, this._controls.controlWrapper);
 
                     dialogRef.componentInstance.image = image as HTMLImageElement;
                     return dialogRef.afterClosed()

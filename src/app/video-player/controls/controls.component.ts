@@ -1,4 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostBinding, Injector, OnDestroy, OnInit, Self } from '@angular/core';
+import {
+    AfterViewInit, Component, ElementRef, Injector, OnDestroy, OnInit, Self, ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -67,6 +70,8 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     get controlBarState(): string {
         return this.showControls ? 'in' : 'out';
     }
+
+    @ViewChild('controlWrapper', {read: ViewContainerRef}) controlWrapper: ViewContainerRef;
 
     constructor(@Self() private _hostRef: ElementRef, private _injector: Injector) {
     }

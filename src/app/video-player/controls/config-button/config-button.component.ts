@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { UIDialog } from 'deneb-ui';
 import { VideoPlayerConfigDialog } from './config-dialog/config-dialog.component';
+import { VideoControls } from '../controls.component';
 
 @Component({
     selector: 'video-player-config-button',
@@ -20,7 +21,8 @@ import { VideoPlayerConfigDialog } from './config-dialog/config-dialog.component
 })
 export class VideoPlayerConfigButton {
 
-    constructor(private _dialogService: UIDialog) {
+    constructor(private _dialogService: UIDialog,
+                private _controls: VideoControls) {
     }
 
     @HostListener('click', ['$event'])
@@ -30,7 +32,7 @@ export class VideoPlayerConfigButton {
         this._dialogService.open(VideoPlayerConfigDialog, {
             stickyDialog: false,
             backdrop: true
-        });
+        }, this._controls.controlWrapper);
     }
 }
 

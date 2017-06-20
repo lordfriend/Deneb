@@ -1,7 +1,7 @@
 <div class="reflect-state-indicator" (@reflectState.done)="reflectAnimationCallback()" [@reflectState]="reflectState">
     <i class="icon" [ngClass]="reflectIconClass"></i>
 </div>
-<div class="control-wrapper" (click)="onClickVideo($event)">
+<div class="control-wrapper" (click)="onClickVideo($event)" #controlWrapper>
     <video-captured-frame-list [showControls]="showControls"></video-captured-frame-list>
     <div class="control-bar" (click)="onControlBarClick($event)" [@controlBarState]="controlBarState">
         <video-player-scrub-bar (motion)="onMotion()"></video-player-scrub-bar>

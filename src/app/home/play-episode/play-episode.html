@@ -4,7 +4,12 @@
 <div class="theater-backdrop" *ngIf="episode">
     <!--<player class="player-width player-height" [episode]="episode" (onProgress)="onWatchPositionUpdate($event)"-->
             <!--(onDurationUpdate)="onDurationUpdate($event)"></player>-->
-    <video-player class="player-width player-height" [videoFile]="episode.video_files[0]"></video-player>
+    <video-player class="player-width player-height"
+                  [videoFile]="episode.video_files[0]"
+                  [startPosition]="episode.watch_progress.last_watch_position"
+                  [thumbnail]="episode.thumbnail"
+                  [bangumiName]="episode.bangumi.name_cn || episode.bangumi.name"
+                  [episodeNo]="episode.episode_no"></video-player>
 </div>
 <div class="ui container episode-info-container" *ngIf="episode">
     <h3 class=episode-title>

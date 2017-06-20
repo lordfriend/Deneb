@@ -44,6 +44,25 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     @Input()
     videoFile: VideoFile;
 
+    /**
+     * the position which video should play from.
+     * @type {number}
+     */
+    @Input()
+    startPosition = 0;
+
+    @Input()
+    thumbnail: string;
+
+    /**
+     * can be Bangumi#name or Bangumi#name_cn
+     */
+    @Input()
+    bangumiName: string;
+
+    @Input()
+    episodeNo: number;
+
     fullscreenAPI: FullScreenAPI;
 
     @HostBinding('class.fullscreen')
@@ -196,7 +215,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'loadedmetadata')
                 .subscribe(() => {
-                    // TODO: set seeking position
+                    if (this.startPosition) {
+                        mediaElement.currentTime = this.startPosition;
+                    }
                 })
         );
         this._subscription.add(

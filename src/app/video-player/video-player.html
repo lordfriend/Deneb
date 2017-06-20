@@ -1,7 +1,8 @@
 <video #media
-       [id]="playerId"
        preload="none"
-       crossorigin>
+       crossorigin
+       [id]="playerId"
+       [poster]="thumbnail">
     <source [src]="mediaUrl" [type]="mediaType">
 </video>
 <div class="overlay" #overlay [ngClass]="{show: showLoader}">

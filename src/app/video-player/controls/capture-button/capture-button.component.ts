@@ -35,8 +35,8 @@ export class VideoCaptureButton implements OnInit, OnDestroy{
     onClick(event: Event) {
         event.preventDefault();
         event.stopPropagation();
-        let bangumi_name = 'test';
-        let episode_no = 1;
+        let bangumi_name = this._videoPlayer.bangumiName;
+        let episode_no = this._videoPlayer.episodeNo;
         if (this.getConfigDirectDownload()) {
             this._videoCapture.download(bangumi_name, episode_no, this._currentTime);
             return;

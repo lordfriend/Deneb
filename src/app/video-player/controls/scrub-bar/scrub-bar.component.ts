@@ -65,6 +65,9 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         let hostElement = this._hostRef.nativeElement;
         this._subscription.add(
             Observable.fromEvent(hostElement, 'mousedown')
+                .filter(() => {
+                    return !Number.isNaN(this.duration);
+                })
                 .do((event: MouseEvent) => {
                     event.preventDefault();
                     this._playProgressRatio = Math.round(VideoPlayerHelpers.calcSliderRatio(hostElement, event) * 1000) / 10;

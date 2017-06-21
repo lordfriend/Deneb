@@ -22,6 +22,9 @@ import { VideoCapture } from './core/video-capture.service';
 
 let nextId = 0;
 
+export const MAX_TOLERATE_WAITING_TIME = 10000;
+export const INITIAL_TOLERATE_WAITING_TIME = 5000;
+
 @Component({
     selector: 'video-player',
     templateUrl: './video-player.html',
@@ -29,6 +32,7 @@ let nextId = 0;
 })
 export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges {
     private _subscription = new Subscription();
+    private _waitingSubscription = new Subscription();
 
     private _currentTimeSubject = new BehaviorSubject(0);
     private _durationSubject = new BehaviorSubject(Number.NaN);
@@ -40,6 +44,16 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private _seeking = new BehaviorSubject(false);
 
     private _pendingState = PlayState.INVALID;
+
+    /**
+     * use for reload video when waiting time exceed this threshold value,
+     * each time a waiting occur, this time will plus 500ms until it reaches MAX_TOLERATE_WAITING_TIME
+     * @type {number}
+     * @private
+     */
+    private _tolerateWaitingTime = INITIAL_TOLERATE_WAITING_TIME;
+
+    private _internalPosition = 0;
 
     @Input()
     videoFile: VideoFile;
@@ -68,6 +82,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     @Output()
     onDurationUpdate = new EventEmitter<number>();
+
+    @Output()
+    lagged = new EventEmitter<boolean>();
 
     fullscreenAPI: FullScreenAPI;
 
@@ -223,9 +240,15 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'loadedmetadata')
                 .subscribe(() => {
+                    // internalPosition has a more priority
+                    if (this._internalPosition) {
+                        mediaElement.currentTime = this._internalPosition;
+                        return;
+                    }
                     if (this.startPosition) {
                         mediaElement.currentTime = this.startPosition;
                     }
+
                 })
         );
         this._subscription.add(
@@ -287,6 +310,8 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'canplaythrough')
                 .subscribe(() => {
+                    this.lagged.emit(false);
+                    this.watchForWaiting();
                     if (this._pendingState !== PlayState.INVALID) {
                         switch (this._pendingState) {
                             case PlayState.PLAYING:
@@ -302,6 +327,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                     }
                 })
         );
+
     }
 
     ngOnDestroy(): void {
@@ -311,11 +337,38 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     ngOnChanges(changes: SimpleChanges): void {
         if ('videoFile' in changes) {
-            this.mediaUrl = this.videoFile.url;
-            this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
+            this.makeMediaUrl();
             let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+            this._internalPosition = 0;
             mediaElement.load();
             this.play();
         }
+    }
+
+    private makeMediaUrl() {
+        this.mediaUrl = `${this.videoFile.url}?c=${Date.now()}`;
+        this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
+    }
+
+    private watchForWaiting() {
+        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        this._waitingSubscription.unsubscribe();
+        this._waitingSubscription = Observable.interval(100)
+            .map(() => {
+                return mediaElement.readyState < ReadyState.HAVE_FUTURE_DATA;
+            })
+            .filter(waiting => !waiting)
+            .timeout(this._tolerateWaitingTime)
+            .subscribe(() => {}, () => {
+                this._internalPosition = mediaElement.currentTime;
+                console.log('waiting time exceed, reload, currentTime', this._internalPosition);
+                this.lagged.emit(true);
+                this.makeMediaUrl();
+                mediaElement.load();
+                this.play();
+                if (this._tolerateWaitingTime < MAX_TOLERATE_WAITING_TIME) {
+                    this._tolerateWaitingTime += 500;
+                }
+            });
     }
 }

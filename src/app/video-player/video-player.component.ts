@@ -1,10 +1,10 @@
 import {
     AfterViewInit,
     Component, ComponentFactoryResolver,
-    ElementRef, HostBinding, Injector,
+    ElementRef, EventEmitter, HostBinding, Injector,
     Input,
     OnChanges,
-    OnDestroy, OnInit,
+    OnDestroy, OnInit, Output,
     Self,
     SimpleChanges,
     ViewChild,
@@ -62,6 +62,12 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     @Input()
     episodeNo: number;
+
+    @Output()
+    onProgress = new EventEmitter<number>();
+
+    @Output()
+    onDurationUpdate = new EventEmitter<number>();
 
     fullscreenAPI: FullScreenAPI;
 
@@ -209,7 +215,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'durationchange')
                 .subscribe(() => {
-                    this._durationSubject.next(mediaElement.duration);
+                    let duration = mediaElement.duration;
+                    this._durationSubject.next(duration);
+                    this.onDurationUpdate.emit(duration);
                 })
         );
         this._subscription.add(
@@ -223,7 +231,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'timeupdate')
                 .subscribe(() => {
-                    this._currentTimeSubject.next(mediaElement.currentTime);
+                    let currentTime = mediaElement.currentTime;
+                    this._currentTimeSubject.next(currentTime);
+                    this.onProgress.next(currentTime);
                 })
         );
         this._subscription.add(

@@ -6,53 +6,55 @@
             <!--(onDurationUpdate)="onDurationUpdate($event)"></player>-->
     <video-player class="player-width player-height"
                   [videoFile]="episode.video_files[0]"
-                  [startPosition]="episode.watch_progress.last_watch_position"
+                  [startPosition]="episode.watch_progress?.last_watch_position"
                   [thumbnail]="episode.thumbnail"
                   [bangumiName]="episode.bangumi.name_cn || episode.bangumi.name"
-                  [episodeNo]="episode.episode_no"></video-player>
+                  [episodeNo]="episode.episode_no"
+                  (onProgress)="onWatchPositionUpdate($event)"
+                  (onDurationUpdate)="onDurationUpdate($event)"></video-player>
 </div>
 <div class="ui container episode-info-container" *ngIf="episode">
-    <h3 class=episode-title>
-        <span class="bangumi-name">{{episode.bangumi.name_cn}}</span>
-        <span class="episode-no">{{episode.episode_no}}</span>
-        <span class="episode-name-cn">{{episode.name_cn}}</span>
-    </h3>
-    <div class="ui divider">
+<h3 class=episode-title>
+    <span class="bangumi-name">{{episode.bangumi.name_cn}}</span>
+    <span class="episode-no">{{episode.episode_no}}</span>
+    <span class="episode-name-cn">{{episode.name_cn}}</span>
+</h3>
+<div class="ui divider">
+</div>
+<div class="bangumi-info">
+    <div class="bangumi-cover">
+        <responsive-image [src]="episode.bangumi.cover"
+                          [size]="{width: '100%', height: 'auto'}"
+                          [background]="episode.bangumi.cover_color"></responsive-image>
     </div>
-    <div class="bangumi-info">
-        <div class="bangumi-cover">
-            <responsive-image [src]="episode.bangumi.cover"
-                              [size]="{width: '100%', height: 'auto'}"
-                              [background]="episode.bangumi.cover_color"></responsive-image>
+    <div class="bangumi-basic-info">
+        <h2 class="bangumi-title name-cn"><a [routerLink]="['/bangumi', episode.bangumi_id]">{{episode.bangumi.name_cn}}</a>
+        </h2>
+        <h4 class="bangumi-title name">{{episode.bangumi.name}}</h4>
+        <favorite-chooser *ngIf="isBangumiReady" [bangumi]="episode.bangumi"></favorite-chooser>
+        <div class="summary">
+            {{episode.bangumi.summary}}
         </div>
-        <div class="bangumi-basic-info">
-            <h2 class="bangumi-title name-cn"><a [routerLink]="['/bangumi', episode.bangumi_id]">{{episode.bangumi.name_cn}}</a>
-            </h2>
-            <h4 class="bangumi-title name">{{episode.bangumi.name}}</h4>
-            <favorite-chooser *ngIf="isBangumiReady" [bangumi]="episode.bangumi"></favorite-chooser>
-            <div class="summary">
-                {{episode.bangumi.summary}}
-            </div>
-            <h4>
-                各话列表
-            </h4>
-            <div class="episode-list-loading-wrapper" *ngIf="!episode.bangumi.episodes">
-                <div class="ui active inverted dimmer">
-                    <div class="ui medium loader"></div>
-                </div>
-            </div>
-            <div class="episode-list ui eight column doubling grid" *ngIf="episode.bangumi.episodes">
-                <div class="column" *ngFor="let eps of episode.bangumi.episodes">
-                    <a class="ui segment episode-link" *ngIf="eps.status===2" [routerLink]="['/play', eps.id]">
-                        {{eps.episode_no}}
-                    </a>
-                    <a class="ui disabled segment episode-link" *ngIf="eps.status!==2">
-                        {{eps.episode_no}}
-                    </a>
-                </div>
+        <h4>
+            各话列表
+        </h4>
+        <div class="episode-list-loading-wrapper" *ngIf="!episode.bangumi.episodes">
+            <div class="ui active inverted dimmer">
+                <div class="ui medium loader"></div>
             </div>
         </div>
+        <div class="episode-list ui eight column doubling grid" *ngIf="episode.bangumi.episodes">
+            <div class="column" *ngFor="let eps of episode.bangumi.episodes">
+                <a class="ui segment episode-link" *ngIf="eps.status===2" [routerLink]="['/play', eps.id]">
+                    {{eps.episode_no}}
+                </a>
+                <a class="ui disabled segment episode-link" *ngIf="eps.status!==2">
+                    {{eps.episode_no}}
+                </a>
+            </div>
+        </div>
     </div>
+</div>
 </div>
 
 

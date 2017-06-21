@@ -35,7 +35,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
     private current_position: number | undefined;
     private duration: number;
-    private isUpdateHistory: boolean = false;
+    // private isUpdateHistory: boolean = false;
 
     private get isFinished(): boolean {
         if (!this.current_position || !this.duration) {
@@ -82,9 +82,9 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
         this.positionChangeSubscription = this.positionChange
             .throttleTime(5000)
-            .filter(() => {
-                return !this.isUpdateHistory;
-            })
+            // .filter(() => {
+            //     return !this.isUpdateHistory;
+            // })
             .subscribe(
                 (position) => {
                     this.updateHistory(position);
@@ -96,20 +96,21 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     }
 
     updateHistory(position) {
-        this.isUpdateHistory = true;
+        // this.isUpdateHistory = true;
         let percentage = position / this.duration;
         if (Number.isNaN(percentage)) {
             return;
         }
-        this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
-            .subscribe(
-                () => {
-                    this.isUpdateHistory = false;
-                },
-                () => {
-                    this.isUpdateHistory = false;
-                }
-            );
+        this.watchService.updateWatchProgress(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished);
+        // this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
+        //     .subscribe(
+        //         () => {
+        //             this.isUpdateHistory = false;
+        //         },
+        //         () => {
+        //             this.isUpdateHistory = false;
+        //         }
+        //     );
     }
 
     /**

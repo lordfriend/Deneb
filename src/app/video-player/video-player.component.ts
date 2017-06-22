@@ -360,12 +360,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
             .filter(waiting => !waiting)
             .timeout(this._tolerateWaitingTime)
             .subscribe(() => {}, () => {
-                this._internalPosition = mediaElement.currentTime;
-                console.log('waiting time exceed, reload, currentTime', this._internalPosition);
                 this.lagged.emit(true);
-                this.makeMediaUrl();
-                mediaElement.load();
-                this.play();
                 if (this._tolerateWaitingTime < MAX_TOLERATE_WAITING_TIME) {
                     this._tolerateWaitingTime += 500;
                 }

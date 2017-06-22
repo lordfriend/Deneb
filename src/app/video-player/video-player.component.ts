@@ -202,7 +202,12 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     seek(playProgressRatio) {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        // ended state must be retrieved before set currentTime.
+        let isPlayBackEnded = mediaElement.ended;
         mediaElement.currentTime = Math.round(playProgressRatio * mediaElement.duration);
+        if (isPlayBackEnded) {
+            this.play();
+        }
     }
 
     toggleFullscreen() {

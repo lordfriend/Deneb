@@ -1,6 +1,7 @@
-import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VideoPlayer } from '../../video-player.component';
 import { Subscription } from 'rxjs/Subscription';
+import { VideoPlayerHelpers } from '../../core/helpers';
 
 @Component({
     selector: 'video-time-indicator',
@@ -32,14 +33,14 @@ export class VideoTimeIndicator implements OnInit, OnDestroy {
         if (Number.isNaN(this.duration)) {
             return '-';
         }
-        return VideoTimeIndicator.convertTime(this.duration);
+        return VideoPlayerHelpers.convertTime(this.duration);
     }
 
     get currentTimeClock() : string {
         if (Number.isNaN(this.duration)) {
             return '-';
         }
-        return VideoTimeIndicator.convertTime(this.currentTime);
+        return VideoPlayerHelpers.convertTime(this.currentTime);
     }
 
     constructor(private _videoPlayer: VideoPlayer) {
@@ -58,24 +59,4 @@ export class VideoTimeIndicator implements OnInit, OnDestroy {
         this._subscription.unsubscribe();
     }
 
-    static convertTime(timeInSeconds: number): string {
-        let hours = Math.floor(timeInSeconds / 3600);
-        let minutes = Math.floor((timeInSeconds - hours * 3600) / 60);
-        let seconds = Math.floor(timeInSeconds - hours * 3600 - minutes * 60);
-        let mm, ss;
-        if (minutes < 10) {
-            mm = '0' + minutes;
-        } else {
-            mm = '' + minutes;
-        }
-        if (seconds < 10) {
-            ss = '0' + seconds;
-        } else {
-            ss = '' + seconds;
-        }
-        if (hours > 0) {
-            return `${hours}:${mm}:${ss}`;
-        }
-        return `${mm}:${ss}`;
-    }
 }

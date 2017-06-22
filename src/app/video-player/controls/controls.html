@@ -4,7 +4,7 @@
 <div class="control-wrapper" (click)="onClickVideo($event)" #controlWrapper>
     <video-captured-frame-list [showControls]="showControls"></video-captured-frame-list>
     <div class="control-bar" (click)="onControlBarClick($event)" [@controlBarState]="controlBarState">
-        <video-player-scrub-bar (motion)="onMotion()"></video-player-scrub-bar>
+        <video-player-scrub-bar (motion)="onMotion()" [showControls]="showControls"></video-player-scrub-bar>
         <div class="control-buttons">
             <video-play-button></video-play-button>
             <video-volume-control (motion)="onMotion()"></video-volume-control>

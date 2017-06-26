@@ -1,3 +1,5 @@
+export const CONTROL_FADE_OUT_TIME = 3000;
+
 export class VideoPlayerHelpers {
     static isiOSDevice(): boolean {
         return (navigator.userAgent.match(/ip(hone|ad|od)/i) && !navigator.userAgent.match(/(iemobile)[\/\s]?([\w\.]*)/i));

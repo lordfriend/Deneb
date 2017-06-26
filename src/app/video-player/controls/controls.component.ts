@@ -8,8 +8,7 @@ import { Subject } from 'rxjs/Subject';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { VideoPlayer } from '../video-player.component';
 import { PlayState } from '../core/state';
-
-export const CONTROL_FADE_OUT_TIME = 3000;
+import { CONTROL_FADE_OUT_TIME } from '../core/helpers';
 
 @Component({
     selector: 'video-controls',

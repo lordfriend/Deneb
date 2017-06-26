@@ -17,7 +17,6 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _dragEventEmitSubscription: Subscription;
     private _playProgressRatio = 0;
-    private _panStartRatio = 0;
     private _isDragging = false;
     private _isSeeking = false;
 

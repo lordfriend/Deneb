@@ -1,6 +1,9 @@
-<div class="touch-control-wrapper">
+<div class="touch-control-wrapper" [@controlState]="controlState">
     <div class="top-section">
         <video-fullscreen-button></video-fullscreen-button>
+    </div>
+    <div class="center-section">
+        <video-play-button></video-play-button>
     </div>
     <div class="bottom-section">
         <div class="current-time time-indicator">{{currentTimeClock}}</div>

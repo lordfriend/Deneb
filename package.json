@@ -65,6 +65,7 @@
     "@angular/router": "^4.0.1",
     "core-js": "^2.4.1",
     "deneb-ui": "^0.5.2",
+    "hammerjs": "^2.0.8",
     "ie-shim": "0.1.0",
     "intersection-observer": "^0.2.1",
     "reflect-metadata": "^0.1.9",

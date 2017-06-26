@@ -7,14 +7,14 @@ export class VideoPlayerHelpers {
         return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf("IEMobile") !== -1);
     }
 
-    static calcSliderRatio(rect: ClientRect, event: MouseEvent): number {
+    static calcSliderRatio(rect: ClientRect, x: number): number {
         let offsetX = 0;
-        if (event.clientX < rect.left) {
+        if (x < rect.left) {
             offsetX = 0;
-        } else if (event.clientX > rect.right) {
+        } else if (x > rect.right) {
             offsetX = rect.width;
         } else {
-            offsetX = event.clientX - rect.left;
+            offsetX = x - rect.left;
         }
         return offsetX / rect.width;
     }

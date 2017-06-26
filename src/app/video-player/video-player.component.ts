@@ -19,6 +19,7 @@ import { VideoFile } from '../entity/video-file';
 import { VideoPlayerHelpers } from './core/helpers';
 import { VideoControls } from './controls/controls.component';
 import { VideoCapture } from './core/video-capture.service';
+import { VideoTouchControls } from './touch-controls/touch-controls.component';
 
 let nextId = 0;
 
@@ -215,13 +216,14 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     ngOnInit(): void {
-        // if (VideoPlayerHelpers.isMobileDevice()) {
-        //    TODO: for mobile device, should init a touch controls
-        // } else {
-
-        // }
-        let controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoControls);
-        let componentRef = controlsComponentFactory.create(this._injector);
+        let controlsComponentFactory, componentRef;
+        if (VideoPlayerHelpers.isMobileDevice()) {
+           // TODO: for mobile device, should init a touch controls
+            controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoTouchControls);
+        } else {
+            controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoControls);
+        }
+        componentRef= controlsComponentFactory.create(this._injector);
         this.controlContainer.insert(componentRef.hostView);
     }
 

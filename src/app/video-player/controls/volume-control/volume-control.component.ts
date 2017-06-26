@@ -69,7 +69,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
             Observable.fromEvent(sliderElement, 'mousedown')
                 .do((event: MouseEvent) => {
                     this.unmute();
-                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event));
+                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event.clientX));
                     this.startDrag();
                 })
                 .flatMap(() => {
@@ -81,7 +81,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
                 })
                 .subscribe((event: MouseEvent) => {
                     this.unmute();
-                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event));
+                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event.clientX));
                 })
         );
     }

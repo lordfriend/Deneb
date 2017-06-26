@@ -1,31 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { VideoPlayer } from '../../video-player.component';
+import { AfterViewInit, Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { VideoPlayerHelpers } from '../core/helpers';
+import { VideoPlayer } from '../video-player.component';
 import { Subscription } from 'rxjs/Subscription';
-import { VideoPlayerHelpers } from '../../core/helpers';
 
 @Component({
-    selector: 'video-time-indicator',
-    template: `
-        <span class="current-time">{{currentTimeClock}}</span>
-        <span class="separator">&#47;</span>
-        <span class="duration">{{durationClock}}</span>
-    `,
-    styles: [`
-        :host {
-            display: inline-block;
-            box-sizing: border-box;
-            flex: 0 0 auto;
-            margin-left: 0.5rem;
-            margin-right: 0.5rem;
-            padding: 0.4rem;
-            line-height: 1;
-            cursor: default;
-            font-family: "Segoe UI", sans-serif;
-        }
-    `]
+    selector: 'video-touch-controls',
+    templateUrl: './touch-controls.html',
+    styleUrls: ['./touch-controls.less']
 })
-export class VideoTimeIndicator implements OnInit, OnDestroy {
+export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
+    private _videoPlayer: VideoPlayer;
+
+    showControls: boolean;
 
     currentTime = Number.NaN;
     duration = Number.NaN;
@@ -44,10 +31,15 @@ export class VideoTimeIndicator implements OnInit, OnDestroy {
         return VideoPlayerHelpers.convertTime(this.currentTime);
     }
 
-    constructor(private _videoPlayer: VideoPlayer) {
+    onMotion() {
+
+    }
+
+    constructor(private _injector: Injector) {
     }
 
     ngOnInit(): void {
+        this._videoPlayer = this._injector.get(VideoPlayer);
         this._subscription.add(
             this._videoPlayer.currentTime.subscribe(time => this.currentTime = time)
         );
@@ -56,8 +48,10 @@ export class VideoTimeIndicator implements OnInit, OnDestroy {
         )
     }
 
+    ngAfterViewInit(): void {
+    }
+
     ngOnDestroy(): void {
         this._subscription.unsubscribe();
     }
-
 }

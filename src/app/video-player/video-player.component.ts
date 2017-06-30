@@ -1,5 +1,5 @@
 import {
-    AfterViewInit,
+    AfterViewInit, ChangeDetectorRef,
     Component, ComponentFactoryResolver,
     ElementRef, EventEmitter, HostBinding, Injector,
     Input,
@@ -171,6 +171,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     constructor(@Self() public videoPlayerRef: ElementRef,
+                private _changeDetector: ChangeDetectorRef,
                 private _videoCapture: VideoCapture,
                 private _injector: Injector,
                 private _componentFactoryResolver: ComponentFactoryResolver) {
@@ -340,8 +341,8 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     ngOnChanges(changes: SimpleChanges): void {
         if ('videoFile' in changes) {
-            this.makeMediaUrl();
             let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+            this.makeMediaUrl();
             mediaElement.load();
             this.play();
         }
@@ -350,6 +351,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private makeMediaUrl() {
         this.mediaUrl = `${this.videoFile.url}?c=${Date.now()}`;
         this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
+        this._changeDetector.detectChanges();
     }
 
     private watchForWaiting() {

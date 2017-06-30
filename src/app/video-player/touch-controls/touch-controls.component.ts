@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, Injector, OnDestroy, OnInit, Self } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Injector, OnDestroy, OnInit, Self, ViewChild} from '@angular/core';
 import { CONTROL_FADE_OUT_TIME, VideoPlayerHelpers } from '../core/helpers';
 import { VideoPlayer } from '../video-player.component';
 import { Subscription } from 'rxjs/Subscription';
 import * as Hammer from 'hammerjs';
 import { Subject } from 'rxjs/Subject';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import {closest} from "../../../helpers/dom";
 
 @Component({
     selector: 'video-touch-controls',
@@ -29,6 +30,7 @@ export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
     private _videoPlayer: VideoPlayer;
     private _tapHandlerBinding = this.tapHandler.bind(this);
     private _hammerManager: HammerManager;
+    private _fadeOutTime = CONTROL_FADE_OUT_TIME + 1000;
 
     showControls = true;
 
@@ -67,7 +69,7 @@ export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
         );
         this._subscription.add(
             this._videoPlayer.duration.subscribe(duration => this.duration = duration)
-        )
+        );
     }
 
     ngAfterViewInit(): void {
@@ -81,7 +83,7 @@ export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
 
         this._subscription.add(
             this._motion.asObservable()
-                .timeout(CONTROL_FADE_OUT_TIME)
+                .timeout(this._fadeOutTime)
                 .do(() => {},
                     () => {
                         this.showControls = false;
@@ -92,7 +94,7 @@ export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
                         this.showControls = true;
                     }
                 )
-        )
+        );
     }
 
     ngOnDestroy(): void {
@@ -100,12 +102,13 @@ export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
         this._hammerManager.off('tap', this._tapHandlerBinding);
     }
 
-    private tapHandler() {
-        if (this.showControls) {
+    private tapHandler(event: HammerInput) {
+        let targetEL = event.target;
+        if (this.showControls && !targetEL.classList.contains('interact-element') && !closest(targetEL, '.interact-element')) {
             this.showControls = false;
         } else {
-            this.showControls = true;
             this.onMotion();
+            this.showControls = true;
         }
     }
 }

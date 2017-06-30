@@ -21,8 +21,11 @@ import { Subscription } from 'rxjs/Subscription';
         }
     `]
 })
-export class VideoPlayButton implements OnInit, OnDestroy{
+export class VideoPlayButton implements OnInit, OnDestroy {
     private _subscription = new Subscription();
+
+    @Input()
+    controlVisibleState: boolean;
 
     state: PlayState;
 
@@ -46,6 +49,9 @@ export class VideoPlayButton implements OnInit, OnDestroy{
     onClick (event: Event) {
         event.stopPropagation();
         event.preventDefault();
+        if (!this.controlVisibleState) {
+            return;
+        }
         switch (this.state) {
             case PlayState.PAUSED:
             case PlayState.PLAY_END:

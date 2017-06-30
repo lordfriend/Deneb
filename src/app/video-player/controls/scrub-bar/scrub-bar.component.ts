@@ -19,6 +19,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     private _playProgressRatio = 0;
     private _isDragging = false;
     private _isSeeking = false;
+    private _controlVisibleState = false;
 
     buffered = 0;
 
@@ -31,9 +32,14 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
 
     @Input()
     set showControls(s: boolean) {
+        this._controlVisibleState = s;
         if (!s) {
             this.pointOpacity = 0;
         }
+    }
+
+    get controlVisibleState(): boolean {
+        return this._controlVisibleState;
     }
 
     @Output()
@@ -76,7 +82,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         );
         this._subscription.add(
             this._videoPlayer.seeking.subscribe(isSeeking => this._isSeeking = isSeeking)
-        )
+        );
     }
 
     ngAfterViewInit(): void {
@@ -114,7 +120,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
                                     if (!this.isEventInRect(rect, event)) {
                                         this.pointOpacity = 0;
                                     }
-                                }))
+                                }));
                     })
                     .subscribe(
                         ({rect, event}: {rect: ClientRect, event: MouseEvent}) => {
@@ -160,6 +166,9 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
             this._subscription.add(
                 Observable.fromEvent(hostElement, 'touchstart')
                     .filter(() => {
+                        return this.controlVisibleState;
+                    })
+                    .filter(() => {
                         return !Number.isNaN(this.duration);
                     })
                     .map((event: TouchEvent) => {
@@ -183,7 +192,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
                                     this._isSeeking = true;
                                     this._videoPlayer.seek(VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX));
                                     this.stopDrag();
-                                }))
+                                }));
                     })
                     .subscribe(({rect, event}: {rect: ClientRect, event: TouchEvent}) => {
                         this._playProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX);
@@ -200,7 +209,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         this._isDragging = true;
         this._dragEventEmitSubscription = Observable.interval(100).subscribe(() => {
             this.motion.emit(1);
-        })
+        });
     }
 
     private stopDrag() {

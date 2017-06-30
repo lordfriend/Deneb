@@ -1,4 +1,5 @@
 export class PlayState {
+    static INITIAL = -1;
     static INVALID = 0;
     static PLAYING = 1;
     static PLAY_END = 2;

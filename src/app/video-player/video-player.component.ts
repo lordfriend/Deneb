@@ -37,7 +37,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     private _currentTimeSubject = new BehaviorSubject(0);
     private _durationSubject = new BehaviorSubject(Number.NaN);
-    private _stateSubject = new BehaviorSubject(PlayState.PAUSED);
+    private _stateSubject = new BehaviorSubject(PlayState.INITIAL);
     private _pendingStateSubject = new BehaviorSubject(PlayState.INVALID);
     private _buffered = new BehaviorSubject(0);
     private _volume = new BehaviorSubject(1);
@@ -53,8 +53,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      * @private
      */
     private _tolerateWaitingTime = INITIAL_TOLERATE_WAITING_TIME;
-
-    private _internalPosition = 0;
 
     @Input()
     videoFile: VideoFile;
@@ -194,6 +192,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     play() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        if (this._stateSubject.getValue() === PlayState.INITIAL) {
+            mediaElement.load();
+        }
         if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
             mediaElement.play();
         } else {
@@ -223,7 +224,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         } else {
             controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoControls);
         }
-        componentRef= controlsComponentFactory.create(this._injector);
+        componentRef = controlsComponentFactory.create(this._injector);
         this.controlContainer.insert(componentRef.hostView);
     }
 
@@ -247,11 +248,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'loadedmetadata')
                 .subscribe(() => {
-                    // internalPosition has a more priority
-                    if (this._internalPosition) {
-                        mediaElement.currentTime = this._internalPosition;
-                        return;
-                    }
                     if (this.startPosition) {
                         mediaElement.currentTime = this.startPosition;
                     }
@@ -284,14 +280,14 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'pause')
                 .subscribe(() => {
-                    this._stateSubject.next(PlayState.PAUSED)
+                    this._stateSubject.next(PlayState.PAUSED);
                 })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'ended')
                 .subscribe(
                     () => {
-                        this._stateSubject.next(PlayState.PLAY_END)
+                        this._stateSubject.next(PlayState.PLAY_END);
                     }
                 )
         );
@@ -346,7 +342,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         if ('videoFile' in changes) {
             this.makeMediaUrl();
             let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-            this._internalPosition = 0;
             mediaElement.load();
             this.play();
         }

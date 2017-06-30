@@ -54,7 +54,8 @@ export class VideoPlayButton implements OnInit, OnDestroy{
             case PlayState.PLAYING:
                 this._videoPlayer.pause();
                 break;
-            // no default
+            default:
+                this._videoPlayer.play();
         }
     }
 

@@ -54,12 +54,18 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
         this._subscription.add(
             this._videoPlayer.volume
                 .distinctUntilChanged()
-                .subscribe(vol => this._volume = vol)
+                .subscribe((vol: number) => {
+                    this._volume = vol;
+                    this.motion.emit(1);
+                })
         );
         this._subscription.add(
             this._videoPlayer.muted
                 .distinctUntilChanged()
-                .subscribe(muted => this.muted = muted)
+                .subscribe((muted: boolean) => {
+                    this.muted = muted;
+                    this.motion.emit(1);
+                })
         );
     }
 

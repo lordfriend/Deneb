@@ -16,6 +16,8 @@ import { VideoPlayerConfigDialog } from './controls/config-button/config-dialog/
 import { UIToggleModule } from 'deneb-ui';
 import { FormsModule } from '@angular/forms';
 import { VideoTouchControls } from './touch-controls/touch-controls.component';
+import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
+import { VideoPlayerHelpButton } from "./controls/help-button/help-button.component";
 
 @NgModule({
     declarations: [
@@ -31,7 +33,9 @@ import { VideoTouchControls } from './touch-controls/touch-controls.component';
         CapturedFrameList,
         CapturedImageOperationDialog,
         VideoPlayerConfigButton,
-        VideoPlayerConfigDialog
+        VideoPlayerConfigDialog,
+        VideoPlayerHelpDialog,
+        VideoPlayerHelpButton
     ],
     providers: [
         VideoCapture
@@ -48,7 +52,9 @@ import { VideoTouchControls } from './touch-controls/touch-controls.component';
         VideoControls,
         VideoTouchControls,
         CapturedImageOperationDialog,
-        VideoPlayerConfigDialog
+        VideoPlayerConfigDialog,
+        VideoPlayerHelpDialog,
+        VideoPlayerHelpButton
     ]
 })
 export class VideoPlayerModule {

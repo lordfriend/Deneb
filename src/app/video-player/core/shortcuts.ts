@@ -13,7 +13,8 @@ export const KEY_MAP = {
     EQUAL_SIGN: 187,
     COMMA: 188,
     DASH: 189,
-    PERIOD: 190
+    PERIOD: 190,
+    FORWARD_SLASH: 191
 };
 
 export const FAST_SEEK_TIME = 5; // unit is second
@@ -92,6 +93,10 @@ export class VideoPlayerShortcuts {
                         case KEY_MAP.C:
                             captureService.capture(videoPlayer.bangumiName, videoPlayer.episodeNo, this.currentTime);
                             break;
+                        case KEY_MAP.FORWARD_SLASH:
+                            videoPlayer.openHelpDialog();
+                            break;
+                        // no default
                     }
                 })
         );

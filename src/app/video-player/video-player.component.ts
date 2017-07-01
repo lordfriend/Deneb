@@ -22,6 +22,8 @@ import { VideoCapture } from './core/video-capture.service';
 import { VideoTouchControls } from './touch-controls/touch-controls.component';
 import { VideoPlayerShortcuts } from './core/shortcuts';
 import { current } from 'codelyzer/util/syntaxKind';
+import { UIDialog } from 'deneb-ui';
+import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
 
 let nextId = 0;
 
@@ -161,7 +163,8 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 private _changeDetector: ChangeDetectorRef,
                 private _videoCapture: VideoCapture,
                 private _injector: Injector,
-                private _componentFactoryResolver: ComponentFactoryResolver) {
+                private _componentFactoryResolver: ComponentFactoryResolver,
+                private _dialogService: UIDialog) {
     }
 
     setPendingState(state: number) {
@@ -287,6 +290,10 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     requestFocus() {
         let hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
         hostElement.focus();
+    }
+
+    openHelpDialog() {
+        this._dialogService.open(VideoPlayerHelpDialog, {stickyDialog: false, backdrop: true});
     }
 
     ngOnInit(): void {

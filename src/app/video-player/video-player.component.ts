@@ -1,7 +1,7 @@
 import {
-    AfterViewInit,
+    AfterViewInit, ChangeDetectorRef,
     Component, ComponentFactoryResolver,
-    ElementRef, EventEmitter, HostBinding, Injector,
+    ElementRef, EventEmitter, HostBinding, HostListener, Injector,
     Input,
     OnChanges,
     OnDestroy, OnInit, Output,
@@ -19,6 +19,11 @@ import { VideoFile } from '../entity/video-file';
 import { VideoPlayerHelpers } from './core/helpers';
 import { VideoControls } from './controls/controls.component';
 import { VideoCapture } from './core/video-capture.service';
+import { VideoTouchControls } from './touch-controls/touch-controls.component';
+import { VideoPlayerShortcuts } from './core/shortcuts';
+import { current } from 'codelyzer/util/syntaxKind';
+import { UIDialog } from 'deneb-ui';
+import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
 
 let nextId = 0;
 
@@ -28,7 +33,10 @@ export const INITIAL_TOLERATE_WAITING_TIME = 5000;
 @Component({
     selector: 'video-player',
     templateUrl: './video-player.html',
-    styleUrls: ['./video-player.less']
+    styleUrls: ['./video-player.less'],
+    host: {
+        'tabindex': '0'
+    }
 })
 export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges {
     private _subscription = new Subscription();
@@ -36,7 +44,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     private _currentTimeSubject = new BehaviorSubject(0);
     private _durationSubject = new BehaviorSubject(Number.NaN);
-    private _stateSubject = new BehaviorSubject(PlayState.PAUSED);
+    private _stateSubject = new BehaviorSubject(PlayState.INITIAL);
     private _pendingStateSubject = new BehaviorSubject(PlayState.INVALID);
     private _buffered = new BehaviorSubject(0);
     private _volume = new BehaviorSubject(1);
@@ -52,8 +60,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      * @private
      */
     private _tolerateWaitingTime = INITIAL_TOLERATE_WAITING_TIME;
-
-    private _internalPosition = 0;
 
     @Input()
     videoFile: VideoFile;
@@ -87,6 +93,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     lagged = new EventEmitter<boolean>();
 
     fullscreenAPI: FullScreenAPI;
+    shortcuts: VideoPlayerShortcuts;
 
     @HostBinding('class.fullscreen')
     isFullscreen: boolean;
@@ -152,6 +159,14 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
+    constructor(@Self() public videoPlayerRef: ElementRef,
+                private _changeDetector: ChangeDetectorRef,
+                private _videoCapture: VideoCapture,
+                private _injector: Injector,
+                private _componentFactoryResolver: ComponentFactoryResolver,
+                private _dialogService: UIDialog) {
+    }
+
     setPendingState(state: number) {
         this._pendingStateSubject.next(state);
         this._pendingState = state;
@@ -171,10 +186,35 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    constructor(@Self() public videoPlayerRef: ElementRef,
-                private _videoCapture: VideoCapture,
-                private _injector: Injector,
-                private _componentFactoryResolver: ComponentFactoryResolver) {
+    volumeUp(delta: number) {
+        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        let currentVolume = mediaElement.volume;
+        if (mediaElement) {
+            if (currentVolume + delta > 1) {
+                this.setVolume(1);
+            } else {
+                this.setVolume(currentVolume + delta);
+            }
+        }
+    }
+
+    volumeDown(delta: number) {
+        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        let currentVolume = mediaElement.volume;
+        if (mediaElement) {
+            if (currentVolume - delta < 0) {
+                this.setVolume(0);
+            } else {
+                this.setVolume(currentVolume - delta);
+            }
+        }
+    }
+
+    toggleMuted() {
+        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        if (mediaElement) {
+            this.setMuted(!mediaElement.muted);
+        }
     }
 
     /**
@@ -193,6 +233,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     play() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        if (this._stateSubject.getValue() === PlayState.INITIAL) {
+            mediaElement.load();
+        }
         if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
             mediaElement.play();
         } else {
@@ -200,34 +243,83 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
+    togglePlayAndPause() {
+        if (this._pendingState === PlayState.PLAYING || this._stateSubject.getValue() === PlayState.PLAYING) {
+            this.pause();
+        } else {
+            this.play();
+        }
+    }
+
     seek(playProgressRatio) {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        // ended state must be retrieved before set currentTime.
+        let isPlayBackEnded = mediaElement.ended;
         mediaElement.currentTime = Math.round(playProgressRatio * mediaElement.duration);
+        if (isPlayBackEnded) {
+            this.play();
+        }
+    }
+
+    fastForward(time: number) {
+        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        let currentTime = mediaElement.currentTime;
+        let duration = mediaElement.duration;
+        if (currentTime + time > duration) {
+            this.seek(1);
+        } else {
+            this.seek((currentTime + time) / duration);
+        }
+    }
+
+    fastBackward(time: number) {
+        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        let currentTime = mediaElement.currentTime;
+        let duration = mediaElement.duration;
+        if (currentTime - time < 0) {
+            this.seek(0);
+        } else {
+            this.seek((currentTime - time) / duration);
+        }
     }
 
     toggleFullscreen() {
         this.fullscreenAPI.toggleFullscreen();
     }
 
-    ngOnInit(): void {
-        // if (VideoPlayerHelpers.isMobileDevice()) {
-        //    TODO: for mobile device, should init a touch controls
-        // } else {
+    requestFocus() {
+        let hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
+        hostElement.focus();
+    }
 
-        // }
-        let controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoControls);
-        let componentRef = controlsComponentFactory.create(this._injector);
+    openHelpDialog() {
+        this._dialogService.open(VideoPlayerHelpDialog, {stickyDialog: false, backdrop: true});
+    }
+
+    ngOnInit(): void {
+        let controlsComponentFactory, componentRef;
+        if (VideoPlayerHelpers.isMobileDevice()) {
+           // TODO: for mobile device, should init a touch controls
+            controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoTouchControls);
+        } else {
+            controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoControls);
+        }
+        componentRef = controlsComponentFactory.create(this._injector);
         this.controlContainer.insert(componentRef.hostView);
     }
 
     ngAfterViewInit(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        let hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
 
         this._videoCapture.registerVideoElement(mediaElement as HTMLVideoElement);
 
         // init fullscreen API
-        this.fullscreenAPI = new FullScreenAPI(mediaElement, this.videoPlayerRef.nativeElement);
+        this.fullscreenAPI = new FullScreenAPI(mediaElement, hostElement);
         this.fullscreenAPI.onChangeFullscreen.subscribe(isFullscreen => this.isFullscreen = isFullscreen);
+
+        // init shortcuts
+        this.shortcuts = new VideoPlayerShortcuts(hostElement, this, this._videoCapture);
 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'durationchange')
@@ -240,11 +332,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'loadedmetadata')
                 .subscribe(() => {
-                    // internalPosition has a more priority
-                    if (this._internalPosition) {
-                        mediaElement.currentTime = this._internalPosition;
-                        return;
-                    }
                     if (this.startPosition) {
                         mediaElement.currentTime = this.startPosition;
                     }
@@ -277,14 +364,14 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'pause')
                 .subscribe(() => {
-                    this._stateSubject.next(PlayState.PAUSED)
+                    this._stateSubject.next(PlayState.PAUSED);
                 })
         );
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'ended')
                 .subscribe(
                     () => {
-                        this._stateSubject.next(PlayState.PLAY_END)
+                        this._stateSubject.next(PlayState.PLAY_END);
                     }
                 )
         );
@@ -328,18 +415,20 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 })
         );
 
+        // focus this element
+        this.requestFocus();
     }
 
     ngOnDestroy(): void {
         this._subscription.unsubscribe();
         this._videoCapture.unregisterVideoElement();
+        this.shortcuts.destroy();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if ('videoFile' in changes) {
-            this.makeMediaUrl();
             let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-            this._internalPosition = 0;
+            this.makeMediaUrl();
             mediaElement.load();
             this.play();
         }
@@ -348,6 +437,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private makeMediaUrl() {
         this.mediaUrl = `${this.videoFile.url}?c=${Date.now()}`;
         this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
+        this._changeDetector.detectChanges();
     }
 
     private watchForWaiting() {
@@ -360,12 +450,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
             .filter(waiting => !waiting)
             .timeout(this._tolerateWaitingTime)
             .subscribe(() => {}, () => {
-                this._internalPosition = mediaElement.currentTime;
-                console.log('waiting time exceed, reload, currentTime', this._internalPosition);
                 this.lagged.emit(true);
-                this.makeMediaUrl();
-                mediaElement.load();
-                this.play();
                 if (this._tolerateWaitingTime < MAX_TOLERATE_WAITING_TIME) {
                     this._tolerateWaitingTime += 500;
                 }

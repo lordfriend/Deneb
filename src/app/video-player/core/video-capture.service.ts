@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { PersistStorage } from '../../user-service/persist-storage';
+import { Capture } from './settings';
 
 export type PreviewImageParams = {bangumi_name: string, episode_no: number, currentPlayTime: number};
 
@@ -22,7 +24,7 @@ export class VideoCapture {
     private _previewContainer: PreviewContainer = null;
     private _videoElement: HTMLVideoElement = null;
 
-    constructor() {
+    constructor(private _persistStorage: PersistStorage) {
         let testAnchor = document.createElement('a');
         this.downloadSupport = typeof testAnchor['download'] !== 'undefined';
     }
@@ -40,10 +42,12 @@ export class VideoCapture {
     }
 
     capture(bangumi_name: string, episode_no: number, currentPlayTime: number): void {
-        if (this._previewContainer) {
+        if (this._previewContainer && !this.getConfigDirectDownload()) {
             this._previewContainer.addImage(this.getCapturedData(), {
                 bangumi_name, episode_no, currentPlayTime
             });
+        } else {
+            this.download(bangumi_name, episode_no, currentPlayTime);
         }
     }
 
@@ -85,4 +89,8 @@ export class VideoCapture {
         return canvas.toDataURL(`image/${this.imageFormat}`);
     }
 
+    private getConfigDirectDownload() {
+        let savedDirectDownload = this._persistStorage.getItem(Capture.DIRECT_DOWNLOAD, 'false');
+        return savedDirectDownload === 'true';
+    }
 }

@@ -27,8 +27,7 @@ export class VideoCaptureButton implements OnInit, OnDestroy{
     private _currentTime: number = 0;
 
     constructor(private _videoCapture: VideoCapture,
-                private _videoPlayer: VideoPlayer,
-                private _persistStorage: PersistStorage) {
+                private _videoPlayer: VideoPlayer) {
     }
 
     @HostListener('click', ['$event'])
@@ -37,10 +36,6 @@ export class VideoCaptureButton implements OnInit, OnDestroy{
         event.stopPropagation();
         let bangumi_name = this._videoPlayer.bangumiName;
         let episode_no = this._videoPlayer.episodeNo;
-        if (this.getConfigDirectDownload()) {
-            this._videoCapture.download(bangumi_name, episode_no, this._currentTime);
-            return;
-        }
         this._videoCapture.capture(bangumi_name, episode_no, this._currentTime);
     }
 
@@ -55,8 +50,4 @@ export class VideoCaptureButton implements OnInit, OnDestroy{
         this._subscription.unsubscribe();
     }
 
-    private getConfigDirectDownload() {
-        let savedDirectDownload = this._persistStorage.getItem(Capture.DIRECT_DOWNLOAD, 'false');
-        return savedDirectDownload === 'true';
-    }
 }

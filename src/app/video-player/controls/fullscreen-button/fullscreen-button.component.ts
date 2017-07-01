@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { VideoPlayer } from '../../video-player.component';
-import { Subscription } from 'rxjs/Subscription';
+import {Component, HostListener, Input} from '@angular/core';
+import {VideoPlayer} from '../../video-player.component';
 @Component({
     selector: 'video-fullscreen-button',
     template: `<i class="icon" [ngClass]="{expand: !isFullscreen, compress: isFullscreen}"></i>`,
@@ -19,6 +18,9 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class VideoFullscreenButton {
 
+    @Input()
+    controlVisibleState: boolean;
+
     get isFullscreen() {
         if (this._videoPlayer) {
             return this._videoPlayer.isFullscreen;
@@ -33,6 +35,9 @@ export class VideoFullscreenButton {
     onClick(event: Event) {
         event.preventDefault();
         event.stopPropagation();
+        if (!this.controlVisibleState) {
+            return;
+        }
         this._videoPlayer.toggleFullscreen();
     }
 }

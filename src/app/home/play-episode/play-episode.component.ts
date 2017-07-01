@@ -1,11 +1,12 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Episode, Bangumi} from "../../entity";
-import {HomeService, HomeChild} from "../home.service";
-import {ActivatedRoute} from '@angular/router';
-import {Subscription, Subject} from 'rxjs/Rx';
-import {Title} from '@angular/platform-browser';
-import {WatchService} from '../watch.service';
-import {WatchProgress} from '../../entity/watch-progress';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Episode, Bangumi } from "../../entity";
+import { HomeService, HomeChild } from "../home.service";
+import { ActivatedRoute } from '@angular/router';
+import { Subscription, Subject } from 'rxjs/Rx';
+import { Title } from '@angular/platform-browser';
+import { WatchService } from '../watch.service';
+import { WatchProgress } from '../../entity/watch-progress';
+import { VideoPlayer } from '../../video-player/video-player.component';
 
 export const MIN_WATCHED_PERCENTAGE = 0.95;
 
@@ -16,15 +17,30 @@ export const MIN_WATCHED_PERCENTAGE = 0.95;
     styleUrls: ['./play-episode.less']
 })
 export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
+    private routeParamsSubscription: Subscription;
+    private positionChangeSubscription: Subscription;
+
+    private positionChange = new Subject<number>();
+
+    private current_position: number | undefined;
+    private duration: number;
+    // private isUpdateHistory: boolean = false;
+
+    get isFinished(): boolean {
+        if (!this.current_position || !this.duration) {
+            return false;
+        }
+        if (this.episode.watch_progress && this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
+            return true;
+        }
+        return this.current_position / this.duration >= MIN_WATCHED_PERCENTAGE;
+    }
 
     episode: Episode;
 
     isBangumiReady: boolean;
 
-    private routeParamsSubscription: Subscription;
-    private positionChangeSubscription: Subscription;
-
-    private positionChange = new Subject<number>();
+    @ViewChild(VideoPlayer) videoPlayer: VideoPlayer;
 
     constructor(homeService: HomeService,
                 private watchService: WatchService,
@@ -33,18 +49,12 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         super(homeService);
     }
 
-    private current_position: number | undefined;
-    private duration: number;
-    // private isUpdateHistory: boolean = false;
 
-    private get isFinished(): boolean {
-        if (!this.current_position || !this.duration) {
-            return false;
+    focusVideoPlayer(event: Event) {
+        let target = event.target as HTMLElement;
+        if (target.classList.contains('theater-backdrop')) {
+            this.videoPlayer.requestFocus();
         }
-        if (this.episode.watch_progress && this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
-            return true;
-        }
-        return this.current_position / this.duration >= MIN_WATCHED_PERCENTAGE;
     }
 
     onWatchPositionUpdate(position: number) {

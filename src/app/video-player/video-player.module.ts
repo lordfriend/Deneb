@@ -15,11 +15,15 @@ import { VideoPlayerConfigButton } from './controls/config-button/config-button.
 import { VideoPlayerConfigDialog } from './controls/config-button/config-dialog/config-dialog.component';
 import { UIToggleModule } from 'deneb-ui';
 import { FormsModule } from '@angular/forms';
+import { VideoTouchControls } from './touch-controls/touch-controls.component';
+import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
+import { VideoPlayerHelpButton } from "./controls/help-button/help-button.component";
 
 @NgModule({
     declarations: [
         VideoPlayer,
         VideoControls,
+        VideoTouchControls,
         VideoPlayerScrubBar,
         VideoPlayButton,
         VideoFullscreenButton,
@@ -29,7 +33,9 @@ import { FormsModule } from '@angular/forms';
         CapturedFrameList,
         CapturedImageOperationDialog,
         VideoPlayerConfigButton,
-        VideoPlayerConfigDialog
+        VideoPlayerConfigDialog,
+        VideoPlayerHelpDialog,
+        VideoPlayerHelpButton
     ],
     providers: [
         VideoCapture
@@ -44,8 +50,11 @@ import { FormsModule } from '@angular/forms';
     ],
     entryComponents: [
         VideoControls,
+        VideoTouchControls,
         CapturedImageOperationDialog,
-        VideoPlayerConfigDialog
+        VideoPlayerConfigDialog,
+        VideoPlayerHelpDialog,
+        VideoPlayerHelpButton
     ]
 })
 export class VideoPlayerModule {

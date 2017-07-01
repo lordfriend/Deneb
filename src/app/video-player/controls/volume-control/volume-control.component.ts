@@ -64,12 +64,12 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        let sliderElement = this.slider.nativeElement;
+        let sliderElement = this.slider.nativeElement as HTMLElement;
         this._subscription.add(
             Observable.fromEvent(sliderElement, 'mousedown')
                 .do((event: MouseEvent) => {
                     this.unmute();
-                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event.clientX));
+                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement.getBoundingClientRect(), event.clientX));
                     this.startDrag();
                 })
                 .flatMap(() => {
@@ -81,7 +81,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
                 })
                 .subscribe((event: MouseEvent) => {
                     this.unmute();
-                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement, event.clientX));
+                    this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement.getBoundingClientRect(), event.clientX));
                 })
         );
     }

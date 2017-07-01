@@ -16,6 +16,7 @@ import { VideoPlayer } from '../../video-player.component';
 export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _dragEventEmitSubscription: Subscription;
+    private _seekEventEmitSubscription: Subscription;
     private _dragProgressRatio = -1;
     private _isDragging = false;
     private _isSeeking = false;
@@ -82,7 +83,11 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         );
         this._subscription.add(
             this._videoPlayer.seeking.subscribe(isSeeking => {
+                if (!this._isSeeking && isSeeking) {
+                    this.onSeekStart();
+                }
                 if (this._isSeeking && !isSeeking) {
+                    this.onSeekEnd();
                     this._dragProgressRatio = -1;
                 }
                 this._isSeeking = isSeeking;
@@ -220,6 +225,16 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     private stopDrag() {
         this._isDragging = false;
         this._dragEventEmitSubscription.unsubscribe();
+    }
+
+    private onSeekStart() {
+        this._seekEventEmitSubscription = Observable.interval(100).subscribe(() => {
+            this.motion.emit(1);
+        });
+    }
+
+    private onSeekEnd() {
+        this._seekEventEmitSubscription.unsubscribe();
     }
 
     /**

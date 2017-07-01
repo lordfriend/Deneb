@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Self, ViewChild } from '@angular/core';
 import { UIDialogRef } from 'deneb-ui';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -8,10 +8,15 @@ export const KEY_ESC = 27;
 @Component({
     selector: 'video-player-help-dialog',
     templateUrl: './help-dialog.html',
-    styleUrls: ['./help-dialog.less']
+    styleUrls: ['./help-dialog.less'],
+    host: {
+        'tabIndex': '-1'
+    }
 })
-export class VideoPlayerHelpDialog implements OnInit, OnDestroy {
+export class VideoPlayerHelpDialog implements OnInit, AfterViewInit, OnDestroy {
     private _subscription = new Subscription();
+
+    @ViewChild('closeButton') closeButton: ElementRef;
 
     constructor(private _dialogRef: UIDialogRef<VideoPlayerHelpDialog>) {
     }
@@ -33,6 +38,11 @@ export class VideoPlayerHelpDialog implements OnInit, OnDestroy {
                     this._dialogRef.close();
                 })
         );
+    }
+
+    ngAfterViewInit(): void {
+        let closeButtonElement = this.closeButton.nativeElement as HTMLElement;
+        closeButtonElement.focus();
     }
 
     ngOnDestroy(): void {

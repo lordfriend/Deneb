@@ -293,7 +293,11 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     openHelpDialog() {
-        this._dialogService.open(VideoPlayerHelpDialog, {stickyDialog: false, backdrop: true});
+        let dialogRef = this._dialogService.open(VideoPlayerHelpDialog, {stickyDialog: false, backdrop: true});
+        dialogRef.afterClosed()
+            .subscribe(() => {
+                this.requestFocus();
+            })
     }
 
     ngOnInit(): void {

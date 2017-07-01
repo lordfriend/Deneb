@@ -1,4 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output,
+    ViewChild
+} from '@angular/core';
 import { PreviewContainer, VideoCapture, PreviewImageParams, IMAGE_PROPERTY_NAME } from '../../core/video-capture.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -31,6 +34,9 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
     @Input()
     showControls: boolean;
 
+    @Output()
+    motion = new EventEmitter<any>();
+
     @HostBinding('@showState')
     get showState(): string {
         return this.showControls && this._imageCount > 0 ? 'in' : 'out';
@@ -56,6 +62,7 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
         image[IMAGE_PROPERTY_NAME] = params;
         previewWrapperElement.appendChild(image);
         this._imageCount++;
+        this.motion.emit(1);
     }
 
     ngOnInit(): void {

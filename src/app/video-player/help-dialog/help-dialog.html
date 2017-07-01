@@ -1,7 +1,7 @@
 <div class="help-dialog">
     <div class="dialog-title">
         <h3>快捷键指南</h3>
-        <a class="close-button" (click)="closeDialog($event)"><i class="remove icon"></i></a>
+        <a tabindex="0" class="close-button" (click)="closeDialog($event)" #closeButton><i class="remove icon"></i></a>
     </div>
     <div class="dialog-content">
         <table class="no-border">

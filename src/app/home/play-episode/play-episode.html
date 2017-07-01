@@ -1,7 +1,7 @@
 <div class="ui active inverted dimmer loading-wrapper" *ngIf="!episode">
     <div class="ui medium loader"></div>
 </div>
-<div class="theater-backdrop" *ngIf="episode">
+<div class="theater-backdrop" *ngIf="episode" (click)="focusVideoPlayer($event)">
     <!--<player class="player-width player-height" [episode]="episode" (onProgress)="onWatchPositionUpdate($event)"-->
             <!--(onDurationUpdate)="onDurationUpdate($event)"></player>-->
     <video-player class="player-width player-height"

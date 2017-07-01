@@ -10,8 +10,10 @@ export const KEY_MAP = {
     RIGHT_ARROW: 39,
     C: 67,
     M: 77,
+    EQUAL_SIGN: 187,
+    COMMA: 188,
     DASH: 189,
-    EQUAL_SIGN: 187
+    PERIOD: 190
 };
 
 export const FAST_SEEK_TIME = 5; // unit is second
@@ -70,9 +72,11 @@ export class VideoPlayerShortcuts {
                         case KEY_MAP.SPACE:
                             videoPlayer.togglePlayAndPause();
                             break;
+                        case KEY_MAP.COMMA:
                         case KEY_MAP.LEFT_ARROW:
                             videoPlayer.fastBackward(FAST_SEEK_TIME);
                             break;
+                        case KEY_MAP.PERIOD:
                         case KEY_MAP.RIGHT_ARROW:
                             videoPlayer.fastForward(FAST_SEEK_TIME);
                             break;

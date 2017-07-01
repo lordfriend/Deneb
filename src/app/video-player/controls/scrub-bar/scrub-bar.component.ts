@@ -16,7 +16,7 @@ import { VideoPlayer } from '../../video-player.component';
 export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _dragEventEmitSubscription: Subscription;
-    private _playProgressRatio = 0;
+    private _dragProgressRatio = -1;
     private _isDragging = false;
     private _isSeeking = false;
     private _controlVisibleState = false;
@@ -52,8 +52,8 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     @ViewChild('tip') tipRef: ElementRef;
 
     get playProgressPercentage(): number {
-        if (this._isDragging || this._isSeeking) {
-            return Math.round(this._playProgressRatio * 1000) / 10;
+        if (this._isDragging || (this._isSeeking && this._dragProgressRatio !== -1)) {
+            return Math.round(this._dragProgressRatio * 1000) / 10;
         } else if (Number.isNaN(this.duration)) {
             return 0;
         }
@@ -81,7 +81,12 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
             this._videoPlayer.buffered.subscribe(buffered => this.buffered = buffered)
         );
         this._subscription.add(
-            this._videoPlayer.seeking.subscribe(isSeeking => this._isSeeking = isSeeking)
+            this._videoPlayer.seeking.subscribe(isSeeking => {
+                if (this._isSeeking && !isSeeking) {
+                    this._dragProgressRatio = -1;
+                }
+                this._isSeeking = isSeeking;
+            })
         );
     }
 
@@ -99,7 +104,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
                     })
                     .do(({rect, event}: {rect: ClientRect, event: MouseEvent}) => {
                         event.preventDefault();
-                        this._playProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.clientX);
+                        this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.clientX);
                         this.startDrag();
                         this.updateTip(rect, event, tipElement);
                         this.pointOpacity = 1;
@@ -124,7 +129,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
                     })
                     .subscribe(
                         ({rect, event}: {rect: ClientRect, event: MouseEvent}) => {
-                            this._playProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.clientX);
+                            this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.clientX);
                             this.updateTip(rect, event, tipElement);
                         }
                     )
@@ -176,7 +181,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
                     })
                     .do(({rect, event}: {rect: ClientRect, event: TouchEvent}) => {
                         event.preventDefault();
-                        this._playProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX);
+                        this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX);
                         this.startDrag();
                     })
                     .flatMap(() => {
@@ -195,7 +200,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
                                 }));
                     })
                     .subscribe(({rect, event}: {rect: ClientRect, event: TouchEvent}) => {
-                        this._playProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX);
+                        this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX);
                     })
             );
         }

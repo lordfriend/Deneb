@@ -7,17 +7,20 @@ import {Bangumi} from "../entity/bangumi";
 import {Router, NavigationEnd} from '@angular/router';
 import {homeRoutes} from './home.routes';
 import {queryString} from '../../helpers/url'
+import { WatchService } from './watch.service';
+import { WatchProgress } from "../entity/watch-progress";
 
 @Injectable()
 export class HomeService extends BaseService {
 
     private _baseUrl = '/api/home';
 
-    constructor(private http: Http,
-                private router: Router) {
+    constructor(private _http: Http,
+                private _router: Router,
+                private _watchService: WatchService) {
         super();
         let childRoutes = homeRoutes[0].children;
-        this.router.events.subscribe(
+        this._router.events.subscribe(
             (event) => {
                 if (event instanceof NavigationEnd) {
                     let urlSegements = this.parseUrl(event.url);
@@ -70,40 +73,59 @@ export class HomeService extends BaseService {
         if (days) {
             queryUrl = queryUrl + '?days=' + days;
         }
-        return this.http.get(queryUrl)
+        return this._http.get(queryUrl)
             .map(res => <Episode[]> res.json().data)
             .catch(this.handleError);
     }
 
     onAir(type: number): Observable<Bangumi[]> {
-        return this.http.get(`${this._baseUrl}/on_air?type=${type}`)
+        return this._http.get(`${this._baseUrl}/on_air?type=${type}`)
             .map(res => <Bangumi[]> res.json().data)
             .catch(this.handleError);
     }
 
     episode_detail(episode_id: string): Observable<Episode> {
-        return this.http.get(`${this._baseUrl}/episode/${episode_id}`)
+        return this._http.get(`${this._baseUrl}/episode/${episode_id}`)
             .map(res => <Episode> res.json())
+            .map(episode => this.synchronizeWatchProgressWithLocal(episode))
             .catch(this.handleError);
     }
 
     bangumi_datail(bangumi_id: string): Observable<Bangumi> {
-        return this.http.get(`${this._baseUrl}/bangumi/${bangumi_id}`)
+        return this._http.get(`${this._baseUrl}/bangumi/${bangumi_id}`)
             .map(res => <Bangumi> res.json().data)
+            .map(bangumi => {
+                bangumi.episodes = bangumi.episodes.map(episode => this.synchronizeWatchProgressWithLocal(episode));
+                return bangumi;
+            })
             .catch(this.handleError);
     }
 
     listBangumi(params: {name?: string, page: number, count: number, order_by: string, sort: string}): Observable<{ data: Bangumi[], total: number }> {
         let query = queryString(params);
-        return this.http.get(`${this._baseUrl}/bangumi?${query}`)
+        return this._http.get(`${this._baseUrl}/bangumi?${query}`)
             .map(res => res.json() as {data: Bangumi[], total: number})
             .catch(this.handleError);
     }
 
     myBangumi(): Observable<Bangumi[]> {
-        return this.http.get(`${this._baseUrl}/my_bangumi`)
+        return this._http.get(`${this._baseUrl}/my_bangumi`)
             .map(res => <Bangumi[]> res.json().data)
             .catch(this.handleError);
+    }
+
+    private synchronizeWatchProgressWithLocal(episode: Episode): Episode {
+        let record = this._watchService.getLocalWatchHistory(episode.id);
+        if (record && (!episode.watch_progress || record.last_watch_time > episode.watch_progress.last_watch_time)) {
+            if (!episode.watch_progress) {
+                episode.watch_progress = new WatchProgress();
+            }
+            episode.watch_progress.last_watch_time = record.last_watch_time;
+            episode.watch_progress.last_watch_position = record.last_watch_position;
+            episode.watch_progress.percentage = record.percentage;
+            episode.watch_progress.watch_status = record.is_finished ? WatchProgress.WATCHED : WatchProgress.WATCHING;
+        }
+        return episode;
     }
 }
 

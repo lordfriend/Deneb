@@ -24,6 +24,10 @@ import 'rxjs/add/observable/interval';
 // ng2-semantic
 import './ng2-semantic';
 
+// hammerjs
+
+import 'hammerjs';
+
 if ('production' === ENV) {
   // Production
 

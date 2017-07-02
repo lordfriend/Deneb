@@ -1,0 +1,10 @@
+<div class="mute-button" (click)="onMuteButtonClick($event)">
+    <i class="icon volume" [ngClass]="volumeLevelClass"></i>
+</div>
+<div class="volume-slider-wrapper" #slider>
+    <div class="volume-slider-bg"></div>
+    <div class="volume-slider-current" [style.width]="(volume * 100) + '%'"></div>
+    <div class="slider-handler-slot">
+        <div class="slider-handler" [style.left]="(volume * 100) + '%'"></div>
+    </div>
+</div>

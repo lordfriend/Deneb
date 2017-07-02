@@ -1,0 +1,7 @@
+<div class="scrub-bar-wrapper">
+    <div class="buffered-bar" [style.width]="bufferedPercentage + '%'"></div>
+    <div class="play-progress-bar" [style.width]="playProgressPercentage + '%'"></div>
+</div>
+<div class="tip" [style.transform]="pointTransform" [style.opacity]="pointOpacity" #tip>
+    {{pointPosition}}
+</div>

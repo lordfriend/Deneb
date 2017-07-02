@@ -1,0 +1,15 @@
+<div class="touch-control-wrapper" [@controlState]="controlState">
+    <div class="top-section">
+        <video-fullscreen-button [controlVisibleState]="showControls" class="interact-element"></video-fullscreen-button>
+    </div>
+    <div class="center-section">
+        <video-play-button [controlVisibleState]="showControls" class="interact-element"></video-play-button>
+    </div>
+    <div class="bottom-section">
+        <div class="current-time time-indicator interact-element">{{currentTimeClock}}</div>
+        <div class="scrub-wrapper interact-element">
+            <video-player-scrub-bar (motion)="onMotion()" [showControls]="showControls"></video-player-scrub-bar>
+        </div>
+        <div class="duration time-indicator interact-element">{{durationClock}}</div>
+    </div>
+</div>

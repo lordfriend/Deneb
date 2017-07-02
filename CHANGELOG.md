@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.0
+
+- Refactor the video player for better user experience on mobile and less bug. This video player improved capture functionality in fullscreen state
+and fix bug that cannot enter fullscreen in iOS safari.
+- Change the strategy of synchronizing watch history. now watch history record will not frequently upload to server. instead client will use new synchronizing
+API to batch the operation. this is improve the mobile battery efficiency.
+- Add a persistent storage helper to operate with localStorage, this is a user account binding storage, when user logout, all data in localstorage operated by
+the helper will be delete.
+
+
 ## 1.1.0
 
 - Add support for responsive image request. every image request will append size={width}x{height} and return the resized image according

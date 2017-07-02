@@ -1,0 +1,11 @@
+<video #media
+       preload="none"
+       crossorigin
+       playsinline
+       [id]="playerId"
+       [poster]="thumbnail">
+    <source [src]="mediaUrl" [type]="mediaType">
+</video>
+<div class="overlay" #overlay [ngClass]="{show: showLoader}">
+    <div class="ui active medium loader"></div>
+</div>

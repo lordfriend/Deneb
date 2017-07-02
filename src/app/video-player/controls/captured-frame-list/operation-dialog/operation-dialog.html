@@ -1,0 +1,21 @@
+<div class="image-container">
+    <div class="image-wrapper" #imageWrapper>
+
+    </div>
+</div>
+<div class="operation-wrapper">
+    <div class="operation-buttons">
+        <!--<a class="operation-button" (click)="shareToTwitter($event)" title="分享到Twitter">-->
+            <!--<i class="twitter square icon"></i>-->
+        <!--</a>-->
+        <a class="operation-button" (click)="download($event)" title="下载到本地">
+            <i class="download icon"></i>
+        </a>
+        <a class="operation-button right" (click)="trash($event)"><i class="trash icon"></i></a>
+    </div>
+</div>
+<form class="ui form default-operation">
+    <div class="field">
+        <ui-toggle text="自动从队列中删除" [(ngModel)]="autoRemove" name="autoRemoveToggle"></ui-toggle>
+    </div>
+</form>

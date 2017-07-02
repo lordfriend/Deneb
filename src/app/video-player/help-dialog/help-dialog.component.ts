@@ -30,12 +30,11 @@ export class VideoPlayerHelpDialog implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit(): void {
         this._subscription.add(
             Observable.fromEvent(document, 'keyup')
-                .map((event: KeyboardEvent) => {
-                    return event.which;
+                .filter((event: KeyboardEvent) => {
+                    return event.which === KEY_ESC;
                 })
-                .filter(code => code === KEY_ESC)
                 .subscribe(() => {
-                    this._dialogRef.close();
+                    this._dialogRef.close('esc');
                 })
         );
     }

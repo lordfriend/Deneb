@@ -31,11 +31,15 @@ export class VideoPlayerShortcuts {
         );
         this._subscription.add(
             Observable.fromEvent(_hostElement, 'focus')
-                .subscribe(() => this.focus = true)
+                .subscribe(() => {
+                    this.focus = true
+                })
         );
         this._subscription.add(
             Observable.fromEvent(_hostElement, 'blur')
-                .subscribe(() => this.focus = false)
+                .subscribe(() => {
+                    this.focus = false
+                })
         );
         this._subscription.add(
             Observable.fromEvent(_hostElement, 'keydown')

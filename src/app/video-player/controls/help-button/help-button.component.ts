@@ -1,6 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { UIDialog } from 'deneb-ui';
-import { VideoPlayerHelpDialog } from '../../help-dialog/help-dialog.component';
+import { VideoPlayer } from '../../video-player.component';
 
 @Component({
     selector: 'video-player-help-button',
@@ -19,13 +18,13 @@ import { VideoPlayerHelpDialog } from '../../help-dialog/help-dialog.component';
     `]
 })
 export class VideoPlayerHelpButton {
-    constructor(private _dialogService: UIDialog) {
+    constructor(private _videoPlayer: VideoPlayer) {
     }
 
     @HostListener('click', ['$event'])
     onClick(event: Event) {
         event.preventDefault();
         event.stopPropagation();
-        this._dialogService.open(VideoPlayerHelpDialog, {stickyDialog: false, backdrop: true});
+        this._videoPlayer.openHelpDialog();
     }
 }

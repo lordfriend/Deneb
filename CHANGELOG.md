@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0
+
+- Refactor the video player for better user experience on mobile and less bug. This video player improved
+
 ## 1.1.0
 
 - Add support for responsive image request. every image request will append size={width}x{height} and return the resized image according

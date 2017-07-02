@@ -78,8 +78,8 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     onClickVideo(event: Event) {
         event.preventDefault();
         event.stopPropagation();
+        this._videoPlayer.requestFocus();
         this._videoPlayer.togglePlayAndPause();
-
         this.reflectState = 'active';
     }
 

@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { UIDialog } from 'deneb-ui';
 import { VideoPlayerConfigDialog } from './config-dialog/config-dialog.component';
 import { VideoControls } from '../controls.component';
+import { VideoPlayer } from '../../video-player.component';
 
 @Component({
     selector: 'video-player-config-button',
@@ -22,7 +23,8 @@ import { VideoControls } from '../controls.component';
 export class VideoPlayerConfigButton {
 
     constructor(private _dialogService: UIDialog,
-                private _controls: VideoControls) {
+                private _controls: VideoControls,
+                private _videoPlayer: VideoPlayer) {
     }
 
     @HostListener('click', ['$event'])
@@ -32,7 +34,11 @@ export class VideoPlayerConfigButton {
         this._dialogService.open(VideoPlayerConfigDialog, {
             stickyDialog: false,
             backdrop: true
-        }, this._controls.controlWrapper);
+        }, this._controls.controlWrapper)
+            .afterClosed()
+            .subscribe(() => {
+                this._videoPlayer.requestFocus();
+            });
     }
 }
 

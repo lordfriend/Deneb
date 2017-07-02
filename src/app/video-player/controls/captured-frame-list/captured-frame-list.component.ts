@@ -9,6 +9,7 @@ import { UIDialog } from 'deneb-ui';
 import { CapturedImageOperationDialog } from './operation-dialog/operation-dialog.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { VideoControls } from '../controls.component';
+import { VideoPlayer } from '../../video-player.component';
 
 @Component({
     selector: 'video-captured-frame-list',
@@ -44,7 +45,8 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
 
     @ViewChild('wrapper') previewWrapper: ElementRef;
 
-    constructor(private _videoCapture: VideoCapture,
+    constructor(private _videoPlayer: VideoPlayer,
+                private _videoCapture: VideoCapture,
                 private _controls: VideoControls,
                 private _dialogService: UIDialog) {
     }
@@ -76,6 +78,7 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
                 .map((event: Event) => {
                     event.preventDefault();
                     event.stopPropagation();
+                    this._videoPlayer.requestFocus();
                     return event.target as HTMLElement;
                 })
                 .filter(element => element.tagName.toUpperCase() === 'IMG')
@@ -98,6 +101,7 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
                     if (result && result.remove) {
                         this._imageCount--;
                     }
+                    this._videoPlayer.requestFocus();
                 })
         );
     }

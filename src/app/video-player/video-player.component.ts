@@ -288,22 +288,34 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     requestFocus() {
+        console.log('request focus');
         let hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
         hostElement.focus();
     }
 
     openHelpDialog() {
-        let dialogRef = this._dialogService.open(VideoPlayerHelpDialog, {stickyDialog: false, backdrop: true});
-        dialogRef.afterClosed()
-            .subscribe(() => {
-                this.requestFocus();
-            })
+        let dialogRef;
+
+        if (this.fullscreenAPI.isFullscreen) {
+            dialogRef = this._dialogService.open(VideoPlayerHelpDialog, {
+                stickyDialog: false,
+                backdrop: true
+            }, this.controlContainer);
+        } else {
+            dialogRef = this._dialogService.open(VideoPlayerHelpDialog, {stickyDialog: false, backdrop: true});
+        }
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .subscribe(() => {
+                    this.requestFocus();
+                })
+        );
     }
 
     ngOnInit(): void {
         let controlsComponentFactory, componentRef;
         if (VideoPlayerHelpers.isMobileDevice()) {
-           // TODO: for mobile device, should init a touch controls
+            // TODO: for mobile device, should init a touch controls
             controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoTouchControls);
         } else {
             controlsComponentFactory = this._componentFactoryResolver.resolveComponentFactory(VideoControls);
@@ -453,7 +465,8 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
             })
             .filter(waiting => !waiting)
             .timeout(this._tolerateWaitingTime)
-            .subscribe(() => {}, () => {
+            .subscribe(() => {
+            }, () => {
                 this.lagged.emit(true);
                 if (this._tolerateWaitingTime < MAX_TOLERATE_WAITING_TIME) {
                     this._tolerateWaitingTime += 500;

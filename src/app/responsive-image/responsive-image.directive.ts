@@ -51,7 +51,6 @@ export class ResponsiveImage implements OnInit, OnDestroy {
     constructor(private _element: ElementRef,
                 private _responsiveService: ResponsiveService,
                 private _changeDetector: ChangeDetectorRef) {
-        console.log('responsive image: #' + (Math.random() * 1000));
     }
 
     ngOnInit(): void {
@@ -85,7 +84,6 @@ export class ResponsiveImage implements OnInit, OnDestroy {
         this.observableStub = {
             target: this._element.nativeElement,
             callback: (rect: ClientRect) => {
-                console.log(rect);
                 if (!this.dimension || this.dimension.width !== 'auto') {
                     this._width = rect.width;
                 } else {

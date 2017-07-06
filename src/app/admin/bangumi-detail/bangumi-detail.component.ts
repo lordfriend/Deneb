@@ -21,19 +21,34 @@ export class BangumiDetail implements OnInit, OnDestroy {
 
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
+    private _bangumi = <Bangumi>{};
 
-    bangumi: Bangumi = <Bangumi>{};
+    set bangumi(bangumi: Bangumi) {
+        this._bangumi = bangumi;
+        if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
+            this.orderedEpisodeList = this.bangumi.episodes.sort((episode1, episode2) => {
+                return episode1.episode_no - episode2.episode_no;
+            });
+        } else {
+            this.orderedEpisodeList = [];
+        }
+    }
+
+    get bangumi(): Bangumi {
+        return this._bangumi;
+    }
 
     isLoading: boolean = false;
 
-    get orderedEpisodeList(): Episode[] {
-        if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
-            return this.bangumi.episodes.sort((episode1, episode2) => {
-                return episode1.episode_no - episode2.episode_no
-            });
-        }
-        return [];
-    }
+    // get orderedEpisodeList(): Episode[] {
+    //     if (this.bangumi.episodes && this.bangumi.episodes.length > 0) {
+    //         return this.bangumi.episodes.sort((episode1, episode2) => {
+    //             return episode1.episode_no - episode2.episode_no;
+    //         });
+    //     }
+    //     return [];
+    // }
+    orderedEpisodeList: Episode[] = [];
 
     constructor(private _route: ActivatedRoute,
                 private _router: Router,

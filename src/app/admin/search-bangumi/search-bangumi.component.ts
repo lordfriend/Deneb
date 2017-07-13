@@ -109,7 +109,6 @@ export class SearchBangumi implements AfterViewInit {
         if (!this.name) {
             return;
         }
-        console.log(this.currentPage);
         let offset = (this.currentPage - 1) * this.count;
         this.isLoading = true;
         this._adminService.searchBangumi({

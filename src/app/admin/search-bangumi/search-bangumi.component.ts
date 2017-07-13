@@ -95,7 +95,8 @@ export class SearchBangumi implements AfterViewInit {
         // });
     }
 
-    onPageChanged() {
+    onPageChanged(page: number) {
+        this.currentPage = page;
         this.fetchData();
     }
 

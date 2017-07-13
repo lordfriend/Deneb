@@ -21,7 +21,7 @@
             </div>
 
             <div class="pagination-wrapper" *ngIf="total > bangumiList?.length">
-                <ui-pagination [currentPage]="currentPage" [total]="total" [max]="8" [countPerPage]="count" (pageChange)="onPageChanged()"></ui-pagination>
+                <ui-pagination [currentPage]="currentPage" [total]="total" [max]="8" [countPerPage]="count" (pageChange)="onPageChanged($event)"></ui-pagination>
             </div>
         </div>
         <div class="no-result-container" *ngIf="!isLoading && bangumiList?.length === 0">

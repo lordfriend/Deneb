@@ -44,4 +44,18 @@ export class Bangumi {
     static WATCHING = 3;
     static PAUSE = 4;
     static ABANDONED = 5;
+
+    static containKeyword(bangumi: Bangumi, name: string): boolean {
+        let nameLowerCase = name.toLowerCase();
+        let keywords = nameLowerCase.split(' ');
+        if (keywords.length === 1 && !keywords[0]) {
+            return (bangumi.name && bangumi.name.toLowerCase().indexOf(nameLowerCase) !== -1)
+                || (bangumi.name_cn && bangumi.name_cn.toLowerCase().indexOf(nameLowerCase) !== -1)
+                || (bangumi.summary && bangumi.summary.toLowerCase().indexOf(nameLowerCase) !== -1);
+        }
+        return (bangumi.name && keywords.every(k => bangumi.name.toLowerCase().indexOf(k) !== -1))
+            || (bangumi.name_cn && keywords.every(k => bangumi.name_cn.toLowerCase().indexOf(k) !== -1))
+            || (bangumi.summary && keywords.every(k => bangumi.summary.toLowerCase().indexOf(k) !== -1));
+    }
+
 }

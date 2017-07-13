@@ -86,8 +86,7 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
             })
             .filter(bangumi => {
                 if (this.name) {
-                    let name = this.name.trim();
-                    return bangumi.name.indexOf(name) !== -1 || bangumi.name_cn.indexOf(name) !== -1 || bangumi.summary.indexOf(name) !== -1;
+                    return Bangumi.containKeyword(bangumi, this.name);
                 }
                 return true;
             })

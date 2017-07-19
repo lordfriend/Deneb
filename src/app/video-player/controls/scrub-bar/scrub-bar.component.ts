@@ -76,7 +76,10 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
             this._videoPlayer.currentTime.subscribe(time => this.currentTime = time)
         );
         this._subscription.add(
-            this._videoPlayer.duration.subscribe(duration => this.duration = duration)
+            this._videoPlayer.duration.subscribe(duration => {
+                this._dragProgressRatio = 0;
+                this.duration = duration;
+            })
         );
         this._subscription.add(
             this._videoPlayer.buffered.subscribe(buffered => this.buffered = buffered)

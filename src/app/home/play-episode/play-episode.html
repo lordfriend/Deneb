@@ -2,8 +2,6 @@
     <div class="ui medium loader"></div>
 </div>
 <div class="theater-backdrop" *ngIf="episode" (click)="focusVideoPlayer($event)">
-    <!--<player class="player-width player-height" [episode]="episode" (onProgress)="onWatchPositionUpdate($event)"-->
-            <!--(onDurationUpdate)="onDurationUpdate($event)"></player>-->
     <video-player class="player-width player-height"
                   [videoFile]="episode.video_files[0]"
                   [startPosition]="episode.watch_progress?.last_watch_position"

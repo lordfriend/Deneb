@@ -111,7 +111,7 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
         this.bangumiList = this._allBangumi
             .filter(bangumi => {
                 if (this.name) {
-                    return this.bangumiContainKeyword(bangumi, this.name);
+                    return Bangumi.containKeyword(bangumi, this.name);
                 }
                 return true;
             })
@@ -135,18 +135,6 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
             this.bangumiList = this.bangumiList.reverse();
             this.timestampList = this.timestampList.reverse();
         }
-    }
-
-    bangumiContainKeyword(bangumi: Bangumi, name: string): boolean {
-        let keywords = name.split(' ');
-        if (keywords.length === 1 && !keywords[0]) {
-            return (bangumi.name && bangumi.name.indexOf(name) !== -1)
-                || (bangumi.name_cn && bangumi.name_cn.indexOf(name) !== -1)
-                || (bangumi.summary && bangumi.summary.indexOf(name) !== -1);
-        }
-        return (bangumi.name && keywords.every(k => bangumi.name.indexOf(k) !== -1))
-            || (bangumi.name_cn && keywords.every(k => bangumi.name_cn.indexOf(k) !== -1))
-            || (bangumi.summary && keywords.every(k => bangumi.summary.indexOf(k) !== -1));
     }
 
     onOrderChange() {

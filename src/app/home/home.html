@@ -36,7 +36,10 @@
         </div>
     </div>
 </nav>
-<div class="ui sidebar ui vertical menu home-sidebar" [ngClass]="{visible: sidebarActive}">
+<div class="sidebar-overlay-backdrop"
+     *ngIf="sidebarOverlap && sidebarActive === 'active'"
+     (click)="onClickSidebarBackdrop($event)"></div>
+<div class="ui sidebar visible ui vertical menu home-sidebar" (click)="onClickSidebar($event)" [@sidebarActive]="sidebarActive">
     <a class="item" [routerLink]="['/']">首页</a>
     <a class="item" [routerLink]="['/bangumi']">所有番组</a>
     <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
@@ -44,11 +47,11 @@
         <my-bangumi></my-bangumi>
     </div>
 </div>
-<main class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">
+<main class="home-content" [ngClass]="currentRouteName + (sidebarActive === 'active' ? ' sidebar-active': '')">
     <router-outlet></router-outlet>
 </main>
 
-<footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')" *ngIf="currentRouteName !== 'Bangumi'">
+<footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive === 'active' ? ' sidebar-active': '')" *ngIf="currentRouteName !== 'Bangumi'">
     <div class="copyright-content">&copy;2016 - 2017 Nyasoft, All rights reserved.</div>
     <div class="credits">Powered By <a target="_blank" href="https://github.com/lordfriend/Albireo">Albireo</a></div>
 </footer>

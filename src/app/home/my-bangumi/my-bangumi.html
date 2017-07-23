@@ -13,7 +13,7 @@
     我的收藏
 </div>
 <div class="menu favorite-list" *ngIf="myBangumiList && myBangumiList.length > 0">
-    <a class="item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">
+    <a class="item favorite-item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">
         <span class="bangumi-name">
             {{bangumi.name_cn}}
         </span>

@@ -6,7 +6,6 @@ import { BangumiDetail } from './bangumi-detail/bangumi-detail.components';
 import { FavoriteChooser } from './favorite-chooser/favorite-chooser.component';
 import { NgModule } from '@angular/core';
 import { HomeService } from './home.service';
-import { PlayerModule } from './player/player.module';
 import { HttpModule } from '@angular/http';
 import { UIModule } from 'deneb-ui';
 import { CommonModule } from '@angular/common';
@@ -22,6 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
 import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
 import { VideoPlayerModule } from '../video-player/video-player.module';
+import { MyBangumiComponent } from './my-bangumi/my-bangumi.component';
 
 
 @NgModule({
@@ -33,7 +33,8 @@ import { VideoPlayerModule } from '../video-player/video-player.module';
         BangumiDetail,
         FavoriteChooser,
         BangumiCard,
-        UserCenter
+        UserCenter,
+        MyBangumiComponent
     ],
     providers: [
         HomeService,

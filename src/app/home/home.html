@@ -41,15 +41,7 @@
     <a class="item" [routerLink]="['/bangumi']">所有番组</a>
     <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
     <div class="item">
-        <div class="header">我的收藏</div>
-        <div class="menu favorite-list" *ngIf="myBangumiList && myBangumiList.length > 0">
-            <a class="item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">
-                <span class="bangumi-name">
-          {{bangumi.name_cn}}
-        </span>
-                <span *ngIf="bangumi.unwatched_count" class="ui orange small label">{{bangumi.unwatched_count}}</span>
-            </a>
-        </div>
+        <my-bangumi></my-bangumi>
     </div>
 </div>
 <main class="home-content" [ngClass]="currentRouteName + (sidebarActive ? ' sidebar-active': '')">

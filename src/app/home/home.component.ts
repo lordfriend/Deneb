@@ -114,12 +114,13 @@ export class Home implements OnInit, OnDestroy {
                 }
             ));
 
-        this._subscription.add(Observable.fromEvent(document, 'click')
+        this._subscription.add(Observable.fromEvent(document, 'click', {capture: true})
             .filter(() => {
                 return this.sidebarOverlap && this.sidebarActive;
             })
             .subscribe(
-                () => {
+                (event: Event) => {
+                    event.stopPropagation();
                     this.sidebarActive = false;
                 }
             ));

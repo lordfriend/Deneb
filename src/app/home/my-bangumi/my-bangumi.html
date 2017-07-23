@@ -1,5 +1,5 @@
 <div class="header">
-    <div class="status-picker ui left top right pointing dropdown" uiDropdown="click">
+    <div class="status-picker ui left top right pointing dropdown" uiDropdown="click" [stopPropagation]="true">
         <div class="text">{{favoriteLabel[currentStatus]}}</div>
         <i class="dropdown icon"></i>
         <div class="menu">

@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Bangumi } from '../../entity/bangumi';
 import { Subscription } from 'rxjs/Subscription';
 import { HomeService } from '../home.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { FAVORITE_LABEL } from '../../entity/constants';
+import { closest } from '../../../helpers/dom';
 
 @Component({
     selector: 'my-bangumi',
@@ -23,6 +24,15 @@ export class MyBangumiComponent implements OnInit, OnDestroy {
     }
 
     constructor(private _homeService: HomeService) {
+    }
+
+    @HostListener('click', ['$event'])
+    onHostClick(event: Event) {
+        let parent = closest(event.target, '.favorite-item');
+        if (!parent) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
     }
 
     changeStatus(status: number) {

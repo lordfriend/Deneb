@@ -9,13 +9,26 @@ import { Router } from '@angular/router';
 import { BaseError } from '../../helpers/error/BaseError';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { AlertDialog } from '../alert-dialog/alert-dialog.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 const BREAK_POINT = 1330;
 
 @Component({
     selector: 'home',
     templateUrl: './home.html',
-    styleUrls: ['./home.less']
+    styleUrls: ['./home.less'],
+    animations: [
+        trigger('sidebarActive', [
+            state('active', style({
+                transform: 'translateX(0)'
+            })),
+            state('inactive', style({
+                transform: 'translateX(-100%)'
+            })),
+            transition('inactive => active', animate('100ms ease-in')),
+            transition('active => inactive', animate('100ms ease-out'))
+        ])
+    ]
 })
 export class Home implements OnInit, OnDestroy {
 
@@ -26,7 +39,7 @@ export class Home implements OnInit, OnDestroy {
 
     currentRouteName: string = '';
 
-    sidebarActive: boolean = false;
+    sidebarActive = 'active';
 
     sidebarOverlap: boolean = false;
 
@@ -34,7 +47,7 @@ export class Home implements OnInit, OnDestroy {
 
     showFloatSearchFrame: boolean;
 
-    sidebarToggle = new EventEmitter<boolean>();
+    sidebarToggle = new EventEmitter<string>();
 
     constructor(titleService: Title,
                 toast: UIToast,
@@ -44,11 +57,14 @@ export class Home implements OnInit, OnDestroy {
                 private _router: Router) {
         this._toastRef = toast.makeText();
         this.checkOverlapMode();
+        if (this.sidebarOverlap) {
+            this.sidebarActive = 'inactive';
+        }
         _homeService.childRouteChanges.subscribe((routeName) => {
             if (routeName === 'Play') {
-                this.sidebarActive = false;
+                this.sidebarActive = 'inactive';
             } else if (!this.sidebarOverlap) {
-                this.sidebarActive = true;
+                this.sidebarActive = 'active';
             }
 
             if (routeName === 'Default' && this.user && (!this.user.email_confirmed || !this.user.email)) {
@@ -87,11 +103,34 @@ export class Home implements OnInit, OnDestroy {
         this.showFloatSearchFrame = !this.showFloatSearchFrame;
     }
 
+    onClickSidebar(event: Event) {
+        if (!this.sidebarOverlap) {
+            return true;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        this.sidebarActive = 'inactive';
+        if (this.sidebarOverlap) {
+            this.sidebarToggle.emit(this.sidebarActive);
+        }
+    }
+
+    onClickSidebarBackdrop(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.sidebarActive = 'inactive';
+        if (this.sidebarOverlap) {
+            this.sidebarToggle.emit(this.sidebarActive);
+        }
+    }
+
     toggleSidebar(event: Event) {
         event.preventDefault();
         event.stopPropagation();
-        this.sidebarActive = !this.sidebarActive;
-        this.sidebarToggle.emit(this.sidebarActive);
+        this.sidebarActive = this.sidebarActive === 'active' ? 'inactive': 'active';
+        if (this.sidebarOverlap) {
+            this.sidebarToggle.emit(this.sidebarActive);
+        }
     }
 
     logout() {
@@ -111,17 +150,6 @@ export class Home implements OnInit, OnDestroy {
             .subscribe(
                 (user: User) => {
                     this.user = user;
-                }
-            ));
-
-        this._subscription.add(Observable.fromEvent(document, 'click', {capture: true})
-            .filter(() => {
-                return this.sidebarOverlap && this.sidebarActive;
-            })
-            .subscribe(
-                (event: Event) => {
-                    event.stopPropagation();
-                    this.sidebarActive = false;
                 }
             ));
 

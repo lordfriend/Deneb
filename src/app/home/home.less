@@ -100,8 +100,19 @@
   }
 }
 
-.home-sidebar {
+.sidebar-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  background: rgba(0, 0, 0, 0.001);
+  z-index: 110;
+}
+.home-sidebar.ui.sidebar {
   padding-top: 3.5rem;
+  z-index: 112;
 }
 
 .home-content {

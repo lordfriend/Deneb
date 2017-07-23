@@ -1,12 +1,13 @@
+@navbarHeight: 3.5rem;
 :host {
   display: block;
   height: 100%;
-  padding-top:3.5rem;
+  padding-top: @navbarHeight;
 }
 
 .navbar {
   width: 100%;
-  height: 3.5rem;
+  height: @navbarHeight;
   background-color: #fff;
   display: flex;
   flex-direction: row;
@@ -23,7 +24,8 @@
     font-size: 1.2rem;
     color: #4c4c4c;
     cursor: pointer;
-    padding-left: 1.5rem;
+    padding: 0 1rem 0 1.5rem;
+    line-height: @navbarHeight;
     &:focus,
     &:hover {
       color: #101010;
@@ -32,7 +34,7 @@
 
   .brand {
     display: block;
-    padding: 0 1rem;
+    padding: 0 1rem 0 0.5rem;
     color: #101010;
   }
   .ui.static-search.input {

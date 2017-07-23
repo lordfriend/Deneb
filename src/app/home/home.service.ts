@@ -19,7 +19,7 @@ export class HomeService extends BaseService {
                 private _router: Router,
                 private _watchService: WatchService) {
         super();
-        let childRoutes = homeRoutes[0].children;
+        // let childRoutes = homeRoutes[0].children;
         this._router.events.subscribe(
             (event) => {
                 if (event instanceof NavigationEnd) {
@@ -108,8 +108,8 @@ export class HomeService extends BaseService {
             .catch(this.handleError);
     }
 
-    myBangumi(): Observable<Bangumi[]> {
-        return this._http.get(`${this._baseUrl}/my_bangumi`)
+    myBangumi(status: number): Observable<Bangumi[]> {
+        return this._http.get(`${this._baseUrl}/my_bangumi?status=${status}`)
             .map(res => <Bangumi[]> res.json().data)
             .catch(this.handleError);
     }

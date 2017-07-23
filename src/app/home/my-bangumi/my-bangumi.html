@@ -1,0 +1,25 @@
+<div class="header">
+    <div class="status-picker ui left top right pointing dropdown" uiDropdown="click">
+        <div class="text">{{favoriteLabel[currentStatus]}}</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item" (click)="changeStatus(1)">想看</div>
+            <div class="item" (click)="changeStatus(2)">看过</div>
+            <div class="item" (click)="changeStatus(3)">在看</div>
+            <div class="item" (click)="changeStatus(4)">搁置</div>
+            <div class="item" (click)="changeStatus(5)">抛弃</div>
+        </div>
+    </div>
+    我的收藏
+</div>
+<div class="menu favorite-list" *ngIf="myBangumiList && myBangumiList.length > 0">
+    <a class="item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">
+        <span class="bangumi-name">
+            {{bangumi.name_cn}}
+        </span>
+        <span *ngIf="bangumi.unwatched_count" class="ui orange small label">{{bangumi.unwatched_count}}</span>
+    </a>
+</div>
+<div class="empty-placeholder" *ngIf="myBangumiList && myBangumiList.length === 0">
+    还没有{{favoriteLabel[currentStatus]}}的番組
+</div>

@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { HomeService } from './home.service';
-import { Observable, Subscription, Subject } from "rxjs/Rx";
+import { Observable, Subscription } from "rxjs/Rx";
 import { User } from '../entity';
 import { UserService } from '../user-service/user.service';
 import { Bangumi } from '../entity/bangumi';
@@ -31,8 +31,6 @@ export class Home implements OnInit, OnDestroy {
     sidebarOverlap: boolean = false;
 
     user: User;
-
-    myBangumiList: Bangumi[];
 
     showFloatSearchFrame: boolean;
 
@@ -132,23 +130,6 @@ export class Home implements OnInit, OnDestroy {
                     this.checkOverlapMode();
                 }
             ));
-
-        this._subscription.add(
-            this._homeService.watchProgressChanges.subscribe((bangumi_id) => {
-                if (Array.isArray(this.myBangumiList)) {
-                    let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
-                    if (bangumi && bangumi.unwatched_count > 0) {
-                        bangumi.unwatched_count--;
-                    }
-                }
-            })
-        );
-
-        this.updateMyBangumi();
-
-        this._subscription.add(this._homeService.favoriteChanges.subscribe(() => {
-            this.updateMyBangumi();
-        }));
     }
 
 
@@ -160,14 +141,5 @@ export class Home implements OnInit, OnDestroy {
     private checkOverlapMode() {
         let viewportWidth = window.innerWidth;
         this.sidebarOverlap = viewportWidth <= BREAK_POINT;
-    }
-
-    private updateMyBangumi() {
-        this._homeService.myBangumi()
-            .subscribe(
-                (myBangumiList: Bangumi[]) => {
-                    this.myBangumiList = myBangumiList;
-                }
-            );
     }
 }

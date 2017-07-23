@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { HomeService } from './home.service';
-import { Observable, Subscription, Subject } from "rxjs/Rx";
+import { Observable, Subscription } from "rxjs/Rx";
 import { User } from '../entity';
 import { UserService } from '../user-service/user.service';
 import { Bangumi } from '../entity/bangumi';
@@ -9,13 +9,26 @@ import { Router } from '@angular/router';
 import { BaseError } from '../../helpers/error/BaseError';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { AlertDialog } from '../alert-dialog/alert-dialog.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 const BREAK_POINT = 1330;
 
 @Component({
     selector: 'home',
     templateUrl: './home.html',
-    styleUrls: ['./home.less']
+    styleUrls: ['./home.less'],
+    animations: [
+        trigger('sidebarActive', [
+            state('active', style({
+                transform: 'translateX(0)'
+            })),
+            state('inactive', style({
+                transform: 'translateX(-100%)'
+            })),
+            transition('inactive => active', animate('100ms ease-in')),
+            transition('active => inactive', animate('100ms ease-out'))
+        ])
+    ]
 })
 export class Home implements OnInit, OnDestroy {
 
@@ -26,17 +39,15 @@ export class Home implements OnInit, OnDestroy {
 
     currentRouteName: string = '';
 
-    sidebarActive: boolean = false;
+    sidebarActive = 'active';
 
     sidebarOverlap: boolean = false;
 
     user: User;
 
-    myBangumiList: Bangumi[];
-
     showFloatSearchFrame: boolean;
 
-    sidebarToggle = new EventEmitter<boolean>();
+    sidebarToggle = new EventEmitter<string>();
 
     constructor(titleService: Title,
                 toast: UIToast,
@@ -46,11 +57,14 @@ export class Home implements OnInit, OnDestroy {
                 private _router: Router) {
         this._toastRef = toast.makeText();
         this.checkOverlapMode();
+        if (this.sidebarOverlap) {
+            this.sidebarActive = 'inactive';
+        }
         _homeService.childRouteChanges.subscribe((routeName) => {
             if (routeName === 'Play') {
-                this.sidebarActive = false;
+                this.sidebarActive = 'inactive';
             } else if (!this.sidebarOverlap) {
-                this.sidebarActive = true;
+                this.sidebarActive = 'active';
             }
 
             if (routeName === 'Default' && this.user && (!this.user.email_confirmed || !this.user.email)) {
@@ -89,11 +103,34 @@ export class Home implements OnInit, OnDestroy {
         this.showFloatSearchFrame = !this.showFloatSearchFrame;
     }
 
+    onClickSidebar(event: Event) {
+        if (!this.sidebarOverlap) {
+            return true;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        this.sidebarActive = 'inactive';
+        if (this.sidebarOverlap) {
+            this.sidebarToggle.emit(this.sidebarActive);
+        }
+    }
+
+    onClickSidebarBackdrop(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.sidebarActive = 'inactive';
+        if (this.sidebarOverlap) {
+            this.sidebarToggle.emit(this.sidebarActive);
+        }
+    }
+
     toggleSidebar(event: Event) {
         event.preventDefault();
         event.stopPropagation();
-        this.sidebarActive = !this.sidebarActive;
-        this.sidebarToggle.emit(this.sidebarActive);
+        this.sidebarActive = this.sidebarActive === 'active' ? 'inactive': 'active';
+        if (this.sidebarOverlap) {
+            this.sidebarToggle.emit(this.sidebarActive);
+        }
     }
 
     logout() {
@@ -116,39 +153,12 @@ export class Home implements OnInit, OnDestroy {
                 }
             ));
 
-        this._subscription.add(Observable.fromEvent(document, 'click')
-            .filter(() => {
-                return this.sidebarOverlap && this.sidebarActive;
-            })
-            .subscribe(
-                () => {
-                    this.sidebarActive = false;
-                }
-            ));
-
         this._subscription.add(Observable.fromEvent(window, 'resize')
             .subscribe(
                 () => {
                     this.checkOverlapMode();
                 }
             ));
-
-        this._subscription.add(
-            this._homeService.watchProgressChanges.subscribe((bangumi_id) => {
-                if (Array.isArray(this.myBangumiList)) {
-                    let bangumi = this.myBangumiList.find(bangumi => bangumi.id === bangumi_id);
-                    if (bangumi && bangumi.unwatched_count > 0) {
-                        bangumi.unwatched_count--;
-                    }
-                }
-            })
-        );
-
-        this.updateMyBangumi();
-
-        this._subscription.add(this._homeService.favoriteChanges.subscribe(() => {
-            this.updateMyBangumi();
-        }));
     }
 
 
@@ -160,14 +170,5 @@ export class Home implements OnInit, OnDestroy {
     private checkOverlapMode() {
         let viewportWidth = window.innerWidth;
         this.sidebarOverlap = viewportWidth <= BREAK_POINT;
-    }
-
-    private updateMyBangumi() {
-        this._homeService.myBangumi()
-            .subscribe(
-                (myBangumiList: Bangumi[]) => {
-                    this.myBangumiList = myBangumiList;
-                }
-            );
     }
 }

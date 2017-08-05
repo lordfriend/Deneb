@@ -1,3 +1,4 @@
+import './assets/semantic-ui';
 /*
  * Providers provided by Angular
  */
@@ -25,5 +26,3 @@ export function bootstrapDomReady() {
 }
 
 bootstrapDomReady();
-
-

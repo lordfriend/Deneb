@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ResponsiveDimension, ResponsiveImage } from './responsive-image.directive';
 
 export interface ResponsiveWrapperSize {
@@ -20,6 +20,8 @@ export interface ResponsiveWrapperSize {
 
 export const DEFAULT_HIDDEN_OPACITY = 0.01;
 
+let nextId = 0;
+
 @Component({
     selector: 'responsive-image',
     template: `<img class="responsive-image"
@@ -29,8 +31,8 @@ export const DEFAULT_HIDDEN_OPACITY = 0.01;
                     [style.height]="imageHeight" 
                     [style.position]="imagePosition"
                     [style.opacity]="imageOpacity"
-                    (load)="onLoad()"
-                    (error)="onError()">`,
+                    (imageLoad)="onLoad($event)"
+                    (imageError)="onError($event)">`,
     styles: [`
         :host {
             box-sizing: border-box;
@@ -40,6 +42,7 @@ export const DEFAULT_HIDDEN_OPACITY = 0.01;
         .responsive-image {
             display: block;
             object-fit: cover;
+            transition: opacity 500ms;
         }
     `],
     host: {
@@ -51,6 +54,9 @@ export const DEFAULT_HIDDEN_OPACITY = 0.01;
     }
 })
 export class ResponsiveImageWrapper {
+
+    id =  nextId++;
+
     dimension: ResponsiveDimension;
 
     @Input()
@@ -92,7 +98,7 @@ export class ResponsiveImageWrapper {
                 this.imageWidth = 'auto';
             } else {
                 this.imageWidth = '100%';
-                let widthInPixel = ResponsiveImage.getPx(s.width);
+                let widthInPixel = Math.round(ResponsiveImage.getPx(s.width));
                 if (widthInPixel !== 0) {
                     dimen.width = `${widthInPixel}px`;
                 } else {
@@ -104,7 +110,7 @@ export class ResponsiveImageWrapper {
                 this.imageHeight = 'auto';
             } else {
                 this.imageHeight = '100%';
-                let heightInPixel = ResponsiveImage.getPx(s.height);
+                let heightInPixel = Math.round(ResponsiveImage.getPx(s.height));
                 if (heightInPixel !== 0) {
                     dimen.height = `${heightInPixel}px`;
                 } else {
@@ -128,11 +134,20 @@ export class ResponsiveImageWrapper {
 
     imageOpacity: number = DEFAULT_HIDDEN_OPACITY;
 
-    onLoad() {
+    @Output()
+    imageLoad = new EventEmitter<Event>();
+
+    @Output()
+    imageError = new EventEmitter<Event>();
+
+    onLoad(event: Event) {
+        console.log('id#', this.id, ' load');
         this.imageOpacity = 1;
+        this.imageLoad.emit(event);
     }
 
-    onError() {
+    onError(event: Event) {
         this.imageOpacity = DEFAULT_HIDDEN_OPACITY;
+        this.imageError.emit(event);
     }
 }

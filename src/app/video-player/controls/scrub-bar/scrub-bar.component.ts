@@ -77,7 +77,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         );
         this._subscription.add(
             this._videoPlayer.duration.subscribe(duration => {
-                this._dragProgressRatio = 0;
+                this._dragProgressRatio = -1;
                 this.duration = duration;
             })
         );
@@ -87,9 +87,10 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         this._subscription.add(
             this._videoPlayer.seeking.subscribe(isSeeking => {
                 if (!this._isSeeking && isSeeking) {
+                    console.log('is seeking:', isSeeking);
                     this.onSeekStart();
-                }
-                if (this._isSeeking && !isSeeking) {
+                } else if (this._isSeeking && !isSeeking) {
+                    console.log('is seeking:', isSeeking);
                     this.onSeekEnd();
                     this._dragProgressRatio = -1;
                 }

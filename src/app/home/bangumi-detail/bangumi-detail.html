@@ -17,6 +17,9 @@
                    title="在bgm.tv页面查看">
                     <i class="external icon"></i>
                 </a>
+                <a *ngIf="user.level >= 2" class="external-link" title="编辑" [routerLink]="['/admin/bangumi/', bangumi.id]">
+                    <i class="edit icon"></i>
+                </a>
             </h2>
             <h3 class="bangumi-title name">
                 <span class="tip">日文名:</span><span class="name-text">{{bangumi.name}}</span>

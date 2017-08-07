@@ -20,8 +20,6 @@ export interface ResponsiveWrapperSize {
 
 export const DEFAULT_HIDDEN_OPACITY = 0.01;
 
-let nextId = 0;
-
 @Component({
     selector: 'responsive-image',
     template: `<img class="responsive-image"
@@ -54,8 +52,6 @@ let nextId = 0;
     }
 })
 export class ResponsiveImageWrapper {
-
-    id =  nextId++;
 
     dimension: ResponsiveDimension;
 
@@ -141,7 +137,6 @@ export class ResponsiveImageWrapper {
     imageError = new EventEmitter<Event>();
 
     onLoad(event: Event) {
-        console.log('id#', this.id, ' load');
         this.imageOpacity = 1;
         this.imageLoad.emit(event);
     }

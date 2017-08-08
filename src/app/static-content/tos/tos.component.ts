@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'toc',
-    templateUrl: './toc.html'
+    selector: 'tos',
+    templateUrl: './tos.html'
 })
-export class TocComponent {
+export class TosComponent {
     siteName = SITE_TITLE;
 }

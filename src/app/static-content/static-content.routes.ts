@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { TosComponent } from './tos/tos.component';
 import { StaticContentComponent } from './static-content.component';
 import { PrivacyComponent } from './privacy/privacy.component';
-import { ContactComponent } from './contact/contact.component';
+import { DevelopersComponent } from './developers/developers.component';
 import { AppsComponent } from './apps/apps.component';
 
 export const staticContentRoutes: Routes = [
@@ -19,8 +19,8 @@ export const staticContentRoutes: Routes = [
                 component: PrivacyComponent
             },
             {
-                path: 'contact',
-                component: ContactComponent
+                path: 'developers',
+                component: DevelopersComponent
             },
             {
                 path: 'apps',

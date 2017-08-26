@@ -4,7 +4,7 @@ import { TosComponent } from './tos/tos.component';
 import { StaticContentComponent } from './static-content.component';
 import { RouterModule } from '@angular/router';
 import { staticContentRoutes } from './static-content.routes';
-import { ContactComponent } from './contact/contact.component';
+import { DevelopersComponent } from './developers/developers.component';
 import { AppsComponent } from './apps/apps.component';
 
 @NgModule({
@@ -12,7 +12,7 @@ import { AppsComponent } from './apps/apps.component';
         PrivacyComponent,
         TosComponent,
         StaticContentComponent,
-        ContactComponent,
+        DevelopersComponent,
         AppsComponent
     ],
     imports: [

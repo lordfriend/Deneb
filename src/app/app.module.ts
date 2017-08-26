@@ -17,6 +17,7 @@ import { EmailConfirmModule } from './email-confirm/email-confirm.module';
 import { ForgetPassModule } from './forget-pass/forget-pass.module';
 import { ResetPassModule } from './reset-pass/reset-pass.module';
 import { UserServiceModule } from './user-service/index';
+import { StaticContentModule } from './static-content/static-content.module';
 
 @NgModule({
     declarations: [
@@ -42,7 +43,8 @@ import { UserServiceModule } from './user-service/index';
         EmailConfirmModule,
         ForgetPassModule,
         ResetPassModule,
-        UserServiceModule
+        UserServiceModule,
+        StaticContentModule
     ],
     bootstrap: [App]
 })

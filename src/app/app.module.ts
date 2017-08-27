@@ -10,7 +10,6 @@ import { ENV_PROVIDERS } from './environment';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorComponent } from './error/error.component';
 import { HttpModule } from '@angular/http';
-import { Ng2SemanticModule } from '../ng2-semantic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TaskService } from './admin/task-manager/task.service';
 import { HomeModule } from './home/home.module';
@@ -18,6 +17,7 @@ import { EmailConfirmModule } from './email-confirm/email-confirm.module';
 import { ForgetPassModule } from './forget-pass/forget-pass.module';
 import { ResetPassModule } from './reset-pass/reset-pass.module';
 import { UserServiceModule } from './user-service/index';
+import { StaticContentModule } from './static-content/static-content.module';
 
 @NgModule({
     declarations: [
@@ -38,13 +38,13 @@ import { UserServiceModule } from './user-service/index';
         BrowserModule,
         ReactiveFormsModule,
         HttpModule,
-        Ng2SemanticModule,
         BrowserAnimationsModule,
         HomeModule,
         EmailConfirmModule,
         ForgetPassModule,
         ResetPassModule,
-        UserServiceModule
+        UserServiceModule,
+        StaticContentModule
     ],
     bootstrap: [App]
 })

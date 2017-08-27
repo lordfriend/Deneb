@@ -6,6 +6,8 @@ import {Bangumi} from "../../entity/bangumi";
 import {Observable, Subscription} from "rxjs/Rx";
 import {ActivatedRoute} from '@angular/router';
 import {Title} from '@angular/platform-browser';
+import { UserService } from '../../user-service/user.service';
+import { User } from '../../entity/user';
 
 
 @Component({
@@ -14,6 +16,10 @@ import {Title} from '@angular/platform-browser';
     styleUrls: ['./bangumi-detail.less']
 })
 export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
+    private _subscription = new Subscription();
+    private _coverExpanded = false;
+
+    user: User;
 
     bangumi: Bangumi;
 
@@ -22,14 +28,17 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 
     @ViewChild('bangumiCover') bangumiCoverRef: ElementRef;
 
-    private _resizeSubscription: Subscription;
-    private _coverExpaneded: boolean = false;
-    private routeParamsSubscription: Subscription;
-
     constructor(homeService: HomeService,
-                private route: ActivatedRoute,
-                private titleService: Title) {
+                userService: UserService,
+                private _route: ActivatedRoute,
+                private _titleService: Title) {
         super(homeService);
+        this._subscription.add(
+            userService.userInfo
+                .subscribe(user => {
+                    this.user = user;
+                })
+        );
     }
 
     private checkViewport() {
@@ -45,41 +54,43 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
     }
 
     toggleCover() {
-        if (this._coverExpaneded) {
+        if (this._coverExpanded) {
             this.checkViewport();
         } else {
             this.coverRevealerHeight = (this.bangumiCoverRef.nativeElement.clientHeight - 14) + 'px';
         }
-        this._coverExpaneded = !this._coverExpaneded;
+        this._coverExpanded = !this._coverExpanded;
     }
 
-    ngOnInit(): any {
-        this.routeParamsSubscription = this.route.params
+    ngOnInit(): void {
+        this._subscription.add(
+            this._route.params
             .flatMap((params) => {
                 return this.homeService.bangumi_datail(params['bangumi_id']);
             })
             .subscribe(
                 (bangumi: Bangumi) => {
                     let bgmTitle = `${bangumi.name} - ${SITE_TITLE}`;
-                    this.titleService.setTitle(bgmTitle);
+                    this._titleService.setTitle(bgmTitle);
                     this.bangumi = bangumi;
                 },
                 error => console.log(error)
-            );
+            )
+        );
         this.checkViewport();
-        this._resizeSubscription = Observable.fromEvent(window, 'resize')
-            .subscribe(
-                () => {
-                    this.checkViewport();
-                }
-            );
-        return null;
+
+        this._subscription.add(
+            Observable.fromEvent(window, 'resize')
+                .subscribe(
+                    () => {
+                        this.checkViewport();
+                    }
+                )
+        );
     }
 
 
-    ngOnDestroy(): any {
-        this._resizeSubscription.unsubscribe();
-        this.routeParamsSubscription.unsubscribe();
-        return null;
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 }

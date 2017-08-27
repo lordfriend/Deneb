@@ -21,9 +21,6 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/interval';
 
-// ng2-semantic
-import './ng2-semantic';
-
 // hammerjs
 
 import 'hammerjs';

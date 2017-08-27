@@ -119,6 +119,19 @@ module.exports = function (metadata) {
                     ],
                     exclude: [/\.(spec|e2e)\.ts$/]
                 },
+                {
+                    test: /\.less$/,
+                    use: ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use: [
+                            'css-loader',
+                            'semantic-ui-less-module-loader'
+                        ]
+                    }),
+                    include: [
+                        /[\/\\]node_modules[\/\\]semantic-ui-less[\/\\]/
+                    ]
+                },
                 // Raw loader support for *.css files
                 // Returns file content as string
                 //
@@ -137,30 +150,6 @@ module.exports = function (metadata) {
                     use: 'raw-loader',
                     exclude: [helpers.root('src/index.html')]
                 },
-
-                // Less loader support for *.less
-                // See https://github.com/webpack/less-loader
-                // {
-                //   test: /ng2-semantic\.less$/,
-                //   loader: ExtractTextPlugin.extract({
-                //     fallbackLoader: 'style-loader',
-                //     loader: [
-                //       'css-loader',
-                //       'less-loader'
-                //     ]
-                //   })
-                // },
-                {
-                    test: /\.less$/,
-                    loader: ExtractTextPlugin.extract({
-                        fallbackLoader: 'style-loader',
-                        loader: [
-                            'css-loader',
-                            'semantic-ui-less-module-loader'
-                        ]
-                    }),
-                    include: [/[\/\\]node_modules[\/\\]semantic-ui-less[\/\\]/]
-                },
                 {
                     test: /.less$/,
                     use: [
@@ -177,7 +166,7 @@ module.exports = function (metadata) {
                         'less-loader'
                     ],
                     exclude: [
-                        /node_modules/,
+                        /[\/\\]node_modules[\/\\]/,
                         /src[\/\\]app[\/\\]/]
                 },
                 {

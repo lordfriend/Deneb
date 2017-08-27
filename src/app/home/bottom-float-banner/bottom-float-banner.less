@@ -1,0 +1,46 @@
+@bannerHeight: 3rem;
+
+:host {
+  display: none;
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: @bannerHeight;
+  background: #383838;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+  &.show {
+    display: block;
+  }
+  .banner {
+    height: @bannerHeight;
+    line-height: @bannerHeight;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 0 @bannerHeight 0 1rem;
+    .app-link {
+      .app-logo {
+        display: inline-block;
+        height: @bannerHeight - 0.8rem;
+        width: auto;
+        border: none;
+        vertical-align: middle;
+        margin-right: 1rem;
+      }
+      color: #f0f0f0;
+    }
+    .close-button {
+      position: absolute;
+      display: inline-block;
+      width: @bannerHeight;
+      height: @bannerHeight;
+      top: 0;
+      right: 0;
+      font-size: 1.4rem;
+      color: #f0f0f0;
+    }
+  }
+}

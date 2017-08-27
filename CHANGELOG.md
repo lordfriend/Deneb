@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.1.0
+
+### Feature Add
+Add favorite status dropdown in my favorites section of sidebar.
+
+### Bugfix
+
+- fix responsive-image issue in Firefox < 55 and Safari
+- disable iOS click blink
+- fix scrub-bar progress incorrection when switch between episodes.
+- fix #60 and #59
+- Add case-insensitive support in search (both bangumi-list and admin)
+
 ## 2.0.0
 
 - Refactor the video player for better user experience on mobile and less bug. This video player improved capture functionality in fullscreen state

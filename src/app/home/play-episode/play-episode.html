@@ -26,7 +26,14 @@
                           [background]="episode.bangumi.cover_color"></responsive-image>
     </div>
     <div class="bangumi-basic-info">
-        <h2 class="bangumi-title name-cn"><a [routerLink]="['/bangumi', episode.bangumi_id]">{{episode.bangumi.name_cn}}</a>
+        <h2 class="bangumi-title name-cn">
+            <a [routerLink]="['/bangumi', episode.bangumi_id]">
+                {{episode.bangumi.name_cn}}
+            </a>
+            <a class="external-link" [href]="'https://bgm.tv/subject/' + episode.bangumi.bgm_id" target="_blank"
+               title="在bgm.tv页面查看">
+                <i class="external icon"></i>
+            </a>
         </h2>
         <h4 class="bangumi-title name">{{episode.bangumi.name}}</h4>
         <favorite-chooser *ngIf="isBangumiReady" [bangumi]="episode.bangumi"></favorite-chooser>

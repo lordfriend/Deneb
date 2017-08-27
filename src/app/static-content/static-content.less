@@ -1,0 +1,29 @@
+@navbarHeight: 3.5rem;
+@footerHeight: 8em;
+
+:host {
+  display: block;
+  height: 100%;
+  padding-top: @navbarHeight + 1.5rem;
+}
+
+.navbar {
+  width: 100%;
+  height: @navbarHeight;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  border-bottom: 1px solid #ccc;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+
+  .brand {
+    display: block;
+    padding: 0 1rem 0 2.5rem;
+    color: #101010;
+  }
+}

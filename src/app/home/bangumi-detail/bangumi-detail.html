@@ -10,12 +10,15 @@
         </div>
         <div class="bangumi-cover-revealer" [style.height]="coverRevealerHeight" (click)="toggleCover()">
         </div>
-        <div #bangumiInfo class="bangumi-base-info">
+        <div class="bangumi-base-info">
             <h2 class="bangumi-title name-cn">
                 {{bangumi.name_cn}}
                 <a class="external-link" [href]="'https://bgm.tv/subject/' + bangumi.bgm_id" target="_blank"
                    title="在bgm.tv页面查看">
                     <i class="external icon"></i>
+                </a>
+                <a *ngIf="user.level >= 2" class="external-link" title="编辑" [routerLink]="['/admin/bangumi/', bangumi.id]">
+                    <i class="edit icon"></i>
                 </a>
             </h2>
             <h3 class="bangumi-title name">

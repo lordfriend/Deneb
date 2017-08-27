@@ -22,6 +22,7 @@ import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
 import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
 import { VideoPlayerModule } from '../video-player/video-player.module';
 import { MyBangumiComponent } from './my-bangumi/my-bangumi.component';
+import { BottomFloatBannerComponent } from './bottom-float-banner/bottom-float-banner.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { MyBangumiComponent } from './my-bangumi/my-bangumi.component';
         FavoriteChooser,
         BangumiCard,
         UserCenter,
-        MyBangumiComponent
+        MyBangumiComponent,
+        BottomFloatBannerComponent
     ],
     providers: [
         HomeService,

@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.0
+
+### Fix bugs:
+
+- Scrubbar occasionally stuck after dragging and switch episodes.
+- Bangumi-detail external link cannot be clicked.
+- Remove useless code.
+
+## Feature Add
+
+- Add transition effects for image load.
+- Add footer links
+- Add Terms of Service, Privacy Policy, Developer Document,  Application Showcase.
+
 ## 2.1.0
 
 ### Feature Add

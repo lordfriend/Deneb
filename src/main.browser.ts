@@ -1,3 +1,4 @@
+import './assets/semantic-ui';
 /*
  * Providers provided by Angular
  */

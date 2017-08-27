@@ -1,6 +1,5 @@
 import {
-    ChangeDetectorRef, Directive, ElementRef, HostBinding, Input, OnDestroy, OnInit,
-    Optional
+    ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnDestroy, OnInit, Output
 } from '@angular/core';
 import { ObservableStub, ResponsiveService } from './responsive.service';
 import { getRemPixel, getVhInPixel, getVwInPixel } from '../../helpers/dom';
@@ -46,11 +45,31 @@ export class ResponsiveImage implements OnInit, OnDestroy {
         return this._respSrc;
     }
 
+    @Output()
+    imageLoad = new EventEmitter<Event>();
+
+    @Output()
+    imageError = new EventEmitter<Event>();
+
     observableStub: ObservableStub;
 
     constructor(private _element: ElementRef,
                 private _responsiveService: ResponsiveService,
                 private _changeDetector: ChangeDetectorRef) {
+    }
+
+    @HostListener('load', ['$event'])
+    onLoad(event: Event) {
+        if (this._respSrc) {
+            this.imageLoad.emit(event);
+        }
+    }
+
+    @HostListener('error', ['$event'])
+    onError(event: Event) {
+        if (this._respSrc) {
+            this.imageError.emit(event);
+        }
     }
 
     ngOnInit(): void {
@@ -62,12 +81,12 @@ export class ResponsiveImage implements OnInit, OnDestroy {
         let width = this.dimension.width;
         let height = this.dimension.height;
         if (width !== 'auto') {
-            this._width = ResponsiveImage.getPx(width);
+            this._width = Math.round(ResponsiveImage.getPx(width));
         } else {
             this._width = 0;
         }
         if (height !== 'auto') {
-            this._height = ResponsiveImage.getPx(height);
+            this._height = Math.round(ResponsiveImage.getPx(height));
         } else {
             this._height = 0;
         }
@@ -85,12 +104,12 @@ export class ResponsiveImage implements OnInit, OnDestroy {
             target: this._element.nativeElement,
             callback: (rect: ClientRect) => {
                 if (!this.dimension || this.dimension.width !== 'auto') {
-                    this._width = rect.width;
+                    this._width = Math.round(rect.width);
                 } else {
                     this._width = 0;
                 }
                 if (!this.dimension || this.dimension.height !== 'auto') {
-                    this._height = rect.height;
+                    this._height = Math.round(rect.height);
                 } else {
                     this._height = 0;
                 }

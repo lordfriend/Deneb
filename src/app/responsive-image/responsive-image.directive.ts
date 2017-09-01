@@ -144,7 +144,11 @@ export class ResponsiveImage implements OnInit, OnDestroy {
 
     private makeRespSrc(manualChangeDetection: boolean) {
         if (typeof this._width !== 'undefined' && typeof this._height !== 'undefined' && this._src) {
-            this._respSrc = `${this._src}?size=${this._width}x${this._height}`;
+            if (/^(?:data:).+/.test(this._src)) {
+                this._respSrc = this._src;
+            } else {
+                this._respSrc = `${this._src}?size=${this._width}x${this._height}`;
+            }
             if (manualChangeDetection) {
                 this._changeDetector.detectChanges();
             }

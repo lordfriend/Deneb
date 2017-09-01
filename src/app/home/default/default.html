@@ -9,7 +9,7 @@
     <div class="ui five doubling cards" *ngIf="onAirBangumi">
         <div class="card bangumi-card" *ngFor="let bangumi of onAirBangumi">
             <a class="image" [routerLink]="['/bangumi', bangumi.id]">
-                <responsive-image [src]="bangumi.cover"
+                <responsive-image [src]="bangumi.cover_image.url"
                                   [size]="{
                                     width: '100%',
                                     ratio: 1.405152224824,

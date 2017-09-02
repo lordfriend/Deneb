@@ -147,7 +147,23 @@ export class ResponsiveImage implements OnInit, OnDestroy {
             if (/^(?:data:).+/.test(this._src)) {
                 this._respSrc = this._src;
             } else {
-                this._respSrc = `${this._src}?size=${this._width}x${this._height}`;
+                let width = this._width;
+                let height = this._height;
+                if (this._width !== 0 && this._height !== 0) {
+                    let ratio = this._height / this._width;
+                    let originalRatio = this.dimension.originalHeight / this.dimension.originalWidth;
+                    if (originalRatio > ratio) {
+                        width = this._width;
+                        height = 0;
+                    } else if (originalRatio < ratio) {
+                        width = 0;
+                        height = this._height;
+                    }  else {
+                        width = this._width;
+                        height = this._height;
+                    }
+                }
+                this._respSrc = `${this._src}?size=${width}x${height}`;
             }
             if (manualChangeDetection) {
                 this._changeDetector.detectChanges();

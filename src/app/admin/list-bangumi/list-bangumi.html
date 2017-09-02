@@ -32,13 +32,19 @@
     <div class="all-bangumi-container" *ngIf="!name && !isLoading && bangumiList && bangumiList.length > 0">
         <ui-timeline-meter [rowHeight]="cardHeight" [timestampList]="timestampList">
             <infinite-list [rowHeight]="cardHeight">
-                <bangumi-card *infiniteFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="false" (click)="editBangumi(bangumi)"></bangumi-card>
+                <bangumi-card *infiniteFor="let bangumi of bangumiList"
+                              [bangumi]="bangumi"
+                              [showAddedTag]="false"
+                              (click)="editBangumi(bangumi)"></bangumi-card>
             </infinite-list>
         </ui-timeline-meter>
     </div>
     <div class="search-result-container" *ngIf="!!name && !isLoading && bangumiList && bangumiList.length > 0">
         <div class="bangumi-list">
-            <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi" [showAddedTag]="false" (click)="editBangumi(bangumi)">
+            <bangumi-card *ngFor="let bangumi of bangumiList"
+                          [bangumi]="bangumi"
+                          [showAddedTag]="false"
+                          (click)="editBangumi(bangumi)">
             </bangumi-card>
         </div>
     </div>

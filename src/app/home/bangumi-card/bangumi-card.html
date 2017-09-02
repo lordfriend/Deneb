@@ -1,9 +1,17 @@
 <div class="ui container">
     <div class="ui segment" (click)="jumpTo(bangumi.id)">
         <div class="bangumi-list-item">
-            <div class="cover-wrapper" [style.background]="bangumi.cover_color">
-                <img src="" alt="image" class="bangumi-image" #image>
-            </div>
+            <responsive-image class="cover-wrapper"
+                              [src]="imageUrl"
+                              [size]="{
+                                width: '10rem',
+                                height: '100%',
+                                originalWidth: bangumi.cover_image.width,
+                                originalHeight: bangumi.cover_image.height
+                              }"
+                              [background]="bangumi.cover_image.dominant_color"
+                              (imageLoad)="onImageLoad()"
+            ></responsive-image>
             <div class="list-item-text">
                 <h4 class="bangumi-title">{{bangumi.name_cn || '暂无'}}</h4>
                 <h4 class="entry">

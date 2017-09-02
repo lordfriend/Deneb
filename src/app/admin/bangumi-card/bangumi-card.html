@@ -1,9 +1,17 @@
 <div class="ui segment">
     <div class="bangumi-list-item">
-        <div class="cover-wrapper" *ngIf="!!bangumi.cover" [style.background]="bangumi.cover_color">
-            <img [originalSrc]="bangumi.cover" [dimension]="{width: '10rem', height: '13rem'}" alt="image" class="bangumi-image">
-        </div>
-        <div class="cover-wrapper" *ngIf="!!bangumi.image && !bangumi.cover">
+        <responsive-image class="cover-wrapper"
+                          *ngIf="!!bangumi.cover_image"
+                          [src]="imageUrl"
+                          [size]="{
+                            width: '10rem',
+                            height: '100%',
+                            originalWidth: bangumi.cover_image.width,
+                            originalHeight: bangumi.cover_image.height}"
+                          [background]="bangumi.cover_image.dominant_color"
+                          (imageLoad)="onImageLoad()">
+        </responsive-image>
+        <div class="cover-wrapper" *ngIf="!!bangumi.image && !bangumi.cover_image">
             <img [src]="bangumi.image" alt="image" class="bangumi-image">
         </div>
         <div class="list-item-text">

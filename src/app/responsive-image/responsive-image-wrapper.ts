@@ -16,6 +16,12 @@ export interface ResponsiveWrapperSize {
      * and height will be ignored.
      */
     ratio?: number;
+
+    /**
+     * the image original width and height in pixel
+     */
+    originalWidth: number;
+    originalHeight: number;
 }
 
 export const DEFAULT_HIDDEN_OPACITY = 0.01;
@@ -75,12 +81,25 @@ export class ResponsiveImageWrapper {
             if (widthInPixel !== 0) {
                 dimen = {
                     width: `${widthInPixel}px`,
-                    height: `${widthInPixel * s.ratio}px`
+                    height: `${widthInPixel * s.ratio}px`,
+                    originalWidth: s.originalWidth,
+                    originalHeight: s.originalHeight
                 };
             } else {
-                dimen = {
-                    width: '100%',
-                    height: 'auto'
+                if (s.originalHeight / s.originalWidth < s.ratio) {
+                    dimen = {
+                        width: 'auto',
+                        height: '100%',
+                        originalWidth: s.originalWidth,
+                        originalHeight: s.originalHeight
+                    }
+                } else {
+                    dimen = {
+                        width: '100%',
+                        height: 'auto',
+                        originalWidth: s.originalWidth,
+                        originalHeight: s.originalHeight
+                    }
                 }
             }
         } else {
@@ -89,6 +108,8 @@ export class ResponsiveImageWrapper {
             dimen = {
                 width: 'auto',
                 height: 'auto',
+                originalWidth: s.originalWidth,
+                originalHeight: s.originalHeight
             };
             if (s.width === 'auto') {
                 this.imageWidth = 'auto';

@@ -4,9 +4,13 @@
 <div class="ui container bangumi-default-container" *ngIf="bangumi">
     <div class="bangumi-info">
         <div #bangumiCover class="bangumi-cover" *ngIf="bangumi.cover">
-            <responsive-image [src]="bangumi.cover"
-                              [size]="{width: '100%', height: 'auto'}"
-                              [background]="bangumi.cover_color"></responsive-image>
+            <responsive-image [src]="bangumi.cover_image.url"
+                              [size]="{
+                                width: '100%',
+                                height: 'auto',
+                                originalWidth: bangumi.cover_image.width,
+                                originalHeight: bangumi.cover_image.height}"
+                              [background]="bangumi.cover_image.dominant_color"></responsive-image>
         </div>
         <div class="bangumi-cover-revealer" [style.height]="coverRevealerHeight" (click)="toggleCover()">
         </div>
@@ -54,9 +58,13 @@
                     <span>第{{episode.episode_no}}话</span>
                 </div>
                 <a *ngIf="episode.status===2" class="image" [routerLink]="['/play', episode.id]">
-                    <responsive-image [src]="episode.thumbnail"
-                                      [size]="{width: '100%', ratio: 0.5625}"
-                                      [background]="episode.thumbnail_color"></responsive-image>
+                    <responsive-image [src]="episode.thumbnail_image.url"
+                                      [size]="{
+                                        width: '100%',
+                                        ratio: 0.5625,
+                                        originalWidth: episode.thumbnail_image.width,
+                                        originalHeight: episode.thumbnail_image.height}"
+                                      [background]="episode.thumbnail_image.dominant_color"></responsive-image>
                 </a>
                 <a *ngIf="episode.status===2" class="content" [routerLink]="['/play', episode.id]">
                     <span>第{{episode.episode_no}}话</span>

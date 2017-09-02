@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.3.0
+
+update responsive-image component and directive to support new API with image width and height information. now image resize request will make request base on
+image height-width ratio.
+update bangumi-card to use new responsive image
+
+## 2.2.0
+
+### Fix bugs:
+
+- Scrubbar occasionally stuck after dragging and switch episodes.
+- Bangumi-detail external link cannot be clicked.
+- Remove useless code.
+
+### Feature Add
+
+- Add transition effects for image load.
+- Add footer links
+- Add Terms of Service, Privacy Policy, Developer Document,  Application Showcase.
+
 ## 2.1.0
 
 ### Feature Add

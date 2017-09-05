@@ -13,7 +13,7 @@ export class UserManagerSerivce extends BaseService {
         super()
     }
 
-    listUser(params: {name?: string, count: number, offset: number}): Observable<{data: User[], total: number}> {
+    listUser(params: {name?: string, count: number, offset: number, minlevel?: number}): Observable<{data: User[], total: number}> {
         let queryParams = queryString(params);
         return this._http.get(`${this._baseUrl}/?${queryParams}`)
             .map(res => res.json() as {data: User[], total: number})

@@ -11,6 +11,8 @@ import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
 import {EpisodeDetail} from './episode-detail/episode-detail.component';
 import {BangumiMoeBuilder} from './bangumi-moe-builder/bangumi-moe-builder.component';
 import {VideoFileModal} from './video-file-modal/video-file-modal.component';
+import { UserManagerSerivce } from '../user-manager/user-manager.service';
+import { User } from '../../entity/user';
 
 @Component({
     selector: 'bangumi-detail',
@@ -50,9 +52,12 @@ export class BangumiDetail implements OnInit, OnDestroy {
     // }
     orderedEpisodeList: Episode[] = [];
 
+    adminList: User[];
+
     constructor(private _route: ActivatedRoute,
                 private _router: Router,
                 private _adminService: AdminService,
+                private _userManagerService: UserManagerSerivce,
                 private _uiDialog: UIDialog,
                 titleService: Title,
                 toastService: UIToast
@@ -62,6 +67,17 @@ export class BangumiDetail implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this._subscription.add(
+            this._userManagerService
+                .listUser({
+                    count: -1,
+                    offset: 0,
+                    minlevel: User.LEVEL_ADMIN
+                })
+                .subscribe((result) => {
+                    this.adminList = result.data;
+                })
+        );
         this._subscription.add(
             this._route.params
                 .flatMap((params) => {
@@ -86,6 +102,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
     editBasicInfo() {
         let dialogRef = this._uiDialog.open(BangumiBasic, {stickyDialog: false, backdrop: true});
         dialogRef.componentInstance.bangumi = this.bangumi;
+        dialogRef.componentInstance.adminList = this.adminList;
         this._subscription.add(
             dialogRef
                 .afterClosed()
@@ -100,6 +117,9 @@ export class BangumiDetail implements OnInit, OnDestroy {
                         this.bangumi.air_weekday = basicInfo.air_weekday as number;
                         this.bangumi.eps_no_offset = basicInfo.eps_no_offset as number;
                         this.bangumi.status = basicInfo.status as number;
+                        this.bangumi.maintained_by = this.adminList.find(user => user.id == basicInfo.maintained_by_uid);
+                        this.bangumi.maintained_by_uid = basicInfo.maintained_by_uid as string;
+                        this.bangumi.alert_timeout = basicInfo.alert_timeout as number;
                         return this._adminService.updateBangumi(this.bangumi);
                     }
                 )

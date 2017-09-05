@@ -45,6 +45,17 @@
                 </div>
             </div>
         </div>
+        <div class="field">
+            <label>维护者</label>
+            <select formControlName="maintained_by_uid" name="maintained_by_uid">
+                <option value="">System</option>
+                <option *ngFor="let user of adminList" [value]="user.id">{{user.name}}</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>报警超时值（当超过某个episode airdate若干天之后发送报警给维护者）</label>
+            <input type="number" formControlName="alert_timeout" name="alert_timeout">
+        </div>
     </div>
     <div class="footer">
         <button class="ui button" (click)="cancel()">取消</button>

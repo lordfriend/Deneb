@@ -58,7 +58,8 @@ export class UserManager implements OnInit, OnDestroy {
         this._subscription.add(
             this._userManageService.listUser({
                 offset: offset,
-                count: this.userCount
+                count: this.userCount,
+                minlevel: 0
             })
                 .subscribe(
                     (result) => {

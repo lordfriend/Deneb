@@ -2,9 +2,10 @@
 
 ## 2.3.0
 
-update responsive-image component and directive to support new API with image width and height information. now image resize request will make request base on
+- update responsive-image component and directive to support new API with image width and height information. now image resize request will make request base on
 image height-width ratio.
 update bangumi-card to use new responsive image
+- Add editor to edit the maintainer and alert_timeout of a bangumi.
 
 ## 2.2.0
 

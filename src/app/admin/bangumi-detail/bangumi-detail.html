@@ -8,7 +8,7 @@
         <i class="trash icon"></i>
     </a>
 </admin-navbar>
-<div class="bangumi-detail-container" *ngIf="bangumi">
+<div class="bangumi-detail-container" *ngIf="bangumi && adminList">
     <div class="bangumi-basic-info">
         <div class="cover-wrapper">
             <responsive-image
@@ -62,6 +62,18 @@
             <p class="entry">
                 <span class="entry-key">更新时间</span>
                 <span class="entry-value">{{bangumi.update_time | date: 'medium'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">创建者</span>
+                <span class="entry-value">{{bangumi.created_by?.name || 'System'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">维护者</span>
+                <span class="entry-value">{{bangumi.maintained_by?.name || 'System'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">报警超时值</span>
+                <span class="entry-value">{{bangumi.alert_timeout}}天</span>
             </p>
         </div>
         <a class="edit-button anchor-button" (click)="editBasicInfo()"><i class="edit icon"></i></a>
@@ -169,6 +181,6 @@
         <div class="ui large loader"></div>
     </div>
 </div>
-<div class="initial-placeholder" *ngIf="!bangumi">
+<div class="initial-placeholder" *ngIf="!bangumi && !adminList">
     <div class="placeholder-text">加载中...</div>
 </div>

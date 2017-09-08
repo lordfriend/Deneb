@@ -8,13 +8,17 @@
         <i class="trash icon"></i>
     </a>
 </admin-navbar>
-<div class="bangumi-detail-container" *ngIf="bangumi">
+<div class="bangumi-detail-container" *ngIf="bangumi && adminList">
     <div class="bangumi-basic-info">
         <div class="cover-wrapper">
             <responsive-image
-                [src]="bangumi.cover"
-                [size]="{width: '100%', height: 'auto'}"
-                [background]="bangumi.cover_color"></responsive-image>
+                [src]="bangumi.cover_image?.url"
+                [size]="{
+                    width: '100%',
+                    height: 'auto',
+                    originalWidth: bangumi.cover_image?.width,
+                    originalHeight: bangumi.cover_image?.height}"
+                [background]="bangumi.cover_image?.dominant_color"></responsive-image>
         </div>
         <div class="bangumi-info-text">
             <h3 class="bangumi-title">
@@ -58,6 +62,18 @@
             <p class="entry">
                 <span class="entry-key">更新时间</span>
                 <span class="entry-value">{{bangumi.update_time | date: 'medium'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">创建者</span>
+                <span class="entry-value">{{bangumi.created_by?.name || 'System'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">维护者</span>
+                <span class="entry-value">{{bangumi.maintained_by?.name || 'System'}}</span>
+            </p>
+            <p class="entry">
+                <span class="entry-key">报警超时值</span>
+                <span class="entry-value">{{bangumi.alert_timeout}}天</span>
             </p>
         </div>
         <a class="edit-button anchor-button" (click)="editBasicInfo()"><i class="edit icon"></i></a>
@@ -122,7 +138,7 @@
                     [ngClass]="{downloaded: episode.status === 2, downloading: episode.status === 1}">
                     <td>{{episode.episode_no}}</td>
                     <td>
-                        <div class="image-wrapper" *ngIf="episode.status !== 2">
+                        <div class="image-wrapper" *ngIf="episode.status !== 2 || !episode.thumbnail_image">
                             <div class="image-fallback">
                                 <h4 class="ui icon film icon-holder">
                                     <i class="film icon"></i>
@@ -130,10 +146,14 @@
                             </div>
                         </div>
                         <responsive-image
-                            [src]="episode.thumbnail"
-                            [size]="{width: '6rem', height: '3.375rem'}"
-                            display="table" *ngIf="episode.status === 2"
-                            [background]="episode.thumbnail_color"></responsive-image>
+                            [src]="episode.thumbnail_image.url"
+                            [size]="{
+                                width: '6rem',
+                                height: '3.375rem',
+                                originalWidth: episode.thumbnail_image.width,
+                                originalHeight: episode.thumbnail_image.height}"
+                            display="table" *ngIf="episode.status === 2 && !!episode.thumbnail_image"
+                            [background]="episode.thumbnail_image.dominant_color"></responsive-image>
                     </td>
                     <td class="title">
                         <span class="key">日文:</span><span class="value">{{episode.name}}</span> <br>
@@ -161,6 +181,6 @@
         <div class="ui large loader"></div>
     </div>
 </div>
-<div class="initial-placeholder" *ngIf="!bangumi">
+<div class="initial-placeholder" *ngIf="!bangumi && !adminList">
     <div class="placeholder-text">加载中...</div>
 </div>

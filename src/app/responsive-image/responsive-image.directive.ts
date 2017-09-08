@@ -7,6 +7,8 @@ import { getRemPixel, getVhInPixel, getVwInPixel } from '../../helpers/dom';
 export interface ResponsiveDimension {
     width: string; // px, rem, vw, auto, 100%
     height: string; // px, rem, vh, auto, 100%
+    originalWidth: number;
+    originalHeight: number;
 }
 /**
  * This directive will let a normal HTMLImageElement load a resized image from source url according to its current dimension.
@@ -104,12 +106,13 @@ export class ResponsiveImage implements OnInit, OnDestroy {
             target: this._element.nativeElement,
             callback: (rect: ClientRect) => {
                 if (!this.dimension || this.dimension.width !== 'auto') {
-                    this._width = Math.round(rect.width);
+                    if (rect.width)
+                    this._width = Math.min(this.dimension.originalWidth, Math.round(rect.width));
                 } else {
                     this._width = 0;
                 }
                 if (!this.dimension || this.dimension.height !== 'auto') {
-                    this._height = Math.round(rect.height);
+                    this._height = Math.min(this.dimension.originalHeight, Math.round(rect.height));
                 } else {
                     this._height = 0;
                 }
@@ -141,7 +144,27 @@ export class ResponsiveImage implements OnInit, OnDestroy {
 
     private makeRespSrc(manualChangeDetection: boolean) {
         if (typeof this._width !== 'undefined' && typeof this._height !== 'undefined' && this._src) {
-            this._respSrc = `${this._src}?size=${this._width}x${this._height}`;
+            if (/^(?:data:).+/.test(this._src)) {
+                this._respSrc = this._src;
+            } else {
+                let width = this._width;
+                let height = this._height;
+                if (this._width !== 0 && this._height !== 0) {
+                    let ratio = this._height / this._width;
+                    let originalRatio = this.dimension.originalHeight / this.dimension.originalWidth;
+                    if (originalRatio > ratio) {
+                        width = this._width;
+                        height = 0;
+                    } else if (originalRatio < ratio) {
+                        width = 0;
+                        height = this._height;
+                    }  else {
+                        width = this._width;
+                        height = this._height;
+                    }
+                }
+                this._respSrc = `${this._src}?size=${width}x${height}`;
+            }
             if (manualChangeDetection) {
                 this._changeDetector.detectChanges();
             }

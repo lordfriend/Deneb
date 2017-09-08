@@ -1,4 +1,6 @@
 import {Episode} from "./episode";
+import { Image } from './image';
+import { User } from './user';
 export class Bangumi {
     id: string;
     bgm_id: number;
@@ -22,6 +24,7 @@ export class Bangumi {
     create_time: number;
     update_time: number;
     // @Optional
+    // @deprecated
     cover: string;
     // @Optional
     eps_no_offset: number;
@@ -37,7 +40,20 @@ export class Bangumi {
     // @Optional
     delete_eta: number;
 
+    // @deprecated
     cover_color: string;
+
+    cover_image: Image | null;
+
+    // @Optional
+    created_by: User;
+
+    // @Optional
+    maintained_by: User;
+    maintained_by_uid: string;
+
+    // @Optional
+    alert_timeout: number;
 
     static WISH = 1;
     static WATCHED = 2;

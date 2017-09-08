@@ -1,6 +1,7 @@
 import {Bangumi} from './bangumi';
 import {WatchProgress} from './watch-progress';
 import {VideoFile} from './video-file';
+import { Image } from './image';
 
 export class Episode {
 
@@ -20,6 +21,7 @@ export class Episode {
     create_time: number;
     update_time: number;
     bangumi: Bangumi; // optional
+    // @deprecated
     thumbnail: string; // optional
     video_files: VideoFile[]; // optional
 
@@ -31,7 +33,10 @@ export class Episode {
     // optional
     watch_progress: WatchProgress;
 
+    // deprecated
     thumbnail_color: string;
+
+    thumbnail_image: Image | null;
 
 
     static fromRawData(rawData: any, episode_no?: number) {

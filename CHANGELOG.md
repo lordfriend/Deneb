@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.1
+
+### Fix bugs:
+
+- home/default component doesn't display the background color of image.
+
 ## 2.3.0
 
 - update responsive-image component and directive to support new API with image width and height information. now image resize request will make request base on

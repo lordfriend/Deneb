@@ -15,7 +15,7 @@
                                     ratio: 1.405152224824,
                                     originalWidth: bangumi.cover_image.width,
                                     originalHeight: bangumi.cover_image.height}"
-                                  [background]="bangumi.cover_image"></responsive-image>
+                                  [background]="bangumi.cover_image.dominant_color"></responsive-image>
             </a>
             <div *ngIf="bangumi.favorite_status" class="ui ribbon label"
                  [ngClass]="{

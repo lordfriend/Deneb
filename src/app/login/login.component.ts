@@ -50,7 +50,6 @@ export class Login implements OnInit, OnDestroy {
         this._subscription.add(
             this.route.params
                 .subscribe((params) => {
-                    console.log(params);
                     this.sourceUrl = params['sourceUrl'];
                 })
         );

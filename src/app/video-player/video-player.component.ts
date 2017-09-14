@@ -24,6 +24,7 @@ import { VideoPlayerShortcuts } from './core/shortcuts';
 import { current } from 'codelyzer/util/syntaxKind';
 import { UIDialog } from 'deneb-ui';
 import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
+import { Subject } from 'rxjs/Subject';
 
 let nextId = 0;
 
@@ -49,7 +50,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private _buffered = new BehaviorSubject(0);
     private _volume = new BehaviorSubject(1);
     private _muted = new BehaviorSubject(false);
-    private _seeking = new BehaviorSubject(false);
+    private _seeking = new Subject();
 
     private _pendingState = PlayState.INVALID;
 

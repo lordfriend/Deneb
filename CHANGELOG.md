@@ -5,6 +5,7 @@
 ### Fix bugs:
 
 - home/default component doesn't display the background color of image.
+- fix the scrub bar bug when seeking.
 
 ## 2.3.0
 

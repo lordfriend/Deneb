@@ -1,0 +1,38 @@
+<form class="edit-announce-form ui form" [formGroup]="announceForm">
+    <div class="announce-info">
+        <div class="field">
+            <label>位置</label>
+            <div class="ui selection dropdown">
+                <div class="text">Banner</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" (click)="onPositionChange(1)">Banner</div>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>顺序</label>
+            <input type="number" formControlName="sort_order" placeholder="当同一个位置有多个公告时使用">
+        </div>
+        <div class="field">
+            <label>URL</label>
+            <input formControlName="url" placeholder="请输入跳转的url">
+        </div>
+        <div class="field">
+            <label>图片URL</label>
+            <input formControlName="image_url" placeholder="请输入图片url，推荐https的地址">
+        </div>
+        <div class="field">
+            <label>开始时间</label>
+            <input type="number" formControlName="start_time">
+        </div>
+        <div class="field">
+            <label>结束时间</label>
+            <input type="number" formControlName="end_time">
+        </div>
+    </div>
+    <div class="footer">
+        <button class="ui button" (click)="cancel()">取消</button>
+        <button class="ui primary button" (click)="save()">保存</button>
+    </div>
+</form>

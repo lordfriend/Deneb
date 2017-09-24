@@ -54,7 +54,6 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
             _homeComponent.sidebarToggle
                 .subscribe(
                     () => {
-                        console.log('sidebar toggle');
                         if (this.infiniteList) {
                             setTimeout(() => {
                                 this.infiniteList.requestMeasure();

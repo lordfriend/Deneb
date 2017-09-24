@@ -5,10 +5,11 @@ import {Observable} from "rxjs/Observable";
 import {Episode} from '../entity/episode';
 import {Bangumi} from "../entity/bangumi";
 import {Router, NavigationEnd} from '@angular/router';
-import {homeRoutes} from './home.routes';
+// import {homeRoutes} from './home.routes';
 import {queryString} from '../../helpers/url'
 import { WatchService } from './watch.service';
 import { WatchProgress } from "../entity/watch-progress";
+import { Announce } from '../entity/announce';
 
 @Injectable()
 export class HomeService extends BaseService {
@@ -111,6 +112,12 @@ export class HomeService extends BaseService {
     myBangumi(status: number): Observable<Bangumi[]> {
         return this._http.get(`${this._baseUrl}/my_bangumi?status=${status}`)
             .map(res => <Bangumi[]> res.json().data)
+            .catch(this.handleError);
+    }
+
+    listAnnounce():  Observable<Announce[]> {
+        return this._http.get(`${this._baseUrl}/announce`)
+            .map(res => res.json().data as Announce[])
             .catch(this.handleError);
     }
 

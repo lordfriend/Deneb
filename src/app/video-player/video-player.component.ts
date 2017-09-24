@@ -289,7 +289,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     requestFocus() {
-        console.log('request focus');
         let hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
         hostElement.focus();
     }

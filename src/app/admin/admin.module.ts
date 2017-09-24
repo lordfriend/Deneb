@@ -32,6 +32,9 @@ import { UserPromoteModal } from './user-manager/user-promote-modal/user-promote
 import { DenebCommonPipes } from '../pipes/index';
 import { VideoFileModal } from './bangumi-detail/video-file-modal/video-file-modal.component';
 import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
+import { AnnounceComponent } from './announce/announce.component';
+import { EditAnnounceComponent } from './announce/edit-announce/edit-announce.component';
+import { AnnounceService } from './announce/announce.service';
 
 
 @NgModule({
@@ -55,7 +58,9 @@ import { ResponsiveImageModule } from '../responsive-image/responsive-image.modu
         TaskManager,
         UserManager,
         UserPromoteModal,
-        VideoFileModal
+        VideoFileModal,
+        AnnounceComponent,
+        EditAnnounceComponent
     ],
     providers: [
         AdminService,
@@ -63,6 +68,7 @@ import { ResponsiveImageModule } from '../responsive-image/responsive-image.modu
         BangumiMoeService,
         TaskService,
         UserManagerSerivce,
+        AnnounceService
     ],
     imports: [
         CommonModule,
@@ -82,7 +88,8 @@ import { ResponsiveImageModule } from '../responsive-image/responsive-image.modu
         EpisodeDetail,
         BangumiMoeBuilder,
         UserPromoteModal,
-        VideoFileModal
+        VideoFileModal,
+        EditAnnounceComponent
     ]
 })
 export class AdminModule {

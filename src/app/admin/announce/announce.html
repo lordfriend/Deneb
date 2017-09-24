@@ -1,0 +1,39 @@
+<admin-navbar navTitle="公告管理"></admin-navbar>
+<div class="content-area">
+    <div class="ui segment">
+        <h4>Banner位公告</h4>
+        <button class="ui button" (click)="addAnnounce()">添加公告</button>
+        <table class="ui very basic table">
+            <thead>
+            <tr>
+                <th>顺序</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>URL</th>
+                <th>图片</th>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of announceList">
+                <td>{{row.sort_order}}</td>
+                <td>{{row.start_time}}</td>
+                <td>{{row.end_time}}</td>
+                <td>{{row.url}}</td>
+                <td>{{row.image_url}}</td>
+                <td>
+                    <a class="anchor-button" (click)="editAnnounce(row)"><i class="edit icon"></i></a>
+                    <a class="anchor-button"
+                       confirmDialog
+                       dialogTitle="确认删除"
+                       [dialogContent]="'确认删除' + row.url + '吗？该操作不可恢复'"
+                       (onConfirm)="deleteAnnounce(row.id)"><i class="remove circle outline icon"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container" *ngIf="total > count">
+            <ui-pagination [currentPage]="page" [total]="total" [countPerPage]="count" [max]="6" (pageChange)="refresh($event)"></ui-pagination>
+        </div>
+    </div>
+</div>

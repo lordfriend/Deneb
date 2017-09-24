@@ -88,7 +88,6 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     }
 
     onMotion() {
-        console.log('motioning');
         this._motion.next(1);
     }
 

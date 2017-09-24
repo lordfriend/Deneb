@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.0
+
+### Feature Add
+
+Announcement system ui, both control panel in management module and a banner show announce in home/default component
+
 ## 2.3.1
 
 ### Fix bugs:

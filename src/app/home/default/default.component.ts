@@ -1,23 +1,28 @@
-import {Component, OnInit} from '@angular/core';
-import {Episode} from "../../entity/episode";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+// import {Episode} from "../../entity/episode";
 import {HomeService, HomeChild} from "../home.service";
 import {Bangumi} from "../../entity/bangumi";
 import {FAVORITE_LABEL} from '../../entity/constants';
+import { Subscription } from 'rxjs/Subscription';
+import { Announce } from '../../entity/announce';
 
 @Component({
     selector: 'default-component',
     templateUrl: './default.html',
     styleUrls: ['./default.less']
 })
-export class DefaultComponent extends HomeChild implements OnInit {
+export class DefaultComponent extends HomeChild implements OnInit, OnDestroy {
+    private _subscription = new Subscription();
 
-    recentEpisodes: Episode[];
+    // recentEpisodes: Episode[];
 
     onAirBangumi: Bangumi[];
 
     bangumiType = 2; // 2 is anime, 6 is japanese tv drama Series
 
     FAVORITE_LABEL = FAVORITE_LABEL;
+
+    announce_in_banner: Announce;
 
     constructor(homeService: HomeService) {
         super(homeService);
@@ -29,16 +34,18 @@ export class DefaultComponent extends HomeChild implements OnInit {
     }
 
     getOnAir() {
-        this.homeService.onAir(this.bangumiType)
-            .subscribe(
-                (bangumiList: Bangumi[]) => {
-                    this.onAirBangumi = bangumiList;
-                },
-                error => console.log(error)
-            );
+        this._subscription.add(
+            this.homeService.onAir(this.bangumiType)
+                .subscribe(
+                    (bangumiList: Bangumi[]) => {
+                        this.onAirBangumi = bangumiList;
+                    },
+                    error => console.log(error)
+                )
+        );
     }
 
-    ngOnInit(): any {
+    ngOnInit(): void {
         // this.homeService.recentEpisodes()
         //   .subscribe(
         //     (episodeList: Episode[]) => {
@@ -47,7 +54,17 @@ export class DefaultComponent extends HomeChild implements OnInit {
         //     error => console.log(error)
         //   );
         this.getOnAir();
+        this._subscription.add(
+            this.homeService.listAnnounce()
+                .subscribe((announce_list) => {
+                    this.announce_in_banner = announce_list.find((announce) => {
+                        return announce.position === Announce.POSITION_BANNER;
+                    });
+                })
+        );
+    }
 
-        return null;
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 }

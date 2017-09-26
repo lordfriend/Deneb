@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.1
+
+improve the user experience of bangumi list in Home/BangumiList component and Admin/ListBangumi component. The scroll position will be preserved
+ even user leave current component.
+
+
 ## 2.4.0
 
 ### Feature Add

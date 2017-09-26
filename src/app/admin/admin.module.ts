@@ -35,6 +35,7 @@ import { ResponsiveImageModule } from '../responsive-image/responsive-image.modu
 import { AnnounceComponent } from './announce/announce.component';
 import { EditAnnounceComponent } from './announce/edit-announce/edit-announce.component';
 import { AnnounceService } from './announce/announce.service';
+import { ListBangumiService } from './list-bangumi/list-bangumi.service';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { AnnounceService } from './announce/announce.service';
         BangumiMoeService,
         TaskService,
         UserManagerSerivce,
-        AnnounceService
+        AnnounceService,
+        ListBangumiService
     ],
     imports: [
         CommonModule,

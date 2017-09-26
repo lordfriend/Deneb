@@ -45,7 +45,7 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
 
     imageUrl: string;
 
-    @ViewChild('image') imageRef: ElementRef;
+    // @ViewChild('image') imageRef: ElementRef;
 
     constructor(@Optional() private _infiniteList: InfiniteList,
                 private _router: Router,
@@ -109,7 +109,6 @@ export class BangumiCard implements OnInit, OnDestroy, OnChanges {
         }
         if (this.scrollState === SCROLL_STATE.IDLE) {
             this._imageLoadDelayTimerId = window.setTimeout(() => {
-                console.log('this.imageUrl=' + this.bangumi.cover_image.url);
                 this.imageUrl = this.bangumi.cover_image.url;
             }, IMAGE_LOAD_DELAY);
         } else if (this.scrollState === SCROLL_STATE.SCROLLING) {

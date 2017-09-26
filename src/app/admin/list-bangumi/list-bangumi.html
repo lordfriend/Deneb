@@ -31,7 +31,7 @@
 <div class="content-area">
     <div class="all-bangumi-container" *ngIf="!name && !isLoading && bangumiList && bangumiList.length > 0">
         <ui-timeline-meter [rowHeight]="cardHeight" [timestampList]="timestampList">
-            <infinite-list [rowHeight]="cardHeight">
+            <infinite-list [rowHeight]="cardHeight" [newScrollPosition]="lastScrollPosition" (scrollPosition)="onScrollPositionChange($event)">
                 <bangumi-card *infiniteFor="let bangumi of bangumiList"
                               [bangumi]="bangumi"
                               [showAddedTag]="false"

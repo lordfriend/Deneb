@@ -9,6 +9,7 @@ import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
 import {BaseError} from '../../../helpers/error/BaseError';
 import {CARD_HEIGHT_REM} from '../bangumi-card/bangumi-card.component';
 import {SearchBangumi} from '../search-bangumi/search-bangumi.component';
+import { ListBangumiService } from './list-bangumi.service';
 
 @Component({
     selector: 'list-bangumi',
@@ -61,9 +62,12 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     cardHeight: number;
     timestampList: number[];
 
+    lastScrollPosition: number;
+
     constructor(private adminService: AdminService,
                 private router: Router,
                 private _dialog: UIDialog,
+                private _listBangumiService: ListBangumiService,
                 toastService: UIToast,
                 titleService: Title) {
         titleService.setTitle('新番管理 - ' + SITE_TITLE);
@@ -71,36 +75,13 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
         if (window) {
             this.cardHeight = getRemPixel(CARD_HEIGHT_REM)
         }
+        if (Number.isFinite(this._listBangumiService.scrollPosition)) {
+            this.lastScrollPosition = this._listBangumiService.scrollPosition;
+        }
     }
 
-    private filterBangumiList() {
-        if (!this._allBangumiList) {
-            return;
-        }
-        this.bangumiList = this._allBangumiList
-            .filter(bangumi => {
-                if (this.type === -1) {
-                    return true;
-                }
-                return bangumi.type === this.type;
-            })
-            .filter(bangumi => {
-                if (this.name) {
-                    return Bangumi.containKeyword(bangumi, this.name);
-                }
-                return true;
-            })
-            .sort((bgm1: Bangumi, bgm2: Bangumi) => {
-                let t1, t2;
-                if (this.orderBy === 'air_date') {
-                    t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
-                    t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
-                } else {
-                    t1 = bgm1[this.orderBy];
-                    t2 = bgm2[this.orderBy];
-                }
-                return this.sort === 'asc' ? t1 - t2 : t2 - t1;
-            });
+    onScrollPositionChange(p: number) {
+        this._listBangumiService.scrollPosition = p;
     }
 
     onOrderChange(orderBy: string, isSortChange: boolean) {
@@ -182,6 +163,36 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
 
     public editBangumi(bangumi: Bangumi): void {
         this.router.navigate(['/admin/bangumi', bangumi.id]);
+    }
+
+    private filterBangumiList() {
+        if (!this._allBangumiList) {
+            return;
+        }
+        this.bangumiList = this._allBangumiList
+            .filter(bangumi => {
+                if (this.type === -1) {
+                    return true;
+                }
+                return bangumi.type === this.type;
+            })
+            .filter(bangumi => {
+                if (this.name) {
+                    return Bangumi.containKeyword(bangumi, this.name);
+                }
+                return true;
+            })
+            .sort((bgm1: Bangumi, bgm2: Bangumi) => {
+                let t1, t2;
+                if (this.orderBy === 'air_date') {
+                    t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
+                    t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
+                } else {
+                    t1 = bgm1[this.orderBy];
+                    t2 = bgm2[this.orderBy];
+                }
+                return this.sort === 'asc' ? t1 - t2 : t2 - t1;
+            });
     }
 
 }

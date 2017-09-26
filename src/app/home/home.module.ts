@@ -23,6 +23,7 @@ import { ResponsiveImageModule } from '../responsive-image/responsive-image.modu
 import { VideoPlayerModule } from '../video-player/video-player.module';
 import { MyBangumiComponent } from './my-bangumi/my-bangumi.component';
 import { BottomFloatBannerComponent } from './bottom-float-banner/bottom-float-banner.component';
+import { BangumiListService } from './bangumi-list/bangumi-list.service';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { BottomFloatBannerComponent } from './bottom-float-banner/bottom-float-b
     providers: [
         HomeService,
         WatchService,
-        ImageLoadingStrategy
+        ImageLoadingStrategy,
+        BangumiListService
     ],
     imports: [
         RouterModule.forChild(homeRoutes),

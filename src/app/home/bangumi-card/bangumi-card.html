@@ -1,5 +1,5 @@
 <div class="ui container">
-    <div class="ui segment" (click)="jumpTo(bangumi.id)">
+    <a class="ui segment" [routerLink]="['/bangumi', bangumi.id]">
         <div class="bangumi-list-item">
             <responsive-image class="cover-wrapper"
                               [src]="imageUrl"
@@ -46,5 +46,5 @@
             }">
             {{FAVORITE_LABEL[bangumi.favorite_status]}}
         </div>
-    </div>
+    </a>
 </div>

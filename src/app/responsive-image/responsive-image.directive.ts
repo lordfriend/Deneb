@@ -76,12 +76,10 @@ export class ResponsiveImage implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log('init responsive image');
         this.dimensionChange(this.dimension);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('dimension:',  changes['dimension']);
         if ('dimension' in changes && !changes['dimension'].firstChange) {
             const dimension = changes['dimension'].currentValue as ResponsiveDimension;
             this.dimensionChange(dimension);
@@ -183,7 +181,6 @@ export class ResponsiveImage implements OnInit, OnChanges, OnDestroy {
                     }
                 }
                 this._respSrc = `${this._src}?size=${width}x${height}`;
-                console.log('respSrc', this._respSrc);
             }
             if (manualChangeDetection) {
                 this._changeDetector.detectChanges();

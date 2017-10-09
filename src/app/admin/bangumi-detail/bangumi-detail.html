@@ -10,15 +10,15 @@
 </admin-navbar>
 <div class="bangumi-detail-container" *ngIf="bangumi && adminList">
     <div class="bangumi-basic-info">
-        <div class="cover-wrapper">
+        <div class="cover-wrapper" *ngIf="bangumi.cover_image">
             <responsive-image
-                [src]="bangumi.cover_image?.url"
+                [src]="bangumi.cover_image.url"
                 [size]="{
                     width: '100%',
                     height: 'auto',
-                    originalWidth: bangumi.cover_image?.width,
-                    originalHeight: bangumi.cover_image?.height}"
-                [background]="bangumi.cover_image?.dominant_color"></responsive-image>
+                    originalWidth: bangumi.cover_image.width,
+                    originalHeight: bangumi.cover_image.height}"
+                [background]="bangumi.cover_image.dominant_color"></responsive-image>
         </div>
         <div class="bangumi-info-text">
             <h3 class="bangumi-title">

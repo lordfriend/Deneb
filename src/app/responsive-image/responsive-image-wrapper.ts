@@ -135,6 +135,7 @@ export class ResponsiveImageWrapper {
                 }
             }
         }
+        console.log('dimen', dimen);
         this.dimension = dimen;
     };
 

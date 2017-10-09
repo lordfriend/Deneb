@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.2
+
+### Fix Bugs:
+
+- Fix the bug in Admin/BangumiDetail component that sometimes, the request image size is 0x0, this is caused by a null originalWidth and originalHeight.
+- Fix the bug in BangumiList which some image doesn't re-measure its dimension when reused by InfiniteList.
+
+### Feature Add
+
+- Keep type, sort, order_by filter status in BangumiList (home and admin) when user leave the component.
+
+
 ## 2.4.1
 
 improve the user experience of bangumi list in Home/BangumiList component and Admin/ListBangumi component. The scroll position will be preserved

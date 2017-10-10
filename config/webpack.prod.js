@@ -194,10 +194,6 @@ module.exports = function (metadata) {
             emitErrors: true,
             failOnHint: true,
             resourcePath: 'src'
-          },
-          semanticUiLessModuleLoader: {
-            siteFolder:helpers.root('src/assets/site'),
-            themePath: helpers.root('src/assets/site/theme.less')
           }
         }
       })

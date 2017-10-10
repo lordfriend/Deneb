@@ -125,7 +125,14 @@ module.exports = function (metadata) {
                         fallback: 'style-loader',
                         use: [
                             'css-loader',
-                            'semantic-ui-less-module-loader'
+                            {
+                                loader: 'semantic-ui-less-module-loader',
+                                // you can also add specific options:
+                                options: {
+                                    siteFolder: helpers.root('src/assets/site'),
+                                    themePath: helpers.root('src/assets/site/theme.less')
+                                }
+                            }
                         ]
                     }),
                     include: [

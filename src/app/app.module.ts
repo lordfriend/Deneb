@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { App } from './app.component';
 import { AnalyticsService } from './analytics.service';
-import { RouterModule } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { appRoutes } from './app.routes';
 import { Login } from './login/login.component';
@@ -18,6 +18,7 @@ import { ForgetPassModule } from './forget-pass/forget-pass.module';
 import { ResetPassModule } from './reset-pass/reset-pass.module';
 import { UserServiceModule } from './user-service/index';
 import { StaticContentModule } from './static-content/static-content.module';
+import { RefreshSameRouteStrategy } from './RefreshSameRouteStrategy';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,11 @@ import { StaticContentModule } from './static-content/static-content.module';
     providers: [
         AnalyticsService,
         TaskService,
-        ENV_PROVIDERS
+        ENV_PROVIDERS,
+        {
+            provide: RouteReuseStrategy,
+            useClass: RefreshSameRouteStrategy
+        }
     ],
     imports: [
         RouterModule.forRoot(appRoutes, {

@@ -114,6 +114,12 @@ module.exports = function (metadata) {
                             }
                         },
                         {
+                            loader: 'ngc-webpack',
+                            options: {
+                                disable: !AOT
+                            }
+                        },
+                        {
                             loader: 'angular2-template-loader'
                         }
                     ],
@@ -249,7 +255,7 @@ module.exports = function (metadata) {
              */
             new ContextReplacementPlugin(
                 // The (\\|\/) piece accounts for path separators in *nix and Windows
-                /angular(\\|\/)core(\\|\/)src(\\|\/)linker/,
+                /(.+)?angular(\\|\/)core(\\|\/)?/,
                 helpers.root('src'), // location of your src
                 {
                     // your Angular Async Route paths relative to this root directory
@@ -276,7 +282,10 @@ module.exports = function (metadata) {
             new HtmlWebpackPlugin({
                 template: 'src/index.html',
                 title: metadata.title,
-                chunksSortMode: 'dependency',
+                chunksSortMode: function (a, b) {
+                    const entryPoints = ["inline","polyfills","sw-register","styles","vendor","main"];
+                    return entryPoints.indexOf(a.names[0]) - entryPoints.indexOf(b.names[0]);
+                },
                 metadata: metadata,
                 inject: 'body'
             }),
@@ -286,27 +295,6 @@ module.exports = function (metadata) {
                 disable: false,
                 allChunks: true
             }),
-            // Fix Angular 2
-            new NormalModuleReplacementPlugin(
-                /facade(\\|\/)async/,
-                helpers.root('node_modules/@angular/core/src/facade/async.js')
-            ),
-            new NormalModuleReplacementPlugin(
-                /facade(\\|\/)collection/,
-                helpers.root('node_modules/@angular/core/src/facade/collection.js')
-            ),
-            new NormalModuleReplacementPlugin(
-                /facade(\\|\/)errors/,
-                helpers.root('node_modules/@angular/core/src/facade/errors.js')
-            ),
-            new NormalModuleReplacementPlugin(
-                /facade(\\|\/)lang/,
-                helpers.root('node_modules/@angular/core/src/facade/lang.js')
-            ),
-            new NormalModuleReplacementPlugin(
-                /facade(\\|\/)math/,
-                helpers.root('node_modules/@angular/core/src/facade/math.js')
-            ),
 
             new ngcWebpack.NgcWebpackPlugin({
                 disabled: !AOT,

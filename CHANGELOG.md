@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.4.5
+
+- Update Webpack to 3 and update other dev dependencies.
+
+- fix bug in admin/bangumi-detail
+
+- remember the selection of default component bangumi type tab.
+
+## 2.4.4
+
+Add custom RouteReuseStrategy. Now some route, like play episode, bangumi detail will not reuse component when parameter changed. this will help fix some issues.
+
+## 2.4.3
+
+Fix webpack config issues which make the Google Fonts request from Google API that may cause some user in tha mainland China experience slow page loading.
+
 ## 2.4.2
 
 ### Fix Bugs:

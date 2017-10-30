@@ -92,4 +92,28 @@
             <button type="button" class="ui button" [disabled]="passwordForm.invalid || passwordForm.pristine" (click)="updatePass()">保存更改</button>
         </form>
     </div>
+    <div class="ui segment">
+        <h4>Web Hook</h4>
+        <div class="ui message">
+            当某个特殊事件发生时（如新番的章节下载完成，用户收藏改变等），Webhooks允许外部服务获得事件的通知。
+            当事件发生时，我们将会使用HTTP/HTTPS POST请求访问你所提供的URL并附带相应信息。
+            详细信息请阅读：<a href="https://github.com/lordfriend/Albireo/wiki/Web-Hook-Guide" target="_blank">Web Hook Guide</a>
+        </div>
+        <div class="web-hook-list">
+            <div class="ui segment" *ngFor="let webHook of webHookList">
+                <span class="name">{{webHook}}</span>
+                <button class="right floated">DELETE</button>
+            </div>
+        </div>
+    </div>
+    <div class="ui active dimmer" *ngIf="isAddingWebHook">
+        <div class="ui large text loader">
+            正在添加Web Hook
+        </div>
+    </div>
+    <div class="ui active inverted dimmer" *ngIf="isLoading">
+        <div class="ui large text loader">
+            Loading Web hooks
+        </div>
+    </div>
 </div>

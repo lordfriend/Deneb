@@ -5,6 +5,7 @@ import { WebHook } from '../../entity/web-hook';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { getRemPixel } from '../../../helpers/dom';
 import { EditWebHookComponent } from './edit-web-hook/edit-web-hook.component';
+import { BaseError } from '../../../helpers/error/BaseError';
 
 const CARD_HEIGHT_REM = 12;
 
@@ -42,6 +43,8 @@ export class WebHookComponent implements OnInit, OnDestroy {
                 })
                 .subscribe(() => {
                     this.refreshList();
+                }, (error: BaseError) => {
+                    this._toastRef.show(error.message);
                 })
         );
     }
@@ -57,6 +60,8 @@ export class WebHookComponent implements OnInit, OnDestroy {
                 })
                 .subscribe(() => {
                     this.refreshList();
+                }, (error: BaseError) => {
+                    this._toastRef.show(error.message);
                 })
         );
     }
@@ -77,9 +82,9 @@ export class WebHookComponent implements OnInit, OnDestroy {
                 .subscribe((list) => {
                     this.isLoading = false;
                     this.webHookList = list;
-                }, (resp) => {
+                }, (error: BaseError) => {
                     this.isLoading = false;
-                    this._toastRef.show(resp.error.message);
+                    this._toastRef.show(error.message);
                 })
         );
     }

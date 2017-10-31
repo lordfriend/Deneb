@@ -35,4 +35,10 @@ export class WebHookService extends BaseService {
             .map(res => res.json())
             .catch(this.handleError);
     }
+
+    deleteWebHook(webHookId: string): Observable<any> {
+        return this._http.delete(`${this._baseUrl}/${webHookId}`)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
 }

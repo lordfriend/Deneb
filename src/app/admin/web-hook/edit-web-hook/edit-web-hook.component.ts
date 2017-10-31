@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UIDialogRef } from 'deneb-ui';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, Form, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { WebHook } from '../../../entity/web-hook';
 
@@ -35,6 +35,9 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
         url: []
     };
 
+
+    deleteForm: FormGroup;
+
     constructor(private _dialogRef: UIDialogRef<EditWebHookComponent>,
                 private _fb: FormBuilder) {
     }
@@ -54,7 +57,7 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
     }
 
     reset_count() {
-        this.webHookForm.setValue({consecutive_failure_count: 0});
+        this.webHookForm.patchValue({consecutive_failure_count: 0});
     }
 
     cancel() {
@@ -69,6 +72,17 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
         this._dialogRef.close({result: result});
     }
 
+    deleteWebHook() {
+        if (this.deleteForm.invalid) {
+            return;
+        }
+        this._dialogRef.close({deleteWebHook: true});
+    }
+
+    nameValidation(control: AbstractControl): ValidationErrors | null {
+        return control.value !== this.webHook.name ? {nameMismatch: true} : null;
+    }
+
 
     ngOnInit(): void {
         this.webHookForm = this._fb.group({
@@ -78,6 +92,12 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
             status: [WebHook.STATUS_INITIAL],
             consecutive_failure_count: [0]
         });
+        if (this.webHook) {
+            this.deleteForm = this._fb.group({
+                name: ['', this.nameValidation.bind(this)]
+            });
+        }
+
         this.onFormChanged(this.webHookFormErrors, this.validationMessages, this.webHookForm);
 
         this._subscription.add(

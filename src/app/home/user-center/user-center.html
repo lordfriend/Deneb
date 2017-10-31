@@ -101,8 +101,16 @@
         </div>
         <div class="web-hook-list">
             <div class="ui segment" *ngFor="let webHook of webHookList">
-                <span class="name">{{webHook}}</span>
-                <button class="right floated">DELETE</button>
+                <span class="name">{{webHook.name}}</span>
+                <span class="ui label">{{webHook.url}}</span>
+                <button class="right floated ui mini button"
+                        confirmDialog
+                        [dialogTitle]="'确认删除Web Hook吗'"
+                        [dialogContent]="'确认删除Web Hook (' + webHook.name + ') 吗？你可以随时重新关联该Web Hook，删除web hook并不会删除Web Hook服务上所存储的与你相关的数据。'"
+                        (onConfirm)="deleteWebHook(webHook)">删除</button>
+                <div class="desc">
+                    {{webHook.description}}
+                </div>
             </div>
         </div>
     </div>

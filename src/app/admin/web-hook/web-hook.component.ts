@@ -56,7 +56,11 @@ export class WebHookComponent implements OnInit, OnDestroy {
             dialogRef.afterClosed()
                 .filter(result => !!result)
                 .flatMap((result) => {
-                    return this._webHookService.updateWebHook(webHook.id, result.result);
+                    if (result.deleteWebHook) {
+                        return this._webHookService.deleteWebHook(webHook.id);
+                    } else {
+                        return this._webHookService.updateWebHook(webHook.id, result.result);
+                    }
                 })
                 .subscribe(() => {
                     this.refreshList();

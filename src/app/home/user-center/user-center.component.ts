@@ -95,6 +95,23 @@ export class UserCenter implements OnInit, OnDestroy {
         }
     }
 
+    deleteWebHook(webHook: WebHook) {
+        this._subscription.add(
+            this._userCenterService.deleteWebHookToken(webHook.id)
+                .flatMap(() => {
+                    this.isLoading = true;
+                    return this._userCenterService.listWebHookToken();
+                })
+                .subscribe((list) => {
+                    this.isLoading = false;
+                    this.webHookList = list;
+                }, (error: BaseError) => {
+                    this.isLoading = false;
+                    this._toastRef.show(error.message);
+                })
+        );
+    }
+
     ngOnInit(): void {
         this.buildForm();
         this._subscription.add(

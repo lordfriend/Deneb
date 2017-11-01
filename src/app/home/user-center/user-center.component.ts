@@ -88,7 +88,10 @@ export class UserCenter implements OnInit, OnDestroy {
                         this.webHookList = list;
                     }, (error: BaseError) => {
                         this.isLoading = false;
+                        this.isAddingWebHook = false;
                         this._toastRef.show(error.message);
+                    }, () => {
+                        this.isAddingWebHook = false;
                     })
             );
 

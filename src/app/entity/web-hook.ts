@@ -9,6 +9,7 @@ export class WebHook {
     consecutive_failure_count?: number;
     register_time?: number;
     created_by: User;
+    shared_secret?: string;
 
 
     static STATUS_IS_ALIVE = 1;

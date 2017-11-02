@@ -24,6 +24,10 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
         },
         url: {
             'required': 'url不能为空'
+        },
+        shared_secret: {
+            'required': 'shared secret不能为空',
+            'minlength': 'secret太短'
         }
     };
 
@@ -32,7 +36,8 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
     webHookFormErrors = {
         name: [],
         description: [],
-        url: []
+        url: [],
+        shared_secret: []
     };
 
 
@@ -89,6 +94,7 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
             name: ['', Validators.required],
             description: ['', Validators.required],
             url: ['', Validators.required],
+            shared_secret: ['', [Validators.required, Validators.minLength(5)]],
             status: [WebHook.STATUS_INITIAL],
             consecutive_failure_count: [0]
         });

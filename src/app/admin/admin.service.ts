@@ -41,7 +41,13 @@ export class AdminService extends BaseService {
             .catch(this.handleError);
     }
 
-    listBangumi(params: {page: number, count: number, order_by: string, sort: string, name?: string}): Observable<{ data: Bangumi[], total: number }> {
+    listBangumi(params: {
+        page: number,
+        count: number,
+        order_by: string,
+        sort: string,
+        name?: string,
+        type?: number}): Observable<{ data: Bangumi[], total: number }> {
         let queryParams = queryString(params);
         return this.http.get(`${this.baseUrl}/bangumi?${queryParams}`)
             .map(res => res.json())

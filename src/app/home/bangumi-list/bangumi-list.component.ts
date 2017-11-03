@@ -70,6 +70,12 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
         if (Number.isFinite(this._bangumiListService.scrollPosition)) {
             this.lastScrollPosition = this._bangumiListService.scrollPosition;
         }
+        if (this._bangumiListService.sort) {
+            this.sort = this._bangumiListService.sort;
+        }
+        if (Number.isInteger(this._bangumiListService.type)) {
+            this.type = this._bangumiListService.type;
+        }
     }
 
     onClickFilterContainer() {
@@ -99,7 +105,7 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
                 page: 1,
                 count: -1,
                 order_by: 'air_date',
-                sort: this.sort
+                sort: 'desc'
             })
             .map((result) => result.data)
             .subscribe(
@@ -154,11 +160,13 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
         } else {
             this.sort = 'desc';
         }
+        this._bangumiListService.sort = this.sort;
         this.filterBangumi();
     }
 
     onTypeChange(type: number) {
         this.type = type;
+        this._bangumiListService.type = this.type;
         this.filterBangumi();
     }
 

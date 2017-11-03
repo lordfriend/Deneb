@@ -19,11 +19,17 @@ export const homeRoutes: Routes = [
             },
             {
                 path: 'play/:episode_id',
-                component: PlayEpisode
+                component: PlayEpisode,
+                data: {
+                    refresh: true
+                }
             },
             {
                 path: 'bangumi/:bangumi_id',
-                component: BangumiDetail
+                component: BangumiDetail,
+                data: {
+                    refresh: true
+                }
             },
             {
                 path: 'bangumi',

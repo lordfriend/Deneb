@@ -1,0 +1,31 @@
+web-hook-card {
+  display: block;
+  box-sizing: border-box;
+  padding: 0.5rem 0;
+  height: 12rem;
+  > .ui.segment {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
+    .url {
+      font-size: 0.9em;
+      color: #555555;
+      margin-bottom: 0.5em;
+    }
+
+    .desc {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      font-size: 1rem;
+      line-height: 1rem;
+      max-height: 2rem;
+    }
+  }
+
+  .created_by > .detail {
+    padding-right: 1em;
+  }
+}

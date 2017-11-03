@@ -1,5 +1,6 @@
 import {
-    ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnDestroy, OnInit, Output
+    ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnDestroy,
+    OnInit, Output, SimpleChanges
 } from '@angular/core';
 import { ObservableStub, ResponsiveService } from './responsive.service';
 import { getRemPixel, getVhInPixel, getVwInPixel } from '../../helpers/dom';
@@ -24,7 +25,7 @@ export interface ResponsiveDimension {
 @Directive({
     selector: 'img[originalSrc]'
 })
-export class ResponsiveImage implements OnInit, OnDestroy {
+export class ResponsiveImage implements OnInit, OnChanges, OnDestroy {
     private _src: string;
     private _respSrc: string;
 
@@ -75,13 +76,30 @@ export class ResponsiveImage implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        if (!this.dimension ||
-            this.dimension.width === '100%' || this.dimension.height === '100%') {
+        this.dimensionChange(this.dimension);
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if ('dimension' in changes && !changes['dimension'].firstChange) {
+            const dimension = changes['dimension'].currentValue as ResponsiveDimension;
+            this.dimensionChange(dimension);
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.observableStub) {
+            this._responsiveService.unobserve(this.observableStub);
+        }
+    }
+
+    private dimensionChange(dimension: ResponsiveDimension) {
+        const width = dimension.width;
+        const height = dimension.height;
+        if (!dimension ||
+            width === '100%' || height === '100%') {
             this.needMeasure();
             return;
         }
-        let width = this.dimension.width;
-        let height = this.dimension.height;
         if (width !== 'auto') {
             this._width = Math.round(ResponsiveImage.getPx(width));
         } else {
@@ -95,13 +113,10 @@ export class ResponsiveImage implements OnInit, OnDestroy {
         this.makeRespSrc(false);
     }
 
-    ngOnDestroy(): void {
+    private needMeasure() {
         if (this.observableStub) {
             this._responsiveService.unobserve(this.observableStub);
         }
-    }
-
-    private needMeasure() {
         this.observableStub = {
             target: this._element.nativeElement,
             callback: (rect: ClientRect) => {
@@ -149,7 +164,9 @@ export class ResponsiveImage implements OnInit, OnDestroy {
             } else {
                 let width = this._width;
                 let height = this._height;
-                if (this._width !== 0 && this._height !== 0) {
+                if (this._width !== 0 && this._height !== 0
+                    && Number.isFinite(this.dimension.originalWidth)
+                    && Number.isFinite(this.dimension.originalHeight)) {
                     let ratio = this._height / this._width;
                     let originalRatio = this.dimension.originalHeight / this.dimension.originalWidth;
                     if (originalRatio > ratio) {

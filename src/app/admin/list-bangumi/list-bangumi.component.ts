@@ -78,6 +78,15 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
         if (Number.isFinite(this._listBangumiService.scrollPosition)) {
             this.lastScrollPosition = this._listBangumiService.scrollPosition;
         }
+        if (this._listBangumiService.sort) {
+            this.sort = this._listBangumiService.sort;
+        }
+        if (this._listBangumiService.orderBy) {
+            this.orderBy = this._listBangumiService.orderBy;
+        }
+        if (Number.isInteger(this._listBangumiService.type)) {
+            this.type = this._listBangumiService.type;
+        }
     }
 
     onScrollPositionChange(p: number) {
@@ -89,11 +98,14 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
         if (isSortChange) {
             this.sort = this.sort === 'desc' ? 'asc' : 'desc';
         }
+        this._listBangumiService.orderBy = this.orderBy;
+        this._listBangumiService.sort = this.sort;
         this.filterBangumiList();
     }
 
     onTypeChange(type: number) {
         this.type = type;
+        this._listBangumiService.type = this.type;
         this.filterBangumiList();
     }
 
@@ -143,7 +155,8 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
                     page: 1,
                     count: -1,
                     order_by: this.orderBy,
-                    sort: this.sort
+                    sort: this.sort,
+                    type: this.type
                 })
                 .subscribe(
                     (result: { data: Bangumi[], total: number }) => {

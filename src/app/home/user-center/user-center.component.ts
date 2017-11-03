@@ -7,6 +7,8 @@ import { BaseError } from '../../../helpers/error/BaseError';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { passwordMatch } from '../../form-utils/validators';
 import { ClientError } from '../../../helpers/error/ClientError';
+import { UserCenterService } from './user-center.service';
+import { WebHook } from '../../entity/web-hook';
 
 export const MAIL_SEND_INTERVAL = 60;
 
@@ -61,10 +63,56 @@ export class UserCenter implements OnInit, OnDestroy {
         new_password_repeat: []
     };
 
+    isAddingWebHook = false;
+    isLoading = false;
+
+    webHookList: WebHook[];
+
     constructor(private _userSerivce: UserService,
+                private _userCenterService: UserCenterService,
                 private _fb: FormBuilder,
                 toastService: UIToast) {
         this._toastRef = toastService.makeText();
+        let searchString = window.location.search;
+        if (searchString) {
+            this.isAddingWebHook = true;
+            this._subscription.add(
+                this._userCenterService.addWebHookToken(searchString.substring(1, searchString.length))
+                    .flatMap(() => {
+                        this.isAddingWebHook = false;
+                        this.isLoading = true;
+                        return this._userCenterService.listWebHookToken();
+                    })
+                    .subscribe((list) => {
+                        this.isLoading = false;
+                        this.webHookList = list;
+                    }, (error: BaseError) => {
+                        this.isLoading = false;
+                        this.isAddingWebHook = false;
+                        this._toastRef.show(error.message);
+                    }, () => {
+                        this.isAddingWebHook = false;
+                    })
+            );
+
+        }
+    }
+
+    deleteWebHook(webHook: WebHook) {
+        this._subscription.add(
+            this._userCenterService.deleteWebHookToken(webHook.id)
+                .flatMap(() => {
+                    this.isLoading = true;
+                    return this._userCenterService.listWebHookToken();
+                })
+                .subscribe((list) => {
+                    this.isLoading = false;
+                    this.webHookList = list;
+                }, (error: BaseError) => {
+                    this.isLoading = false;
+                    this._toastRef.show(error.message);
+                })
+        );
     }
 
     ngOnInit(): void {
@@ -76,7 +124,7 @@ export class UserCenter implements OnInit, OnDestroy {
                     user => {
                         this.user = user;
                         this.emailForm.patchValue(this.user);
-                        this.resendMailTimeLeft = MAIL_SEND_INTERVAL - Math.floor((Date.now() - this.getLastMailSendTime())/1000);
+                        this.resendMailTimeLeft = MAIL_SEND_INTERVAL - Math.floor((Date.now() - this.getLastMailSendTime()) / 1000);
                         if (this.resendMailTimeLeft > 0) {
                             this.startCountdown();
                         }
@@ -86,6 +134,19 @@ export class UserCenter implements OnInit, OnDestroy {
                     }
                 )
         );
+        if (!this.isLoading && !this.webHookList) {
+            this.isLoading = true;
+            this._subscription.add(
+                this._userCenterService.listWebHookToken()
+                    .subscribe((list) => {
+                        this.isLoading = false;
+                        this.webHookList = list;
+                    }, (error: BaseError) => {
+                        this.isLoading = false;
+                        this._toastRef.show(error.message);
+                    })
+            );
+        }
     }
 
     ngOnDestroy(): void {
@@ -97,21 +158,21 @@ export class UserCenter implements OnInit, OnDestroy {
         this.setLastMailSendTime();
         this._subscription.add(
             this._userSerivce.updateEmail(emailModel.email, emailModel.current_pass)
-            .subscribe(
-                () => {
-                    this._toastRef.show('更新成功, 请到邮箱确认邮件地址');
-                    // this.user.email = emailModel.email;
-                    // this.user.email_confirmed = false;
-                    this.emailForm.markAsPristine();
-                },
-                (error: BaseError) => {
-                    if (error.message === ClientError.DUPLICATE_EMAIL) {
-                        this._toastRef.show('邮件地址已被使用');
-                    } else {
-                        this._toastRef.show(error.message);
+                .subscribe(
+                    () => {
+                        this._toastRef.show('更新成功, 请到邮箱确认邮件地址');
+                        // this.user.email = emailModel.email;
+                        // this.user.email_confirmed = false;
+                        this.emailForm.markAsPristine();
+                    },
+                    (error: BaseError) => {
+                        if (error.message === ClientError.DUPLICATE_EMAIL) {
+                            this._toastRef.show('邮件地址已被使用');
+                        } else {
+                            this._toastRef.show(error.message);
+                        }
                     }
-                }
-            )
+                )
         );
     }
 

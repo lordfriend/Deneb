@@ -24,6 +24,8 @@ import { VideoPlayerModule } from '../video-player/video-player.module';
 import { MyBangumiComponent } from './my-bangumi/my-bangumi.component';
 import { BottomFloatBannerComponent } from './bottom-float-banner/bottom-float-banner.component';
 import { BangumiListService } from './bangumi-list/bangumi-list.service';
+import { UserCenterService } from './user-center/user-center.service';
+import { ConfirmDialogModule } from '../confirm-dialog/index';
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import { BangumiListService } from './bangumi-list/bangumi-list.service';
         HomeService,
         WatchService,
         ImageLoadingStrategy,
-        BangumiListService
+        BangumiListService,
+        UserCenterService
     ],
     imports: [
         RouterModule.forChild(homeRoutes),
@@ -55,7 +58,8 @@ import { BangumiListService } from './bangumi-list/bangumi-list.service';
         ReactiveFormsModule,
         AlertDialogModule,
         ResponsiveImageModule,
-        VideoPlayerModule
+        VideoPlayerModule,
+        ConfirmDialogModule
     ]
 })
 export class HomeModule {

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AnnounceService } from './announce.service';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { EditAnnounceComponent } from './edit-announce/edit-announce.component';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -23,7 +24,9 @@ export class AnnounceComponent implements OnInit, OnDestroy {
 
     constructor(private _announceService: AnnounceService,
                 private _dialog: UIDialog,
-                toastService: UIToast) {
+                toastService: UIToast,
+                titleService: Title) {
+        titleService.setTitle(`公告管理 - ${SITE_TITLE}`);
         this._toastRef = toastService.makeText();
     }
 

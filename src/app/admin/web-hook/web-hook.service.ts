@@ -14,13 +14,23 @@ export class WebHookService extends BaseService {
 
     listWebHook(): Observable<WebHook[]> {
         return this._http.get(`${this._baseUrl}/`)
-            .map(res => res.json().data as WebHook[])
+            .map((res) => {
+                return (res.json().data as any[]).map(webHook => {
+                    if (webHook.permissions) {
+                        webHook.permissions = JSON.parse(webHook.permissions as string) as string[];
+                    } else {
+                        webHook.permissions = []
+                    }
+                    return webHook as WebHook;
+                });
+            })
             .catch(this.handleError);
     }
 
     registerWebHook(webHook: any): Observable<any> {
         let header = new Headers({'Content-Type': 'application/json;utf-8'});
         let requestOptions = new RequestOptions({headers: header});
+        webHook.permissions = JSON.stringify(webHook.permissions);
         let body = JSON.stringify(webHook);
         return this._http.post(`${this._baseUrl}/register`, body, requestOptions)
             .map(res => res.json())
@@ -30,6 +40,7 @@ export class WebHookService extends BaseService {
     updateWebHook(webHookId: string, webHook: any): Observable<any> {
         let header = new Headers({'Content-Type': 'application/json;utf-8'});
         let requestOptions = new RequestOptions({headers: header});
+        webHook.permissions = JSON.stringify(webHook.permissions);
         let body = JSON.stringify(webHook);
         return this._http.put(`${this._baseUrl}/${webHookId}`, body, requestOptions)
             .map(res => res.json())

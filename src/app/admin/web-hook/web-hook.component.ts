@@ -6,6 +6,7 @@ import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { getRemPixel } from '../../../helpers/dom';
 import { EditWebHookComponent } from './edit-web-hook/edit-web-hook.component';
 import { BaseError } from '../../../helpers/error/BaseError';
+import { Title } from '@angular/platform-browser';
 
 const CARD_HEIGHT_REM = 12;
 
@@ -26,7 +27,9 @@ export class WebHookComponent implements OnInit, OnDestroy {
 
     constructor(private _webHookService: WebHookService,
                 private _dialog: UIDialog,
-                toast: UIToast) {
+                toast: UIToast,
+                titleService: Title) {
+        titleService.setTitle('WebHook管理 - ' + SITE_TITLE);
         this._toastRef = toast.makeText();
         if (window) {
             this.cardHeight = getRemPixel(CARD_HEIGHT_REM)

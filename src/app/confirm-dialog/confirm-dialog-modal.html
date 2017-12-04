@@ -3,8 +3,8 @@
         <i class="attention icon"></i>
         {{title}}
     </div>
-    <div class="content">
-        <p>{{content}}</p>
+    <div class="formatted content">
+        <p [innerHtml]="content"></p>
     </div>
     <div class="actions">
         <div class="ui red basic cancel inverted button" (click)="cancel()">

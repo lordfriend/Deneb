@@ -4,6 +4,19 @@ import { AbstractControl, Form, FormBuilder, FormGroup, ValidationErrors, Valida
 import { Subscription } from 'rxjs/Subscription';
 import { WebHook } from '../../../entity/web-hook';
 
+export function sharedSecretValidator(isEditMode: boolean) {
+    return (control: AbstractControl): {[key: string]: any} => {
+        let value = control.value;
+        if (isEditMode) {
+            let isEmpty = value === null || typeof value === 'undefined' || value === '';
+            return isEmpty ? null : Validators.minLength(5)(control);
+        } else {
+            return Validators.required(control) || Validators.minLength(5)(control);
+        }
+    };
+}
+
+
 @Component({
     selector: 'edit-web-hook',
     templateUrl: './edit-web-hook.html',
@@ -73,7 +86,17 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
         if (this.webHookForm.invalid || this.webHookForm.pristine) {
             return;
         }
-        const result = this.webHookForm.value as WebHook;
+        const result = Object.assign({}, this.webHookForm.value);
+        result.permissions = [];
+        if (result.permission_favorite) {
+            result.permissions.push(WebHook.PERMISSION_FAVORITE);
+        }
+        if (result.permission_email) {
+            result.permissions.push(WebHook.PERMISSION_EMAIL);
+        }
+        if (this.webHook) {
+            result.shared_secret = undefined;
+        }
         this._dialogRef.close({result: result});
     }
 
@@ -94,9 +117,11 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
             name: ['', Validators.required],
             description: ['', Validators.required],
             url: ['', Validators.required],
-            shared_secret: ['', [Validators.required, Validators.minLength(5)]],
+            shared_secret: ['', sharedSecretValidator(!!this.webHook)],
             status: [WebHook.STATUS_INITIAL],
-            consecutive_failure_count: [0]
+            consecutive_failure_count: [0],
+            permission_favorite: [false],
+            permission_email: [false]
         });
         if (this.webHook) {
             this.deleteForm = this._fb.group({
@@ -115,6 +140,16 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
 
         if (this.webHook) {
             this.webHookForm.patchValue(this.webHook);
+            if (this.webHook.permissions.indexOf(WebHook.PERMISSION_FAVORITE) !== -1) {
+                this.webHookForm.patchValue({
+                    permission_favorite: true
+                });
+            }
+            if (this.webHook.permissions.indexOf(WebHook.PERMISSION_EMAIL) !== -1) {
+                this.webHookForm.patchValue({
+                    permission_email: true
+                });
+            }
         }
     }
 

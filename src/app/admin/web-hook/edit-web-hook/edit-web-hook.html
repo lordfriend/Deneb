@@ -36,12 +36,21 @@
         </div>
         <div class="field" [ngClass]="{error: webHookFormErrors.shared_secret.length > 0}">
             <label>Shared Secret</label>
-            <input type="text" placeholder="输入任意内容，最少5个字符" formControlName="shared_secret" name="shared_secret">
+            <input type="text" [placeholder]="!!webHook ? '留空为不修改': '输入任意内容，最少5个字符'" formControlName="shared_secret" name="shared_secret">
         </div>
         <div class="ui error message" *ngIf="webHookFormErrors.shared_secret.length > 0">
             <ul class="list">
                 <li *ngFor="let error of webHookFormErrors.shared_secret">{{error}}</li>
             </ul>
+        </div>
+        <div class="grouped field">
+            <label>Permissions</label>
+            <div class="field">
+                <ui-toggle text="用户收藏内容，用户收藏改变时会发送事件，TokenAdded事件会包含当前收藏内容" name="favorite" formControlName="permission_favorite"></ui-toggle>
+            </div>
+            <div class="field">
+                <ui-toggle text="用户邮箱地址，用户邮箱地址变更确认之后会发送事件，TokenAdded事件会包含用户邮箱地址" name="email" formControlName="permission_email"></ui-toggle>
+            </div>
         </div>
         <div class="field">
             <label>状态（状态修改仅用于调试）</label>

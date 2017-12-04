@@ -7,6 +7,7 @@ import {BaseError} from '../../../helpers/error/BaseError';
 import {UserPromoteModal} from './user-promote-modal/user-promote-modal.component';
 import {ClientError} from '../../../helpers/error/ClientError';
 import {UserService} from '../../user-service/user.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector: 'user-manager',
@@ -31,8 +32,10 @@ export class UserManager implements OnInit, OnDestroy {
         private _userService: UserService,
         private _userManageService: UserManagerSerivce,
         private _dialog: UIDialog,
-        toast: UIToast
+        toast: UIToast,
+        titleService: Title
     ) {
+        titleService.setTitle(`用户管理 - ${SITE_TITLE}`);
         this._toastRef = toast.makeText();
     }
 

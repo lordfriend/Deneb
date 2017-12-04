@@ -10,4 +10,9 @@ import { WebHook } from '../../../entity/web-hook';
 export class WebHookCardComponent {
     @Input()
     webHook: WebHook;
+
+    onClickId(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 }

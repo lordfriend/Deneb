@@ -10,10 +10,14 @@ export class WebHook {
     register_time?: number;
     created_by: User;
     shared_secret?: string;
+    permissions: string[];
 
 
     static STATUS_IS_ALIVE = 1;
     static STATUS_HAS_ERROR = 2;
     static STATUS_IS_DEAD = 3;
     static STATUS_INITIAL = 4;
+
+    static PERMISSION_FAVORITE = 'PERM_FAVORITE';
+    static PERMISSION_EMAIL = 'PERM_EMAIL';
 }

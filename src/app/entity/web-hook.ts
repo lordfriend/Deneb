@@ -21,3 +21,8 @@ export class WebHook {
     static PERMISSION_FAVORITE = 'PERM_FAVORITE';
     static PERMISSION_EMAIL = 'PERM_EMAIL';
 }
+
+export const PERM_NAME = {
+    [WebHook.PERMISSION_FAVORITE]: '用户收藏',
+    [WebHook.PERMISSION_EMAIL]: '用户邮件地址'
+};

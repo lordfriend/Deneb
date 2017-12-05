@@ -1,4 +1,8 @@
 <div class="user-center-container ui container">
+    <div class="ui secondary pointing menu">
+        <a routerLink="/settings/user" class="active item">用户设置</a>
+        <a routerLink="/settings/web-hook" class="item">Web Hook列表</a>
+    </div>
     <div class="ui segment basic-info">
         <h4>基本信息</h4>
         <div class="ui form">
@@ -101,17 +105,22 @@
         </div>
         <div class="web-hook-list">
             <div class="ui segment" *ngFor="let webHook of webHookList">
-                <span class="name">{{webHook.name}}</span>
-                <span class="ui label">{{webHook.url}}</span>
+                <div class="name">{{webHook.name}}</div>
+                <div class="permission-tags">
+                    <span class="key">权限</span>
+                    <div *ngFor="let perm of webHook.permissions" class="ui tiny label">{{perm}}</div>
+                </div>
                 <button class="right floated ui mini button"
                         confirmDialog
                         [dialogTitle]="'确认删除Web Hook吗'"
                         [dialogContent]="'确认删除Web Hook (' + webHook.name + ') 吗？你可以随时重新关联该Web Hook，删除web hook并不会删除Web Hook服务上所存储的与你相关的数据。'"
                         (onConfirm)="deleteWebHook(webHook)">删除</button>
-                <div class="desc">
-                    {{webHook.description}}
+                <div class="desc" [innerHtml]="webHook.description">
                 </div>
             </div>
+        </div>
+        <div class="action-row">
+            <a class="ui primary button" routerLink="/settings/web-hook">寻找Web Hook</a>
         </div>
     </div>
     <div class="ui active dimmer" *ngIf="isAddingWebHook">

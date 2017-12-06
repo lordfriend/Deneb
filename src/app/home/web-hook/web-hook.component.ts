@@ -15,6 +15,7 @@ export class WebHookComponent implements OnInit, OnDestroy {
     private _toastRef: UIToastRef<UIToastComponent>;
 
     webHookList: WebHook[];
+    siteTitle = SITE_TITLE;
 
     constructor(private _http: Http,
                 toastService: UIToast,

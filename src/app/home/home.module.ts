@@ -26,6 +26,7 @@ import { BottomFloatBannerComponent } from './bottom-float-banner/bottom-float-b
 import { BangumiListService } from './bangumi-list/bangumi-list.service';
 import { UserCenterService } from './user-center/user-center.service';
 import { ConfirmDialogModule } from '../confirm-dialog/index';
+import { WebHookComponent } from './web-hook/web-hook.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { ConfirmDialogModule } from '../confirm-dialog/index';
         BangumiCard,
         UserCenter,
         MyBangumiComponent,
-        BottomFloatBannerComponent
+        BottomFloatBannerComponent,
+        WebHookComponent
     ],
     providers: [
         HomeService,

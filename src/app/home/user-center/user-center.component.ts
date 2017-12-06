@@ -9,6 +9,7 @@ import { passwordMatch } from '../../form-utils/validators';
 import { ClientError } from '../../../helpers/error/ClientError';
 import { UserCenterService } from './user-center.service';
 import { WebHook } from '../../entity/web-hook';
+import { Title } from '@angular/platform-browser';
 
 export const MAIL_SEND_INTERVAL = 60;
 
@@ -71,7 +72,9 @@ export class UserCenter implements OnInit, OnDestroy {
     constructor(private _userSerivce: UserService,
                 private _userCenterService: UserCenterService,
                 private _fb: FormBuilder,
+                titleService: Title,
                 toastService: UIToast) {
+        titleService.setTitle(`用户设置 - ${SITE_TITLE}`);
         this._toastRef = toastService.makeText();
         let searchString = window.location.search;
         if (searchString) {

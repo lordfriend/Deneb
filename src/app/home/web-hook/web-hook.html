@@ -1,0 +1,24 @@
+<div class="ui container web-hook-list-container">
+    <div class="ui secondary pointing menu">
+        <a routerLink="/settings/user" class="item">用户设置</a>
+        <a routerLink="/settings/web-hook" class="active item">Web Hook列表</a>
+    </div>
+    <div class="ui segment">
+        <h4>可用的Web Hook</h4>
+        <div class="ui message">
+            下面列出了{{siteTitle}}的所有可用的Web Hook。如果你想开发Web Hook并在本站使用，请联系管理员注册Web Hook，开发之前请参考
+            <a href="https://github.com/lordfriend/Albireo/wiki/Web-Hook-Guide" target="_blank">Web Hook Guide</a>
+        </div>
+        <div class="web-hook-list">
+            <div class="ui segment" *ngFor="let webHook of webHookList">
+                <div class="name">{{webHook.name}}</div>
+                <div class="permission-tags">
+                    <span class="key">权限</span>
+                    <div *ngFor="let perm of webHook.permissions" class="ui tiny label">{{perm}}</div>
+                </div>
+                <div class="desc" [innerHtml]="webHook.description">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from '../../../helpers/base.service';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { WebHook } from '../../entity/web-hook';
+import { PERM_NAME, WebHook } from '../../entity/web-hook';
 import { UIDialog } from 'deneb-ui';
 import { ConfirmDialogModal } from '../../confirm-dialog/confirm-dialog-modal.component';
 import { BaseError } from '../../../helpers/error/BaseError';
@@ -23,6 +23,17 @@ export class UserCenterService extends BaseService {
     listWebHookToken(): Observable<WebHook[]> {
         return this._http.get('/api/web-hook/token')
             .map(res => res.json().data)
+            .map(webHookList => {
+                return webHookList.map(webHook => {
+                    if (webHook.permissions) {
+                        webHook.permissions = JSON.parse(webHook.permissions as string) as string[];
+                    } else {
+                        webHook.permissions = []
+                    }
+                    webHook.permissions = webHook.permissions.map(perm_key => PERM_NAME[perm_key]);
+                    return webHook;
+                });
+            })
             .catch(this.handleError);
     }
 

@@ -6,6 +6,7 @@ import { BangumiList } from './bangumi-list/bangumi-list.component';
 import { BangumiDetail } from './bangumi-detail/bangumi-detail.components';
 import { Authentication } from '../user-service/authentication.service';
 import { UserCenter } from './user-center/user-center.component';
+import { WebHookComponent } from './web-hook/web-hook.component';
 export const homeRoutes: Routes = [
     {
         path: '',
@@ -38,6 +39,10 @@ export const homeRoutes: Routes = [
             {
                 path: 'settings/user',
                 component: UserCenter
+            },
+            {
+                path: 'settings/web-hook',
+                component: WebHookComponent
             }
         ]
     },

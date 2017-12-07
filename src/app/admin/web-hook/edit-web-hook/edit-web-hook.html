@@ -1,0 +1,86 @@
+<div class="action-bar">
+    <a class="back-button" (click)="cancel()"><i class="chevron left icon"></i></a>
+    <div class="title">{{!webHook ? '新建WebHook': '编辑WebHook'}}</div>
+    <a class="confirm-button" (click)="save()" [ngClass]="{disabled: webHookForm.invalid || webHookForm.pristine}">
+        <i class="checkmark icon"></i> 确定保存
+    </a>
+</div>
+<div class="content-area">
+    <form class="edit-web-hook-from ui form" [formGroup]="webHookForm" novalidate  [ngClass]="{error: webHookForm.invalid}">
+        <div class="field" [ngClass]="{error: webHookFormErrors.name.length > 0}">
+            <label>名称</label>
+            <input type="text" formControlName="name" name="name">
+        </div>
+        <div class="ui error message" *ngIf="webHookFormErrors.name.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of webHookFormErrors.name">{{error}}</li>
+            </ul>
+        </div>
+        <div class="field" [ngClass]="{error: webHookFormErrors.description.length > 0}">
+            <label>描述</label>
+            <textarea type="text" cols="15" rows="5" formControlName="description" name="description"></textarea>
+        </div>
+        <div class="ui error message" *ngIf="webHookFormErrors.description.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of webHookFormErrors.description">{{error}}</li>
+            </ul>
+        </div>
+        <div class="field" [ngClass]="{error: webHookFormErrors.url.length > 0}">
+            <label>URL</label>
+            <input type="text" formControlName="url" name="url">
+        </div>
+        <div class="ui error message" *ngIf="webHookFormErrors.url.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of webHookFormErrors.url">{{error}}</li>
+            </ul>
+        </div>
+        <div class="field" [ngClass]="{error: webHookFormErrors.shared_secret.length > 0}">
+            <label>Shared Secret</label>
+            <input type="text" [placeholder]="!!webHook ? '留空为不修改': '输入任意内容，最少5个字符'" formControlName="shared_secret" name="shared_secret">
+        </div>
+        <div class="ui error message" *ngIf="webHookFormErrors.shared_secret.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of webHookFormErrors.shared_secret">{{error}}</li>
+            </ul>
+        </div>
+        <div class="grouped field">
+            <label>Permissions</label>
+            <div class="field">
+                <ui-toggle text="用户收藏内容，用户收藏改变时会发送事件，TokenAdded事件会包含当前收藏内容" name="favorite" formControlName="permission_favorite"></ui-toggle>
+            </div>
+            <div class="field">
+                <ui-toggle text="用户邮箱地址，用户邮箱地址变更确认之后会发送事件，TokenAdded事件会包含用户邮箱地址" name="email" formControlName="permission_email"></ui-toggle>
+            </div>
+        </div>
+        <div class="field">
+            <label>状态（状态修改仅用于调试）</label>
+            <select name="status" formControlName="status">
+                <option [value]="1">ALIVE</option>
+                <option [value]="2">HAS ERROR</option>
+                <option [value]="3">DEAD</option>
+                <option [value]="4">INITIAL</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>连续失败次数（超过10次会被认定为DEAD，重置功能仅用于调试）</label>
+            <div class="ui action input">
+                <input type="number" formControlName="consecutive_failure_count" readonly>
+                <button class="ui button" (click)="reset_count()">重置</button>
+            </div>
+        </div>
+    </form>
+    <div class="ui horizontal divider" *ngIf="!!webHook">
+        删除WEB HOOK
+    </div>
+    <form class="delete-web-hook-form ui form warning" *ngIf="!!webHook" [formGroup]="deleteForm">
+        <div class="ui warning message">
+            删除WEB HOOK将会删除同时删除用户绑定的token，该操作不可撤销，请在下框内输入Web Hook名称。并点击删除。
+        </div>
+        <div class="field">
+            <input type="text" formControlName="name" name="name">
+        </div>
+        <div class="field">
+            <button class="fluid ui orange button" (click)="deleteWebHook()" [disabled]="deleteForm.invalid">删除</button>
+        </div>
+    </form>
+</div>

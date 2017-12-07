@@ -36,6 +36,12 @@ import { AnnounceComponent } from './announce/announce.component';
 import { EditAnnounceComponent } from './announce/edit-announce/edit-announce.component';
 import { AnnounceService } from './announce/announce.service';
 import { ListBangumiService } from './list-bangumi/list-bangumi.service';
+import { WebHookComponent } from './web-hook/web-hook.component';
+import { UserServiceModule } from '../user-service/index';
+import { WebHookService } from './web-hook/web-hook.service';
+import { WebHookCardComponent } from './web-hook/web-hook-card/web-hook-card.component';
+import { EditWebHookComponent } from './web-hook/edit-web-hook/edit-web-hook.component';
+import { DpDatePickerModule } from 'ng2-date-picker';
 
 
 @NgModule({
@@ -61,7 +67,10 @@ import { ListBangumiService } from './list-bangumi/list-bangumi.service';
         UserPromoteModal,
         VideoFileModal,
         AnnounceComponent,
-        EditAnnounceComponent
+        EditAnnounceComponent,
+        WebHookComponent,
+        WebHookCardComponent,
+        EditWebHookComponent
     ],
     providers: [
         AdminService,
@@ -70,7 +79,8 @@ import { ListBangumiService } from './list-bangumi/list-bangumi.service';
         TaskService,
         UserManagerSerivce,
         AnnounceService,
-        ListBangumiService
+        ListBangumiService,
+        WebHookService
     ],
     imports: [
         CommonModule,
@@ -81,7 +91,9 @@ import { ListBangumiService } from './list-bangumi/list-bangumi.service';
         UIModule,
         ConfirmDialogModule,
         DenebCommonPipes,
-        ResponsiveImageModule
+        ResponsiveImageModule,
+        UserServiceModule,
+        DpDatePickerModule
     ],
     entryComponents: [
         SearchBangumi,
@@ -91,7 +103,8 @@ import { ListBangumiService } from './list-bangumi/list-bangumi.service';
         BangumiMoeBuilder,
         UserPromoteModal,
         VideoFileModal,
-        EditAnnounceComponent
+        EditAnnounceComponent,
+        EditWebHookComponent
     ]
 })
 export class AdminModule {

@@ -1,4 +1,8 @@
 <div class="user-center-container ui container">
+    <div class="ui secondary pointing menu">
+        <a routerLink="/settings/user" class="active item">用户设置</a>
+        <a routerLink="/settings/web-hook" class="item">Web Hook列表</a>
+    </div>
     <div class="ui segment basic-info">
         <h4>基本信息</h4>
         <div class="ui form">
@@ -91,5 +95,42 @@
             </div>
             <button type="button" class="ui button" [disabled]="passwordForm.invalid || passwordForm.pristine" (click)="updatePass()">保存更改</button>
         </form>
+    </div>
+    <div class="ui segment">
+        <h4>Web Hook</h4>
+        <div class="ui message">
+            当某个特殊事件发生时（如新番的章节下载完成，用户收藏改变等），Webhooks允许外部服务获得事件的通知。
+            当事件发生时，我们将会使用HTTP/HTTPS POST请求访问你所提供的URL并附带相应信息。
+            详细信息请阅读：<a href="https://github.com/lordfriend/Albireo/wiki/Web-Hook-Guide" target="_blank">Web Hook Guide</a>
+        </div>
+        <div class="web-hook-list">
+            <div class="ui segment" *ngFor="let webHook of webHookList">
+                <div class="name">{{webHook.name}}</div>
+                <div class="permission-tags">
+                    <span class="key">权限</span>
+                    <div *ngFor="let perm of webHook.permissions" class="ui tiny label">{{perm}}</div>
+                </div>
+                <button class="right floated ui mini button"
+                        confirmDialog
+                        [dialogTitle]="'确认删除Web Hook吗'"
+                        [dialogContent]="'确认删除Web Hook (' + webHook.name + ') 吗？你可以随时重新关联该Web Hook，删除web hook并不会删除Web Hook服务上所存储的与你相关的数据。'"
+                        (onConfirm)="deleteWebHook(webHook)">删除</button>
+                <div class="desc" [innerHtml]="webHook.description">
+                </div>
+            </div>
+        </div>
+        <div class="action-row">
+            <a class="ui primary button" routerLink="/settings/web-hook">寻找Web Hook</a>
+        </div>
+    </div>
+    <div class="ui active dimmer" *ngIf="isAddingWebHook">
+        <div class="ui large text loader">
+            正在添加Web Hook
+        </div>
+    </div>
+    <div class="ui active inverted dimmer" *ngIf="isLoading">
+        <div class="ui large text loader">
+            Loading Web hooks
+        </div>
     </div>
 </div>

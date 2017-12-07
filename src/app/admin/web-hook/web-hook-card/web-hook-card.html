@@ -1,0 +1,26 @@
+<div class="ui segment">
+    <div class="ui header">
+        <span class="name">{{webHook.name}}</span>
+        <span class="web-hook-id ui label" (click)="onClickId($event)">ID:<span class="detail">{{webHook.id}}</span></span>
+        <span class="ui green label" *ngIf="webHook.status === 1">ALIVE</span>
+        <span class="ui orange label" *ngIf="webHook.status === 2">HAS ERROR</span>
+        <span class="ui red label" *ngIf="webHook.status === 3">DEAD</span>
+        <span class="ui grey label" *ngIf="webHook.status === 4">INITIAL</span>
+        <span class="ui label">
+            <i class="warning sign icon"></i>
+            连续错误次数
+            <span class="detail">{{webHook.consecutive_failure_count}}</span>
+        </span>
+    </div>
+    <div class="entry url">
+        <span class="entry-key">URL:</span>
+        <span class="entry-value">{{webHook.url}}</span>
+    </div>
+    <div class="desc">
+        {{webHook.description}}
+    </div>
+    <div class="ui bottom right attached label created_by">
+        <span class="detail">创建者： {{webHook.created_by?.name}}</span>
+        创建于： {{webHook.register_time | date:'fullDate'}}
+    </div>
+</div>

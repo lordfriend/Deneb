@@ -2,3 +2,21 @@
   margin: 0;
   height: 100%;
 }
+.bgm-link-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+.bgm-rate-emo {
+    background: transparent url('/assets/img/rate_emo.gif') no-repeat;
+    background-position: -77px 0;
+    height: 37px;
+    width: 30px;
+}
+
+.bgm-emo-47 {
+    background: transparent url('/assets/img/24.gif') no-repeat;
+    height: 21px;
+    width: 21px;
+    display: inline-block;
+    vertical-align: baseline;
+}

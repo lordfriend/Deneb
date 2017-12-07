@@ -17,8 +17,8 @@
             <tbody>
             <tr *ngFor="let row of announceList">
                 <td>{{row.sort_order}}</td>
-                <td>{{row.start_time}}</td>
-                <td>{{row.end_time}}</td>
+                <td>{{row.start_time | date:"mediumDate":"+0000"}}</td>
+                <td>{{row.end_time | date:"mediumDate":"+0000"}}</td>
                 <td>{{row.url}}</td>
                 <td>{{row.image_url}}</td>
                 <td>

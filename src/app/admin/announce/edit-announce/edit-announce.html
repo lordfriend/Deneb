@@ -1,4 +1,4 @@
-<form class="edit-announce-form ui form" [formGroup]="announceForm">
+<form class="edit-announce-form ui form" [formGroup]="announceForm" novalidate [ngClass]="{error: announceForm.invalid}">
     <div class="announce-info">
         <div class="field">
             <label>位置</label>
@@ -10,29 +10,59 @@
                 </div>
             </div>
         </div>
-        <div class="field">
+        <div class="field" [ngClass]="{error: announceFormErrors.sort_order.length > 0}">
             <label>顺序</label>
             <input type="number" formControlName="sort_order" placeholder="当同一个位置有多个公告时使用">
         </div>
-        <div class="field">
+        <div class="ui error message" *ngIf="announceFormErrors.sort_order.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of announceFormErrors.sort_order">{{error}}</li>
+            </ul>
+        </div>
+        <div class="field" [ngClass]="{error: announceFormErrors.url.length > 0}">
             <label>URL</label>
             <input formControlName="url" placeholder="请输入跳转的url">
         </div>
-        <div class="field">
+        <div class="ui error message" *ngIf="announceFormErrors.url.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of announceFormErrors.url">{{error}}</li>
+            </ul>
+        </div>
+        <div class="field" [ngClass]="{error: announceFormErrors.image_url.length > 0}">
             <label>图片URL</label>
             <input formControlName="image_url" placeholder="请输入图片url，推荐https的地址">
         </div>
-        <div class="field">
-            <label>开始时间</label>
-            <input type="number" formControlName="start_time">
+        <div class="ui error message" *ngIf="announceFormErrors.image_url.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of announceFormErrors.image_url">{{error}}</li>
+            </ul>
         </div>
-        <div class="field">
+        <div class="field" [ngClass]="{error: announceFormErrors.start_time.length > 0}">
+            <label>开始时间</label>
+            <dp-date-picker formControlName="start_time" theme="dp-material" config="dpConfig"></dp-date-picker>
+            <!--<input type="number" formControlName="start_time">-->
+        </div>
+        <div class="ui error message" *ngIf="announceFormErrors.start_time.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of announceFormErrors.start_time">{{error}}</li>
+            </ul>
+        </div>
+        <div class="field" [ngClass]="{error: announceFormErrors.end_time.length > 0}">
             <label>结束时间</label>
-            <input type="number" formControlName="end_time">
+            <dp-date-picker formControlName="end_time" theme="dp-material" config="dpConfig"></dp-date-picker>
+            <!--<input type="number" formControlName="end_time">-->
+        </div>
+        <div class="ui error message" *ngIf="announceFormErrors.end_time.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of announceFormErrors.end_time">{{error}}</li>
+            </ul>
+        </div>
+        <div class="ui error message" *ngIf="!!announceForm.errors && !!announceForm.errors['dateRange']">
+            结束时间不得早于开始时间
         </div>
     </div>
     <div class="footer">
         <button class="ui button" (click)="cancel()">取消</button>
-        <button class="ui primary button" (click)="save()">保存</button>
+        <button class="ui primary button" (click)="save()" [disabled]="announceForm.invalid">保存</button>
     </div>
 </form>

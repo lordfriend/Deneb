@@ -41,6 +41,7 @@ import { UserServiceModule } from '../user-service/index';
 import { WebHookService } from './web-hook/web-hook.service';
 import { WebHookCardComponent } from './web-hook/web-hook-card/web-hook-card.component';
 import { EditWebHookComponent } from './web-hook/edit-web-hook/edit-web-hook.component';
+import { DpDatePickerModule } from 'ng2-date-picker';
 
 
 @NgModule({
@@ -91,7 +92,8 @@ import { EditWebHookComponent } from './web-hook/edit-web-hook/edit-web-hook.com
         ConfirmDialogModule,
         DenebCommonPipes,
         ResponsiveImageModule,
-        UserServiceModule
+        UserServiceModule,
+        DpDatePickerModule
     ],
     entryComponents: [
         SearchBangumi,

@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.5.0
+
+### Feature Add
+
+- Web hook Management and web hook setting for end user.
+- auto bind web hook token by request settings/user url with token and web_hook_id parameter
+
+### Bug fix and minor changes
+
+- fix title incorrect in user-management, task management, announce management.
+- replace external link of bangumi.tv link icon to bgm no.47 emotion.
+- add date picker for announcement management dialog.
+
+This update need perform a dependencies upgrade.
+
 ## 2.4.5
 
 - Update Webpack to 3 and update other dev dependencies.

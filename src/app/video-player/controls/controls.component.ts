@@ -9,6 +9,8 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
 import { VideoPlayer } from '../video-player.component';
 import { PlayState } from '../core/state';
 import { CONTROL_FADE_OUT_TIME } from '../core/helpers';
+import { PlayList } from "../core/settings";
+import { PersistStorage } from '../../user-service/persist-storage';
 
 @Component({
     selector: 'video-controls',
@@ -75,7 +77,9 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild('controlWrapper', {read: ViewContainerRef}) controlWrapper: ViewContainerRef;
 
-    constructor(@Self() private _hostRef: ElementRef, private _injector: Injector) {
+    constructor(@Self() private _hostRef: ElementRef,
+                private _injector: Injector,
+                private _persistStorage: PersistStorage) {
     }
 
     onClickVideo(event: Event) {
@@ -110,7 +114,8 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
             .subscribe((state) => {
                 this.pendingPlayState = state;
                 if (state === PlayState.PLAY_END) {
-                    this.hasNextEpisode = !!this._videoPlayer.nextEpisodeId;
+                    let autoPlayNext = this._persistStorage.getItem(PlayList.AUTO_PLAY_NEXT, 'true') === 'true';
+                    this.hasNextEpisode = !!this._videoPlayer.nextEpisodeId && autoPlayNext;
                     this.isPlayEnd = true;
                 } else {
                     this.isPlayEnd = false;

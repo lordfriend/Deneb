@@ -55,6 +55,9 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     pendingPlayState: PlayState;
     reflectState: string = 'inactive';
 
+    isPlayEnd: boolean;
+    hasNextEpisode: boolean;
+
     get reflectIconClass(): string {
         switch(this.pendingPlayState) {
             case PlayState.PLAYING:
@@ -96,12 +99,22 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
         event.stopPropagation();
     }
 
+    onCancelNext() {
+        this.hasNextEpisode = false;
+    }
+
     ngOnInit(): void {
         this._videoPlayer = this._injector.get(VideoPlayer);
         this._videoPlayer.pendingState
             .merge(this._videoPlayer.state)
             .subscribe((state) => {
                 this.pendingPlayState = state;
+                if (state === PlayState.PLAY_END) {
+                    this.hasNextEpisode = !!this._videoPlayer.nextEpisodeId;
+                    this.isPlayEnd = true;
+                } else {
+                    this.isPlayEnd = false;
+                }
             });
     }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Episode, Bangumi } from "../../entity";
 import { HomeService, HomeChild } from "../home.service";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Subject } from 'rxjs/Rx';
 import { Title } from '@angular/platform-browser';
 import { WatchService } from '../watch.service';
@@ -38,6 +38,8 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
     episode: Episode;
 
+    nextEpisode: Episode;
+
     isBangumiReady: boolean;
 
     @ViewChild(VideoPlayer) videoPlayer: VideoPlayer;
@@ -45,7 +47,8 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     constructor(homeService: HomeService,
                 private watchService: WatchService,
                 private titleService: Title,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private router: Router) {
         super(homeService);
     }
 
@@ -70,6 +73,10 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         this.duration = duration;
     }
 
+    onPlayNext(episodeId: string) {
+        this.router.navigateByUrl(`/play/${episodeId}`);
+    }
+
     ngOnInit(): any {
         this.routeParamsSubscription = this.route.params
             .flatMap((params) => {
@@ -86,6 +93,9 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                     this.episode.bangumi = bangumi;
                     let epsTitle = `${this.episode.bangumi.name} ${this.episode.episode_no} - ${SITE_TITLE}`;
                     this.titleService.setTitle(epsTitle);
+                    this.nextEpisode = bangumi.episodes.find(e => {
+                        return e.episode_no - this.episode.episode_no === 1;
+                    });
                 },
                 error => console.log(error)
             );

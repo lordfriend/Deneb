@@ -1,0 +1,112 @@
+:host {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.thumbnail-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.fade-layer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.eps-container {
+  position: relative;
+  min-width: 5em;
+  min-height: 1em;
+  padding-bottom: 1.5rem;
+  .tip-text {
+    position: absolute;
+    top: -2em;
+    width: 100%;
+    text-align: center;
+  }
+  .next-eps-name-cn {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
+  }
+  .next-eps-name {
+    text-align: center;
+    font-size: 0.9rem;
+  }
+}
+
+.next-eps-button {
+  width: 5em;
+  height: 5em;
+  //border-radius: 2.5em;
+  //background: #000000;
+  position: relative;
+  cursor: pointer;
+  > .play.icon {
+    font-size: 1.5rem;
+    position: absolute;
+    top: 1.25em;
+    left: 1.25em;
+  }
+}
+
+.next-count-down {
+  position: absolute;
+  top: -0.5em;
+  left: -0.5em;
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+
+  circle {
+    stroke-width: 0.5em;
+    fill: transparent;
+    //transform: rotate(0.1deg); // to fix firefox
+  }
+
+  .progress-background {
+    stroke: #fff;
+  }
+  .progress-cover {
+    stroke: #000;
+    stroke-width: 0.6em;
+  }
+  .progress-center {
+    fill: #000;
+  }
+}
+
+.cancel-next-eps-button {
+  display: block;
+  margin-top: 1.5rem;
+  width: 5rem;
+  height: 2rem;
+  font-size: 1rem;
+  color: #fff;
+  line-height: 2rem;
+  text-align: center;
+  border-radius: 0.75rem;
+  background-color: #000;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    background-color: lighten(#000, 10%);
+  }
+}

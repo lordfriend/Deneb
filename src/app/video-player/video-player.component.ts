@@ -83,6 +83,18 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     @Input()
     episodeNo: number;
 
+    @Input()
+    nextEpisodeId: string;
+
+    @Input()
+    nextEpisodeName: string;
+
+    @Input()
+    nextEpisodeNameCN: string;
+
+    @Input()
+    nextEpisodeThumbnail: string;
+
     @Output()
     onProgress = new EventEmitter<number>();
 
@@ -91,6 +103,13 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     @Output()
     lagged = new EventEmitter<boolean>();
+
+    /**
+     * emit next episode id
+     * @type {EventEmitter<string>}
+     */
+    @Output()
+    onPlayNextEpisode = new EventEmitter<string>();
 
     fullscreenAPI: FullScreenAPI;
     shortcuts: VideoPlayerShortcuts;
@@ -312,6 +331,10 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                     this.requestFocus();
                 })
         );
+    }
+
+    playNextEpisode() {
+        this.onPlayNextEpisode.emit(this.nextEpisodeId);
     }
 
     ngOnInit(): void {

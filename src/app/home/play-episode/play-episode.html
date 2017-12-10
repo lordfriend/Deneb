@@ -8,8 +8,13 @@
                   [thumbnail]="episode.thumbnail"
                   [bangumiName]="episode.bangumi.name_cn || episode.bangumi.name"
                   [episodeNo]="episode.episode_no"
+                  [nextEpisodeId]="nextEpisode?.id"
+                  [nextEpisodeName]="nextEpisode?.name"
+                  [nextEpisodeNameCN]="nextEpisode?.name_cn"
+                  [nextEpisodeThumbnail]="nextEpisode?.thumbnail_image?.url"
                   (onProgress)="onWatchPositionUpdate($event)"
-                  (onDurationUpdate)="onDurationUpdate($event)"></video-player>
+                  (onDurationUpdate)="onDurationUpdate($event)"
+                  (onPlayNextEpisode)="onPlayNext($event)"></video-player>
 </div>
 <div class="ui container episode-info-container" *ngIf="episode">
 <h3 class=episode-title>
@@ -36,7 +41,7 @@
             </a>
             <a class="external-link" [href]="'https://bgm.tv/subject/' + episode.bangumi.bgm_id" target="_blank"
                title="在bgm.tv页面查看">
-                <i class="external icon"></i>
+                <i class="bgm-emo-47 bgm-link-icon"></i>
             </a>
         </h2>
         <h4 class="bangumi-title name">{{episode.bangumi.name}}</h4>

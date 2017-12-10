@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { VideoTouchControls } from './touch-controls/touch-controls.component';
 import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
 import { VideoPlayerHelpButton } from "./controls/help-button/help-button.component";
+import { VideoNextEpisodeOverlay } from './next-episode-overlay/next-episode-overlay.component';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import { VideoPlayerHelpButton } from "./controls/help-button/help-button.compon
         VideoPlayerConfigButton,
         VideoPlayerConfigDialog,
         VideoPlayerHelpDialog,
-        VideoPlayerHelpButton
+        VideoPlayerHelpButton,
+        VideoNextEpisodeOverlay
     ],
     providers: [
         VideoCapture

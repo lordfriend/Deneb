@@ -103,8 +103,8 @@ export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private tapHandler(event: HammerInput) {
-        let targetEL = event.target;
-        if (this.showControls && !targetEL.classList.contains('interact-element') && !closest(targetEL, '.interact-element')) {
+        let targetEl = event.target;
+        if (this.showControls && !targetEl.classList.contains('interact-element') && !closest(targetEl, '.interact-element')) {
             this.showControls = false;
         } else {
             this.onMotion();

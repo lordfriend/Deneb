@@ -21,7 +21,6 @@ import { VideoControls } from './controls/controls.component';
 import { VideoCapture } from './core/video-capture.service';
 import { VideoTouchControls } from './touch-controls/touch-controls.component';
 import { VideoPlayerShortcuts } from './core/shortcuts';
-import { current } from 'codelyzer/util/syntaxKind';
 import { UIDialog } from 'deneb-ui';
 import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
 import { Subject } from 'rxjs/Subject';
@@ -253,10 +252,13 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     seek(playProgressRatio) {
-        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        const mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         // ended state must be retrieved before set currentTime.
         let isPlayBackEnded = mediaElement.ended;
-        mediaElement.currentTime = Math.round(playProgressRatio * mediaElement.duration);
+        let newTime = Math.round(playProgressRatio * mediaElement.duration);
+        // set currentTimeSubject manually.
+        this._currentTimeSubject.next(newTime);
+        mediaElement.currentTime = newTime;
         if (isPlayBackEnded) {
             this.play();
         }

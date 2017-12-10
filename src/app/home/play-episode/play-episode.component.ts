@@ -94,7 +94,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                     let epsTitle = `${this.episode.bangumi.name} ${this.episode.episode_no} - ${SITE_TITLE}`;
                     this.titleService.setTitle(epsTitle);
                     this.nextEpisode = bangumi.episodes.find(e => {
-                        return e.episode_no - this.episode.episode_no === 1;
+                        return e.episode_no - this.episode.episode_no === 1 && e.status === Episode.STATUS_DOWNLOADED;
                     });
                 },
                 error => console.log(error)

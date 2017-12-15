@@ -216,8 +216,8 @@ export class BangumiDetail implements OnInit, OnDestroy {
     deleteEpisode(episode_id: string) {
         this._subscription.add(
             this._adminService.deleteEpisode(episode_id)
-                .flatMap(({delete_delay}) => {
-                    this._toastRef.show(`将在${delete_delay}分钟后删除，你可以在任务管理中取消删除`);
+                .flatMap(() => {
+                    this._toastRef.show(`删除成功`);
                     return this._adminService.getBangumi(this.bangumi.id);
                 })
                 .subscribe(

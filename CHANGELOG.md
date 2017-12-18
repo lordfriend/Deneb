@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.6.1
+
+- change the episode delete for API changes.
+- Add Christmas tree.
+
+## 2.6.0
+
+- Fix Scrub bar retract bug when seek by keypress
+
+- Add Auto play next episode function
+
 ## 2.5.0
 
 ### Feature Add

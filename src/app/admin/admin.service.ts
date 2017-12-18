@@ -104,9 +104,9 @@ export class AdminService extends BaseService {
             .catch(this.handleError);
     }
 
-    deleteEpisode(episode_id: string): Observable<{delete_delay: number}> {
+    deleteEpisode(episode_id: string): Observable<any> {
         return this.http.delete(`${this.baseUrl}/episode/${episode_id}`)
-            .map(res => res.json().data as {delete_delay: number})
+            .map(res => res.json())
             .catch(this.handleError)
     }
 

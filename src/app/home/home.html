@@ -5,6 +5,9 @@
     <a class="brand" [routerLink]="['/']">
         <h2>{{siteTitle}}</h2>
     </a>
+    <div class="christmas-tree">
+        <img src="/assets/img/christmas-tree.svg" alt="">
+    </div>
     <div class="ui static-search small action input">
         <input type="text" placeholder="Search..." #staticSearch (keyup.enter)="searchBangumi(staticSearch.value)">
         <button class="ui basic icon button" (click)="searchBangumi(staticSearch.value)">

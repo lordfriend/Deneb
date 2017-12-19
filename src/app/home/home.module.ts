@@ -27,6 +27,7 @@ import { BangumiListService } from './bangumi-list/bangumi-list.service';
 import { UserCenterService } from './user-center/user-center.service';
 import { ConfirmDialogModule } from '../confirm-dialog/index';
 import { WebHookComponent } from './web-hook/web-hook.component';
+import { PreviewVideoComponent } from './preview-video/preview-video.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { WebHookComponent } from './web-hook/web-hook.component';
         UserCenter,
         MyBangumiComponent,
         BottomFloatBannerComponent,
-        WebHookComponent
+        WebHookComponent,
+        PreviewVideoComponent
     ],
     providers: [
         HomeService,

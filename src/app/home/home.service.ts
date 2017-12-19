@@ -25,6 +25,7 @@ export class HomeService extends BaseService {
             (event) => {
                 if (event instanceof NavigationEnd) {
                     let urlSegements = this.parseUrl(event.url);
+                    console.log(urlSegements);
                     if (urlSegements.paths[0] === '') {
                         this.childRouteChanges.emit('Default');
                     } else if (urlSegements.paths[0] === 'play') {
@@ -33,6 +34,8 @@ export class HomeService extends BaseService {
                         this.childRouteChanges.emit('Bangumi');
                     } else if (urlSegements.paths.length === 2 && urlSegements.paths[0] === 'bangumi') {
                         this.childRouteChanges.emit('BangumiDetail');
+                    } else if (urlSegements.paths[0] === 'pv') {
+                        this.childRouteChanges.emit('PV');
                     }
                 }
             }
@@ -40,7 +43,7 @@ export class HomeService extends BaseService {
     }
 
     private parseUrl(url: string) {
-        let [paths, queryStrings] = url.split(';');
+        let [paths, queryStrings] = url.split(/[;?]/);
         let pathSegement = paths.split('/');
         return {
             paths: pathSegement.slice(1),

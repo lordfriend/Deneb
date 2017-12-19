@@ -61,7 +61,7 @@ export class Home implements OnInit, OnDestroy {
             this.sidebarActive = 'inactive';
         }
         _homeService.childRouteChanges.subscribe((routeName) => {
-            if (routeName === 'Play') {
+            if (routeName === 'Play' || routeName === 'PV') {
                 this.sidebarActive = 'inactive';
             } else if (!this.sidebarOverlap) {
                 this.sidebarActive = 'active';

@@ -1,5 +1,9 @@
 # Changelog
 
+# 2.6.3
+
+fix some bug in pv component
+
 ## 2.6.2
 
 Add a PV component under home module. this component is designed for make bangumi PV for a new season. admin could upload pv video and

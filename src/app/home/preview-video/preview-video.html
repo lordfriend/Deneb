@@ -10,8 +10,12 @@
                 <img [src]="currentPV.image" alt="">
             </div>
             <div class="info">
-                <h2 class="title" *ngIf="!!currentPV.name_cn"><a [href]="'https://bgm.tv/subject/' + currentPV.bgm_id" target="_blank">{{currentPV.name_cn}}</a></h2>
-                <h2 class="title" *ngIf="!currentPV.name_cn">{{currentPV.name}}</h2>
+                <h2 class="title" *ngIf="!!currentPV.name_cn">
+                    <a [href]="'https://bgm.tv/subject/' + currentPV.bgm_id" target="_blank">{{currentPV.name_cn}}</a>
+                </h2>
+                <h2 class="title" *ngIf="!currentPV.name_cn">
+                    <a [href]="'https://bgm.tv/subject/' + currentPV.bgm_id" target="_blank">{{currentPV.name}}</a>
+                </h2>
                 <h3 class="sub-title" *ngIf="!!currentPV.name_cn">{{currentPV.name}}</h3>
                 <div class="summary" [innerHTML]="currentPV.summary" *ngIf="!!currentPV.summary">
                 </div>

@@ -1,0 +1,95 @@
+.theater-backdrop {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  background-color: #000;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.pv-info-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  height: 440px;
+  position: relative;
+
+  @media screen and (max-width: 656px) {
+    height: 240px;
+  }
+
+  @media screen and (min-width: 1320px) and (min-height: 870px) {
+    height: 700px;
+  }
+
+  .current-pv {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    //flex-wrap: wrap;
+    box-sizing: border-box;
+    flex: 0 1 auto;
+    position: absolute;
+    outline: none;
+    width: 854px;
+    padding: 1.5rem 2rem;
+    margin-top: 1rem;
+    background: #fff;
+    border-radius: 0.5rem;
+    -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+
+    @media screen and (max-width: 656px) {
+      width: 426px;
+    }
+
+    @media screen and (min-width: 1320px) and (min-height: 870px) {
+      width: 1280px;
+    }
+
+    &.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    > .bgm-image {
+      width: 25%;
+      flex: 1 1 auto;
+      display: inline-block;
+      > img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    }
+    > .info {
+      width: 75%;
+      flex: 1 1 auto;
+      display: inline-block;
+      padding: 0 1rem 0 2.5rem;
+      > .title {
+        margin-bottom: 1rem;
+      }
+      > .sub-title {
+        margin-top: 0;
+        color: #4c4c4c;
+      }
+      > .summary {
+        margin-bottom: 2rem;
+      }
+      > .air-date {
+        font-weight: 700;
+      }
+    }
+  }
+}

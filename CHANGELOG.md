@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.2
+
+Add a PV component under home module. this component is designed for make bangumi PV for a new season. admin could upload pv video and
+attach a manifest.json file alongside the video. for convenience video should be placed in albireo data folder with a special directory `preview-video`. so the play can access
+the video from `/video/preview-video/{dir}/{file_name}.mp4`. you must give a parameter `p` which is `{dir}/{file_name}`, and if necessary, a parameter
+d which is the static file domain.
+
 ## 2.6.1
 
 - change the episode delete for API changes.

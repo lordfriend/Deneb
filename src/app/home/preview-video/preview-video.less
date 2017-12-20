@@ -44,14 +44,6 @@
     -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
 
-    @media screen and (max-width: 656px) {
-      width: 426px;
-    }
-
-    @media screen and (min-width: 1320px) and (min-height: 870px) {
-      width: 1280px;
-    }
-
     &.fullscreen {
       position: fixed;
       top: 0;
@@ -63,8 +55,8 @@
     }
 
     > .bgm-image {
-      width: 25%;
-      flex: 1 1 auto;
+      width: 150px;
+      flex: 0 0 150px;
       display: inline-block;
       > img {
         display: block;
@@ -73,7 +65,6 @@
       }
     }
     > .info {
-      width: 75%;
       flex: 1 1 auto;
       display: inline-block;
       padding: 0 1rem 0 2.5rem;
@@ -91,5 +82,21 @@
         font-weight: 700;
       }
     }
+
+    @media screen and (max-width: 656px) {
+      width: 100%;
+      > .bgm-image {
+        width: 25%;
+        flex: 1 1 auto;
+      }
+      > .info {
+        width: 75%;
+      }
+    }
+
+    @media screen and (min-width: 1320px) and (min-height: 870px) {
+      width: 1280px;
+    }
+
   }
 }

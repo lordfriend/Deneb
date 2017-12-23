@@ -25,7 +25,6 @@ export class HomeService extends BaseService {
             (event) => {
                 if (event instanceof NavigationEnd) {
                     let urlSegements = this.parseUrl(event.url);
-                    console.log(urlSegements);
                     if (urlSegements.paths[0] === '') {
                         this.childRouteChanges.emit('Default');
                     } else if (urlSegements.paths[0] === 'play') {

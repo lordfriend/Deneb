@@ -1,6 +1,10 @@
 # Changelog
 
-# 2.6.3
+## 2.6.4
+
+Fix #105 all bangumi.moe request goes through proxy.
+
+## 2.6.3
 
 fix some bug in pv component
 

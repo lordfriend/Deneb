@@ -19,23 +19,19 @@ export class BangumiMoeService {
     }
 
     popoluarBangumTags(): Observable<Tag[]> {
-        return this._http.get(`${this._baseUrl}/tag/popbangumi`)
-            .map(res => res.json() as Tag[]);
+        return this.userProxy<Tag[]>(`${this._baseUrl}/tag/popbangumi`, 'GET');
     }
 
     commonTags(): Observable<Tag[]> {
-        return this._http.get(`${this._baseUrl}/tag/common`)
-            .map(res => res.json() as Tag[]);
+        return this.userProxy(`${this._baseUrl}/tag/common`, 'GET');
     }
 
     popularTeamTags(): Observable<Tag[]> {
-        return this._http.get(`${this._baseUrl}/tag/team`)
-            .map(res => res.json() as Tag[]);
+        return this.userProxy(`${this._baseUrl}/tag/team`, 'GET');
     }
 
     miscTags(): Observable<Tag[]> {
-        return this._http.get(`${this._baseUrl}/tag/misc`)
-            .map(res => res.json() as Tag[]);
+        return this.userProxy(`${this._baseUrl}/tag/misc`, 'GET');
     }
 
     searchTorrent(tag_ids: string[], page: number): Observable<{count: number, page_count: number, torrents: Torrent[]}> {
@@ -47,19 +43,20 @@ export class BangumiMoeService {
     }
 
     searchTag(name: string): Observable<{success: boolean, found: boolean, tag: Tag[]}> {
-        return this.userProxy<{success: boolean, found: boolean, tag: Tag[]}>(`${this._baseUrl}/tag/search`, {
+        return this.userProxy<{success: boolean, found: boolean, tag: Tag[]}>(`${this._baseUrl}/tag/search`, 'POST', {
             name: name,
             keywords: true,
             multi: true
         });
     }
 
-    private userProxy<T>(url: string, payload: any): Observable<T> {
+    private userProxy<T>(url: string, method: string, payload?: any): Observable<T> {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({
             url: url,
-            payload: payload
+            payload: payload,
+            method: method
         });
         return this._http.post('/api/feed/bangumi-moe', body, options)
             .map(res => res.json() as T);

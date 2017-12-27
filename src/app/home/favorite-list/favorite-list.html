@@ -34,7 +34,7 @@
             </infinite-list>
         </ui-timeline-meter>
     </div>
-    <div class="no-result-container" *ngIf="!isLoading && (!favorite || favoriteList.length === 0)">
+    <div class="no-result-container" *ngIf="!isLoading && (!favoriteList || favoriteList.length === 0)">
         <div class="no-result-tips"><i class="warning circle icon"></i>还没有内容</div>
     </div>
     <div class="loading-container" *ngIf="isLoading">

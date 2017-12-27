@@ -35,6 +35,8 @@ export class HomeService extends BaseService {
                         this.childRouteChanges.emit('BangumiDetail');
                     } else if (urlSegements.paths[0] === 'pv') {
                         this.childRouteChanges.emit('PV');
+                    } else if (urlSegements.paths[0] === 'favorite') {
+                        this.childRouteChanges.emit('Favorite');
                     }
                 }
             }

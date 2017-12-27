@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.0
+
+- Add Favorite page
+- remove favorite status selector from sidebar.
+- rename my bangumi section to watching section.
+
 ## 2.6.4
 
 Fix #105 all bangumi.moe request goes through proxy.

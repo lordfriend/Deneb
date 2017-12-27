@@ -1,0 +1,43 @@
+<div class="favorite-list-container">
+    <div class="filter-container" (click)="onClickFilterContainer()">
+        <div class="ui container">
+            <div class="ui secondary pointing menu">
+                <a class="item" [ngClass]="{active: favoriteStatus === 1}" (click)="onStatusChange(1)">想看</a>
+                <a class="item" [ngClass]="{active: favoriteStatus === 3}" (click)="onStatusChange(3)">在看</a>
+                <a class="item" [ngClass]="{active: favoriteStatus === 2}" (click)="onStatusChange(2)">看过</a>
+                <a class="item" [ngClass]="{active: favoriteStatus === 4}" (click)="onStatusChange(4)">搁置</a>
+                <a class="item" [ngClass]="{active: favoriteStatus === 5}" (click)="onStatusChange(5)">抛弃</a>
+                <div class="right menu">
+                    <a class="ui item sort-button anchor-button" (click)="onOrderChange($event)"
+                       [title]="sort === 'desc' ? '降序': '升序'">
+                        <i class="sort content icon"
+                           [ngClass]="{ascending: sort === 'asc', descending: sort === 'desc'}"></i>
+                    </a>
+                    <div class="ui item inline dropdown" uiDropdown="click" [stopPropagation]="true">
+                        <div class="text">{{typeMenuLabel[type]}}</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" (click)="onTypeChange(-1)">全部</div>
+                            <div class="item" (click)="onTypeChange(2)">动画</div>
+                            <div class="item" (click)="onTypeChange(6)">电视剧</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="timeline-container" *ngIf="!isLoading && !!favoriteList && favoriteList.length > 0">
+        <ui-timeline-meter [rowHeight]="cardHeight" [timestampList]="timestampList">
+            <infinite-list [rowHeight]="cardHeight" [newScrollPosition]="lastScrollPosition"
+                           (scrollPosition)="onScrollPositionChange($event)">
+                <bangumi-card *infiniteFor="let favorite of favoriteList" [bangumi]="favorite"></bangumi-card>
+            </infinite-list>
+        </ui-timeline-meter>
+    </div>
+    <div class="no-result-container" *ngIf="!isLoading && (!favoriteList || favoriteList.length === 0)">
+        <div class="no-result-tips"><i class="warning circle icon"></i>还没有内容</div>
+    </div>
+    <div class="loading-container" *ngIf="isLoading">
+        <div class="ui inverted massive text active loader">Loading...</div>
+    </div>
+</div>

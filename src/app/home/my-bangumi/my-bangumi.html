@@ -1,16 +1,5 @@
 <div class="header">
-    <div class="status-picker ui left top right pointing dropdown" uiDropdown="click" [stopPropagation]="true">
-        <div class="text">{{favoriteLabel[currentStatus]}}</div>
-        <i class="dropdown icon"></i>
-        <div class="menu">
-            <div class="item" (click)="changeStatus(1)">想看</div>
-            <div class="item" (click)="changeStatus(2)">看过</div>
-            <div class="item" (click)="changeStatus(3)">在看</div>
-            <div class="item" (click)="changeStatus(4)">搁置</div>
-            <div class="item" (click)="changeStatus(5)">抛弃</div>
-        </div>
-    </div>
-    我的收藏
+    我在看的番組
 </div>
 <div class="menu favorite-list" *ngIf="myBangumiList && myBangumiList.length > 0">
     <a class="item favorite-item" *ngFor="let bangumi of myBangumiList" [routerLink]="['/bangumi', bangumi.id]">

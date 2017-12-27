@@ -5,9 +5,9 @@
     <a class="brand" [routerLink]="['/']">
         <h2>{{siteTitle}}</h2>
     </a>
-    <div class="christmas-tree">
-        <img src="/assets/img/christmas-tree.svg" alt="">
-    </div>
+    <!--<div class="christmas-tree">-->
+        <!--<img src="/assets/img/christmas-tree.svg" alt="">-->
+    <!--</div>-->
     <div class="ui static-search small action input">
         <input type="text" placeholder="Search..." #staticSearch (keyup.enter)="searchBangumi(staticSearch.value)">
         <button class="ui basic icon button" (click)="searchBangumi(staticSearch.value)">
@@ -45,6 +45,7 @@
 <div class="ui sidebar visible ui vertical menu home-sidebar" (click)="onClickSidebar($event)" [@sidebarActive]="sidebarActive">
     <a class="item" [routerLink]="['/']">首页</a>
     <a class="item" [routerLink]="['/bangumi']">所有番组</a>
+    <a class="item" [routerLink]="['/favorite']">我的收藏</a>
     <a class="item" [routerLink]="['/admin']" *ngIf="user && user.level >= 2">Management</a>
     <div class="item">
         <my-bangumi></my-bangumi>
@@ -54,7 +55,8 @@
     <router-outlet></router-outlet>
 </main>
 
-<footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive === 'active' ? ' sidebar-active': '')" *ngIf="currentRouteName !== 'Bangumi'">
+<footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive === 'active' ? ' sidebar-active': '')"
+        *ngIf="currentRouteName !== 'Bangumi' && currentRouteName !== 'Favorite'">
     <div class="copyright-content">&copy;2016 - 2017 Nyasoft, All rights reserved.</div>
     <div class="credits">Powered By <a target="_blank" href="https://github.com/lordfriend/Albireo">Albireo</a></div>
     <div class="ui horizontal bulleted link list">

@@ -1,0 +1,86 @@
+:host {
+  position: fixed;
+  top: 3.5rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+:host-context(.home-content.sidebar-active) {
+  position: fixed;
+  top: 3.5rem;
+  left: 15rem;
+  right: 0;
+  bottom: 0;
+  @media (max-width: 1330px) {
+    left: 0;
+  }
+}
+
+.anchor-button {
+  cursor: pointer;
+  color: #333333;
+  &:hover,
+  &:focus {
+    color: #4f7ba4
+  }
+}
+
+.favorite-list-container {
+  padding-bottom: 1rem;
+  padding-top: 4rem;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  .filter-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 1rem;
+    padding: 1rem 4rem 1rem 0;
+    text-align: right;
+    .ui.dropdown {
+      cursor: pointer;
+      > .text {
+        font-weight: normal;
+      }
+      &:hover,
+      &:focus {
+        color: #4f7ba4
+      }
+    }
+  }
+  .timeline-container {
+    width: 100%;
+    height: 100%;
+  }
+}
+.no-result-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  .no-result-tips {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 8em;
+    height: 2em;
+    font-size: 4rem;
+    color: #9f9f9f;
+  }
+}
+.loading-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: #f0f0f0;
+  .loader {
+    color: #9f9f9f;
+  }
+}

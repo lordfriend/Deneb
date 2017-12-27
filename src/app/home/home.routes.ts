@@ -8,6 +8,7 @@ import { Authentication } from '../user-service/authentication.service';
 import { UserCenter } from './user-center/user-center.component';
 import { WebHookComponent } from './web-hook/web-hook.component';
 import { PreviewVideoComponent } from './preview-video/preview-video.component';
+import { FavoriteListComponent } from './favorite-list/favorite-list.component';
 export const homeRoutes: Routes = [
     {
         path: '',
@@ -48,6 +49,10 @@ export const homeRoutes: Routes = [
             {
                 path: 'pv',
                 component: PreviewVideoComponent
+            },
+            {
+                path: 'favorite',
+                component: FavoriteListComponent
             }
         ]
     },

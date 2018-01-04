@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.7.2
+
+- remove new-year icon
+- fix my-bangumi list label incorrectly positioned in Firefox
+
 ## 2.7.1
 
 - Add new year logo

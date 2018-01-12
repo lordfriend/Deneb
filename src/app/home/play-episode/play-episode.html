@@ -16,7 +16,7 @@
                   (onDurationUpdate)="onDurationUpdate($event)"
                   (onPlayNextEpisode)="onPlayNext($event)"></video-player>
 </div>
-<div class="ui container video-file-picker-container" *ngIf="!!episode">
+<div class="ui container video-file-picker-container" *ngIf="!!episode && episode.video_files.length > 1">
     <div class="video-file-picker dropdown-picker">
         <span>选择视频源：</span>
         <div class="ui inline dropdown" uiDropdown="click" [stopPropagation]="true">

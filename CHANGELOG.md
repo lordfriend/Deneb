@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.1
+
+hide video file picker when only one video file exists.
+
 ## 2.8.0
 
 Add multiple video file support, video_file dialog in admin will show all the editable field.

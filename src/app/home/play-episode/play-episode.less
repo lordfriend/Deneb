@@ -10,6 +10,31 @@
   background-color: #000;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+
+.video-file-picker-container {
+  position: relative;
+  .video-file-picker {
+    padding: 0.5em 0;
+  }
+  .dropdown-picker {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .label-picker {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .dropdown-picker {
+      display: none;
+    }
+    .label-picker {
+      display: block;
+    }
+  }
+}
+
 .episode-info-container {
   margin-top: 2rem;
 

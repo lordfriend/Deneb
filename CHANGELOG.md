@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.0
+
+Add multiple video file support, video_file dialog in admin will show all the editable field.
+But only label and download_url should be edit when adding a new video file. To enable multiple video file playback in
+PlayEpisode component, a dropdown picker (or label list when in small screen) is added. note that the backend must be upgraded to 2.7.8 and above to filter
+out unfinished video_file to avoid exception.
+
 ## 2.7.2
 
 - remove new-year icon

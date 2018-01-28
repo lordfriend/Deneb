@@ -80,7 +80,8 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "^4.0.1",
-    "@angular/language-service": "^4.0.2",
+    "@angular/language-service": "^5.2.1",
+    "@types/chrome": "^0.0.58",
     "@types/hammerjs": "^2.0.33",
     "@types/jasmine": "^2.2.34",
     "@types/node": "^7.0.0",

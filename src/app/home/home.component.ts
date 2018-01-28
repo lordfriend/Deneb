@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { HomeService } from './home.service';
 import { Observable, Subscription } from "rxjs/Rx";
@@ -10,6 +10,7 @@ import { BaseError } from '../../helpers/error/BaseError';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { AlertDialog } from '../alert-dialog/alert-dialog.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ChromeExtensionService, INITIAL_STATE_VALUE } from '../browser-extension/chrome-extension.service';
 
 const BREAK_POINT = 1330;
 
@@ -49,9 +50,20 @@ export class Home implements OnInit, OnDestroy {
 
     sidebarToggle = new EventEmitter<string>();
 
+    isBangumiEnabled: boolean;
+
+    bgmAccountInfo: {
+        nickname: string,
+        avatar: {large: string, medium: string, small: string},
+        username: string,
+        id: string,
+        url: string
+    };
+
     constructor(titleService: Title,
                 toast: UIToast,
                 dialogService: UIDialog,
+                private _chromeExtensionService: ChromeExtensionService,
                 private _homeService: HomeService,
                 private _userService: UserService,
                 private _router: Router) {
@@ -159,6 +171,27 @@ export class Home implements OnInit, OnDestroy {
                     this.checkOverlapMode();
                 }
             ));
+        this._chromeExtensionService.isEnabled
+            .then((isEnabled) => {
+                this.isBangumiEnabled = isEnabled;
+                if (isEnabled) {
+                    this._subscription.add(
+                        this._chromeExtensionService.authInfo
+                            .subscribe(authInfo => {
+                                if (authInfo !== INITIAL_STATE_VALUE && authInfo !== null) {
+                                    this.bgmAccountInfo = {
+                                        username: authInfo.username,
+                                        nickname: authInfo.nickname,
+                                        avatar: authInfo.avatar,
+                                        id: authInfo.id,
+                                        url: authInfo.url
+                                    };
+                                } else if (authInfo === null) {
+                                    this.bgmAccountInfo = null;
+                                }
+                            }));
+                }
+            });
     }
 
 

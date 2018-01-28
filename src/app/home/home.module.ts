@@ -14,7 +14,7 @@ import { homeRoutes } from './home.routes';
 import { WatchService } from './watch.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BangumiCard } from './bangumi-card/bangumi-card.component';
-import { DenebCommonPipes } from '../pipes/index';
+import { DenebCommonPipes } from '../pipes';
 import { ImageLoadingStrategy } from './bangumi-card/image-loading-strategy.service';
 import { UserCenter } from './user-center/user-center.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -25,10 +25,18 @@ import { MyBangumiComponent } from './my-bangumi/my-bangumi.component';
 import { BottomFloatBannerComponent } from './bottom-float-banner/bottom-float-banner.component';
 import { BangumiListService } from './bangumi-list/bangumi-list.service';
 import { UserCenterService } from './user-center/user-center.service';
-import { ConfirmDialogModule } from '../confirm-dialog/index';
+import { ConfirmDialogModule } from '../confirm-dialog';
 import { WebHookComponent } from './web-hook/web-hook.component';
 import { PreviewVideoComponent } from './preview-video/preview-video.component';
 import { FavoriteListComponent } from './favorite-list/favorite-list.component';
+import { RatingComponent } from './rating/rating.component';
+import { BrowserExtensionModule } from '../browser-extension/browser-extension.module';
+import { MyReviewComponent } from './rating/my-review/my-review.component';
+import { EditReviewDialogComponent } from './rating/edit-review-dialog/edit-review-dialog.component';
+import { CommentComponent } from './play-episode/comment/comment.component';
+import { CommentFormComponent } from './play-episode/comment/comment-form/comment-form.component';
+import { EditCommentComponent } from './play-episode/comment/edit-comment/edit-comment.component';
+import { BangumiAccountBindingComponent } from './bangumi-account-binding/bangumi-account-binding.component';
 
 
 @NgModule({
@@ -45,7 +53,14 @@ import { FavoriteListComponent } from './favorite-list/favorite-list.component';
         BottomFloatBannerComponent,
         WebHookComponent,
         PreviewVideoComponent,
-        FavoriteListComponent
+        FavoriteListComponent,
+        RatingComponent,
+        MyReviewComponent,
+        EditReviewDialogComponent,
+        CommentComponent,
+        CommentFormComponent,
+        EditCommentComponent,
+        BangumiAccountBindingComponent
     ],
     providers: [
         HomeService,
@@ -65,7 +80,11 @@ import { FavoriteListComponent } from './favorite-list/favorite-list.component';
         AlertDialogModule,
         ResponsiveImageModule,
         VideoPlayerModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        BrowserExtensionModule
+    ],
+    entryComponents: [
+        EditReviewDialogComponent
     ]
 })
 export class HomeModule {

@@ -36,6 +36,7 @@ declare module '*';
 declare var ENV: string;
 declare var HMR: boolean;
 declare var SITE_TITLE: string;
+declare var CHROME_EXTENSION_ID: string;
 
 declare var System: SystemJS;
 

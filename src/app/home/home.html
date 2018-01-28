@@ -20,11 +20,25 @@
     <div class="right-area">
         <div class="ui inline dropdown user-action" uiDropdown="click">
             <div class="text">
+                <img *ngIf="!!bgmAccountInfo" [src]="bgmAccountInfo.avatar.small" class="bangumi-avatar" alt="bangumi-avatar">
                 {{user?.name}}
+                <span *ngIf="!!bgmAccountInfo" class="bangumi-nickname">({{bgmAccountInfo.nickname}})</span>
+                <a *ngIf="!bgmAccountInfo" class="unauth-bangumi-tip">(未关联Bangumi)</a>
             </div>
             <i class="dropdown icon"></i>
             <div class="menu">
+                <div *ngIf="!!bgmAccountInfo" class="header bgm-account-info">
+                    <img *ngIf="!!bgmAccountInfo" [src]="bgmAccountInfo.avatar.medium" class="bangumi-avatar" alt="bangumi-avatar">
+                    <div class="nickname">{{bgmAccountInfo.nickname}}</div>
+                    <div class="username">@{{bgmAccountInfo.username}}</div>
+                    <div class="actions">
+                        <a class="ui tiny basic button" routerLink="/settings/bangumi">管理Bangumi关联</a>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <a *ngIf="!bgmAccountInfo" class="item" routerLink="/settings/bangumi">关联Bangumi</a>
                 <a class="item" routerLink="/settings/user">用户设置</a>
+                <a class="item" routerLink="/settings/web-hook">Web Hook</a>
                 <a class="item" (click)="logout()">登出</a>
             </div>
         </div>

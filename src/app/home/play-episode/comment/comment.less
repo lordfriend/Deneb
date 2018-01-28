@@ -1,0 +1,90 @@
+bangumi-comment {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  .comment-container.ui.comments {
+    max-width: 100%;
+    .ui.dividing.header {
+      padding-bottom: 0.8rem;
+    }
+    .fake-comment-form {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      margin: 1.5rem 0 2rem 0;
+      > .avatar {
+        width: 2.5em;
+        height: 2.5em;
+        border-radius: 0.25rem;
+        margin-right: 1rem;
+        > img {
+          width: 100%;
+          height: 100%;
+          border-radius: 0.25rem;
+        }
+      }
+      > .fake-textarea {
+        flex: 1 1 auto;
+        height: 4em;
+        font-size: 1em;
+        padding: 0.78571429em 1em;
+        border: 1px solid rgba(34, 36, 38, 0.15);
+        color: rgba(166, 166, 166, 0.87);
+        border-radius: 0.28571429rem;
+        background: #ffffff;
+        line-height: 1.2857;
+        cursor: pointer;
+      }
+    }
+
+    .comment-post {
+      .content {
+        .quote {
+          padding: 1rem 0.5rem;
+          > q {
+            > strong {
+              font-weight: 600;
+              color: #4c4c4c;
+            }
+            font-size: 1rem;
+            color: #555555;
+            &:before,
+            &:after {
+              color: #a6a6a6;
+              display: inline-block;
+              opacity: 1;
+              margin: 0;
+              width: 1em;
+              height: 1em;
+              font-family: 'Icons';
+              font-style: normal;
+              font-weight: normal;
+              text-decoration: inherit;
+              text-align: center;
+
+              speak: none;
+              font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+              -webkit-font-smoothing: antialiased;
+              backface-visibility: hidden;
+            }
+            &:before {
+              content: "\f10d";
+              margin-right: 0.5em;
+            }
+            &:after {
+              content: "\f10e";
+              margin-left: 0.5em;
+            }
+          }
+        }
+        .text {
+          img {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

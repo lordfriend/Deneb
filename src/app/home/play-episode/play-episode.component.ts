@@ -75,11 +75,11 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
     onWatchPositionUpdate(position: number) {
         this.current_position = position;
+        this.updateEpisodeWatchProgress();
+        this.positionChange.next(position);
         if (position === this.duration) {
             this.updateHistory(position);
         }
-        this.positionChange.next(position);
-        this.updateEpisodeWatchProgress();
     }
 
     onDurationUpdate(duration: number) {
@@ -149,16 +149,11 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         if (Number.isNaN(percentage)) {
             return;
         }
-        this.watchService.updateWatchProgress(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished);
-        // this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
-        //     .subscribe(
-        //         () => {
-        //             this.isUpdateHistory = false;
-        //         },
-        //         () => {
-        //             this.isUpdateHistory = false;
-        //         }
-        //     );
+        let isFinished = this.isFinished;
+        if (this.episode.watch_progress && this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
+            isFinished = true;
+        }
+        this.watchService.updateWatchProgress(this.episode.bangumi_id, this.episode.id, position, percentage, isFinished);
     }
 
     /**
@@ -174,7 +169,10 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         if (this.episode.watch_progress.watch_status !== WatchProgress.WATCHED && this.isFinished) {
             this.updateBangumiFavorite();
         }
-        this.episode.watch_progress.watch_status = this.isFinished ? WatchProgress.WATCHED : WatchProgress.WATCHING;
+        // only change watch status when this episode is not finished.
+        if (this.episode.watch_progress.watch_status !== WatchProgress.WATCHED) {
+            this.episode.watch_progress.watch_status = this.isFinished ? WatchProgress.WATCHED : WatchProgress.WATCHING;
+        }
     }
 
     /**

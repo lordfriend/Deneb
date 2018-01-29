@@ -1,20 +1,34 @@
 <div class="favorite-wrapper">
-  <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite" class="small ui basic button" (click)="toggleFavoriteChooser()"><i class="empty star icon"></i>收藏</button>
-  <a *ngIf="!isChoosingFavorite && !!bangumi.favorite_status" class="ui tag label"
-     [ngClass]="{
+    <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite" class="small ui basic button"
+            (click)="toggleFavoriteChooser()"><i class="remove bookmark icon"></i>收藏/评分
+    </button>
+    <button class="ui small labeled icon button" *ngIf="!isChoosingFavorite && !!bangumi.favorite_status"
+            [ngClass]="{
                orange: bangumi.favorite_status === 1,
                olive: bangumi.favorite_status === 2,
                blue: bangumi.favorite_status === 3,
                brown: bangumi.favorite_status === 4,
                grey: bangumi.favorite_status === 5
                }"
-     (click)="toggleFavoriteChooser()">我{{FAVORITE_LABEL[bangumi.favorite_status]}}这部{{BANGUMI_TYPE[bangumi.type]}}</a>
-  <div *ngIf="isChoosingFavorite" class="small ui basic buttons">
-    <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 1}" (click)="chooseFavoriteStatus(1)">想看</button>
-    <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 2}" (click)="chooseFavoriteStatus(2)">看过</button>
-    <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 3}" (click)="chooseFavoriteStatus(3)">在看</button>
-    <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 4}" (click)="chooseFavoriteStatus(4)">搁置</button>
-    <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 5}" (click)="chooseFavoriteStatus(5)">抛弃</button>
-  </div>
-  <button *ngIf="isChoosingFavorite" class="cancel-button small ui button" (click)="toggleFavoriteChooser()">取消</button>
+            (click)="toggleFavoriteChooser()">
+        <i class="bookmark icon"></i>我{{FAVORITE_LABEL[bangumi.favorite_status]}}这部{{BANGUMI_TYPE[bangumi.type]}}</button>
+    <div *ngIf="isChoosingFavorite" class="small ui basic buttons">
+        <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 1}" (click)="chooseFavoriteStatus(1)">
+            想看
+        </button>
+        <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 2}" (click)="chooseFavoriteStatus(2)">
+            看过
+        </button>
+        <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 3}" (click)="chooseFavoriteStatus(3)">
+            在看
+        </button>
+        <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 4}" (click)="chooseFavoriteStatus(4)">
+            搁置
+        </button>
+        <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 5}" (click)="chooseFavoriteStatus(5)">
+            抛弃
+        </button>
+    </div>
+    <button *ngIf="isChoosingFavorite" class="cancel-button small ui button" (click)="toggleFavoriteChooser()">取消
+    </button>
 </div>

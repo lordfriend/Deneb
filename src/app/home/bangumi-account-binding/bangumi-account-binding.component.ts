@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
     ChromeExtensionService,
     IAuthInfo,
@@ -64,9 +64,12 @@ export class BangumiAccountBindingComponent implements OnInit, OnDestroy {
     loginInBgmTv() {
         this._chromeExtensionService.openBgmForResult()
             .then(() => {
-                this._toastRef.show('已完成登录');
+                return this._chromeExtensionService.invokeBangumiWebMethod('clearCache', []);
             }, () => {
                 this._toastRef.show('发生错误');
+            })
+            .then(() => {
+                this._toastRef.show('已完成登录');
             });
     }
 

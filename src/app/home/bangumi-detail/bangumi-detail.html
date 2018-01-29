@@ -38,11 +38,11 @@
             <div class="summary facade-item">
                 {{bangumi.summary}}
             </div>
-            <div class="air-date facade-item">
-                {{bangumi.air_date}}
-            </div>
-            <div class="air-weekday facade-item">
-                {{bangumi.air_weekday | weekday}}
+            <div class="on-air-info facade-item">
+                <span class="key">放送开始：</span>
+                <span class="value">{{bangumi.air_date}}</span>
+                <span class="key">放送星期：</span>
+                <span class="value">{{bangumi.air_weekday | weekday}}</span>
             </div>
         </div>
     </div>

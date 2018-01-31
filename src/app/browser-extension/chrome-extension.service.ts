@@ -77,7 +77,7 @@ export class ChromeExtensionService {
                             .then(authInfo => {
                                 console.log(authInfo);
                                 this._authInfo.next(authInfo);
-                                this._appRef.tick();
+                                // this._appRef.tick();
                             });
                         this.invokeBangumiWebMethod('checkLoginStatus', [])
                             .then(result => {
@@ -87,7 +87,7 @@ export class ChromeExtensionService {
                                 } else {
                                     this._isBgmTvLogon.next(LOGON_STATUS.FALSE);
                                 }
-                                this._appRef.tick();
+                                // this._appRef.tick();
                             });
                     } else {
                         reject('connection error, upgrade your extension');
@@ -111,6 +111,7 @@ export class ChromeExtensionService {
                 } else {
                     reject(resp ? resp.error : 'unknown error');
                 }
+                this._appRef.tick();
             });
         });
     }
@@ -127,6 +128,7 @@ export class ChromeExtensionService {
                 } else {
                     reject(resp ? resp.error : 'unknown error');
                 }
+                this._appRef.tick();
             });
         });
     }
@@ -135,6 +137,7 @@ export class ChromeExtensionService {
         return this.invokeBangumiMethod('auth', [username, password])
             .then(data => {
                 this._authInfo.next(data);
+                this._appRef.tick();
                 return data;
             });
     }
@@ -154,7 +157,6 @@ export class ChromeExtensionService {
         })
             .then(() => {
                 this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
-                this._appRef.tick();
             })
     }
 
@@ -162,6 +164,7 @@ export class ChromeExtensionService {
         return this.invokeBangumiMethod('revokeAuth', [])
             .then((result) => {
                 this._authInfo.next(null);
+                this._appRef.tick();
                 return result;
             });
     }

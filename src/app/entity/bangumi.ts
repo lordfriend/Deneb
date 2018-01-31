@@ -1,6 +1,7 @@
-import {Episode} from "./episode";
+import { Episode } from "./episode";
 import { Image } from './image';
 import { User } from './user';
+
 export class Bangumi {
     id: string;
     bgm_id: number;

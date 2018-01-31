@@ -49,6 +49,7 @@ export class BangumiAccountBindingComponent implements OnInit, OnDestroy {
                 this._toastRef.show('已关联Bangumi账户');
                 this.isAuthenticating = false;
             }, (error) => {
+                console.log(error);
                 this.isAuthenticating = false;
                 this._toastRef.show(error.error);
             })
@@ -57,6 +58,7 @@ export class BangumiAccountBindingComponent implements OnInit, OnDestroy {
     revokeAuth() {
         this._chromeExtensionService.revokeAuth()
             .then(() => {
+                console.log('已取消关联Bangumi账户');
                 this._toastRef.show('已取消关联Bangumi账户');
             });
     }
@@ -82,9 +84,11 @@ export class BangumiAccountBindingComponent implements OnInit, OnDestroy {
             this._chromeExtensionService.authInfo
                 .filter(authInfo => authInfo !== INITIAL_STATE_VALUE)
                 .subscribe(authInfo => {
+                    console.log(authInfo);
                     this.isLoading = false;
                     this.authInfo = authInfo as IAuthInfo;
                 }, (error) => {
+                    console.log(error);
                     this.isLoading = false;
                     this._toastRef.show(error);
                 })

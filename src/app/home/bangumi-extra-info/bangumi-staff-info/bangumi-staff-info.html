@@ -1,0 +1,10 @@
+<div class="staff-header">制作人员</div>
+<div class="staff-info">
+    <div class="staff-item" *ngFor="let job of jobs">
+        <span class="job">{{job}}：</span>
+        <span class="staff-name" *ngFor="let staff of staffMap[job]; last as isLast">
+            <a [href]="staff.url" class="staff-link" target="_blank">{{staff.name}}</a>
+            <span class="staff-name-divider" *ngIf="!isLast">/</span>
+        </span>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="ui small basic visible active modal">
+    <div class="ui icon header">
+        <i class="attention icon"></i>
+        同步 <strong>{{bangumiName}}</strong> 收藏状态时发现冲突
+    </div>
+    <div class="formatted content">
+        <p>发现{{siteTitle}}的状态与Bangumi的状态不同，请选择保留何种状态</p>
+        <div class="diff">
+            <div class="diff-item site-status">{{siteTitle}}的收藏状态：<strong>{{STATUS_TEXT[siteStatus]}}</strong></div>
+            <div class="diff-item bgm-status">Bangumi的收藏状态：<strong>{{STATUS_TEXT[bgmStatus]}}</strong></div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button" (click)="chooseStatus('site')">
+            使用{{siteTitle}}的状态
+        </div>
+        <div class="ui green ok inverted button" (click)="chooseStatus('bgm')">
+            使用Bangumi的状态
+        </div>
+    </div>
+</div>

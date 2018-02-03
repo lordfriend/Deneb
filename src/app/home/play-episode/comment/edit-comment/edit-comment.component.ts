@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ChromeExtensionService } from '../../../../browser-extension/chrome-extension.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'bangumi-edit-comment',
     templateUrl: './edit-comment.html',
     styleUrls: ['./edit-comment.less']
 })
-export class EditCommentComponent implements OnInit {
+export class EditCommentComponent implements OnInit, OnDestroy {
+    private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
     private _formhash: string;
 
@@ -46,10 +48,12 @@ export class EditCommentComponent implements OnInit {
             return;
         }
         let content = this.editCommentForm.value.content;
-        this._chromeExtensionService.invokeBangumiWebMethod('editComment', [this.postId, content, this._formhash, this.bgmEpsId])
-            .then(() => {
-                this.commentUpdate.emit(this.postId);
-            })
+        this._subscription.add(
+            this._chromeExtensionService.invokeBangumiWebMethod('editComment', [this.postId, content, this._formhash, this.bgmEpsId])
+                .subscribe(() => {
+                    this.commentUpdate.emit(this.postId);
+                })
+        );
     }
 
     cancelEdit() {
@@ -60,15 +64,21 @@ export class EditCommentComponent implements OnInit {
         this.editCommentForm = this._fb.group({
             content: ['', Validators.required]
         });
-        this._chromeExtensionService.invokeBangumiWebMethod('getEditComment', [this.postId, this.bgmEpsId])
-            .then((result: any) => {
-                this.editCommentForm.patchValue({content: result.content});
-                this._formhash = result.formhash;
-                this.isLoading = false;
-            }, () => {
-                this.isLoading = false;
-                this._toastRef.show('无法编辑评论');
-                this.cancel.emit(this.postId);
-            })
+        this._subscription.add(
+            this._chromeExtensionService.invokeBangumiWebMethod('getEditComment', [this.postId, this.bgmEpsId])
+                .subscribe((result: any) => {
+                    this.editCommentForm.patchValue({content: result.content});
+                    this._formhash = result.formhash;
+                    this.isLoading = false;
+                }, () => {
+                    this.isLoading = false;
+                    this._toastRef.show('无法编辑评论');
+                    this.cancel.emit(this.postId);
+                })
+        );
+    }
+
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 }

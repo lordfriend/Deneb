@@ -4,6 +4,7 @@ import { UIDialog } from 'deneb-ui';
 import { BangumiAuthDialogComponent } from './bangumi-auth-dialog/bangumi-auth-dialog.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import Port = chrome.runtime.Port;
+import { Bangumi } from '../entity';
 
 export interface RPCMessage {
     className: string;
@@ -31,6 +32,7 @@ export interface IAuthInfo {
     auth: string, // issued by auth server, used in ${AUTH_TOKEN}
     auth_encode?: string // ${AUTH_TOKEN) encoded by urlencode()
 }
+
 export type INITIAL_STATE = 0;
 export type AuthInfo = IAuthInfo | null | INITIAL_STATE;
 
@@ -46,8 +48,12 @@ export class ChromeExtensionService {
 
     private _authInfo = new BehaviorSubject<AuthInfo>(INITIAL_STATE_VALUE);
     private _isBgmTvLogon = new BehaviorSubject<LOGON_STATUS>(LOGON_STATUS.UNSURE);
+    private _isEnabled = new BehaviorSubject<boolean>(false);
 
-    isEnabled: Promise<boolean>;
+    get isEnabled(): Observable<boolean> {
+        return this._isEnabled;
+    }
+
     chromeExtensionId: string;
 
     get authInfo(): Observable<AuthInfo> {
@@ -64,109 +70,101 @@ export class ChromeExtensionService {
             this.chromeExtensionId = CHROME_EXTENSION_ID;
         }
         if (window && chrome && this.chromeExtensionId) {
-            this.isEnabled = new Promise<boolean>((resolve, reject) => {
-                chrome.runtime.sendMessage(this.chromeExtensionId, {
-                    className: 'BackgroundCore',
-                    method: 'verify',
-                    args: []
-                }, (resp) => {
-                    console.log(resp);
-                    if (resp && resp.result === 'OK') {
-                        resolve(true);
-                        this.invokeBangumiMethod('getAuthInfo', [])
-                            .then(authInfo => {
-                                console.log(authInfo);
-                                this._authInfo.next(authInfo);
-                                // this._appRef.tick();
-                            });
-                        this.invokeBangumiWebMethod('checkLoginStatus', [])
-                            .then(result => {
-                                console.log(result);
-                                if (result.isLogin) {
-                                    this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
-                                } else {
-                                    this._isBgmTvLogon.next(LOGON_STATUS.FALSE);
-                                }
-                                // this._appRef.tick();
-                            });
-                    } else {
-                        reject('connection error, upgrade your extension');
-                    }
+            this.isEnabled.filter(isEnabled => isEnabled)
+                .subscribe(() => {
+                    this.invokeBangumiMethod('getAuthInfo', [])
+                        .subscribe(authInfo => {
+                            console.log(authInfo);
+                            this._authInfo.next(authInfo);
+                        });
+                    this.invokeBangumiWebMethod('checkLoginStatus', [])
+                        .subscribe(result => {
+                            console.log(result);
+                            if (result.isLogin) {
+                                this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
+                            } else {
+                                this._isBgmTvLogon.next(LOGON_STATUS.FALSE);
+                            }
+                        });
                 });
+            chrome.runtime.sendMessage(this.chromeExtensionId, {
+                className: 'BackgroundCore',
+                method: 'verify',
+                args: []
+            }, (resp) => {
+                console.log(resp);
+                if (resp && resp.result === 'OK') {
+                    this._isEnabled.next(true);
+                } else {
+                    this._isEnabled.next(false);
+                }
+                this._appRef.tick();
             });
         } else {
-            this.isEnabled = Promise.resolve(false);
+            this._isEnabled.next(false);
         }
     }
 
-    invokeBangumiMethod(method: string, args: any[]): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            chrome.runtime.sendMessage(this.chromeExtensionId, {
-                className: 'BangumiAPIProxy',
-                method: method,
-                args: args
-            }, (resp: RPCResult) => {
-                if (resp && !resp.error) {
-                    resolve(resp.result);
-                } else {
-                    reject(resp ? resp.error : 'unknown error');
-                }
-                this._appRef.tick();
-            });
-        });
+    invokeBangumiMethod(method: string, args: any[]): Observable<any> {
+        return this.invokeRPC('BangumiAPIProxy', method, args);
     }
 
-    invokeBangumiWebMethod(method: string, args: any[]): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            chrome.runtime.sendMessage(this.chromeExtensionId, {
-                className: 'BangumiWebProxy',
-                method: method,
-                args: args
-            }, (resp: RPCResult) => {
-                if (resp && !resp.error) {
-                    resolve(resp.result);
-                } else {
-                    reject(resp ? resp.error : 'unknown error');
-                }
-                this._appRef.tick();
-            });
-        });
+    invokeBangumiWebMethod(method: string, args: any[]): Observable<any> {
+        return this.invokeRPC('BangumiWebProxy', method, args);
     }
 
-    auth(username: string, password: string): Promise<any> {
+    auth(username: string, password: string): Observable<any> {
         return this.invokeBangumiMethod('auth', [username, password])
-            .then(data => {
+            .do(data => {
                 this._authInfo.next(data);
-                this._appRef.tick();
-                return data;
             });
     }
 
-    openBgmForResult(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    openBgmForResult(): Observable<any> {
+        return this.invokeRPC('BackgroundCore', 'openBgmForResult', [])
+            .do(() => {
+                this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
+            });
+    }
+
+    revokeAuth(): Observable<any> {
+        return this.invokeBangumiMethod('revokeAuth', [])
+            .do(() => {
+                this._authInfo.next(null);
+            });
+    }
+
+    syncBangumi(bangumi: Bangumi): Observable<any> {
+        return this.invokeRPC('Synchronize', 'syncOne', [bangumi]);
+    }
+
+    solveConflict(bangumi: Bangumi, bgmFavStatus: number, choice: string): Observable<any> {
+        return this.invokeRPC('Synchronize', 'solveConflict', [bangumi, bgmFavStatus, choice]);
+    }
+
+    updateFavoriteAndSync(bangumi: Bangumi, favStatus: any): Observable<any> {
+        return this.invokeRPC('Synchronize', 'updateFavorite', [bangumi, favStatus]);
+    }
+
+    deleteFavoriteAndSync(bangumi: Bangumi): Observable<any> {
+        return this.invokeRPC('Synchronize', 'deleteFavorite', [bangumi]);
+    }
+
+    private invokeRPC(className: string, method: string, args: any[]): Observable<any> {
+        return new Observable<any>((observer) => {
             chrome.runtime.sendMessage(this.chromeExtensionId, {
-                className: 'BackgroundCore',
-                method: 'openBgmForResult'
+                className: className,
+                method: method,
+                args: args
             }, (resp: RPCResult) => {
                 if (resp && !resp.error) {
-                    resolve(resp.result);
+                    observer.next(resp.result);
                 } else {
-                    reject(resp ? resp.error: 'unknown error');
+                    observer.error(resp ? resp.error : 'unknown error');
                 }
-            });
-        })
-            .then(() => {
-                this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
-            })
-    }
-
-    revokeAuth(): Promise<any> {
-        return this.invokeBangumiMethod('revokeAuth', [])
-            .then((result) => {
-                this._authInfo.next(null);
+                observer.complete();
                 this._appRef.tick();
-                return result;
             });
+        });
     }
-
 }

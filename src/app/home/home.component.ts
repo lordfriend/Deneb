@@ -172,25 +172,26 @@ export class Home implements OnInit, OnDestroy {
                 }
             ));
         this._chromeExtensionService.isEnabled
-            .then((isEnabled) => {
+            .do(isEnabled => {
                 this.isBangumiEnabled = isEnabled;
-                if (isEnabled) {
-                    this._subscription.add(
-                        this._chromeExtensionService.authInfo
-                            .subscribe(authInfo => {
-                                if (authInfo !== INITIAL_STATE_VALUE && authInfo !== null) {
-                                    this.bgmAccountInfo = {
-                                        username: authInfo.username,
-                                        nickname: authInfo.nickname,
-                                        avatar: authInfo.avatar,
-                                        id: authInfo.id,
-                                        url: authInfo.url
-                                    };
-                                } else if (authInfo === null) {
-                                    this.bgmAccountInfo = null;
-                                }
-                            }));
-                }
+            })
+            .filter(isEnabled => isEnabled)
+            .subscribe(() => {
+                this._subscription.add(
+                    this._chromeExtensionService.authInfo
+                        .subscribe(authInfo => {
+                            if (authInfo !== INITIAL_STATE_VALUE && authInfo !== null) {
+                                this.bgmAccountInfo = {
+                                    username: authInfo.username,
+                                    nickname: authInfo.nickname,
+                                    avatar: authInfo.avatar,
+                                    id: authInfo.id,
+                                    url: authInfo.url
+                                };
+                            } else if (authInfo === null) {
+                                this.bgmAccountInfo = null;
+                            }
+                        }));
             });
     }
 

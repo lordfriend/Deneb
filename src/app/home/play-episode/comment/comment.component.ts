@@ -80,23 +80,25 @@ export class CommentComponent implements OnInit, OnDestroy {
     }
 
     deleteComment(post: Post) {
-        this._chromeExtensionService.invokeBangumiWebMethod('deleteComment', [post.id, this.formhash, this.bgmEpsId])
-            .then(() => {
-                for (let i = 0; i < this.posts.length; i++) {
-                    if (post === this.posts[i]){
-                        this.posts.splice(i, 1);
-                        return;
-                    }
-                    if (this.posts[i].subPosts && this.posts[i].subPosts.length > 0) {
-                        for (let j = 0; j < this.posts[i].subPosts.length; j++) {
-                            if (post === this.posts[i].subPosts[j]) {
-                                this.posts[i].subPosts.splice(j, 1);
-                                return;
+        this._subscription.add(
+            this._chromeExtensionService.invokeBangumiWebMethod('deleteComment', [post.id, this.formhash, this.bgmEpsId])
+                .subscribe(() => {
+                    for (let i = 0; i < this.posts.length; i++) {
+                        if (post === this.posts[i]){
+                            this.posts.splice(i, 1);
+                            return;
+                        }
+                        if (this.posts[i].subPosts && this.posts[i].subPosts.length > 0) {
+                            for (let j = 0; j < this.posts[i].subPosts.length; j++) {
+                                if (post === this.posts[i].subPosts[j]) {
+                                    this.posts[i].subPosts.splice(j, 1);
+                                    return;
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
+        );
     }
 
     onCommentSent(result: any) {
@@ -146,15 +148,17 @@ export class CommentComponent implements OnInit, OnDestroy {
     }
 
     private freshCommentList() {
-        this._chromeExtensionService.invokeBangumiWebMethod('getCommentForEpisode', [this.bgmEpsId])
-            .then((result: any) => {
-                this.posts = result.posts;
-                console.log(this.posts);
-                if (result.newComment) {
-                    this.lastview = result.newComment.lastview;
-                    this.formhash = result.newComment.formhash;
-                }
-            });
+        this._subscription.add(
+            this._chromeExtensionService.invokeBangumiWebMethod('getCommentForEpisode', [this.bgmEpsId])
+                .subscribe((result: any) => {
+                    this.posts = result.posts;
+                    console.log(this.posts);
+                    if (result.newComment) {
+                        this.lastview = result.newComment.lastview;
+                        this.formhash = result.newComment.formhash;
+                    }
+                })
+        );
     }
 
     private updatePostProperty(postId: string, property: string, value: any) {

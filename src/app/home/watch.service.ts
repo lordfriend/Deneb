@@ -36,7 +36,13 @@ export class WatchService extends BaseService {
         let body = JSON.stringify({status: status});
         return this._http.post(`${this._baseUrl}/favorite/bangumi/${bangumi_id}`, body, this._requestOptions)
             .map(res => res.json())
-            .catch(this.handleError)
+            .catch(this.handleError);
+    }
+
+    delete_favorite(bangumi_id: string): Observable<any> {
+        return this._http.delete(`${this._baseUrl}/favorite/bangumi/${bangumi_id}`)
+            .map(res => res.json())
+            .catch(this.handleError);
     }
 
     episode_history(bangumi_id: string, episode_id: string, last_watch_position: number, percentage: number, is_finished: boolean): Observable<any> {

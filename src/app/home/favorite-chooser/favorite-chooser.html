@@ -1,5 +1,7 @@
 <div class="favorite-wrapper">
-    <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite" class="small ui basic button"
+    <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite"
+            class="small ui basic button"
+            [disabled]="isOnSynchronizing && isExtensionEnabled"
             (click)="toggleFavoriteChooser()"><i class="remove bookmark icon"></i>收藏/评分
     </button>
     <button class="ui small labeled icon button" *ngIf="!isChoosingFavorite && !!bangumi.favorite_status"
@@ -10,8 +12,23 @@
                brown: bangumi.favorite_status === 4,
                grey: bangumi.favorite_status === 5
                }"
+            [disabled]="isOnSynchronizing && isExtensionEnabled"
             (click)="toggleFavoriteChooser()">
         <i class="bookmark icon"></i>我{{FAVORITE_LABEL[bangumi.favorite_status]}}这部{{BANGUMI_TYPE[bangumi.type]}}</button>
+    <button class="ui small basic button"
+            *ngIf="!!bangumi.favorite_status"
+            confirmDialog
+            dialogTitle="确定要删除收藏吗？"
+            [dialogContent]="isExtensionEnabled ? '你可以随时重新收藏这部动画，删除收藏就会影响到一些订阅服务，比如web-hook推送, 同时会删除您在Bangumi的收藏' : '你可以随时重新收藏这部动画，删除收藏就会影响到一些订阅服务，比如web-hook推送'"
+            (onConfirm)="deleteFavorite()"
+            [disabled]="isOnSynchronizing && isExtensionEnabled">删除收藏</button>
+    <span class="sync-loader-tip" *ngIf="isOnSynchronizing && isExtensionEnabled">
+        <span class="ui active inline tiny loader"></span> 正在与Bangumi同步
+    </span>
+    <span class="sync-complete-tip" *ngIf="!isOnSynchronizing && isExtensionEnabled">
+        <i class="icon checkmark"></i> 已与Bangumi同步
+    </span>
+
     <div *ngIf="isChoosingFavorite" class="small ui basic buttons">
         <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 1}" (click)="chooseFavoriteStatus(1)">
             想看
@@ -31,4 +48,7 @@
     </div>
     <button *ngIf="isChoosingFavorite" class="cancel-button small ui button" (click)="toggleFavoriteChooser()">取消
     </button>
+</div>
+<div class="my-review facade-item" *ngIf="!!userFavoriteInfo">
+    <my-review [rating]="userFavoriteInfo.rating" [comment]="userFavoriteInfo.comment" (editReview)="onEditReview()"></my-review>
 </div>

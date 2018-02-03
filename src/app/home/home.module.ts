@@ -37,6 +37,10 @@ import { CommentComponent } from './play-episode/comment/comment.component';
 import { CommentFormComponent } from './play-episode/comment/comment-form/comment-form.component';
 import { EditCommentComponent } from './play-episode/comment/edit-comment/edit-comment.component';
 import { BangumiAccountBindingComponent } from './bangumi-account-binding/bangumi-account-binding.component';
+import { ConflictDialogComponent } from './favorite-chooser/conflict-dialog/conflict-dialog.component';
+import { BangumiCharacterComponent } from './bangumi-extra-info/bangumi-character/bangumi-character.component';
+import { BangumiStaffInfoComponent } from './bangumi-extra-info/bangumi-staff-info/bangumi-staff-info.component';
+import { SynchronizeService } from './favorite-chooser/synchronize.service';
 
 
 @NgModule({
@@ -60,14 +64,18 @@ import { BangumiAccountBindingComponent } from './bangumi-account-binding/bangum
         CommentComponent,
         CommentFormComponent,
         EditCommentComponent,
-        BangumiAccountBindingComponent
+        BangumiAccountBindingComponent,
+        ConflictDialogComponent,
+        BangumiCharacterComponent,
+        BangumiStaffInfoComponent
     ],
     providers: [
         HomeService,
         WatchService,
         ImageLoadingStrategy,
         BangumiListService,
-        UserCenterService
+        UserCenterService,
+        SynchronizeService
     ],
     imports: [
         RouterModule.forChild(homeRoutes),
@@ -84,7 +92,8 @@ import { BangumiAccountBindingComponent } from './bangumi-account-binding/bangum
         BrowserExtensionModule
     ],
     entryComponents: [
-        EditReviewDialogComponent
+        EditReviewDialogComponent,
+        ConflictDialogComponent
     ]
 })
 export class HomeModule {

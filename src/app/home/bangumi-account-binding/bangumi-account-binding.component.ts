@@ -44,35 +44,39 @@ export class BangumiAccountBindingComponent implements OnInit, OnDestroy {
         }
         const value = this.authForm.value;
         this.isAuthenticating = true;
-        this._chromeExtensionService.auth(value.username, value.password)
-            .then((data) => {
-                this._toastRef.show('已关联Bangumi账户');
-                this.isAuthenticating = false;
-            }, (error) => {
-                console.log(error);
-                this.isAuthenticating = false;
-                this._toastRef.show(error.error);
-            })
+        this._subscription.add(
+            this._chromeExtensionService.auth(value.username, value.password)
+                .subscribe((data) => {
+                    this._toastRef.show('已关联Bangumi账户');
+                    this.isAuthenticating = false;
+                }, (error) => {
+                    console.log(error);
+                    this.isAuthenticating = false;
+                    this._toastRef.show(error.error);
+                })
+        );
     }
 
     revokeAuth() {
         this._chromeExtensionService.revokeAuth()
-            .then(() => {
+            .subscribe(() => {
                 console.log('已取消关联Bangumi账户');
                 this._toastRef.show('已取消关联Bangumi账户');
             });
     }
 
     loginInBgmTv() {
-        this._chromeExtensionService.openBgmForResult()
-            .then(() => {
-                return this._chromeExtensionService.invokeBangumiWebMethod('clearCache', []);
-            }, () => {
-                this._toastRef.show('发生错误');
-            })
-            .then(() => {
-                this._toastRef.show('已完成登录');
-            });
+        this._subscription.add(
+            this._chromeExtensionService.openBgmForResult()
+                .flatMap(() => {
+                    return this._chromeExtensionService.invokeBangumiWebMethod('clearCache', []);
+                })
+                .subscribe(() => {
+                    this._toastRef.show('已完成登录');
+                }, () => {
+                    this._toastRef.show('发生错误');
+                })
+        );
     }
 
     ngOnInit(): void {

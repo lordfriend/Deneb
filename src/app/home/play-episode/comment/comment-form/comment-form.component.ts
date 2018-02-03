@@ -1,14 +1,19 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+    AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output,
+    ViewChild
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChromeExtensionService } from '../../../../browser-extension/chrome-extension.service';
 import { Post } from '../comment.component';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'bangumi-comment-form',
     templateUrl: './comment-form.html',
     styleUrls: ['./comment-form.less']
 })
-export class CommentFormComponent implements OnInit, AfterViewInit {
+export class CommentFormComponent implements OnInit, AfterViewInit, OnDestroy {
+    private _subscription = new Subscription();
 
     @Input()
     bgmEpsId: number;
@@ -40,19 +45,6 @@ export class CommentFormComponent implements OnInit, AfterViewInit {
                 private _chromeExtensionService: ChromeExtensionService) {
     }
 
-    ngOnInit(): void {
-        this.newCommentForm = this._fb.group({
-            content: ['', Validators.required]
-        });
-    }
-
-    ngAfterViewInit(): void {
-        let textarea = this.textareaRef.nativeElement;
-        if (textarea) {
-            (textarea as HTMLTextAreaElement).focus();
-        }
-    }
-
     preventSubmit(event: Event) {
         event.stopPropagation();
         event.preventDefault();
@@ -82,20 +74,21 @@ export class CommentFormComponent implements OnInit, AfterViewInit {
                 content = content.slice(0, 100) + '...';
             }
             args[1] = `[quote][b]${this.post.author.name}[/b] 说：${this.post.content}[/quote]${content}`
-
         }
-        this._chromeExtensionService.invokeBangumiWebMethod('newComment', args)
-            .then(result => {
-                this.newCommentForm.reset();
-                if (this.post) {
-                    this.commentSent.next(Object.assign({replyPost: this.post}, result))
-                }
-                this.commentSent.next(result);
-            }, (error) => {
-                console.log(error);
-                this.newCommentForm.reset();
-                this.commentSent.next(null);
-            });
+        this._subscription.add(
+            this._chromeExtensionService.invokeBangumiWebMethod('newComment', args)
+                .subscribe(result => {
+                    this.newCommentForm.reset();
+                    if (this.post) {
+                        this.commentSent.next(Object.assign({replyPost: this.post}, result))
+                    }
+                    this.commentSent.next(result);
+                }, (error) => {
+                    console.log(error);
+                    this.newCommentForm.reset();
+                    this.commentSent.next(null);
+                })
+        );
     }
 
     cancelPost() {
@@ -106,4 +99,20 @@ export class CommentFormComponent implements OnInit, AfterViewInit {
         }
     }
 
+    ngOnInit(): void {
+        this.newCommentForm = this._fb.group({
+            content: ['', Validators.required]
+        });
+    }
+
+    ngAfterViewInit(): void {
+        let textarea = this.textareaRef.nativeElement;
+        if (textarea) {
+            (textarea as HTMLTextAreaElement).focus();
+        }
+    }
+
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
+    }
 }

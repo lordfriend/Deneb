@@ -1,16 +1,18 @@
 import { UIDialogRef, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Bangumi } from '../../../entity';
 import { RATING_TEXT } from '../rating.component';
-import { ChromeExtensionService } from '../../../browser-extension/chrome-extension.service';
+import { Subscription } from 'rxjs/Subscription';
+import { SynchronizeService } from '../../favorite-chooser/synchronize.service';
 
 @Component({
     selector: 'edit-review-dialog',
     templateUrl: './edit-review-dialog.html',
     styleUrls: ['./edit-review-dialog.less']
 })
-export class EditReviewDialogComponent implements OnInit {
+export class EditReviewDialogComponent implements OnInit, OnDestroy {
+    private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
     reviewForm: FormGroup;
 
@@ -26,8 +28,7 @@ export class EditReviewDialogComponent implements OnInit {
     @Input()
     tags: string;
 
-    @Input()
-    interest: number;
+    favorite_status: number;
 
     hoverScore: number;
     isHovering: boolean;
@@ -35,9 +36,11 @@ export class EditReviewDialogComponent implements OnInit {
     hoveringText = '';
     ratingText = '';
 
+    isSaving = false;
+
     constructor(private _dialogRef: UIDialogRef<EditReviewDialogComponent>,
                 private _fb: FormBuilder,
-                private _chromeExtensionService: ChromeExtensionService,
+                private _synchronizeService: SynchronizeService,
                 toast: UIToast) {
         this._toastRef = toast.makeText();
     }
@@ -52,9 +55,14 @@ export class EditReviewDialogComponent implements OnInit {
         }
     }
 
+
     onSelectRating(s: number) {
         this.rating = s;
         this.ratingText = RATING_TEXT[s];
+    }
+
+    chooseFavoriteStatus(status) {
+        this.favorite_status = status;
     }
 
     onSubmit(event: Event) {
@@ -66,7 +74,7 @@ export class EditReviewDialogComponent implements OnInit {
         if (this.reviewForm.invalid) {
             return;
         }
-
+        this.isSaving = true;
         const comment = this.reviewForm.value.comment;
 
         /**
@@ -77,22 +85,28 @@ export class EditReviewDialogComponent implements OnInit {
          *      comment: string;
          * }
          */
-        this._chromeExtensionService.invokeBangumiWebMethod('updateFavoriteStatus',
-            [this.bangumi.bgm_id, {
-                interest: this.interest,
-                rating: this.rating,
-                tags: this.tags,
-                comment: comment
-            }])
-            .then(() => {
-                this._dialogRef.close({
+        this._subscription.add(
+            this._synchronizeService.updateFavorite(
+                this.bangumi,
+                {
+                    interest: this.favorite_status,
                     rating: this.rating,
+                    tags: this.tags,
                     comment: comment
-                });
-            }, (error) => {
-                console.log(error);
-                this._toastRef.show('更新失败');
-            });
+                })
+                .subscribe(() => {
+                    this.isSaving = false;
+                    this._dialogRef.close({
+                        interset: this.favorite_status,
+                        rating: this.rating,
+                        comment: comment
+                    });
+                }, (error) => {
+                    this.isSaving = false;
+                    console.log(error);
+                    this._toastRef.show('更新失败');
+                })
+        );
     }
 
     cancel(): void {
@@ -100,6 +114,7 @@ export class EditReviewDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.favorite_status = this.bangumi.favorite_status;
         this.reviewForm = this._fb.group({
             comment: ['', Validators.maxLength(200)]
         });
@@ -110,5 +125,9 @@ export class EditReviewDialogComponent implements OnInit {
         if (this.rating) {
             this.ratingText = RATING_TEXT[this.rating];
         }
+    }
+
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
     }
 }

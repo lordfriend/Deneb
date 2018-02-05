@@ -56,7 +56,6 @@
                 <span class="warning-tip" *ngIf="isHovering && hoverScore === 10">(请谨慎评价)</span>
             </div>
         </div>
-        <div>isHovering: {{isHovering}}</div>
         <div class="footer">
             <button class="ui button" type="button" (click)="cancel()">取消</button>
             <button class="ui primary button" type="button" (click)="save()" [disabled]="reviewForm.invalid || !favorite_status">提交</button>

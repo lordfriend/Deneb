@@ -6,8 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { UserService } from '../../user-service';
 import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
-import { UIDialog } from 'deneb-ui';
-import { ResponsiveService } from '../../responsive-image/responsive.service';
+import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { AuthError } from '../../../helpers/error';
 
 
 @Component({
@@ -16,6 +16,7 @@ import { ResponsiveService } from '../../responsive-image/responsive.service';
     styleUrls: ['./bangumi-detail.less']
 })
 export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
+    private _toastRef: UIToastRef<UIToastComponent>;
     private _subscription = new Subscription();
     private _coverExpanded = false;
 
@@ -36,8 +37,10 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
                 private _chromeExtensionService: ChromeExtensionService,
                 private _dialog: UIDialog,
                 private _route: ActivatedRoute,
-                private _titleService: Title) {
+                private _titleService: Title,
+                toast: UIToast) {
         super(homeService);
+        this._toastRef = toast.makeText();
         this._subscription.add(
             userService.userInfo
                 .subscribe(user => {
@@ -79,6 +82,11 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
                     this.extraInfo = extraInfo;
                 }, (error) => {
                     console.log(error);
+                    if (error instanceof AuthError && (error as AuthError).isPermission()) {
+                        this._toastRef.show('没有权限');
+                    } else {
+                        this._toastRef.show(error.message);
+                    }
                 })
         );
         this.checkViewport();

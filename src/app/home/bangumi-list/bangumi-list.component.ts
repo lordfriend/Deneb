@@ -10,6 +10,7 @@ import { getRemPixel } from '../../../helpers/dom';
 import { Home } from '../home.component';
 import { BangumiListService } from './bangumi-list.service';
 import { Observable } from 'rxjs/Observable';
+import { AuthError } from '../../../helpers/error';
 
 
 @Component({
@@ -115,7 +116,11 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
                     this.isLoading = false;
                 },
                 (error: BaseError) => {
-                    this._toastRef.show(error.message);
+                    if (error instanceof AuthError && (error as AuthError).isPermission()) {
+                        this._toastRef.show('没有权限');
+                    } else {
+                        this._toastRef.show(error.message);
+                    }
                     this.isLoading = false;
                 }
             )

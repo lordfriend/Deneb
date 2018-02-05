@@ -17,7 +17,7 @@
                 <div class="actor-info" *ngIf="!!character.actors">
                     <span class="actor-key">CV:</span>
                     <span class="actor-name" *ngFor="let actor of character.actors; last as isLast">
-                        <a [href]="actor.url" class="actor-name-link">{{actor.name}}</a>
+                        <a [href]="actor.url" target="_blank" class="actor-name-link">{{actor.name}}</a>
                         <span class="name-divider" *ngIf="!isLast">/</span>
                     </span>
                 </div>

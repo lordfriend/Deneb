@@ -126,6 +126,13 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     @ViewChild('overlay', {read: ViewContainerRef}) controlContainer: ViewContainerRef;
 
     /**
+     * measured dimension according current viewport size
+     */
+    playerMeasuredWidth: number;
+    playerMeasuredHeight: number;
+
+
+    /**
      * currentTime of media element.
      * @returns {Observable<number>} current time in seconds
      */
@@ -357,10 +364,28 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
         // init fullscreen API
         this.fullscreenAPI = new FullScreenAPI(mediaElement, hostElement);
-        this.fullscreenAPI.onChangeFullscreen.subscribe(isFullscreen => this.isFullscreen = isFullscreen);
+        this.fullscreenAPI.onChangeFullscreen.subscribe(isFullscreen => {
+            this.isFullscreen = isFullscreen;
+            if (this.videoFile && this.videoFile.resolution_w && this.videoFile.resolution_h) {
+                this.togglePlayerDimension(hostElement);
+            }
+        });
 
         // init shortcuts
         this.shortcuts = new VideoPlayerShortcuts(hostElement, this, this._videoCapture);
+
+        this._subscription.add(
+            Observable.fromEvent(window, 'resize')
+                .merge(this.fullscreenAPI.onChangeFullscreen)
+                .filter(() => {
+                    return Boolean(this.videoFile && this.videoFile.resolution_w && this.videoFile.resolution_h);
+                })
+                .subscribe(() => {
+                    this.togglePlayerDimension(hostElement);
+                })
+        );
+
+        this.togglePlayerDimension(hostElement);
 
         this._subscription.add(
             Observable.fromEvent(mediaElement, 'durationchange')
@@ -497,5 +522,43 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                     this._tolerateWaitingTime += 500;
                 }
             });
+    }
+
+    private measurePlayerSize(): {width: number, height: number} {
+        let viewportWidth = document.documentElement.clientWidth;
+        let viewportHeight = document.documentElement.clientHeight;
+        let videoWidth = this.videoFile.resolution_w;
+        let videoHeight = this.videoFile.resolution_h;
+        // space below the video
+        const preserveHeight = 129;
+        const navbarHeight = 50;
+        // y + 109 <= viewportHeight
+        // x <= viewportWidth
+        // x / y = videoWidth / videoHeight
+        let playerWidth, playerHeight;
+        let theaterHeight = viewportHeight - navbarHeight - preserveHeight;
+        let theaterSpaceRatio = viewportWidth / theaterHeight;
+        let videoRatio = videoWidth / videoHeight;
+        if (theaterSpaceRatio > videoRatio) {
+            playerHeight = theaterHeight;
+            playerWidth = videoRatio * playerHeight;
+        } else {
+            playerWidth = viewportWidth;
+            playerHeight = playerWidth / videoRatio;
+        }
+        return {width: playerWidth, height: playerHeight};
+    }
+
+    private togglePlayerDimension(hostElement: HTMLElement): void {
+        let {width, height} = this.measurePlayerSize();
+        this.playerMeasuredWidth = width;
+        this.playerMeasuredHeight = height;
+        if (!this.isFullscreen && !!this.playerMeasuredWidth && !!this.playerMeasuredHeight) {
+            hostElement.style.width = `${this.playerMeasuredWidth}px`;
+            hostElement.style.height = `${this.playerMeasuredHeight}px`;
+        } else {
+            hostElement.style.removeProperty('width');
+            hostElement.style.removeProperty('height');
+        }
     }
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.0
+
+### Integration with bangumi account and social feature
+
+This is a feature which enhance the social element in the web client while not relies on Albireo, it is made available by installing an browser extension.
+
+### Other improvements
+
+- VideoPlayer view larger.
+- Bangumi page now won't change height when image loaded.
+
 ## 2.8.1
 
 hide video file picker when only one video file exists.

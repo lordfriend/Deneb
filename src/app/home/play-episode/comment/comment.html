@@ -1,6 +1,11 @@
 <div class="comment-container ui comments">
-    <div class="ui divider"></div>
-    <h3 class="ui header">{{!!posts ? posts.length: 0}}条来自Bangumi的评论</h3>
+    <div class="ui divider" #headDivider></div>
+    <div class="comment-loading-container" *ngIf="isLoading">
+        <div class="ui active text large loader">
+            加载评论中...
+        </div>
+    </div>
+    <h3 class="ui header" *ngIf="!isLoading">{{!!posts ? posts.length: 0}}条来自Bangumi的评论</h3>
     <div class="fake-comment-form" *ngIf="!!authInfo && !rootFormOpen">
         <div class="avatar">
             <img [src]="authInfo.avatar.medium" alt="avatar">

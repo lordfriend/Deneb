@@ -91,7 +91,7 @@
         </div>
     </div>
 </div>
-<div class="comment-section" *ngIf="!!episode">
+<div class="comment-section" *ngIf="!!episode && commentEnabled">
     <div class="ui container">
         <bangumi-comment [bgmEpsId]="episode.bgm_eps_id"></bangumi-comment>
     </div>

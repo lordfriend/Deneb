@@ -1,7 +1,13 @@
-import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import { ChromeExtensionService, IAuthInfo } from '../../../browser-extension/chrome-extension.service';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
+import { ResponsiveService } from '../../../responsive-image/responsive.service';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 
 export interface PostUser {
     uid: string;
@@ -46,8 +52,9 @@ export interface Post {
     styleUrls: ['./comment.less'],
     encapsulation: ViewEncapsulation.None
 })
-export class CommentComponent implements OnInit, OnDestroy {
+export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
+    private _isVisible = new BehaviorSubject<boolean>(false);
 
     @Input()
     bgmEpsId: number;
@@ -64,7 +71,16 @@ export class CommentComponent implements OnInit, OnDestroy {
 
     rootFormOpen = false;
 
-    constructor(private _chromeExtensionService: ChromeExtensionService) {
+    isLoading = true;
+
+    get isVisible(): Observable<boolean> {
+        return this._isVisible.asObservable();
+    }
+
+    @ViewChild('headDivider') headDividerRef: ElementRef;
+
+    constructor(private _chromeExtensionService: ChromeExtensionService,
+                private _responsiveService: ResponsiveService) {
     }
 
     addComment(post: Post) {
@@ -148,15 +164,18 @@ export class CommentComponent implements OnInit, OnDestroy {
     }
 
     private freshCommentList() {
+        this.isLoading = true;
         this._subscription.add(
             this._chromeExtensionService.invokeBangumiWebMethod('getCommentForEpisode', [this.bgmEpsId])
                 .subscribe((result: any) => {
                     this.posts = result.posts;
-                    console.log(this.posts);
+                    this.isLoading = false;
                     if (result.newComment) {
                         this.lastview = result.newComment.lastview;
                         this.formhash = result.newComment.formhash;
                     }
+                }, () => {
+                    this.isLoading = false;
                 })
         );
     }
@@ -181,13 +200,27 @@ export class CommentComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.freshCommentList();
         this._subscription.add(
-            this._chromeExtensionService.authInfo
+            this.isVisible
+                .filter(visible => visible)
+                .flatMap(() => {
+                    return this._chromeExtensionService.authInfo;
+                })
                 .subscribe((authInfo) => {
                     this.authInfo = authInfo as IAuthInfo;
+                    this.freshCommentList();
                 })
         );
+    }
+
+    ngAfterViewInit(): void {
+        this._responsiveService.observe({
+            target: this.headDividerRef.nativeElement,
+            callback: (rect) => {
+                this._isVisible.next(true);
+            },
+            unobserveOnVisible: true
+        });
     }
 
     ngOnDestroy(): void {

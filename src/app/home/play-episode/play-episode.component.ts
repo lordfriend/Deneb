@@ -48,6 +48,8 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
     isBangumiReady: boolean;
 
+    commentEnabled: boolean;
+
     currentVideoFile: VideoFile;
 
     @ViewChild(VideoPlayer) videoPlayer: VideoPlayer;
@@ -131,11 +133,11 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
             if (this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
                 this._subscription.add(
                     this.canSync()
-                        .flatMap((canSync) => {
-                            if (canSync) {
+                        .flatMap((result) => {
+                            if (result.canSync) {
                                 return this._chromeExtensionService.invokeBangumiMethod('updateEpisodeStatus', [this.episode.bgm_eps_id, 'watched']);
                             } else {
-                                return Observable.throw(canSync);
+                                return Observable.throw(result.canSync);
                             }
                         })
                         .subscribe((result) => {
@@ -165,8 +167,8 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
             if (otherWatched && this.episode.bangumi.favorite_status !== Bangumi.WATCHED) {
                 this._subscription.add(
                     this.canSync()
-                        .flatMap(canSync => {
-                            if (canSync) {
+                        .flatMap(result => {
+                            if (result.canSync) {
                                 return this._synchronizeService.updateFavoriteStatus(bangumi, Bangumi.WATCHED)
                                     .do(() => {
                                         this._toastRef.show('已与Bangumi同步');
@@ -183,7 +185,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         }
     }
 
-    ngOnInit(): any {
+    ngOnInit(): void {
         let searchStr = window.location.search;
         let videoFileId = null;
         if (!!searchStr) {
@@ -237,7 +239,21 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                     }
                 )
         );
-        return null;
+        this._subscription.add(
+            this._chromeExtensionService.isEnabled
+                .filter(enabled => enabled)
+                .flatMap(() => {
+                    return this._chromeExtensionService.authInfo;
+                })
+                .filter(authInfo => !!authInfo)
+                .flatMap(() => {
+                    return this._chromeExtensionService.isBgmTvLogon;
+                })
+                .filter(isLogon => isLogon === LOGON_STATUS.TRUE)
+                .subscribe(() => {
+                    this.commentEnabled = true;
+                })
+        );
     }
 
     ngOnDestroy(): void {
@@ -265,7 +281,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                 return Observable.of({canSync: true});
             })
             .catch((error) => {
-                return error;
+                return Observable.of(error);
             });
     }
 }

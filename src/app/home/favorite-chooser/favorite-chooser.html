@@ -2,7 +2,7 @@
     <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite"
             class="small ui basic button"
             [disabled]="isOnSynchronizing && isExtensionEnabled"
-            (click)="toggleFavoriteChooser()"><i class="remove bookmark icon"></i>收藏/评分
+            (click)="toggleFavoriteChooser()"><i class="remove bookmark icon"></i> {{toggleButtonText}}
     </button>
     <button class="ui small labeled icon button" *ngIf="!isChoosingFavorite && !!bangumi.favorite_status"
             [ngClass]="{
@@ -49,6 +49,6 @@
     <button *ngIf="isChoosingFavorite" class="cancel-button small ui button" (click)="toggleFavoriteChooser()">取消
     </button>
 </div>
-<div class="my-review facade-item" *ngIf="!!userFavoriteInfo">
+<div class="my-review facade-item" *ngIf="!!userFavoriteInfo && loadBgmInfo">
     <my-review [rating]="userFavoriteInfo.rating" [comment]="userFavoriteInfo.comment" (editReview)="onEditReview()"></my-review>
 </div>

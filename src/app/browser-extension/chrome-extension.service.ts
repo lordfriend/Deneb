@@ -150,6 +150,10 @@ export class ChromeExtensionService {
         return this.invokeRPC('Synchronize', 'deleteFavorite', [bangumi]);
     }
 
+    syncProgress(bangumi: Bangumi): Observable<any> {
+        return this.invokeRPC('Synchronize', 'syncProgress', [bangumi]);
+    }
+
     private invokeRPC(className: string, method: string, args: any[]): Observable<any> {
         return new Observable<any>((observer) => {
             chrome.runtime.sendMessage(this.chromeExtensionId, {

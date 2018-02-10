@@ -29,7 +29,7 @@
             <h3 class="bangumi-title name">
                 <span class="tip">日文名:</span><span class="name-text">{{bangumi.name}}</span>
             </h3>
-            <favorite-chooser [bangumi]="bangumi" [loadBgmInfo]="true"></favorite-chooser>
+            <favorite-chooser [bangumi]="bangumi" [loadBgmInfo]="true" (reloadEpisodes)="reloadEpisodes()"></favorite-chooser>
             <div class="rating facade-item" *ngIf="isExtraInfoEnabled && !!extraInfo">
                 <bangumi-rating [rating]="extraInfo.rating"></bangumi-rating>
             </div>

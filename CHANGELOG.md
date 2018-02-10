@@ -6,10 +6,20 @@
 
 This is a feature which enhance the social element in the web client while not relies on Albireo, it is made available by installing an browser extension.
 
+### Feedback feature
+
+In play-episode component, user will be able to send feedback about current episode to admin. this require backend > 2.9.0
+
 ### Other improvements
 
+- Delete favorite, require backend > 2.8.0
 - VideoPlayer view larger.
 - Bangumi page now won't change height when image loaded.
+
+### Bugfix
+
+- typo in tos
+- copyright claim year update in footer
 
 ## 2.8.1
 

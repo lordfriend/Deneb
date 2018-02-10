@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HomeChild, HomeService } from "../home.service";
 import { Bangumi, User } from "../../entity";
 import { Observable, Subscription } from "rxjs/Rx";
@@ -38,6 +38,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
                 private _dialog: UIDialog,
                 private _route: ActivatedRoute,
                 private _titleService: Title,
+                private _changeDetector: ChangeDetectorRef,
                 toast: UIToast) {
         super(homeService);
         this._toastRef = toast.makeText();
@@ -58,11 +59,21 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
         this._coverExpanded = !this._coverExpanded;
     }
 
+    reloadEpisodes() {
+        this._subscription.add(
+            this.homeService.bangumi_detail(this.bangumi.id)
+                .subscribe(bangumi => {
+                    this.bangumi.episodes = bangumi.episodes;
+                    this._changeDetector.detectChanges();
+                })
+        );
+    }
+
     ngOnInit(): void {
         this._subscription.add(
             this._route.params
                 .flatMap((params) => {
-                    return this.homeService.bangumi_datail(params['bangumi_id']);
+                    return this.homeService.bangumi_detail(params['bangumi_id']);
                 })
                 .flatMap(bangumi => {
                     let bgmTitle = `${bangumi.name} - ${SITE_TITLE}`;

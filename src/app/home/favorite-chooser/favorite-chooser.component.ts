@@ -1,5 +1,5 @@
 import { Bangumi } from '../../entity';
-import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { BANGUMI_TYPE, FAVORITE_LABEL } from '../../entity/constants';
 import { WatchService } from '../watch.service';
 import { HomeService } from '../home.service';
@@ -8,6 +8,7 @@ import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthInfo, ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
 import { SynchronizeService } from './synchronize.service';
+import { WatchProgress } from '../../entity/watch-progress';
 
 @Component({
     selector: 'favorite-chooser',
@@ -35,6 +36,9 @@ export class FavoriteChooser implements OnInit, OnDestroy {
 
     @Input()
     loadBgmInfo: boolean;
+
+    @Output()
+    reloadEpisodes = new EventEmitter<any>();
 
     userFavoriteInfo: any;
 
@@ -70,22 +74,29 @@ export class FavoriteChooser implements OnInit, OnDestroy {
     }
 
     deleteFavorite() {
+        this.isOnSynchronizing = true;
         if (this.isExtensionEnabled) {
             this._subscription.add(
                 this._synchronize.deleteFavorite(this.bangumi)
                     .subscribe(() => {
+                        this.isOnSynchronizing = false;
                         this.homeService.changeFavorite();
                         this.bangumi.favorite_status = undefined;
                         this._toastRef.show('已删除收藏');
+                    }, () => {
+                        this.isOnSynchronizing = false;
                     })
             );
         } else {
             this._subscription.add(
                 this.watchService.delete_favorite(this.bangumi.id)
                     .subscribe(() => {
+                        this.isOnSynchronizing = false;
                         this.homeService.changeFavorite();
                         this.bangumi.favorite_status = undefined;
                         this._toastRef.show('已删除收藏');
+                    }, () => {
+                        this.isOnSynchronizing = false;
                     })
             );
         }
@@ -149,6 +160,9 @@ export class FavoriteChooser implements OnInit, OnDestroy {
                     this.userFavoriteInfo = result.data;
                     if (result.data && result.data.status && result.data.status.id) {
                         this.bangumi.favorite_status = result.data.status.id;
+                    }
+                    if (result.progressResult && result.progressResult.status === 0) {
+                        this.reloadEpisodes.emit(true);
                     }
                     console.log(result);
                 }, (error) => {

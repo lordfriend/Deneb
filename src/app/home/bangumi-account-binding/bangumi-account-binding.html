@@ -1,0 +1,58 @@
+<div class="ui container bangumi-account-binding-container">
+    <div class="ui secondary pointing menu">
+        <a routerLink="/settings/user" class="item">用户设置</a>
+        <a routerLink="/settings/web-hook" class="item">Web Hook列表</a>
+        <a routerLink="/settings/bangumi" class="active item">Bangumi账户</a>
+    </div>
+    <div class="ui segment">
+        <h4>关联Bangumi账户</h4>
+        <div class="bangumi-bound" *ngIf="!!authInfo && !isLoading">
+            <div class="avatar">
+                <img [src]="authInfo.avatar.large" alt="avatar">
+            </div>
+            <div class="info">
+                <div class="nickname">{{authInfo.nickname}}</div>
+                <div class="username">@{{authInfo.username}}</div>
+                <a class="user-space-url" [href]="authInfo.url" target="_blank">{{authInfo.url}}</a>
+                <div class="actions">
+                    <button class="ui red button" type="button"
+                            confirmDialog
+                            dialogTitle="确定取消关联吗？"
+                            dialogContent="您可以随时重新关联您的bangumi帐号"
+                            (onConfirm)="revokeAuth()">取消关联</button>
+                </div>
+            </div>
+        </div>
+        <div class="bangumi-non-bound" *ngIf="!authInfo && !isLoading">
+            <form class="auth-form ui form" [formGroup]="authForm" novalidate (submit)="login($event)">
+                <div class="field">
+                    <label>Bangumi邮箱</label>
+                    <input type="text" placeholder="Bangumi的注册邮箱" formControlName="username" autocomplete="new-username">
+                </div>
+                <div class="field">
+                    <label>Bangumi密码</label>
+                    <input type="password" placeholder="Bangumi的密码" formControlName="password" autocomplete="new-password">
+                </div>
+                <div class="footer">
+                    <button class="ui primary button" type="submit">登录</button>
+                </div>
+            </form>
+            <div class="ui active inverted dimmer" *ngIf="isAuthenticating">
+                <div class="ui loader"></div>
+            </div>
+        </div>
+    </div>
+    <div class="ui segment">
+        <h4>bgm.tv登录状态</h4>
+        <div class="ui visible message">
+            <div class="header">这是什么？</div>
+            bgm.tv登录状态是指当前浏览器下，bgm.tv域名是否已经登录过您的帐号，一些功能依赖该域名的cookie来进行操作
+        </div>
+        <div class="bangumi-login-status" *ngIf="isLogin === LOGON_STATUS.UNSURE">正在检查...</div>
+        <div class="bangumi-login-status" *ngIf="isLogin !== LOGON_STATUS.UNSURE">
+            <i class="status-icon" [ngClass]="{'status-logon': isLogin === LOGON_STATUS.TRUE,'status-logout': isLogin === LOGON_STATUS.FALSE}"></i>
+            <span class="status-text">当前登录状态: {{isLogin === LOGON_STATUS.TRUE ? '已登录': '未登录'}}</span>
+            <a class="ui basic blue button" target="_blank" *ngIf="isLogin === LOGON_STATUS.FALSE" (click)="loginInBgmTv()">立即去bgm.tv登录</a>
+        </div>
+    </div>
+</div>

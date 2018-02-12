@@ -1,0 +1,24 @@
+<div class="rating-container">
+    <div class="rating-summary">
+        <div class="rating-row">
+            <div class="rating-score">{{rating.score}}</div>
+            <div class="text" [style.background]="ratingColor">{{ratingText}}</div>
+        </div>
+        <div class="star-row">
+            <div class="rating-bar">
+                <i class="star icon" *ngFor="let s of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                   [ngClass]="{'empty': s > rating.score, 'half': s > rating.score && s - rating.score < 1}"></i>
+            </div>
+        </div>
+        <div class="total-count">
+            {{rating.total}}人评分
+        </div>
+    </div>
+    <div class="rating-distribution-chart">
+        <div class="rating-bar-wrapper" *ngFor="let c of countDist">
+            <div class="rating-column" [style.height]="c.c / rating.total * 100 + '%'"></div>
+            <div class="rating-label">{{c.r}}</div>
+            <!--<div class="rating-count-number">{{c.r}}</div>-->
+        </div>
+    </div>
+</div>

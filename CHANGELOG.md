@@ -1,5 +1,43 @@
 # Changelog
 
+## 3.0.0
+
+### Integration with bangumi account and social feature
+
+This is a feature which enhances the social element in the web client while not relies on Albireo,
+it is made available by installing a browser extension.
+
+### Feedback feature
+
+In play-episode component, a user will be able to send feedback about the current episode to admin. this require backend > 2.9.0
+
+### Other improvements
+
+- Delete favorite, require backend > 2.8.0
+- VideoPlayer view larger.
+- Bangumi page now won't change height when image loaded.
+
+### Bugfix
+
+- typo in TOS
+- copyright claim year update in the footer
+
+## 2.8.1
+
+hide video file picker when only one video file exists.
+
+## 2.8.0
+
+Add multiple video file support, video_file dialog in admin will show all the editable field.
+But only label and download_url should be edit when adding a new video file. To enable multiple video file playback in
+PlayEpisode component, a dropdown picker (or label list when in small screen) is added. note that the backend must be upgraded to 2.7.8 and above to filter
+out unfinished video_file to avoid exception.
+
+## 2.7.2
+
+- remove new-year icon
+- fix my-bangumi list label incorrectly positioned in Firefox
+
 ## 2.7.1
 
 - Add new year logo

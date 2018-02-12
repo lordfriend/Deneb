@@ -1,0 +1,27 @@
+<div class="crt-header" *ngIf="bangumi.type === 2">角色和声优</div>
+<div class="crt-header" *ngIf="bangumi.type === 6">角色</div>
+<div class="ui stackable three column grid chara-grid">
+    <div class="column" *ngFor="let character of characterList">
+        <div class="character-wrapper">
+            <div class="chara-avatar">
+                <img [src]="character.images.grid" alt="avatar">
+            </div>
+            <div class="chara-info">
+                <div class="main-info">
+                    <a [href]="character.url" target="_blank">{{character.name}}</a>
+                </div>
+                <div class="extra-info">
+                    <span class="ui mini basic label chara-role">{{character.role_name}}</span>
+                    <span class="name-cn">{{character.name_cn}}</span>
+                </div>
+                <div class="actor-info" *ngIf="!!character.actors">
+                    <span class="actor-key">CV:</span>
+                    <span class="actor-name" *ngFor="let actor of character.actors; last as isLast">
+                        <a [href]="actor.url" target="_blank" class="actor-name-link">{{actor.name}}</a>
+                        <span class="name-divider" *ngIf="!isLast">/</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

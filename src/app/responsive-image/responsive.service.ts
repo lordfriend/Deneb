@@ -17,7 +17,9 @@ export class ResponsiveService {
     }
 
     intersectionCallback(entries: IntersectionObserverEntry[]) {
-        entries.forEach((entry: IntersectionObserverEntry) => {
+        entries.filter(entry => {
+            return entry['isIntersecting']; // current lib.es6.d.ts not updated.
+        }).forEach((entry: IntersectionObserverEntry) => {
             let stub = this.getStub(entry.target);
             if (stub) {
                 stub.callback(entry.boundingClientRect);
@@ -25,7 +27,7 @@ export class ResponsiveService {
                     this.unobserve(stub);
                 }
             }
-        })
+        });
     }
 
     observe(stub: ObservableStub) {

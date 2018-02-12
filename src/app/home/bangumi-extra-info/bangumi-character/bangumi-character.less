@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.crt-header {
+  margin-top: 1.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #ccc;
+  display: block;
+  font-size: 0.8rem;
+  color: #adadad;
+}
+
+.chara-grid {
+  margin-top: 0.4rem;
+}
+
+.character-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  .chara-avatar {
+    flex: 0 1 auto;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.2rem;
+    border: 1px solid #e0e0e0;
+    > img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .chara-info {
+    flex: 1 1 auto;
+    margin-left: 0.5rem;
+    > .main-info {
+      padding-bottom: 0.2rem;
+      border-bottom: 1px solid #d6d6d6;
+    }
+    > .extra-info {
+      margin-top: 0.2rem;
+      > .name-cn {
+        font-size: 0.9rem;
+        color: #606060;
+      }
+    }
+    > .actor-info {
+      font-size: 0.9rem;
+      margin-top: 0.2rem;
+      .actor-key {
+        color: #474747;
+      }
+      .actor-name-link {
+        color: #5f5f5f;
+        &:hover,
+        &:focus {
+          color: #1e70bf;
+        }
+      }
+    }
+  }
+}

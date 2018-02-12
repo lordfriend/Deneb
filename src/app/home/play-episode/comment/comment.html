@@ -1,0 +1,101 @@
+<div class="comment-container ui comments">
+    <div class="ui divider" #headDivider></div>
+    <div class="comment-loading-container" *ngIf="isLoading">
+        <div class="ui active text large loader">
+            加载评论中...
+        </div>
+    </div>
+    <h3 class="ui header" *ngIf="!isLoading">{{!!posts ? posts.length: 0}}条来自Bangumi的评论</h3>
+    <div class="fake-comment-form" *ngIf="!!authInfo && !rootFormOpen">
+        <div class="avatar">
+            <img [src]="authInfo.avatar.medium" alt="avatar">
+        </div>
+        <div class="fake-textarea" (click)="openRootForm()">我要吐槽...</div>
+    </div>
+    <bangumi-comment-form [bgmEpsId]="bgmEpsId"
+                          [lastview]="lastview"
+                          [formhash]="formhash"
+                          [avatar]="authInfo.avatar.medium"
+                          *ngIf="!!formhash && rootFormOpen"
+                          (commentSent)="onCommentSent($event)"
+                          (cancel)="onCommentCancel($event)"></bangumi-comment-form>
+    <div class="comment-post comment" *ngFor="let post of posts">
+        <a [href]="post.author.url" class="avatar" target="_blank" *ngIf="!post.isEditing">
+            <img [src]="post.author.avatar" alt="avatar">
+        </a>
+        <div class="content" *ngIf="!post.isEditing">
+            <a [href]="post.author.url" class="author" target="_blank">{{post.author.name}}</a>
+            <div class="metadata">
+                <span class="date">{{post.date | date:'medium'}}</span>
+            </div>
+            <div class="text" [innerHTML]="post.content"></div>
+            <div class="actions" *ngIf="!post.formOpen && !post.isEditing && !!formhash">
+                <a class="reply" (click)="addComment(post)">Reply</a>
+                <a class="edit" *ngIf="post.author.uid === authInfo.id + ''" (click)="editComment(post)">Edit</a>
+                <a class="delete"
+                   *ngIf="post.author.uid === authInfo.id + ''"
+                   confirmDialog
+                   dialogTitle="确定要删除这条评论么"
+                   [dialogContent]="'确定删除“' + post.content + '”吗？'"
+                   (onConfirm)="deleteComment(post)">Delete</a>
+            </div>
+            <bangumi-comment-form [bgmEpsId]="bgmEpsId"
+                                  [lastview]="lastview"
+                                  [formhash]="formhash"
+                                  [avatar]="authInfo.avatar.medium"
+                                  [post]="post"
+                                  [isRootPost]="true"
+                                  *ngIf="post.formOpen && !!formhash"
+                                  (commentSent)="onCommentSent($event)"
+                                  (cancel)="onCommentCancel($event)"></bangumi-comment-form>
+        </div>
+        <bangumi-edit-comment  *ngIf="post.isEditing"
+                               [bgmEpsId]="bgmEpsId"
+                               [postId]="post.id"
+                               [avatar]="authInfo.avatar.medium"
+                               (commentUpdate)="onCommentUpdate($event)"
+                               (cancel)="onCommentEditCancel($event)"></bangumi-edit-comment>
+        <div class="comments" *ngIf="!!post.subPosts && post.subPosts.length > 0">
+            <div class="comment-post comment" *ngFor="let subPost of post.subPosts">
+                <a [href]="subPost.author.url" class="avatar" target="_blank" *ngIf="!subPost.isEditing">
+                    <img [src]="subPost.author.avatar" alt="avatar">
+                </a>
+                <div class="content" *ngIf="!subPost.isEditing">
+                    <a [href]="subPost.author.url" class="author" target="_blank">{{subPost.author.name}}</a>
+                    <div class="metadata">
+                        <span class="date">{{subPost.date | date:'medium'}}</span>
+                    </div>
+                    <div class="quote" *ngIf="!!subPost.quote">
+                        <q><strong>{{subPost.quote.author}}</strong><span [innerHTML]="subPost.quote.content"></span></q>
+                    </div>
+                    <div class="text" [innerHTML]="subPost.content"></div>
+                    <div class="actions" *ngIf="!subPost.formOpen && !subPost.isEditing && !!formhash">
+                        <a class="reply" (click)="addComment(subPost)">Reply</a>
+                        <a class="edit" *ngIf="subPost.author.uid === authInfo.id + ''" (click)="editComment(subPost)">Edit</a>
+                        <a class="delete"
+                           *ngIf="subPost.author.uid === authInfo.id + ''"
+                           confirmDialog
+                           dialogTitle="确定要删除这条评论么"
+                           [dialogContent]="'确定删除“' + subPost.content + '”吗？'"
+                           (onConfirm)="deleteComment(subPost)">Delete</a>
+                    </div>
+                    <bangumi-comment-form *ngIf="subPost.formOpen && !!formhash"
+                                          [bgmEpsId]="bgmEpsId"
+                                          [lastview]="lastview"
+                                          [formhash]="formhash"
+                                          [avatar]="authInfo.avatar.medium"
+                                          [post]="subPost"
+                                          [isRootPost]="false"
+                                          (commentSent)="onCommentSent($event)"
+                                          (cancel)="onCommentCancel($event)"></bangumi-comment-form>
+                </div>
+                <bangumi-edit-comment  *ngIf="subPost.isEditing"
+                                       [bgmEpsId]="bgmEpsId"
+                                       [postId]="subPost.id"
+                                       [avatar]="authInfo.avatar.medium"
+                                       (commentUpdate)="onCommentUpdate($event)"
+                                       (cancel)="onCommentEditCancel($event)"></bangumi-edit-comment>
+            </div>
+        </div>
+    </div>
+</div>

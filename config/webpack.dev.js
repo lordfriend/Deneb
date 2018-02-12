@@ -120,7 +120,8 @@ module.exports = function (metadata) {
             new DefinePlugin({
                 'ENV': JSON.stringify(metadata.ENV),
                 'HMR': metadata.HMR,
-                'SITE_TITLE': JSON.stringify(metadata.title)
+                'SITE_TITLE': JSON.stringify(metadata.title),
+                'CHROME_EXTENSION_ID': JSON.stringify(metadata.chrome_extension_id)
             }),
 
             // Plugin: LoaderOptionsPlugin

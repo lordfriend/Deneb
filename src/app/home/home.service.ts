@@ -96,7 +96,7 @@ export class HomeService extends BaseService {
             .catch(this.handleError);
     }
 
-    bangumi_datail(bangumi_id: string): Observable<Bangumi> {
+    bangumi_detail(bangumi_id: string): Observable<Bangumi> {
         return this._http.get(`${this._baseUrl}/bangumi/${bangumi_id}`)
             .map(res => <Bangumi> res.json().data)
             .map(bangumi => {

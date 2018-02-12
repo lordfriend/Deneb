@@ -1,3 +1,32 @@
-.favorite-wrapper {
+favorite-chooser {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   margin-top: 1.8rem;
+
+
+  .facade-item {
+    margin-top: 2.8rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid #ccc;
+    position: relative;
+    &:before {
+      display: block;
+      font-size: 0.8rem;
+      color: #adadad;
+      position: absolute;
+      top: -1.8rem;
+      left: 0;
+    }
+  }
+  .my-review {
+    &:before {
+      content: "我的评价";
+    }
+  }
+
+  .sync-complete-tip {
+    color: #6cbb72;
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, PipeTransform, Pipe } from '@angular/core';
 import { Episode, Bangumi } from "../../entity";
 import { HomeService, HomeChild } from "../home.service";
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,6 +7,11 @@ import { Title } from '@angular/platform-browser';
 import { WatchService } from '../watch.service';
 import { WatchProgress } from '../../entity/watch-progress';
 import { VideoPlayer } from '../../video-player/video-player.component';
+import { VideoFile } from '../../entity/video-file';
+import { ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
+import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { SynchronizeService } from '../favorite-chooser/synchronize.service';
+import { Observable } from 'rxjs/Observable';
 
 export const MIN_WATCHED_PERCENTAGE = 0.95;
 
@@ -17,13 +22,14 @@ export const MIN_WATCHED_PERCENTAGE = 0.95;
     styleUrls: ['./play-episode.less']
 })
 export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
-    private routeParamsSubscription: Subscription;
-    private positionChangeSubscription: Subscription;
+    private _subscription = new Subscription();
+    private _toastRef: UIToastRef<UIToastComponent>;
 
     private positionChange = new Subject<number>();
 
     private current_position: number | undefined;
     private duration: number;
+
     // private isUpdateHistory: boolean = false;
 
     get isFinished(): boolean {
@@ -42,16 +48,34 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
     isBangumiReady: boolean;
 
+    commentEnabled: boolean;
+
+    currentVideoFile: VideoFile;
+
     @ViewChild(VideoPlayer) videoPlayer: VideoPlayer;
 
     constructor(homeService: HomeService,
-                private watchService: WatchService,
-                private titleService: Title,
-                private route: ActivatedRoute,
-                private router: Router) {
+                private _watchService: WatchService,
+                private _titleService: Title,
+                private _route: ActivatedRoute,
+                private _router: Router,
+                private _chromeExtensionService: ChromeExtensionService,
+                private _synchronizeService: SynchronizeService,
+                toast: UIToast) {
         super(homeService);
+        this._toastRef = toast.makeText();
     }
 
+    onVideoFileChange(videoFile: VideoFile): void {
+        let loc = window.location;
+        if (!!loc.search) {
+            let params = new URLSearchParams(loc.search);
+            params.set('video_id', videoFile.id);
+            loc.search = `?${params.toString()}`;
+        } else {
+            loc.search = `?video_id=${videoFile.id}`;
+        }
+    }
 
     focusVideoPlayer(event: Event) {
         let target = event.target as HTMLElement;
@@ -62,11 +86,11 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
 
     onWatchPositionUpdate(position: number) {
         this.current_position = position;
+        this.updateEpisodeWatchProgress();
+        this.positionChange.next(position);
         if (position === this.duration) {
             this.updateHistory(position);
         }
-        this.positionChange.next(position);
-        this.updateEpisodeWatchProgress();
     }
 
     onDurationUpdate(duration: number) {
@@ -74,45 +98,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     }
 
     onPlayNext(episodeId: string) {
-        this.router.navigateByUrl(`/play/${episodeId}`);
-    }
-
-    ngOnInit(): any {
-        this.routeParamsSubscription = this.route.params
-            .flatMap((params) => {
-                let episode_id = params['episode_id'];
-                return this.homeService.episode_detail(episode_id)
-            })
-            .flatMap((episode: Episode) => {
-                this.episode = episode;
-                return this.homeService.bangumi_datail(episode.bangumi_id);
-            })
-            .subscribe(
-                (bangumi: Bangumi) => {
-                    this.isBangumiReady = true;
-                    this.episode.bangumi = bangumi;
-                    let epsTitle = `${this.episode.bangumi.name} ${this.episode.episode_no} - ${SITE_TITLE}`;
-                    this.titleService.setTitle(epsTitle);
-                    this.nextEpisode = bangumi.episodes.find(e => {
-                        return e.episode_no - this.episode.episode_no === 1 && e.status === Episode.STATUS_DOWNLOADED;
-                    });
-                },
-                error => console.log(error)
-            );
-
-        this.positionChangeSubscription = this.positionChange
-            .throttleTime(5000)
-            // .filter(() => {
-            //     return !this.isUpdateHistory;
-            // })
-            .subscribe(
-                (position) => {
-                    this.updateHistory(position);
-                },
-                () => {
-                }
-            );
-        return null;
+        this._router.navigateByUrl(`/play/${episodeId}`);
     }
 
     updateHistory(position) {
@@ -121,16 +107,11 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         if (Number.isNaN(percentage)) {
             return;
         }
-        this.watchService.updateWatchProgress(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished);
-        // this.watchService.episode_history(this.episode.bangumi_id, this.episode.id, position, percentage, this.isFinished)
-        //     .subscribe(
-        //         () => {
-        //             this.isUpdateHistory = false;
-        //         },
-        //         () => {
-        //             this.isUpdateHistory = false;
-        //         }
-        //     );
+        let isFinished = this.isFinished;
+        if (this.episode.watch_progress && this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
+            isFinished = true;
+        }
+        this._watchService.updateWatchProgress(this.episode.bangumi_id, this.episode.id, position, percentage, isFinished);
     }
 
     /**
@@ -146,7 +127,28 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         if (this.episode.watch_progress.watch_status !== WatchProgress.WATCHED && this.isFinished) {
             this.updateBangumiFavorite();
         }
-        this.episode.watch_progress.watch_status = this.isFinished ? WatchProgress.WATCHED : WatchProgress.WATCHING;
+        // only change watch status when this episode is not finished.
+        if (this.episode.watch_progress.watch_status !== WatchProgress.WATCHED) {
+            this.episode.watch_progress.watch_status = this.isFinished ? WatchProgress.WATCHED : WatchProgress.WATCHING;
+            if (this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
+                this._subscription.add(
+                    this.canSync()
+                        .flatMap((result) => {
+                            if (result.canSync) {
+                                return this._chromeExtensionService.invokeBangumiMethod('updateEpisodeStatus', [this.episode.bgm_eps_id, 'watched']);
+                            } else {
+                                return Observable.throw(result.canSync);
+                            }
+                        })
+                        .subscribe((result) => {
+                            console.log('episode progress synchronized', result);
+                            this._toastRef.show('已与Bangumi同步');
+                        }, () => {
+                            console.log('sync not enabled');
+                        })
+                );
+            }
+        }
     }
 
     /**
@@ -163,18 +165,123 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                     return episode.watch_progress && episode.watch_progress.watch_status === WatchProgress.WATCHED;
                 });
             if (otherWatched && this.episode.bangumi.favorite_status !== Bangumi.WATCHED) {
-                this.watchService.favorite_bangumi(this.episode.bangumi_id, Bangumi.WATCHED)
-                    .subscribe(() => {
-                        this.episode.bangumi.favorite_status = Bangumi.WATCHED;
-                        this.homeService.changeFavorite();
-                    });
+                this._subscription.add(
+                    this.canSync()
+                        .flatMap(result => {
+                            if (result.canSync) {
+                                return this._synchronizeService.updateFavoriteStatus(bangumi, Bangumi.WATCHED)
+                                    .do(() => {
+                                        this._toastRef.show('已与Bangumi同步');
+                                    });
+                            }
+                            return this._watchService.favorite_bangumi(this.episode.bangumi_id, Bangumi.WATCHED);
+                        })
+                        .subscribe(() => {
+                            this.episode.bangumi.favorite_status = Bangumi.WATCHED;
+                            this.homeService.changeFavorite();
+                        })
+                );
             }
         }
     }
 
-    ngOnDestroy(): any {
-        this.routeParamsSubscription.unsubscribe();
-        this.positionChangeSubscription.unsubscribe();
-        return null;
+    ngOnInit(): void {
+        let searchStr = window.location.search;
+        let videoFileId = null;
+        if (!!searchStr) {
+            let params = new URLSearchParams(searchStr);
+            videoFileId = params.get('video_id');
+        }
+        this._subscription.add(
+            this._route.params
+                .flatMap((params) => {
+                    let episode_id = params['episode_id'];
+                    return this.homeService.episode_detail(episode_id)
+                })
+                .flatMap((episode: Episode) => {
+                    this.episode = episode;
+                    if (videoFileId) {
+                        this.currentVideoFile = this.episode.video_files
+                            .filter(videoFile => videoFile.status === VideoFile.STATUS_DOWNLOADED)
+                            .find(videoFile => videoFile.id === videoFileId);
+                    }
+                    if (!this.currentVideoFile) {
+                        this.currentVideoFile = this.episode.video_files
+                            .find(videoFile => videoFile.status === VideoFile.STATUS_DOWNLOADED);
+                    }
+                    return this.homeService.bangumi_detail(episode.bangumi_id);
+                })
+                .subscribe(
+                    (bangumi: Bangumi) => {
+                        this.isBangumiReady = true;
+                        this.episode.bangumi = bangumi;
+                        let epsTitle = `${this.episode.bangumi.name} ${this.episode.episode_no} - ${SITE_TITLE}`;
+                        this._titleService.setTitle(epsTitle);
+                        this.nextEpisode = bangumi.episodes.find(e => {
+                            return e.episode_no - this.episode.episode_no === 1 && e.status === Episode.STATUS_DOWNLOADED;
+                        });
+                    },
+                    error => console.log(error)
+                )
+        );
+
+        this._subscription.add(
+            this.positionChange
+                .throttleTime(5000)
+                // .filter(() => {
+                //     return !this.isUpdateHistory;
+                // })
+                .subscribe(
+                    (position) => {
+                        this.updateHistory(position);
+                    },
+                    () => {
+                    }
+                )
+        );
+        this._subscription.add(
+            this._chromeExtensionService.isEnabled
+                .filter(enabled => enabled)
+                .flatMap(() => {
+                    return this._chromeExtensionService.authInfo;
+                })
+                .filter(authInfo => !!authInfo)
+                .flatMap(() => {
+                    return this._chromeExtensionService.isBgmTvLogon;
+                })
+                .filter(isLogon => isLogon === LOGON_STATUS.TRUE)
+                .subscribe(() => {
+                    this.commentEnabled = true;
+                })
+        );
+    }
+
+    ngOnDestroy(): void {
+        this._subscription.unsubscribe();
+    }
+
+    private canSync(): Observable<any> {
+        return this._chromeExtensionService.isEnabled
+            .flatMap((isEnabled) => {
+                if (!isEnabled) {
+                    return Observable.throw({canSync: false});
+                }
+                return this._chromeExtensionService.authInfo;
+            })
+            .flatMap((authInfo) => {
+                if (!authInfo) {
+                    return Observable.throw({canSync: false});
+                }
+                return this._chromeExtensionService.isBgmTvLogon;
+            })
+            .flatMap((isBgmLogon) => {
+                if (isBgmLogon !== LOGON_STATUS.TRUE) {
+                    return Observable.throw({canSync: false});
+                }
+                return Observable.of({canSync: true});
+            })
+            .catch((error) => {
+                return Observable.of(error);
+            });
     }
 }

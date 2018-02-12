@@ -1,0 +1,9 @@
+<div class="user-action" #userActionLink>
+    <div class="text">
+        <img *ngIf="!!bgmAccountInfo" [src]="bgmAccountInfo.avatar.small" class="bangumi-avatar" alt="bangumi-avatar">
+        {{user?.name}}
+        <span *ngIf="!!bgmAccountInfo" class="bangumi-nickname">({{bgmAccountInfo.nickname}})</span>
+        <a *ngIf="!bgmAccountInfo && isBangumiEnabled" class="unauth-bangumi-tip">(未关联Bangumi)</a>
+    </div>
+    <i class="dropdown icon"></i>
+</div>

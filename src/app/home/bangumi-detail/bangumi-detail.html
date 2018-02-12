@@ -7,10 +7,11 @@
             <responsive-image [src]="bangumi.cover_image.url"
                               [size]="{
                                 width: '100%',
-                                height: 'auto',
+                                ratio: bangumi.cover_image.height / bangumi.cover_image.width,
                                 originalWidth: bangumi.cover_image.width,
                                 originalHeight: bangumi.cover_image.height}"
                               [background]="bangumi.cover_image.dominant_color"></responsive-image>
+            <bangumi-staff-info *ngIf="!!extraInfo" [staffList]="extraInfo.staff"></bangumi-staff-info>
         </div>
         <div class="bangumi-cover-revealer" [style.height]="coverRevealerHeight" (click)="toggleCover()">
         </div>
@@ -28,16 +29,20 @@
             <h3 class="bangumi-title name">
                 <span class="tip">日文名:</span><span class="name-text">{{bangumi.name}}</span>
             </h3>
-            <favorite-chooser [bangumi]="bangumi"></favorite-chooser>
+            <favorite-chooser [bangumi]="bangumi" [loadBgmInfo]="true" (reloadEpisodes)="reloadEpisodes()"></favorite-chooser>
+            <div class="rating facade-item" *ngIf="isExtraInfoEnabled && !!extraInfo">
+                <bangumi-rating [rating]="extraInfo.rating"></bangumi-rating>
+            </div>
             <div class="summary facade-item">
                 {{bangumi.summary}}
             </div>
-            <div class="air-date facade-item">
-                {{bangumi.air_date}}
+            <div class="on-air-info facade-item">
+                <span class="key">放送开始：</span>
+                <span class="value">{{bangumi.air_date}}</span>
+                <span class="key">放送星期：</span>
+                <span class="value">{{bangumi.air_weekday | weekday}}</span>
             </div>
-            <div class="air-weekday facade-item">
-                {{bangumi.air_weekday | weekday}}
-            </div>
+            <bangumi-character *ngIf="!!extraInfo" [bangumi]="bangumi" [characterList]="extraInfo.crt"></bangumi-character>
         </div>
     </div>
     <div class="episode-list">

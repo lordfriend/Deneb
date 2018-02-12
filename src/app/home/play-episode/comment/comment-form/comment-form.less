@@ -1,0 +1,31 @@
+:host {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.user-avatar {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 0.25rem;
+  margin-right: 1rem;
+  > img {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.25rem;
+  }
+}
+.ui.form {
+  flex: 1 1 auto;
+  textarea {
+    height: 8em;
+  }
+  .buttons.field {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}

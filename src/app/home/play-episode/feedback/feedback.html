@@ -1,0 +1,15 @@
+<form class="ui form" [formGroup]="feedbackForm" novalidate>
+    <h4 class="header">反馈问题</h4>
+    <div class="field">
+        <div class="ui buttons">
+            <button class="ui button" [ngClass]="{active: pickedIndex === i}" *ngFor="let issue of issueList; index as i" (click)="pickIssue(i)">{{issue}}</button>
+        </div>
+    </div>
+    <div class="field">
+        <textarea name="desc" cols="20" rows="5" formControlName="desc" placeholder="补充信息（可选）"></textarea>
+    </div>
+    <div class="footer">
+        <button class="ui button" type="button" (click)="cancel()">取消</button>
+        <button class="ui primary button" type="button" (click)="submit()" [disabled]="pickedIndex === -1">提交</button>
+    </div>
+</form>

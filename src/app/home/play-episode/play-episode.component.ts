@@ -9,9 +9,10 @@ import { WatchProgress } from '../../entity/watch-progress';
 import { VideoPlayer } from '../../video-player/video-player.component';
 import { VideoFile } from '../../entity/video-file';
 import { ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
-import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { SynchronizeService } from '../favorite-chooser/synchronize.service';
 import { Observable } from 'rxjs/Observable';
+import { FeedbackComponent } from './feedback/feedback.component';
 
 export const MIN_WATCHED_PERCENTAGE = 0.95;
 
@@ -61,9 +62,24 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                 private _router: Router,
                 private _chromeExtensionService: ChromeExtensionService,
                 private _synchronizeService: SynchronizeService,
+                private _dialogService: UIDialog,
                 toast: UIToast) {
         super(homeService);
         this._toastRef = toast.makeText();
+    }
+
+    feedback() {
+        let dialogRef = this._dialogService.open(FeedbackComponent, {stickyDialog: true, backdrop: false});
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .filter(result => !!result)
+                .flatMap((result) => {
+                    return this.homeService.sendFeedback(this.episode.id, this.currentVideoFile.id, result);
+                })
+                .subscribe(() => {
+                    this._toastRef.show('已收到您的反馈');
+                })
+        );
     }
 
     onVideoFileChange(videoFile: VideoFile): void {

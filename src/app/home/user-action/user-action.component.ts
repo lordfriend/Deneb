@@ -104,22 +104,22 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
                 })
         );
 
-        this._subscription.add(
-            this._chromeExtensionService.isEnabled
-                .filter(isEnabled => isEnabled)
-                .timeout(1000)
-                .catch(() => {
-                    let hasAcknowledged = this._persistStorage.getItem('USER_ACTION_HAS_ACKNOWLEDGED', null);
-                    if (isChrome && CHROME_EXTENSION_ID && !hasAcknowledged) {
-                        const popoverRef = this._popover.createPopover(userActionLinkElement, ChromeExtensionTipComponent, 'bottom-end');
-                        return popoverRef.afterClosed();
-                    }
-                })
-                .subscribe(() => {
-                    this._persistStorage.setItem('USER_ACTION_HAS_ACKNOWLEDGED', 'true');
-                }, () => {
-                })
-        );
+        // this._subscription.add(
+        //     this._chromeExtensionService.isEnabled
+        //         .filter(isEnabled => isEnabled)
+        //         .timeout(1000)
+        //         .catch(() => {
+        //             let hasAcknowledged = this._persistStorage.getItem('USER_ACTION_HAS_ACKNOWLEDGED', null);
+        //             if (isChrome && CHROME_EXTENSION_ID && !hasAcknowledged) {
+        //                 const popoverRef = this._popover.createPopover(userActionLinkElement, ChromeExtensionTipComponent, 'bottom-end');
+        //                 return popoverRef.afterClosed();
+        //             }
+        //         })
+        //         .subscribe(() => {
+        //             this._persistStorage.setItem('USER_ACTION_HAS_ACKNOWLEDGED', 'true');
+        //         }, () => {
+        //         })
+        // );
     }
 
     ngOnDestroy(): void {

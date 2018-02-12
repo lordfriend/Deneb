@@ -44,6 +44,7 @@ import { SynchronizeService } from './favorite-chooser/synchronize.service';
 import { UserActionComponent } from './user-action/user-action.component';
 import { UserActionPanelComponent } from './user-action/user-action-panel/user-action-panel.component';
 import { ChromeExtensionTipComponent } from './user-action/chrome-extension-tip/chrome-extension-tip.component';
+import { FeedbackComponent } from './play-episode/feedback/feedback.component';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { ChromeExtensionTipComponent } from './user-action/chrome-extension-tip/
         BangumiStaffInfoComponent,
         UserActionComponent,
         UserActionPanelComponent,
-        ChromeExtensionTipComponent
+        ChromeExtensionTipComponent,
+        FeedbackComponent
     ],
     providers: [
         HomeService,
@@ -101,7 +103,8 @@ import { ChromeExtensionTipComponent } from './user-action/chrome-extension-tip/
         EditReviewDialogComponent,
         ConflictDialogComponent,
         UserActionPanelComponent,
-        ChromeExtensionTipComponent
+        ChromeExtensionTipComponent,
+        FeedbackComponent
     ]
 })
 export class HomeModule {

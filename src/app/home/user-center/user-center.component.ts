@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { User } from '../../entity/user';
-import { UserService } from '../../user-service/user.service';
+import { User } from '../../entity';
+import { UserService } from '../../user-service';
 import { Subscription } from 'rxjs/Subscription';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { BaseError } from '../../../helpers/error/BaseError';
+import { BaseError } from '../../../helpers/error';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { passwordMatch } from '../../form-utils/validators';
+import { passwordMatch } from '../../form-utils';
 import { ClientError } from '../../../helpers/error/ClientError';
 import { UserCenterService } from './user-center.service';
 import { WebHook } from '../../entity/web-hook';
 import { Title } from '@angular/platform-browser';
+import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
 
 export const MAIL_SEND_INTERVAL = 60;
 
@@ -67,11 +68,14 @@ export class UserCenter implements OnInit, OnDestroy {
     isAddingWebHook = false;
     isLoading = false;
 
+    isBgmEnabled: boolean;
+
     webHookList: WebHook[];
 
     constructor(private _userSerivce: UserService,
                 private _userCenterService: UserCenterService,
                 private _fb: FormBuilder,
+                private _chromeExtensionService: ChromeExtensionService,
                 titleService: Title,
                 toastService: UIToast) {
         titleService.setTitle(`用户设置 - ${SITE_TITLE}`);
@@ -150,6 +154,12 @@ export class UserCenter implements OnInit, OnDestroy {
                     })
             );
         }
+        this._subscription.add(
+            this._chromeExtensionService.isEnabled
+                .subscribe(isEnabled => {
+                    this.isBgmEnabled = isEnabled;
+                })
+        );
     }
 
     ngOnDestroy(): void {

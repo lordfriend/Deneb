@@ -4,11 +4,12 @@
 
 ### Integration with bangumi account and social feature
 
-This is a feature which enhance the social element in the web client while not relies on Albireo, it is made available by installing an browser extension.
+This is a feature which enhances the social element in the web client while not relies on Albireo,
+it is made available by installing a browser extension.
 
 ### Feedback feature
 
-In play-episode component, user will be able to send feedback about current episode to admin. this require backend > 2.9.0
+In play-episode component, a user will be able to send feedback about the current episode to admin. this require backend > 2.9.0
 
 ### Other improvements
 
@@ -18,8 +19,8 @@ In play-episode component, user will be able to send feedback about current epis
 
 ### Bugfix
 
-- typo in tos
-- copyright claim year update in footer
+- typo in TOS
+- copyright claim year update in the footer
 
 ## 2.8.1
 

@@ -9,7 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="msapplication-tap-highlight" content="no"/>
     <meta name="description" content="<%= htmlWebpackPlugin.options.title %>">
-
+    <% if (htmlWebpackPlugin.options.metadata.chrome_extension_id) { %>
+    <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/<%= htmlWebpackPlugin.options.metadata.chrome_extension_id %>">
+    <% } %>
     <!-- use http://www.favicon-generator.org/ to replace files in public/icon-->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/icon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/icon/apple-icon-60x60.png">

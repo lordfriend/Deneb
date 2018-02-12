@@ -1,0 +1,17 @@
+<div class="user-action-panel-container">
+    <div class="ui secondary vertical compact menu">
+        <div *ngIf="!!bgmAccountInfo" class="header bgm-account-info">
+            <img *ngIf="!!bgmAccountInfo" [src]="bgmAccountInfo.avatar.medium" class="bangumi-avatar" alt="bangumi-avatar">
+            <div class="nickname">{{bgmAccountInfo.nickname}}</div>
+            <div class="username">@{{bgmAccountInfo.username}}</div>
+            <div class="actions">
+                <a class="ui tiny basic button" routerLink="/settings/bangumi">管理Bangumi关联</a>
+            </div>
+        </div>
+        <div *ngIf="!!bgmAccountInfo" class="ui divider"></div>
+        <a *ngIf="!bgmAccountInfo && isBangumiEnabled" class="item" routerLink="/settings/bangumi">关联Bangumi</a>
+        <a class="item" routerLink="/settings/user">用户设置</a>
+        <a class="item" routerLink="/settings/web-hook">Web Hook</a>
+        <a class="item" (click)="logout($event)">登出</a>
+    </div>
+</div>

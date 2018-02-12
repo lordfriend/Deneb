@@ -1,0 +1,61 @@
+@arrowOffset: 0.30714286em;
+
+@arrowStroke: 1px;
+@arrowColor: #bababc;
+
+@arrowBoxShadow: @arrowStroke @arrowStroke 0px 0px @arrowColor;
+@leftArrowBoxShadow: @arrowStroke -@arrowStroke 0px 0px @arrowColor;
+@rightArrowBoxShadow: -@arrowStroke @arrowStroke 0px 0px @arrowColor;
+@bottomArrowBoxShadow: -@arrowStroke -@arrowStroke 0px 0px @arrowColor;
+
+
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  z-index: 1900;
+}
+
+.ui-basic-popover {
+  position: relative;
+  border: 1px solid #d6d6d6;
+  border-radius: 4px;
+  background: #ffffff;
+  margin: 0.5rem;
+  -webkit-box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+  -moz-box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+  box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+  .popover-title {
+    padding: 0.6rem 0.8rem 0.2rem 0.8rem;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .popover-content {
+    padding: 0.5rem 0.8rem 0.6rem 0.8rem;
+    font-size: 1rem;
+  }
+
+  &:before {
+    top: -@arrowOffset;
+    right: 1em;
+    bottom: auto;
+    left: auto;
+    margin-left: 0em;
+    box-shadow: @bottomArrowBoxShadow;
+    background-color: #ffffff;
+    position: absolute;
+    content: ' ';
+    width: .71428571em;
+    height: .71428571em;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+    z-index: 2;
+  }
+}

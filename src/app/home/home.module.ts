@@ -41,6 +41,9 @@ import { ConflictDialogComponent } from './favorite-chooser/conflict-dialog/conf
 import { BangumiCharacterComponent } from './bangumi-extra-info/bangumi-character/bangumi-character.component';
 import { BangumiStaffInfoComponent } from './bangumi-extra-info/bangumi-staff-info/bangumi-staff-info.component';
 import { SynchronizeService } from './favorite-chooser/synchronize.service';
+import { UserActionComponent } from './user-action/user-action.component';
+import { UserActionPanelComponent } from './user-action/user-action-panel/user-action-panel.component';
+import { ChromeExtensionTipComponent } from './user-action/chrome-extension-tip/chrome-extension-tip.component';
 
 
 @NgModule({
@@ -67,7 +70,10 @@ import { SynchronizeService } from './favorite-chooser/synchronize.service';
         BangumiAccountBindingComponent,
         ConflictDialogComponent,
         BangumiCharacterComponent,
-        BangumiStaffInfoComponent
+        BangumiStaffInfoComponent,
+        UserActionComponent,
+        UserActionPanelComponent,
+        ChromeExtensionTipComponent
     ],
     providers: [
         HomeService,
@@ -93,7 +99,9 @@ import { SynchronizeService } from './favorite-chooser/synchronize.service';
     ],
     entryComponents: [
         EditReviewDialogComponent,
-        ConflictDialogComponent
+        ConflictDialogComponent,
+        UserActionPanelComponent,
+        ChromeExtensionTipComponent
     ]
 })
 export class HomeModule {

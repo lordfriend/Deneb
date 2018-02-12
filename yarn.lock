@@ -1368,8 +1368,8 @@ delegates@^1.0.0:
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
 deneb-ui@^0.9.0:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/deneb-ui/-/deneb-ui-0.9.4.tgz#972b1b57a7f27e1213e747aefec804e47f3946e1"
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/deneb-ui/-/deneb-ui-0.9.5.tgz#c3c876c2e4494e72006506c4fa4616d386ba084b"
 
 depd@~1.1.0:
   version "1.1.0"

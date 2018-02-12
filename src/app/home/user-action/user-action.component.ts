@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChromeExtensionService, INITIAL_STATE_VALUE } from '../../browser-extension/chrome-extension.service';
 import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../entity';
 import { BaseError } from '../../../helpers/error';
 import { PersistStorage, UserService } from '../../user-service';
-import { UIDialog, UIPopover, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { AlertDialog } from '../../alert-dialog/alert-dialog.component';
+import { UIPopover, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { UserActionPanelComponent } from './user-action-panel/user-action-panel.component';
@@ -21,6 +20,7 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
+    @Input()
     user: User;
 
     isBangumiEnabled: boolean;
@@ -37,7 +37,6 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
 
     constructor(private _chromeExtensionService: ChromeExtensionService,
                 private _userService: UserService,
-                private _dialogService: UIDialog,
                 private _router: Router,
                 private _popover: UIPopover,
                 private _persistStorage: PersistStorage,
@@ -56,30 +55,6 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit(): void {
-        this._subscription.add(this._userService.userInfo
-            .subscribe(
-                (user: User) => {
-                    this.user = user;
-                    if (user && (!user.email_confirmed || !user.email)) {
-                        console.log('please input your email');
-                        let dialogRef = this._dialogService.open(AlertDialog, {stickyDialog: true, backdrop: true});
-                        if (user.email && !user.email_confirmed) {
-                            dialogRef.componentInstance.title = '请验证你的邮箱地址！';
-                            dialogRef.componentInstance.content = '我们已经向您的邮箱地址发送了验证邮件，请前往您的邮箱查看该邮件并完成验证。';
-                            dialogRef.componentInstance.confirmButtonText = '知道了';
-                            this._subscription.add(dialogRef.afterClosed().subscribe(() => {}));
-                        } else {
-                            dialogRef.componentInstance.title = '请填写您的邮箱地址！';
-                            dialogRef.componentInstance.content = '我们检测到您还没有填写邮箱地址，使用邀请码重置密码功能已经关闭。请务必填写邮箱地址以保证正常使用';
-                            dialogRef.componentInstance.confirmButtonText = '前往用户设置';
-                            this._subscription.add(dialogRef.afterClosed().subscribe(() => {
-                                this._router.navigate(['/settings/user']);
-                            }));
-                        }
-                    }
-                }
-            ));
-
         this._subscription.add(
             this._chromeExtensionService.isEnabled
                 .do(isEnabled => {

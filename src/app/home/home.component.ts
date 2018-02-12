@@ -2,9 +2,12 @@ import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { HomeService } from './home.service';
 import { Observable, Subscription } from "rxjs/Rx";
-import { Bangumi } from '../entity';
+import { Bangumi, User } from '../entity';
 import { Router } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AlertDialog } from '../alert-dialog/alert-dialog.component';
+import { UIDialog } from 'deneb-ui';
+import { UserService } from '../user-service';
 
 const BREAK_POINT = 1330;
 
@@ -29,6 +32,8 @@ export class Home implements OnInit, OnDestroy {
 
     private _subscription = new Subscription();
 
+    user: User;
+
     siteTitle: string = SITE_TITLE;
 
     currentRouteName: string = '';
@@ -43,6 +48,8 @@ export class Home implements OnInit, OnDestroy {
 
     constructor(titleService: Title,
                 private _homeService: HomeService,
+                private _dialogService: UIDialog,
+                private _userService: UserService,
                 private _router: Router) {
         this.checkOverlapMode();
         if (this.sidebarOverlap) {
@@ -104,6 +111,29 @@ export class Home implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this._subscription.add(this._userService.userInfo
+            .subscribe(
+                (user: User) => {
+                    this.user = user;
+                    if (user && (!user.email_confirmed || !user.email)) {
+                        console.log('please input your email');
+                        let dialogRef = this._dialogService.open(AlertDialog, {stickyDialog: true, backdrop: true});
+                        if (user.email && !user.email_confirmed) {
+                            dialogRef.componentInstance.title = '请验证你的邮箱地址！';
+                            dialogRef.componentInstance.content = '我们已经向您的邮箱地址发送了验证邮件，请前往您的邮箱查看该邮件并完成验证。';
+                            dialogRef.componentInstance.confirmButtonText = '知道了';
+                            this._subscription.add(dialogRef.afterClosed().subscribe(() => {}));
+                        } else {
+                            dialogRef.componentInstance.title = '请填写您的邮箱地址！';
+                            dialogRef.componentInstance.content = '我们检测到您还没有填写邮箱地址，使用邀请码重置密码功能已经关闭。请务必填写邮箱地址以保证正常使用';
+                            dialogRef.componentInstance.confirmButtonText = '前往用户设置';
+                            this._subscription.add(dialogRef.afterClosed().subscribe(() => {
+                                this._router.navigate(['/settings/user']);
+                            }));
+                        }
+                    }
+                }
+            ));
         this._subscription.add(Observable.fromEvent(window, 'resize')
             .subscribe(
                 () => {

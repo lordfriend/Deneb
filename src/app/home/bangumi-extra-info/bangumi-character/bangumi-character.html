@@ -4,7 +4,7 @@
     <div class="column" *ngFor="let character of characterList">
         <div class="character-wrapper">
             <div class="chara-avatar">
-                <img [src]="character.images.grid" alt="avatar">
+                <img *ngIf="!!character.images" [src]="character.images?.grid" alt="avatar">
             </div>
             <div class="chara-info">
                 <div class="main-info">

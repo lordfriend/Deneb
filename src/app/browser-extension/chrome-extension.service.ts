@@ -1,9 +1,7 @@
-import { ApplicationRef, ChangeDetectorRef, Injectable } from '@angular/core';
+import { ApplicationRef, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { UIDialog } from 'deneb-ui';
 import { BangumiAuthDialogComponent } from './bangumi-auth-dialog/bangumi-auth-dialog.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import Port = chrome.runtime.Port;
 import { Bangumi } from '../entity';
 
 export interface RPCMessage {
@@ -69,7 +67,7 @@ export class ChromeExtensionService {
         if (CHROME_EXTENSION_ID) {
             this.chromeExtensionId = CHROME_EXTENSION_ID;
         }
-        if (window && chrome && this.chromeExtensionId) {
+        if (!!window && !!window.chrome && !!this.chromeExtensionId) {
             this.isEnabled.filter(isEnabled => isEnabled)
                 .subscribe(() => {
                     this.invokeBangumiMethod('getAuthInfo', [])
@@ -155,20 +153,24 @@ export class ChromeExtensionService {
     }
 
     private invokeRPC(className: string, method: string, args: any[]): Observable<any> {
-        return new Observable<any>((observer) => {
-            chrome.runtime.sendMessage(this.chromeExtensionId, {
-                className: className,
-                method: method,
-                args: args
-            }, (resp: RPCResult) => {
-                if (resp && !resp.error) {
-                    observer.next(resp.result);
-                } else {
-                    observer.error(resp ? resp.error : 'unknown error');
-                }
-                observer.complete();
-                this._appRef.tick();
+        return this.isEnabled
+            .filter(isEnabled => isEnabled)
+            .flatMap(() => {
+                return new Observable<any>((observer) => {
+                    chrome.runtime.sendMessage(this.chromeExtensionId, {
+                        className: className,
+                        method: method,
+                        args: args
+                    }, (resp: RPCResult) => {
+                        if (resp && !resp.error) {
+                            observer.next(resp.result);
+                        } else {
+                            observer.error(resp ? resp.error : 'unknown error');
+                        }
+                        observer.complete();
+                        this._appRef.tick();
+                    });
+                });
             });
-        });
     }
 }

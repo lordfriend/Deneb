@@ -11,7 +11,7 @@
                                 originalWidth: bangumi.cover_image.width,
                                 originalHeight: bangumi.cover_image.height}"
                               [background]="bangumi.cover_image.dominant_color"></responsive-image>
-            <bangumi-staff-info *ngIf="!!extraInfo" [staffList]="extraInfo.staff"></bangumi-staff-info>
+            <bangumi-staff-info *ngIf="!!extraInfo && !!extraInfo.staff" [staffList]="extraInfo.staff"></bangumi-staff-info>
         </div>
         <div class="bangumi-cover-revealer" [style.height]="coverRevealerHeight" (click)="toggleCover()">
         </div>
@@ -42,7 +42,7 @@
                 <span class="key">放送星期：</span>
                 <span class="value">{{bangumi.air_weekday | weekday}}</span>
             </div>
-            <bangumi-character *ngIf="!!extraInfo" [bangumi]="bangumi" [characterList]="extraInfo.crt"></bangumi-character>
+            <bangumi-character *ngIf="!!extraInfo && !!extraInfo.crt" [bangumi]="bangumi" [characterList]="extraInfo.crt"></bangumi-character>
         </div>
     </div>
     <div class="episode-list">

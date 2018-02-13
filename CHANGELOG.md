@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.2
+
+Fix crash in bangumi detail when some information is null (staff, crt)
+
+## 3.0.1
+
+Fix some bug in non-chrome browser, make sure favorite-chooser works when chrome extension is enabled but account is not bound.
+
 ## 3.0.0
 
 ### Integration with bangumi account and social feature

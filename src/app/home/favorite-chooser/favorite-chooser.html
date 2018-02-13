@@ -1,7 +1,7 @@
 <div class="favorite-wrapper">
     <button *ngIf="!bangumi.favorite_status && !isChoosingFavorite"
             class="small ui basic button"
-            [disabled]="isOnSynchronizing && isExtensionEnabled"
+            [disabled]="isOnSynchronizing && syncEnabled"
             (click)="toggleFavoriteChooser()"><i class="remove bookmark icon"></i> {{toggleButtonText}}
     </button>
     <button class="ui small labeled icon button" *ngIf="!isChoosingFavorite && !!bangumi.favorite_status"
@@ -12,7 +12,7 @@
                brown: bangumi.favorite_status === 4,
                grey: bangumi.favorite_status === 5
                }"
-            [disabled]="isOnSynchronizing && isExtensionEnabled"
+            [disabled]="isOnSynchronizing && syncEnabled"
             (click)="toggleFavoriteChooser()">
         <i class="bookmark icon"></i>我{{FAVORITE_LABEL[bangumi.favorite_status]}}这部{{BANGUMI_TYPE[bangumi.type]}}</button>
     <button class="ui small basic button"
@@ -21,14 +21,14 @@
             dialogTitle="确定要删除收藏吗？"
             [dialogContent]="isExtensionEnabled ? '你可以随时重新收藏这部动画，删除收藏就会影响到一些订阅服务，比如web-hook推送, 同时会删除您在Bangumi的收藏' : '你可以随时重新收藏这部动画，删除收藏就会影响到一些订阅服务，比如web-hook推送'"
             (onConfirm)="deleteFavorite()"
-            [disabled]="isOnSynchronizing && isExtensionEnabled">删除收藏</button>
-    <span class="sync-loader-tip" *ngIf="isOnSynchronizing && isExtensionEnabled">
+            [disabled]="isOnSynchronizing && syncEnabled">删除收藏</button>
+    <span class="sync-loader-tip" *ngIf="isOnSynchronizing && syncEnabled">
         <span class="ui active inline tiny loader"></span> 正在与Bangumi同步
     </span>
-    <span class="sync-complete-tip" *ngIf="!isOnSynchronizing && isExtensionEnabled">
+    <span class="sync-complete-tip" *ngIf="!isOnSynchronizing && syncEnabled">
         <i class="icon checkmark"></i> 已与Bangumi同步
     </span>
-
+    <span class="sync-disabled-tip" *ngIf="isExtensionEnabled && !syncEnabled">同步功能不可用，查看bgm.tv登录状态及帐号是否关联</span>
     <div *ngIf="isChoosingFavorite" class="small ui basic buttons">
         <button class="ui button" [ngClass]="{active: bangumi.favorite_status === 1}" (click)="chooseFavoriteStatus(1)">
             想看

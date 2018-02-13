@@ -33,6 +33,9 @@ export class FavoriteChooser implements OnInit, OnDestroy {
     isExtensionEnabled: boolean;
     authInfo: AuthInfo;
     isBgmLogin = LOGON_STATUS.UNSURE;
+    get syncEnabled(): boolean {
+        return this.isExtensionEnabled && !!this.authInfo && this.isBgmLogin === LOGON_STATUS.TRUE;
+    }
 
     @Input()
     loadBgmInfo: boolean;
@@ -75,7 +78,7 @@ export class FavoriteChooser implements OnInit, OnDestroy {
 
     deleteFavorite() {
         this.isOnSynchronizing = true;
-        if (this.isExtensionEnabled) {
+        if (this.syncEnabled) {
             this._subscription.add(
                 this._synchronize.deleteFavorite(this.bangumi)
                     .subscribe(() => {
@@ -103,7 +106,7 @@ export class FavoriteChooser implements OnInit, OnDestroy {
     }
 
     toggleFavoriteChooser() {
-        if (this.isExtensionEnabled && this.loadBgmInfo) {
+        if (this.syncEnabled && this.loadBgmInfo) {
             this.onEditReview();
         } else {
             this.isChoosingFavorite = !this.isChoosingFavorite;

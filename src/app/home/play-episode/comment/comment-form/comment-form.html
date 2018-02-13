@@ -1,0 +1,15 @@
+<div class="user-avatar">
+    <img [src]="avatar" alt="avatar">
+</div>
+<form class="ui form" [formGroup]="newCommentForm" (submit)="preventSubmit($event)">
+    <div class="field">
+        <textarea name="content" cols="30" rows="5" formControlName="content" #textarea></textarea>
+    </div>
+    <div class="buttons field">
+        <button class="ui button" type="button" (click)="cancelPost()">取消</button>
+        <button class="ui blue labeled submit icon button" type="button"
+                [disabled]="newCommentForm.invalid" (click)="addComment()">
+            <i class="icon edit"></i> 添加评论
+        </button>
+    </div>
+</form>

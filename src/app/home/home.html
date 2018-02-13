@@ -18,16 +18,7 @@
     </button>
     </div>
     <div class="right-area">
-        <div class="ui inline dropdown user-action" uiDropdown="click">
-            <div class="text">
-                {{user?.name}}
-            </div>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-                <a class="item" routerLink="/settings/user">用户设置</a>
-                <a class="item" (click)="logout()">登出</a>
-            </div>
-        </div>
+        <user-action [user]="user"></user-action>
         <a class="search-toggle-button" (click)="toggleFloatSearchFrame()">
             <i class="search icon"></i>
         </a>
@@ -60,7 +51,7 @@
 
 <footer id="page-footer" [ngClass]="currentRouteName + (sidebarActive === 'active' ? ' sidebar-active': '')"
         *ngIf="currentRouteName !== 'Bangumi' && currentRouteName !== 'Favorite'">
-    <div class="copyright-content">&copy;2016 - 2017 Nyasoft, All rights reserved.</div>
+    <div class="copyright-content">&copy;2016 - 2018 Nyasoft, All rights reserved.</div>
     <div class="credits">Powered By <a target="_blank" href="https://github.com/lordfriend/Albireo">Albireo</a></div>
     <div class="ui horizontal bulleted link list">
         <a routerLink="/about/tos" class="item">Terms and Conditions</a>

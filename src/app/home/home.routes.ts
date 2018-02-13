@@ -9,6 +9,7 @@ import { UserCenter } from './user-center/user-center.component';
 import { WebHookComponent } from './web-hook/web-hook.component';
 import { PreviewVideoComponent } from './preview-video/preview-video.component';
 import { FavoriteListComponent } from './favorite-list/favorite-list.component';
+import { BangumiAccountBindingComponent } from './bangumi-account-binding/bangumi-account-binding.component';
 export const homeRoutes: Routes = [
     {
         path: '',
@@ -45,6 +46,10 @@ export const homeRoutes: Routes = [
             {
                 path: 'settings/web-hook',
                 component: WebHookComponent
+            },
+            {
+                path: 'settings/bangumi',
+                component: BangumiAccountBindingComponent
             },
             {
                 path: 'pv',

@@ -1,0 +1,37 @@
+<div class="my-review-container" [ngClass]="{expanded: expanded}">
+    <div class="rating-container">
+        <div class="rating-row">
+            <div class="rating-score">{{ratingScore}}</div>
+            <div class="rating-text" [style.background]="ratingColor">{{ratingText}}</div>
+        </div>
+        <div class="rating-star">
+            <div class="rating-bar">
+                <i class="star icon" *ngFor="let s of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                   [ngClass]="{'empty': s > rating, 'half': s > rating && s - rating < 1}"></i>
+            </div>
+        </div>
+    </div>
+    <div class="review-comment-container">
+        <div class="review-text" *ngIf="!!comment" #reviewText>
+            {{comment}}
+            <div class="paragraph-light"></div>
+        </div>
+        <div class="no-review-hint" *ngIf="!comment" [ngClass]="{'no-button': !!comment || !!rating}">
+            <div class="hint-text">暂时还没有评论</div>
+            <button type="button" class="ui basic tiny button" (click)="onClickEditReview()">
+                <i class="edit icon"></i> 立即评价
+            </button>
+        </div>
+    </div>
+</div>
+<div class="edit-button-group">
+    <a class="edit-button anchor-button" *ngIf="!!rating || !!comment" (click)="onClickEditReview()">
+        <i class="edit icon"></i> 编辑评价
+    </a>
+    <a class="expand-button anchor-button" (click)="toggleComment(true)" *ngIf="!expanded && needTrimText">
+        <i class="angle double down icon"></i> 展开评论
+    </a>
+    <a class="contract-button anchor-button" (click)="toggleComment(false)" *ngIf="expanded && needTrimText">
+        <i class="angle double up icon"></i> 收起评论
+    </a>
+</div>

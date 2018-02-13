@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { PERM_NAME, WebHook } from '../../entity/web-hook';
 import { Subscription } from 'rxjs/Subscription';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
 
 @Component({
     selector: 'web-hook',
@@ -17,7 +18,10 @@ export class WebHookComponent implements OnInit, OnDestroy {
     webHookList: WebHook[];
     siteTitle = SITE_TITLE;
 
+    isBgmEnabled: boolean;
+
     constructor(private _http: Http,
+                private _chromeExtensionService: ChromeExtensionService,
                 toastService: UIToast,
                 titleService: Title) {
         titleService.setTitle(`Web Hook列表 - ${SITE_TITLE}`);
@@ -46,6 +50,12 @@ export class WebHookComponent implements OnInit, OnDestroy {
                     } else {
                         this._toastRef.show('网络错误');
                     }
+                })
+        );
+        this._subscription.add(
+            this._chromeExtensionService.isEnabled
+                .subscribe(isEnabled => {
+                    this.isBgmEnabled = isEnabled;
                 })
         );
     }

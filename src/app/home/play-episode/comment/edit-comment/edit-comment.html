@@ -1,0 +1,18 @@
+<div class="user-avatar">
+    <img [src]="avatar" alt="avatar">
+</div>
+<form class="ui form" [formGroup]="editCommentForm" (submit)="preventSubmit($event)">
+    <div class="field">
+        <textarea name="content" cols="30" rows="5" formControlName="content"></textarea>
+    </div>
+    <div class="buttons field">
+        <button class="ui button" type="button" (click)="cancelEdit()">取消</button>
+        <button class="ui blue labeled submit icon button" type="button"
+                [disabled]="editCommentForm.invalid" (click)="updateComment()">
+            <i class="icon edit"></i> 更新
+        </button>
+    </div>
+</form>
+<div class="ui inverted dimmer active" *ngIf="isLoading">
+    <div class="ui loader"></div>
+</div>

@@ -1,0 +1,64 @@
+<div class="action-bar">
+    <a class="back-button" (click)="cancel()"><i class="chevron left icon"></i></a>
+    <div class="title-text">
+        编辑对 <span class="bangumi-name">{{bangumi.name}}</span> 的评价
+    </div>
+</div>
+<div class="edit-review-container">
+    <div class="bangumi-info">
+        <responsive-image [src]="bangumi.cover_image.url"
+                          [size]="{
+                                width: '100%',
+                                height: 'auto',
+                                originalWidth: bangumi.cover_image.width,
+                                originalHeight: bangumi.cover_image.height}"
+                          [background]="bangumi.cover_image.dominant_color"></responsive-image>
+        <div class="bangumi-name-cn" *ngIf="bangumi.name_cn">{{bangumi.name_cn}}</div>
+    </div>
+    <form class="ui form" [formGroup]="reviewForm" (submit)="onSubmit($event)">
+        <div class="field">
+            <div class="small ui basic buttons">
+                <button class="ui button" [ngClass]="{active: favorite_status === 1}" (click)="chooseFavoriteStatus(1)">
+                    想看
+                </button>
+                <button class="ui button" [ngClass]="{active: favorite_status === 2}" (click)="chooseFavoriteStatus(2)">
+                    看过
+                </button>
+                <button class="ui button" [ngClass]="{active: favorite_status === 3}" (click)="chooseFavoriteStatus(3)">
+                    在看
+                </button>
+                <button class="ui button" [ngClass]="{active: favorite_status === 4}" (click)="chooseFavoriteStatus(4)">
+                    搁置
+                </button>
+                <button class="ui button" [ngClass]="{active: favorite_status === 5}" (click)="chooseFavoriteStatus(5)">
+                    抛弃
+                </button>
+            </div>
+        </div>
+        <div class="field">
+            <textarea name="comment" cols="20" rows="10"
+                      formControlName="comment"
+                      placeholder="对新番的吐槽，最多200字"></textarea>
+        </div>
+        <div class="field">
+            <div class="word-left" [ngClass]="{warning: reviewForm.controls['comment'].invalid}">{{reviewForm.controls['comment'].value.length}}/200</div>
+        </div>
+        <div class="field">
+            <div class="ui huge star rating" (mouseleave)="onHoverRating(0)">
+                <i class="icon" *ngFor="let s of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                   [ngClass]="{active: (s <= rating && !isHovering) || (s <= hoverScore && isHovering), selected: s <= hoverScore}"
+                   (mouseover)="onHoverRating(s)"
+                   (click)="onSelectRating(s)"></i>
+            </div>
+            <div class="rating-text">
+                {{isHovering ? hoveringText: ratingText}}
+                <span class="score" *ngIf="!!hoverScore || !!rating">{{isHovering ? hoverScore : rating}}</span>
+                <span class="warning-tip" *ngIf="isHovering && hoverScore === 10">(请谨慎评价)</span>
+            </div>
+        </div>
+        <div class="footer">
+            <button class="ui button" type="button" (click)="cancel()">取消</button>
+            <button class="ui primary button" type="button" (click)="save()" [disabled]="reviewForm.invalid || !favorite_status">提交</button>
+        </div>
+    </form>
+</div>

@@ -1,5 +1,5 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {Http} from '@angular/http';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import {BaseService} from "../../helpers/base.service";
 import {Observable} from "rxjs/Observable";
 import {Episode} from '../entity/episode';
@@ -96,7 +96,7 @@ export class HomeService extends BaseService {
             .catch(this.handleError);
     }
 
-    bangumi_datail(bangumi_id: string): Observable<Bangumi> {
+    bangumi_detail(bangumi_id: string): Observable<Bangumi> {
         return this._http.get(`${this._baseUrl}/bangumi/${bangumi_id}`)
             .map(res => <Bangumi> res.json().data)
             .map(bangumi => {
@@ -125,9 +125,22 @@ export class HomeService extends BaseService {
             .catch(this.handleError);
     }
 
-    listAnnounce():  Observable<Announce[]> {
+    listAnnounce(): Observable<Announce[]> {
         return this._http.get(`${this._baseUrl}/announce`)
             .map(res => res.json().data as Announce[])
+            .catch(this.handleError);
+    }
+
+    sendFeedback(episode_id: string, video_file_id: string, message: string): Observable<any> {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let requestOptions = new RequestOptions({headers: headers});
+        let body = JSON.stringify({
+            episode_id: episode_id,
+            video_file_id: video_file_id,
+            message: message
+        });
+        return this._http.post(`${this._baseUrl}/feedback`, body, requestOptions)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 

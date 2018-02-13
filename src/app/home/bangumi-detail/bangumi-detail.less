@@ -14,14 +14,14 @@
   .bangumi-cover {
     display: inline-block;
     flex: 1 1 auto;
-    width: 35%;
+    width: 30%;
   }
   .bangumi-cover-revealer {
     display: none;
   }
   .bangumi-base-info {
     flex: 1 1 auto;
-    width: 65%;
+    width: 70%;
     display: inline-block;
     padding: 0 1rem 0 2.5rem;
 
@@ -72,14 +72,25 @@
       }
     }
 
-    .air-date {
+    .on-air-info {
+      .key {
+        color: #767676;
+      }
+      .value {
+        padding: 0 2rem 0 0;
+      }
       &:before {
-        content: "放送开始";
+        content: "放送信息";
       }
     }
-    .air-weekday {
+    .rating {
       &:before {
-        content: "放送星期";
+        content: "Bangumi评分";
+      }
+    }
+    .my-review {
+      &:before {
+        content: "我的评价";
       }
     }
   }

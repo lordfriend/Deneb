@@ -12,22 +12,12 @@
     "importHelpers": true,
     "strictNullChecks": false,
     "lib": [
-      "es2015",
+      "es6",
       "dom"
     ],
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "types": [
-      "hammerjs",
-      "jasmine",
-      "node",
-      "source-map",
-      "uglify-js",
-      "webpack"
-    ],
-    "paths": [
-    ],
+    "paths": {
+      "*": ["node_modules/@types"]
+    },
     "baseUrl": "src"
   },
   "exclude": [

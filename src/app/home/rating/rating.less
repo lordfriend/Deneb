@@ -1,0 +1,109 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  height: 6rem;
+  margin-bottom: 2rem;
+  .rating-summary {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    .rating-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin: 1rem 0;
+      > .rating-score {
+        font-size: 2.5rem;
+        font-weight: 200;
+        font-family: "Robot", Arial, sans-serif;
+        margin-right: 1.5rem;
+        color: #606060;
+      }
+      > .text {
+        font-size: 1rem;
+        padding: 0.38rem 0.5rem;
+        background: #cccccc;
+        border-radius: 0.4rem;
+      }
+    }
+    .star-row {
+      text-align: center;
+      .rating-bar {
+        display: inline-flex;
+        font-size: 1rem;
+        color: #767676;
+        > i.icon {
+          margin-right: 0;
+        }
+      }
+    }
+    .total-count {
+      position: absolute;
+      font-size: 0.8rem;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      bottom: -1.8em;
+    }
+  }
+  .rating-distribution-chart {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    > .rating-bar-wrapper {
+      flex: 1 1 auto;
+      //width: 1rem;
+      height: 100%;
+      margin: 0 0.2rem;
+      position: relative;
+      .rating-column {
+        background-color: #ccc;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+      .rating-label {
+        position: absolute;
+        font-size: 0.8rem;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        bottom: -2em;
+      }
+    }
+  }
+
+  @media (max-width: 991px) and (min-width: 768px) {
+    .rating-summary {
+      width: 50%;
+    }
+    .rating-distribution-chart {
+      width: 50%;
+    }
+  }
+
+  @media (max-width: 499px) {
+    .rating-summary {
+      width: 50%;
+      .star-row {
+        display: none;
+      }
+    }
+    .rating-distribution-chart {
+      width: 50%;
+    }
+  }
+}

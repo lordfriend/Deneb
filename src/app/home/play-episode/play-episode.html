@@ -23,7 +23,7 @@
             <div class="text">{{currentVideoFile.label || currentVideoFile.file_name}}</div>
             <i class="dropdown icon"></i>
             <div class="menu">
-                <div class="item" *ngFor="let videoFile of episode.video_files" (click)="onVideoFileChnage(videoFile)">{{videoFile.label || videoFile.file_name}}</div>
+                <div class="item" *ngFor="let videoFile of episode.video_files" (click)="onVideoFileChange(videoFile)">{{videoFile.label || videoFile.file_name}}</div>
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
         <a class="ui label"
            *ngFor="let videoFile of episode.video_files"
            [ngClass]="{'blue': videoFile.id === currentVideoFile.id}"
-           (click)="onVideoFileChnage(videoFile)">
+           (click)="onVideoFileChange(videoFile)">
             {{videoFile.label || videoFile.file_name}}
         </a>
     </div>
@@ -43,6 +43,7 @@
         <span class="episode-no">{{episode.episode_no}}</span>
         <span class="episode-name-cn">{{episode.name_cn}}</span>
     </h3>
+    <a class="feedback-button" (click)="feedback()" title="报告错误"><i class="icon flag"></i></a>
     <div class="ui divider">
     </div>
     <div class="bangumi-info">
@@ -91,5 +92,9 @@
         </div>
     </div>
 </div>
-
+<div class="comment-section" *ngIf="!!episode && commentEnabled">
+    <div class="ui container">
+        <bangumi-comment [bgmEpsId]="episode.bgm_eps_id"></bangumi-comment>
+    </div>
+</div>
 

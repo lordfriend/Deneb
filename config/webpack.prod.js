@@ -107,7 +107,8 @@ module.exports = function (metadata) {
                     'ENV': JSON.stringify(metadata.ENV),
                     'NODE_ENV': JSON.stringify(metadata.ENV),
                     'HMR': metadata.HMR,
-                }
+                },
+                'CHROME_EXTENSION_ID': JSON.stringify(metadata.chrome_extension_id)
             }),
 
             // Plugin: UglifyJsPlugin

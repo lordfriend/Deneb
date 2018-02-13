@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.4
+
+- fix bug in favorite-chooser, some operation may occasionally make EditReviewDialog got stuck. Solve this issue by replacing ApplicationRef#tick() to NgZone#run(). Currently not know why.
+- Add a box shadow in feedback dialog.
+- Move synchronize invoke out of EditReviewDialog.
+- After update favorite, a get favorite request will be sent.
+
+## 3.0.3
+
+Fix bug which may cause crash in bangumi charactor info
+
 ## 3.0.2
 
 Fix crash in bangumi detail when some information is null (staff, crt)

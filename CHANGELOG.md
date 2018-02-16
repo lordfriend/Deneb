@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.5
+
+- fix layout issue in play-episode episode title when no episode name presents.
+- add sort comment order
+- add extra info in play episode.
+
 ## 3.0.4
 
 - fix bug in favorite-chooser, some operation may occasionally make EditReviewDialog got stuck. Solve this issue by replacing ApplicationRef#tick() to NgZone#run(). Currently not know why.

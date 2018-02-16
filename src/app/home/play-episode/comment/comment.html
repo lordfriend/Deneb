@@ -5,8 +5,14 @@
             加载评论中...
         </div>
     </div>
-    <h3 class="ui header" *ngIf="!isLoading">{{!!posts ? posts.length: 0}}条来自Bangumi的评论</h3>
-    <div class="fake-comment-form" *ngIf="!!authInfo && !rootFormOpen">
+    <div class="header-container">
+        <h3 class="ui header" *ngIf="!isLoading">{{!!posts ? posts.length: 0}}条来自Bangumi的评论</h3>
+        <a class="sort-button" (click)="onOrderChange($event)" [title]="sort === 'desc' ? '降序': '升序'">
+            <i class="sort content icon" [ngClass]="{ascending: sort === 'asc', descending: sort === 'desc'}"></i>
+            {{sort === 'desc'? '最新的评论在前': '最早的评论在前'}}
+        </a>
+    </div>
+    <div class="fake-comment-form" *ngIf="!!authInfo && !rootFormOpen && sort === 'desc'">
         <div class="avatar">
             <img [src]="authInfo.avatar.medium" alt="avatar">
         </div>
@@ -16,7 +22,7 @@
                           [lastview]="lastview"
                           [formhash]="formhash"
                           [avatar]="authInfo.avatar.medium"
-                          *ngIf="!!formhash && rootFormOpen"
+                          *ngIf="!!formhash && rootFormOpen && sort === 'desc'"
                           (commentSent)="onCommentSent($event)"
                           (cancel)="onCommentCancel($event)"></bangumi-comment-form>
     <div class="comment-post comment" *ngFor="let post of posts">
@@ -45,7 +51,7 @@
                                   [avatar]="authInfo.avatar.medium"
                                   [post]="post"
                                   [isRootPost]="true"
-                                  *ngIf="post.formOpen && !!formhash"
+                                  *ngIf="post.formOpen && !!formhash && sort === 'desc'"
                                   (commentSent)="onCommentSent($event)"
                                   (cancel)="onCommentCancel($event)"></bangumi-comment-form>
         </div>
@@ -97,5 +103,27 @@
                                        (cancel)="onCommentEditCancel($event)"></bangumi-edit-comment>
             </div>
         </div>
+        <bangumi-comment-form [bgmEpsId]="bgmEpsId"
+                              [lastview]="lastview"
+                              [formhash]="formhash"
+                              [avatar]="authInfo.avatar.medium"
+                              [post]="post"
+                              [isRootPost]="true"
+                              *ngIf="post.formOpen && !!formhash && sort === 'asc'"
+                              (commentSent)="onCommentSent($event)"
+                              (cancel)="onCommentCancel($event)"></bangumi-comment-form>
     </div>
+    <div class="fake-comment-form" *ngIf="!!authInfo && !rootFormOpen && sort === 'asc'">
+        <div class="avatar">
+            <img [src]="authInfo.avatar.medium" alt="avatar">
+        </div>
+        <div class="fake-textarea" (click)="openRootForm()">我要吐槽...</div>
+    </div>
+    <bangumi-comment-form [bgmEpsId]="bgmEpsId"
+                          [lastview]="lastview"
+                          [formhash]="formhash"
+                          [avatar]="authInfo.avatar.medium"
+                          *ngIf="!!formhash && rootFormOpen && sort === 'asc'"
+                          (commentSent)="onCommentSent($event)"
+                          (cancel)="onCommentCancel($event)"></bangumi-comment-form>
 </div>

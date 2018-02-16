@@ -11,8 +11,23 @@ bangumi-comment {
   }
   .comment-container.ui.comments {
     max-width: 100%;
-    .ui.dividing.header {
+    .header-container {
       padding-bottom: 0.8rem;
+      > .ui.header {
+        display: inline-block;
+        margin: 0 2rem 0 0;
+      }
+      > .sort-button {
+        display: inline-block;
+        vertical-align: top;
+        font-size: 1rem;
+        cursor: pointer;
+        color: #333333;
+        &:hover,
+        &:focus {
+          color: #4f7ba4
+        }
+      }
     }
     .fake-comment-form {
       display: flex;

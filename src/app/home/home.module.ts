@@ -45,6 +45,7 @@ import { UserActionComponent } from './user-action/user-action.component';
 import { UserActionPanelComponent } from './user-action/user-action-panel/user-action-panel.component';
 import { ChromeExtensionTipComponent } from './user-action/chrome-extension-tip/chrome-extension-tip.component';
 import { FeedbackComponent } from './play-episode/feedback/feedback.component';
+import { RevealExtraComponent } from './play-episode/reveal-extra/reveal-extra.component';
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import { FeedbackComponent } from './play-episode/feedback/feedback.component';
         UserActionComponent,
         UserActionPanelComponent,
         ChromeExtensionTipComponent,
-        FeedbackComponent
+        FeedbackComponent,
+        RevealExtraComponent
     ],
     providers: [
         HomeService,

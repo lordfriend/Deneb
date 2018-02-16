@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ResponsiveService } from '../../../responsive-image/responsive.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+import { PersistStorage } from '../../../user-service';
 
 export interface PostUser {
     uid: string;
@@ -46,6 +47,8 @@ export interface Post {
     isEditing: boolean // ui property
 }
 
+export const COMMENT_SORT_ORDER = 'comment_sort_order';
+
 @Component({
     selector: 'bangumi-comment',
     templateUrl: './comment.html',
@@ -60,6 +63,8 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
     bgmEpsId: number;
 
     posts: Post[];
+
+    sort: string;
 
     // for bgm to valid post data
     lastview: string;
@@ -80,7 +85,25 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('headDivider') headDividerRef: ElementRef;
 
     constructor(private _chromeExtensionService: ChromeExtensionService,
+                private _persistStorage: PersistStorage,
                 private _responsiveService: ResponsiveService) {
+        this.sort = this._persistStorage.getItem(COMMENT_SORT_ORDER, null);
+        if (!this.sort) {
+            this.sort = 'desc';
+            this._persistStorage.setItem(COMMENT_SORT_ORDER, this.sort);
+        }
+    }
+
+    onOrderChange(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.sort === 'desc') {
+            this.sort = 'asc';
+        } else {
+            this.sort = 'desc';
+        }
+        this._persistStorage.setItem(COMMENT_SORT_ORDER, this.sort);
+        this.sortCommentList();
     }
 
     addComment(post: Post) {
@@ -126,7 +149,11 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         if (result.type === 'main') {
             this.rootFormOpen = false;
-            this.posts.push(result.posts[0]);
+            if (this.sort === 'desc') {
+                this.posts.unshift(result.posts[0]);
+            } else {
+                this.posts.push(result.posts[0]);
+            }
         } else {
             let p = this.posts.find((post) => post.id === result.id);
             p.subPosts = p.subPosts.concat(result.posts.filter((post) => {
@@ -137,8 +164,9 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 }
                 return true;
-            }));
-            console.log(p);
+            })).sort((p1, p2) => {
+                return this.sort === 'desc' ? p2.date - p1.date: p1.date - p2.date;
+            });
         }
         if (result.replyPost) {
             result.replyPost.formOpen = false;
@@ -169,6 +197,7 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
             this._chromeExtensionService.invokeBangumiWebMethod('getCommentForEpisode', [this.bgmEpsId])
                 .subscribe((result: any) => {
                     this.posts = result.posts;
+                    this.sortCommentList();
                     this.isLoading = false;
                     if (result.newComment) {
                         this.lastview = result.newComment.lastview;
@@ -178,6 +207,20 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.isLoading = false;
                 })
         );
+    }
+
+    private sortCommentList() {
+        this.posts = this.posts.sort((p1, p2) => {
+            return this.sort === 'desc' ? p2.date - p1.date: p1.date - p2.date;
+        });
+
+        this.posts.forEach((post) => {
+            if (Array.isArray(post.subPosts) && post.subPosts.length > 0) {
+                post.subPosts = post.subPosts.sort((p1, p2) => {
+                    return this.sort === 'desc' ? p2.date - p1.date: p1.date - p2.date;
+                });
+            }
+        });
     }
 
     private updatePostProperty(postId: string, property: string, value: any) {

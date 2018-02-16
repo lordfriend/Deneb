@@ -1,0 +1,10 @@
+<div class="reveal-off" *ngIf="!isReveal && isEnabled">
+    <button *ngIf="!isLoading" class="ui tiny basic button" type="button" (click)="reveal()">查看更多信息</button>
+    <button *ngIf="isLoading" class="ui tiny basic loading button" type="button"></button>
+</div>
+<div class="reveal-on" *ngIf="isReveal && isEnabled">
+    <bangumi-character *ngIf="!!extraInfo && !!extraInfo.crt" [bangumi]="bangumi" [characterList]="extraInfo.crt"></bangumi-character>
+    <div class="buttons">
+        <button class="ui tiny basic button" type="button" (click)="hide()">隐藏信息</button>
+    </div>
+</div>

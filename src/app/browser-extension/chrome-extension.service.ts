@@ -1,9 +1,7 @@
-import { ApplicationRef, ChangeDetectorRef, Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { UIDialog } from 'deneb-ui';
 import { BangumiAuthDialogComponent } from './bangumi-auth-dialog/bangumi-auth-dialog.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import Port = chrome.runtime.Port;
 import { Bangumi } from '../entity';
 
 export interface RPCMessage {
@@ -64,12 +62,12 @@ export class ChromeExtensionService {
         return this._isBgmTvLogon.asObservable();
     }
 
-    constructor(private _appRef: ApplicationRef) {
+    constructor(private _ngZone: NgZone) {
         console.log('chrome extension id:', CHROME_EXTENSION_ID);
         if (CHROME_EXTENSION_ID) {
             this.chromeExtensionId = CHROME_EXTENSION_ID;
         }
-        if (window && chrome && this.chromeExtensionId) {
+        if (!!window && !!window.chrome && !!this.chromeExtensionId) {
             this.isEnabled.filter(isEnabled => isEnabled)
                 .subscribe(() => {
                     this.invokeBangumiMethod('getAuthInfo', [])
@@ -87,18 +85,19 @@ export class ChromeExtensionService {
                             }
                         });
                 });
-            chrome.runtime.sendMessage(this.chromeExtensionId, {
-                className: 'BackgroundCore',
-                method: 'verify',
-                args: []
-            }, (resp) => {
-                console.log(resp);
-                if (resp && resp.result === 'OK') {
-                    this._isEnabled.next(true);
-                } else {
-                    this._isEnabled.next(false);
-                }
-                this._appRef.tick();
+            this._ngZone.run(() => {
+                chrome.runtime.sendMessage(this.chromeExtensionId, {
+                    className: 'BackgroundCore',
+                    method: 'verify',
+                    args: []
+                }, (resp) => {
+                    console.log(resp);
+                    if (resp && resp.result === 'OK') {
+                        this._isEnabled.next(true);
+                    } else {
+                        this._isEnabled.next(false);
+                    }
+                });
             });
         } else {
             this._isEnabled.next(false);
@@ -161,14 +160,16 @@ export class ChromeExtensionService {
                 method: method,
                 args: args
             }, (resp: RPCResult) => {
-                if (resp && !resp.error) {
-                    observer.next(resp.result);
-                } else {
-                    observer.error(resp ? resp.error : 'unknown error');
-                }
-                observer.complete();
-                this._appRef.tick();
+                this._ngZone.run(() => {
+                    if (resp && !resp.error) {
+                        observer.next(resp.result);
+                    } else {
+                        observer.error(resp ? resp.error : 'unknown error');
+                    }
+                    observer.complete();
+                });
             });
+
         });
     }
 }

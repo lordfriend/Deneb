@@ -8,7 +8,6 @@ import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthInfo, ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
 import { SynchronizeService } from './synchronize.service';
-import { WatchProgress } from '../../entity/watch-progress';
 
 @Component({
     selector: 'favorite-chooser',
@@ -34,6 +33,10 @@ export class FavoriteChooser implements OnInit, OnDestroy {
     authInfo: AuthInfo;
     isBgmLogin = LOGON_STATUS.UNSURE;
 
+    get syncEnabled(): boolean {
+        return this.isExtensionEnabled && !!this.authInfo && this.isBgmLogin === LOGON_STATUS.TRUE;
+    }
+
     @Input()
     loadBgmInfo: boolean;
 
@@ -55,33 +58,56 @@ export class FavoriteChooser implements OnInit, OnDestroy {
 
     onEditReview() {
         const dialogRef = this._dialog.open(EditReviewDialogComponent, {backdrop: true, stickyDialog: true});
-        if (this.userFavoriteInfo) {
-            dialogRef.componentInstance.comment = this.userFavoriteInfo.comment;
-            dialogRef.componentInstance.rating = this.userFavoriteInfo.rating;
-            dialogRef.componentInstance.tags = Array.isArray(this.userFavoriteInfo.tags) ? this.userFavoriteInfo.tags.join(' ') : '';
-        }
+        dialogRef.componentInstance.comment = this.userFavoriteInfo ? this.userFavoriteInfo.comment : '';
+        dialogRef.componentInstance.rating = this.userFavoriteInfo ? this.userFavoriteInfo.rating : 0;
+        dialogRef.componentInstance.tags = this.userFavoriteInfo ? (Array.isArray(this.userFavoriteInfo.tags) ? this.userFavoriteInfo.tags.join(' ') : '') : '';
         dialogRef.componentInstance.bangumi = this.bangumi;
         this._subscription.add(dialogRef.afterClosed()
             .filter(result => !!result)
+            .flatMap((result) => {
+                this.isOnSynchronizing = true;
+                /**
+                 * export interface FavoriteStatus {
+                 *      interest: number;
+                 *      rating: number;
+                 *      tags: string;
+                 *      comment: string;
+                 * }
+                 */
+                return this._synchronize.updateFavorite(this.bangumi, result);
+            })
+            .flatMap(() => {
+                return this._chromeExtensionService.invokeBangumiMethod('favoriteStatus', [this.bangumi.bgm_id]);
+            })
             .subscribe((result) => {
-                if (!this.userFavoriteInfo) {
-                    this.userFavoriteInfo = {};
+                console.log(result);
+                this.isOnSynchronizing = false;
+                this.userFavoriteInfo = result;
+                this.bangumi.favorite_status = result.status.id;
+            }, (error) => {
+                console.log(error);
+                if (error && error.status === 404) {
+                    this.bangumi.favorite_status = 0;
+                    this.userFavoriteInfo = null;
                 }
-                this.userFavoriteInfo.rating = result.rating;
-                this.userFavoriteInfo.comment = result.comment;
-                this.bangumi.favorite_status = result.interest;
-            }));
+                this.isOnSynchronizing = false;
+                this._toastRef.show('更新失败');
+            })
+        );
     }
 
     deleteFavorite() {
         this.isOnSynchronizing = true;
-        if (this.isExtensionEnabled) {
+        if (this.syncEnabled) {
             this._subscription.add(
                 this._synchronize.deleteFavorite(this.bangumi)
+                    .do(() => {
+                        this.homeService.changeFavorite();
+                    })
                     .subscribe(() => {
                         this.isOnSynchronizing = false;
-                        this.homeService.changeFavorite();
-                        this.bangumi.favorite_status = undefined;
+                        this.bangumi.favorite_status = 0;
+                        this.userFavoriteInfo = null;
                         this._toastRef.show('已删除收藏');
                     }, () => {
                         this.isOnSynchronizing = false;
@@ -103,7 +129,7 @@ export class FavoriteChooser implements OnInit, OnDestroy {
     }
 
     toggleFavoriteChooser() {
-        if (this.isExtensionEnabled && this.loadBgmInfo) {
+        if (this.syncEnabled && this.loadBgmInfo) {
             this.onEditReview();
         } else {
             this.isChoosingFavorite = !this.isChoosingFavorite;
@@ -148,7 +174,7 @@ export class FavoriteChooser implements OnInit, OnDestroy {
                     if (this.isBgmLogin === LOGON_STATUS.TRUE && !!this.authInfo) {
                         this.toggleButtonText = '收藏/评价';
                     } else {
-                        this.toggleButtonText = '收藏 (未关联Bangumi无法同步)';
+                        this.toggleButtonText = '收藏';
                     }
                 })
                 .filter(isLogin => isLogin === LOGON_STATUS.TRUE)

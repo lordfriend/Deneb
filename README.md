@@ -28,6 +28,7 @@ To deploy on production server, a compiled and minfied bundle is needed, to buil
 ```shell
 export SITE_TITLE="Your site name"
 export GA="You google analytics Tracking ID" # if you want to use google analytics, export this environment variable.
+export CHROME_EXTENSION_ID=your chrome extension id # when you want user to bind Bangumi account, you should publish Sadr project for your domain, and give the id here.
 npm run build:aot:prod
 ```
 

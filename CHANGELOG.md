@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.6
+
+Fix the issue in favorite-choose when operating in play-episode page.
+
 ## 3.0.5
 
 - fix layout issue in play-episode episode title when no episode name presents.

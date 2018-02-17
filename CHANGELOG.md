@@ -2,7 +2,8 @@
 
 ## 3.0.6
 
-Fix the issue in favorite-choose when operating in play-episode page.
+- Fix the issue in favorite-choose when operating in play-episode page.
+- Add chrome extension web store link in static/apps, resume the tip for not installed user.
 
 ## 3.0.5
 

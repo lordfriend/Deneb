@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.7
+
+Fix bug in web-hook management editor which cause shared_secret cannot be saved.
+
 ## 3.0.6
 
 - Fix the issue in favorite-choose when operating in play-episode page.

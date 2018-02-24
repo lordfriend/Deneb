@@ -94,7 +94,7 @@ export class EditWebHookComponent implements OnInit, OnDestroy {
         if (result.permission_email) {
             result.permissions.push(WebHook.PERMISSION_EMAIL);
         }
-        if (this.webHook) {
+        if (this.webHook && !result.shared_secret) {
             result.shared_secret = undefined;
         }
         this._dialogRef.close({result: result});

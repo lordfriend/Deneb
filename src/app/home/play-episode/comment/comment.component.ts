@@ -156,6 +156,9 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         } else {
             let p = this.posts.find((post) => post.id === result.id);
+            if (!p.subPosts) {
+                p.subPosts = [];
+            }
             p.subPosts = p.subPosts.concat(result.posts.filter((post) => {
                 for (let i = 0; i < p.subPosts.length; i++) {
                     if (p.subPosts[i].id === post.id) {

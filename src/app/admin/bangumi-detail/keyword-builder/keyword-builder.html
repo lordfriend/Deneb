@@ -14,7 +14,24 @@
             </div>
             <input type="text" [formControl]="keywordControl" name="query" placeholder="请输入搜索关键词" (keyup.enter)="testFeed()">
         </div>
-        <div class="input-box-wrapper ui input" *ngIf="siteName !== 'libyk_so'">
+        <div class="input-box-wrapper ui left action input" *ngIf="siteName === 'nyaa'">
+            <div class="ui basic dropdown button" uiDropdown="click">
+                <div class="text">{{availableFilter[nyaaCriteria.f]}}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" *ngFor="let filter of availableFilter;let i = index" (click)="selectFilter(i)">{{filter}}</div>
+                </div>
+            </div>
+            <div class="ui basic dropdown button" uiDropdown="click">
+                <div class="text">{{categoryMap[nyaaCriteria.c]}}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" *ngFor="let c of availableCategory;" (click)="selectCategory(c)">{{categoryMap[c]}}</div>
+                </div>
+            </div>
+            <input type="text" [formControl]="keywordControl" name="query" placeholder="请输入搜索关键词" (keyup.enter)="testFeed()">
+        </div>
+        <div class="input-box-wrapper ui input" *ngIf="siteName !== 'libyk_so' && siteName !== 'nyaa'">
             <input type="text" [formControl]="keywordControl" name="query" placeholder="请输入搜索关键词" (keyup.enter)="testFeed()">
         </div>
         <button class="ui primary button test-button" type="button" (click)="testFeed()">Test</button>

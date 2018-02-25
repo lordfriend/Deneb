@@ -63,7 +63,7 @@ export class CommentFormComponent implements OnInit, AfterViewInit, OnDestroy {
             this.formhash
         ];
         if (this.post) {
-            args.push(this.post.replyParameter);
+            args.push(Object.assign({related: this.post.id}, this.post.replyParameter));
         }
         if (this.post && !this.isRootPost) {
             content = content.replace(/<div class="quote">([^^]*?)<\/div>/, '')

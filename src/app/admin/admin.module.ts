@@ -42,6 +42,7 @@ import { WebHookService } from './web-hook/web-hook.service';
 import { WebHookCardComponent } from './web-hook/web-hook-card/web-hook-card.component';
 import { EditWebHookComponent } from './web-hook/edit-web-hook/edit-web-hook.component';
 import { DpDatePickerModule } from 'ng2-date-picker';
+import { NyaaPipe } from './bangumi-pipes/nyaa-pipe';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import { DpDatePickerModule } from 'ng2-date-picker';
         BangumiTypeNamePipe,
         BangumiStatusNamePipe,
         LibykPipe,
+        NyaaPipe,
         BangumiMoePipe,
         BangumiBasic,
         BangumiMoeBuilder,

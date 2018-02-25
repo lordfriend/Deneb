@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.0
+
+- Add Nyaa source
+- Fix comment bug when reply author self comment.
+
 ## 3.0.7
 
 Fix bug in web-hook management editor which cause shared_secret cannot be saved.

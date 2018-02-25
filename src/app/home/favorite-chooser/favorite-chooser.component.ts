@@ -129,7 +129,7 @@ export class FavoriteChooser implements OnInit, OnDestroy {
     }
 
     toggleFavoriteChooser() {
-        if (this.syncEnabled && this.loadBgmInfo) {
+        if (this.syncEnabled) {
             this.onEditReview();
         } else {
             this.isChoosingFavorite = !this.isChoosingFavorite;

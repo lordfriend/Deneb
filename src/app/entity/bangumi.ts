@@ -21,6 +21,7 @@ export class Bangumi {
     acg_rip: string;
     libyk_so: string;
     bangumi_moe: string;
+    nyaa: string;
     status: number;
     create_time: number;
     update_time: number;

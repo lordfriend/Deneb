@@ -27,15 +27,19 @@ export class ChromeExtensionTipComponent extends UIPopoverContent implements OnD
     //     });
     // }
 
-    ngAfterViewInit(): void {
-        super.ngAfterViewInit();
-        this._subscription.add(
-            Observable.fromEvent(document.body, 'click')
-                .subscribe(() => {
-                    this.popoverRef.close();
-                })
-        );
+    onClickButton() {
+        this.popoverRef.close();
     }
+
+    // ngAfterViewInit(): void {
+    //     super.ngAfterViewInit();
+    //     this._subscription.add(
+    //         Observable.fromEvent(document.body, 'click')
+    //             .subscribe(() => {
+    //                 this.popoverRef.close();
+    //             })
+    //     );
+    // }
 
     ngOnDestroy(): void {
     }

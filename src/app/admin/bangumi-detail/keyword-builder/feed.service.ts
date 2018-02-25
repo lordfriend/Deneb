@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs/Rx';
 import {BaseService} from '../../../../helpers/base.service';
-import {Http} from '@angular/http';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import {Injectable} from '@angular/core';
 
 @Injectable()
@@ -32,6 +32,15 @@ export class FeedService extends BaseService {
     return this.http.get(`${this.baseUrl}/libyk-so?t=${t}&q=${q}`)
       .map(res => <{title: string, eps_no: number}> res.json().data)
       .catch(this.handleError);
+  }
+
+  queryNyaa(qs: string): Observable<{title: string, eps_no: number}[]> {
+      let header = new Headers({'Content-Type': 'application/json'});
+      let requestOptions = new RequestOptions({headers: header});
+      let body = JSON.stringify({qs: qs});
+      return this.http.post(`${this.baseUrl}/nyaa`, body, requestOptions)
+          .map(res => <{title: string, eps_no: number}[]> res.json().data)
+          .catch(this.handleError);
   }
 
 }

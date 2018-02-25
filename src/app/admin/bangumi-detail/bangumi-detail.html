@@ -114,6 +114,18 @@
                 <a class="edit-button anchor-button" (click)="editKeyword('libyk_so')"><i class="edit icon"></i></a>
             </div>
         </div>
+        <div class="libyk-entry entry">
+            <div class="entry-key">NYAA</div>
+            <div class="entry-value">
+                <div class="ui horizontal label" *ngIf="bangumi.nyaa">
+                    <i class="filter icon"></i>
+                    {{bangumi.nyaa | NyaaPipe:'f'}}
+                    <div class="detail">{{bangumi.nyaa | NyaaPipe:'c'}}</div>
+                </div>
+                <div class="ui horizontal label" *ngIf="bangumi.nyaa">{{bangumi.nyaa | NyaaPipe:'q'}}</div>
+                <a class="edit-button anchor-button" (click)="editKeyword('nyaa')"><i class="edit icon"></i></a>
+            </div>
+        </div>
     </div>
     <div class="bangumi-episodes">
         <h4 class="section-header">各话列表</h4>

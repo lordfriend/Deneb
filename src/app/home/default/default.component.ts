@@ -26,6 +26,7 @@ export class DefaultComponent extends HomeChild implements OnInit, OnDestroy {
     FAVORITE_LABEL = FAVORITE_LABEL;
 
     announce_in_banner: Announce;
+    announce_in_bangumi: Announce[];
 
     constructor(homeService: HomeService, private _persistStorage: PersistStorage) {
         super(homeService);
@@ -68,6 +69,9 @@ export class DefaultComponent extends HomeChild implements OnInit, OnDestroy {
                     this.announce_in_banner = announce_list.find((announce) => {
                         return announce.position === Announce.POSITION_BANNER;
                     });
+                    this.announce_in_bangumi = announce_list.filter(announce => {
+                        return announce.position === Announce.POSITION_BANGUMI;
+                    })
                 })
         );
     }

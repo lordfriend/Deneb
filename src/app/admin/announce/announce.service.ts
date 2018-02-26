@@ -13,11 +13,13 @@ export class AnnounceService extends BaseService {
         super();
     }
 
-    listAnnounce(offset: number, count: number): Observable<{data: Announce[], total: number}> {
+    listAnnounce(position: number, offset: number, count: number, content?: string): Observable<{data: Announce[], total: number}> {
         return this._http.get(this._baseUrl, {
             params: {
+                position: position,
                 offset: offset,
-                count: count
+                count: count,
+                content: content
             }
         })
             .map(res => res.json())

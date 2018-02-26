@@ -43,6 +43,7 @@ import { WebHookCardComponent } from './web-hook/web-hook-card/web-hook-card.com
 import { EditWebHookComponent } from './web-hook/edit-web-hook/edit-web-hook.component';
 import { DpDatePickerModule } from 'ng2-date-picker';
 import { NyaaPipe } from './bangumi-pipes/nyaa-pipe';
+import { EditBangumiRecommendComponent } from './announce/edit-bangumi-recommend/edit-bangumi-recommend.component';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import { NyaaPipe } from './bangumi-pipes/nyaa-pipe';
         EditAnnounceComponent,
         WebHookComponent,
         WebHookCardComponent,
-        EditWebHookComponent
+        EditWebHookComponent,
+        EditBangumiRecommendComponent
     ],
     providers: [
         AdminService,
@@ -106,7 +108,8 @@ import { NyaaPipe } from './bangumi-pipes/nyaa-pipe';
         UserPromoteModal,
         VideoFileModal,
         EditAnnounceComponent,
-        EditWebHookComponent
+        EditWebHookComponent,
+        EditBangumiRecommendComponent
     ]
 })
 export class AdminModule {

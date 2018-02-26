@@ -1,11 +1,15 @@
 <admin-navbar navTitle="编辑新番" backLink="/admin/bangumi">
+    <a class="accessory-action anchor-button" (click)="addOrEditAnnounce()">
+        <i class="thumbs up icon" [ngClass]="{outline: announceStatus !== AnnounceStatus.ANNOUNCING}"></i>
+        {{announceStatusText}}
+    </a>
     <a class="accessory-action anchor-button"
        title="删除番組"
        confirmDialog
        dialogTitle="确定删除番組么"
        dialogContent="删除该番組将删除与之有关的所有视频文件，torrent，用户收藏，观看进度等信息"
        (onConfirm)="deleteBangumi()">
-        <i class="trash icon"></i>
+        <i class="trash icon"></i> 删除番組
     </a>
 </admin-navbar>
 <div class="bangumi-detail-container" *ngIf="bangumi && adminList">

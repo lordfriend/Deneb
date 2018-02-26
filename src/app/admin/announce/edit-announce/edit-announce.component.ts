@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UIDialogRef } from 'deneb-ui';
 import { Announce } from '../../../entity/announce';
 import moment from 'moment';
@@ -37,7 +37,7 @@ export class EditAnnounceComponent implements OnInit, OnDestroy {
         sort_order: {
             'required': 'sort order不能为空'
         },
-        url: {
+        content: {
             'required': 'url不能为空'
         },
         image_url: {
@@ -54,7 +54,7 @@ export class EditAnnounceComponent implements OnInit, OnDestroy {
 
     announceFormErrors = {
         sort_order: [],
-        url: [],
+        content: [],
         image_url: [],
         start_time: [],
         end_time: []
@@ -102,7 +102,7 @@ export class EditAnnounceComponent implements OnInit, OnDestroy {
         if (this.announce) {
             this.announceForm = this._fb.group({
                 sort_order: [this.announce.sort_order, Validators.required],
-                url: [this.announce.url, Validators.required],
+                content: [this.announce.content, Validators.required],
                 image_url: [this.announce.image_url, Validators.required],
                 start_time: [moment(this.announce.start_time), Validators.required],
                 end_time: [moment(this.announce.end_time), Validators.required]
@@ -111,7 +111,7 @@ export class EditAnnounceComponent implements OnInit, OnDestroy {
         } else {
             this.announceForm = this._fb.group({
                 sort_order: [0, Validators.required],
-                url: ['', Validators.required],
+                content: ['', Validators.required],
                 image_url: ['', Validators.required],
                 start_time: [moment(), Validators.required],
                 end_time: [moment().add(1, 'day'), Validators.required]

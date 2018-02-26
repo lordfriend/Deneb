@@ -1,6 +1,6 @@
 <div class="ui container default-container">
     <div class="announce-container" *ngIf="announce_in_banner">
-        <a class="announcement" [href]="announce_in_banner.url" target="_blank">
+        <a class="announcement" [href]="announce_in_banner.content" target="_blank">
             <img [src]="announce_in_banner.image_url" alt="">
         </a>
     </div>

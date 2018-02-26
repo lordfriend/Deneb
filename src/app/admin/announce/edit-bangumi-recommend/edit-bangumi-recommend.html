@@ -1,0 +1,43 @@
+<form class="ui form bangumi-recommend-form" [formGroup]="recommendForm" [ngClass]="{error: recommendForm.invalid}">
+    <div class="bangumi-info">
+        <div class="bangumi-name">
+            <span class="key">番組名称：</span> {{bangumi.name}}
+        </div>
+        <div class="bangumi-id">
+            <span class="key">番組ID：</span> {{bangumi.id}}
+        </div>
+    </div>
+    <div class="announce-info">
+        <div class="field" [ngClass]="{error: recommendFormErrors.start_time.length > 0}">
+            <label>开始时间</label>
+            <dp-date-picker formControlName="start_time" theme="dp-material" config="dpConfig"></dp-date-picker>
+            <!--<input type="number" formControlName="start_time">-->
+        </div>
+        <div class="ui error message" *ngIf="recommendFormErrors.start_time.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of recommendFormErrors.start_time">{{error}}</li>
+            </ul>
+        </div>
+        <div class="field" [ngClass]="{error: recommendFormErrors.end_time.length > 0}">
+            <label>结束时间</label>
+            <dp-date-picker formControlName="end_time" theme="dp-material" config="dpConfig"></dp-date-picker>
+            <!--<input type="number" formControlName="end_time">-->
+        </div>
+        <div class="ui error message" *ngIf="recommendFormErrors.end_time.length > 0">
+            <ul class="list">
+                <li *ngFor="let error of recommendFormErrors.end_time">{{error}}</li>
+            </ul>
+        </div>
+        <div class="ui error message" *ngIf="!!recommendForm.errors && !!recommendForm.errors['dateRange']">
+            {{validationMessages.dateRange[recommendForm.errors['dateRange']]}}
+        </div>
+        <div class="field" [ngClass]="{error: recommendFormErrors.sort_order.length > 0}">
+            <label>顺序</label>
+            <input type="number" formControlName="sort_order" placeholder="当同一个位置有多个公告时使用">
+        </div>
+    </div>
+    <div class="footer">
+        <button class="ui button" (click)="cancel()">取消</button>
+        <button class="ui primary button" (click)="save()" [disabled]="recommendForm.invalid">保存</button>
+    </div>
+</form>

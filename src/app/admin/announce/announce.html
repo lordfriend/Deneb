@@ -19,21 +19,54 @@
                 <td>{{row.sort_order}}</td>
                 <td>{{row.start_time | date:"mediumDate":"+0000"}}</td>
                 <td>{{row.end_time | date:"mediumDate":"+0000"}}</td>
-                <td>{{row.url}}</td>
+                <td>{{row.content}}</td>
                 <td>{{row.image_url}}</td>
                 <td>
                     <a class="anchor-button" (click)="editAnnounce(row)"><i class="edit icon"></i></a>
                     <a class="anchor-button"
                        confirmDialog
                        dialogTitle="确认删除"
-                       [dialogContent]="'确认删除' + row.url + '吗？该操作不可恢复'"
+                       [dialogContent]="'确认删除' + row.content + '吗？该操作不可恢复'"
                        (onConfirm)="deleteAnnounce(row.id)"><i class="remove circle outline icon"></i></a>
                 </td>
             </tr>
             </tbody>
         </table>
-        <div class="pagination-container" *ngIf="total > count">
-            <ui-pagination [currentPage]="page" [total]="total" [countPerPage]="count" [max]="6" (pageChange)="refresh($event)"></ui-pagination>
+        <div class="pagination-container" *ngIf="announceTotal > announceCount">
+            <ui-pagination [currentPage]="announcePage" [total]="announceTotal" [countPerPage]="announceCount" [max]="6" (pageChange)="refresh($event)"></ui-pagination>
+        </div>
+    </div>
+    <div class="ui segment">
+        <h4>推荐番組</h4>
+        <table class="ui very basic table">
+            <thead>
+            <tr>
+                <th style="width: 3rem;">顺序</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th style="max-width: 40%;">标题</th>
+                <th style="width: 6rem;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of recommendList">
+                <td>{{row.sort_order}}</td>
+                <td>{{row.start_time | date:"mediumDate":"+0000"}}</td>
+                <td>{{row.end_time | date:"mediumDate":"+0000"}}</td>
+                <td>{{row.bangumi.name}}</td>
+                <td>
+                    <a class="anchor-button" (click)="editRecommend(row)"><i class="edit icon"></i></a>
+                    <a class="anchor-button"
+                       confirmDialog
+                       dialogTitle="确认删除"
+                       [dialogContent]="'确认删除' + row.bangumi.name + '吗？该操作不可恢复'"
+                       (onConfirm)="deleteRecommend(row.id)"><i class="remove circle outline icon"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container" *ngIf="recommendTotal > recommendCount">
+            <ui-pagination [currentPage]="recommendPage" [total]="recommendTotal" [countPerPage]="recommendCount" [max]="6" (pageChange)="refreshRecommend($event)"></ui-pagination>
         </div>
     </div>
 </div>

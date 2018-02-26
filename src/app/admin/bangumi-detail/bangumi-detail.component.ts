@@ -13,6 +13,13 @@ import {BangumiMoeBuilder} from './bangumi-moe-builder/bangumi-moe-builder.compo
 import {VideoFileModal} from './video-file-modal/video-file-modal.component';
 import { UserManagerSerivce } from '../user-manager/user-manager.service';
 import { User } from '../../entity/user';
+import { AnnounceService } from '../announce/announce.service';
+import { Announce } from '../../entity/announce';
+import { EditBangumiRecommendComponent } from '../announce/edit-bangumi-recommend/edit-bangumi-recommend.component';
+
+export enum AnnounceStatus {
+    NOT_SET, NOT_YET, ANNOUNCING, EXPIRED
+}
 
 @Component({
     selector: 'bangumi-detail',
@@ -54,10 +61,17 @@ export class BangumiDetail implements OnInit, OnDestroy {
 
     adminList: User[];
 
+    announceList: Announce[];
+    announceStatus: AnnounceStatus;
+    announceStatusText: string;
+
+    AnnounceStatus = AnnounceStatus;
+
     constructor(private _route: ActivatedRoute,
                 private _router: Router,
                 private _adminService: AdminService,
                 private _userManagerService: UserManagerSerivce,
+                private _announceService: AnnounceService,
                 private _uiDialog: UIDialog,
                 titleService: Title,
                 toastService: UIToast
@@ -87,6 +101,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
                 .subscribe(
                     (bangumi: Bangumi) => {
                         this.bangumi = bangumi;
+                        this.fetchAnnounceList(bangumi.id);
                     },
                     (error: BaseError) => {
                         this._toastRef.show(error.message);
@@ -243,6 +258,53 @@ export class BangumiDetail implements OnInit, OnDestroy {
                         this._toastRef.show(error.message);
                     }
                 )
+        );
+    }
+
+    addOrEditAnnounce() {
+        const dialogRef = this._uiDialog.open(EditBangumiRecommendComponent, {stickyDialog: true, backdrop: true});
+        dialogRef.componentInstance.bangumi = this.bangumi;
+        if (this.announceList.length > 0) {
+            dialogRef.componentInstance.announce = this.announceList[0];
+        }
+        this._subscription.add(
+            dialogRef.afterClosed()
+                .filter(result => !!result)
+                .flatMap((info) => {
+                    if (this.announceList.length > 0) {
+                        return this._announceService.updateAnnounce(this.announceList[0].id, info as Announce);
+                    }
+                    return this._announceService.addAnnounce(info as Announce);
+                })
+                .subscribe(() => {
+                    this._toastRef.show('添加成功');
+                    this.fetchAnnounceList(this.bangumi.id);
+                })
+        );
+    }
+
+    private fetchAnnounceList(bangumi_id: string) {
+        this._subscription.add(
+            this._announceService.listAnnounce(2,0, 10, bangumi_id)
+                .subscribe(({data}) => {
+                    this.announceList = data;
+                    let currentTime = Date.now();
+                    this.announceStatus = AnnounceStatus.NOT_SET;
+                    this.announceStatusText = '推荐这个番組';
+                    if (data.length > 0) {
+                        let announce = data[0];
+                        if (announce.start_time < currentTime && announce.end_time > currentTime) {
+                            this.announceStatus = AnnounceStatus.ANNOUNCING;
+                            this.announceStatusText = '推荐中';
+                        } else if (announce.end_time < currentTime) {
+                            this.announceStatus = AnnounceStatus.EXPIRED;
+                            this.announceStatusText = '已过期';
+                        } else if (announce.start_time > currentTime) {
+                            this.announceStatus = AnnounceStatus.NOT_YET;
+                            this.announceStatusText = '即将推荐';
+                        }
+                    }
+                })
         );
     }
 

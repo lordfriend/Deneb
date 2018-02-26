@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0
+
+Add Recommend in default component. Add a new position in announce field to represent recommend bangumi.
+
 ## 3.1.0
 
 - Add Nyaa source

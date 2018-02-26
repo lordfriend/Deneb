@@ -1,8 +1,36 @@
 <div class="ui container default-container">
     <div class="announce-container" *ngIf="announce_in_banner">
-        <a class="announcement" [href]="announce_in_banner.url" target="_blank">
+        <a class="announcement" [href]="announce_in_banner.content" target="_blank">
             <img [src]="announce_in_banner.image_url" alt="">
         </a>
+    </div>
+    <div class="recommend-header" *ngIf="!!announce_in_bangumi && announce_in_bangumi.length > 0">
+        推荐观看
+    </div>
+    <div class="ui five doubling cards" *ngIf="!!announce_in_bangumi && announce_in_bangumi.length > 0">
+        <div class="card bangumi-card" *ngFor="let announce of announce_in_bangumi">
+            <a class="image" [routerLink]="['/bangumi', announce.bangumi.id]">
+                <responsive-image [src]="announce.bangumi.cover_image.url"
+                                  [size]="{
+                                    width: '100%',
+                                    ratio: 0.8,
+                                    originalWidth: announce.bangumi.cover_image.width,
+                                    originalHeight: announce.bangumi.cover_image.height}"
+                                  [background]="announce.bangumi.cover_image.dominant_color"></responsive-image>
+            </a>
+            <div *ngIf="announce.bangumi.favorite_status" class="ui ribbon label"
+                 [ngClass]="{
+                   orange: announce.bangumi.favorite_status === 1,
+                   olive: announce.bangumi.favorite_status === 2,
+                   blue: announce.bangumi.favorite_status === 3,
+                   brown: announce.bangumi.favorite_status === 4,
+                   grey: announce.bangumi.favorite_status === 5
+                   }">{{FAVORITE_LABEL[announce.bangumi.favorite_status]}}
+            </div>
+            <a class="content" [routerLink]="['/bangumi', announce.bangumi.id]">
+                <span>{{announce.bangumi.name_cn}}</span>
+            </a>
+        </div>
     </div>
     <div class="ui fluid two item secondary pointing menu">
         <a class="item" [ngClass]="{active: bangumiType === 2}" (click)="changeBangumiType(2)">动画</a>

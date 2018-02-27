@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { staticContentRoutes } from './static-content.routes';
 import { DevelopersComponent } from './developers/developers.component';
 import { AppsComponent } from './apps/apps.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -16,7 +17,8 @@ import { AppsComponent } from './apps/apps.component';
         AppsComponent
     ],
     imports: [
-        RouterModule.forChild(staticContentRoutes)
+        RouterModule.forChild(staticContentRoutes),
+        CommonModule
     ]
 })
 export class StaticContentModule {

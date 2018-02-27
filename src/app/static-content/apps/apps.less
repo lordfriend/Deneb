@@ -1,3 +1,5 @@
+@break-point: 426px;
+
 :host {
   display: block;
   padding-bottom: 4rem;
@@ -10,6 +12,11 @@
   height: 15rem;
   overflow: hidden;
   position: relative;
+  &:after {
+    display: table;
+    clear: both;
+    content: ' ';
+  }
   .paragraph-light {
     display: flex;
     justify-content: center;
@@ -27,6 +34,13 @@
 
   &.expand {
     height: auto;
+  }
+
+  @media (min-width: @break-point) {
+    height: auto;
+    .paragraph-light {
+      display: none;
+    }
   }
 }
 
@@ -65,4 +79,21 @@
     width: 100%;
     height: auto;
   }
+
+  @media (min-width: @break-point) {
+    width: 50%;
+    float: left;
+  }
+}
+
+.text-description {
+  @media (min-width: @break-point) {
+    padding: 0.5rem 1.5rem;
+    width: 50%;
+    float: left;
+  }
+}
+
+.chrome-extension {
+  margin-top: 2rem;
 }

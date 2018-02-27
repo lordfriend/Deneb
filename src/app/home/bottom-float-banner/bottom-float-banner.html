@@ -1,6 +1,6 @@
 <div class="banner">
-    <a class="app-link" href="https://play.google.com/store/apps/details?id=com.sqrtf.megumin" target="_blank">
-        <img class="app-logo" src="/assets/img/megumi-logo.webp" alt="获取Android App">获取Android App
+    <a class="app-link" [routerLink]="['/about/apps', {android: 'true'}]">
+        <i class="android icon"></i> 获取Android App
     </a>
     <a (click)="closeBanner($event)" class="close-button">
         <i class="remove icon"></i>

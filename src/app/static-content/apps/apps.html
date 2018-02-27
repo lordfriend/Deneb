@@ -1,15 +1,67 @@
 <div class="apps-guide">
-    <h1 class="ui header">Android移动客户端</h1>
-    <p>
-        <a href="https://play.google.com/store/apps/details?id=com.sqrtf.megumin">Megumin</a>
-    </p>
-    <p>
-        <a href="https://play.google.com/store/apps/details?id=me.sunzheng.mana">Mana</a>
-    </p>
-    <h1 class="ui header">Chrome扩展</h1>
-    <p>
-        Chrome扩展用来增强Web版的信息显示与社交功能，使用之后您可以在{{siteTitle}}绑定您的Bangumi帐号，
-        之后{{siteTitle}}就会变成一个Bangumi客户端。您可以自动同步收藏，观看进度，查看和发表评论。
-    </p>
-    <p><a [href]="'https://chrome.google.com/webstore/detail/' + chromeExtensionId">前往Chrome商店</a></p>
+    <div class="android-apps">
+        <h2 class="ui header">Android移动客户端</h2>
+        <div class="ui segment app-section" [ngClass]="{expand: expanded1}">
+            <a class="ui header app-link" href="https://play.google.com/store/apps/details?id=com.sqrtf.megumin&utm_source=deneb-web">
+                <img src="/assets/img/megumin-logo.webp" alt="logo">
+                <span class="header-text">Megumin</span>
+                <img class="play-badge" src="/assets/img/play_badge_new.png" alt="play-badge">
+            </a>
+            <div class="preview ui grid">
+                <div class="eight wide column">
+                    <img src="/assets/img/megumin-preview-1.webp" alt="">
+                </div>
+                <div class="eight wide column">
+                    <img src="/assets/img/megumin-preview-2.webp" alt="">
+                </div>
+            </div>
+            <div class="text-description">
+                <p>Megumin is a Albireo client for Android devices.It allows connecting to your own Albireo server.</p>
+
+                <p>Megumin designed to browse and play bangumi on Albireo server, so it does not support some features
+                    (e.g. edit or manage download tasks).</p>
+
+                <p>Megumin is open source software, you can find source code in https://github.com/RoyaAoki/Megumin</p>
+            </div>
+            <div class="paragraph-light" *ngIf="!expanded1">
+                <button class="ui tiny button" (click)="expand1()">查看详细</button>
+            </div>
+        </div>
+        <div class="ui segment app-section" [ngClass]="{expand: expanded2}">
+            <a class="ui header app-link" href="https://play.google.com/store/apps/details?id=me.sunzheng.mana&utm_source=deneb-web">
+                <img src="/assets/img/mana-logo.webp" alt="logo">
+                <span class="header-text">Mana</span>
+                <img class="play-badge" src="/assets/img/play_badge_new.png" alt="play-badge">
+            </a>
+            <div class="preview ui grid">
+                <div class="eight wide column">
+                    <img src="/assets/img/mana-preview-1.webp" alt="">
+                </div>
+                <div class="eight wide column">
+                    <img src="/assets/img/mana-preview-2.webp" alt="">
+                </div>
+            </div>
+            <div class="text-description">
+                <p>Mana, an unofficially client for Albireo, is ready to help you search, index and enjoy videos that
+                    saved on the Albireo.</p>
+                <p>Before getting started, we recommend you get familiar with Albireo first and prepare the URL for a
+                    specific Albireo server as service provider</p>
+                <p>Hope you enjoy!</p>
+
+                <p>Mana is open source software, you can find all the code in</p>
+                <p>https://github.com/WindFi/mana</p>
+            </div>
+            <div class="paragraph-light" *ngIf="!expanded2">
+                <button class="ui tiny button" (click)="expand2()">查看详细</button>
+            </div>
+        </div>
+    </div>
+    <div class="chrome-extension" *ngIf="!showAndroid">
+        <h2 class="ui header">Chrome扩展</h2>
+        <p>
+            Chrome扩展用来增强Web版的信息显示与社交功能，使用之后您可以在{{siteTitle}}绑定您的Bangumi帐号，
+            之后{{siteTitle}}就会变成一个Bangumi客户端。您可以自动同步收藏，观看进度，查看和发表评论。
+        </p>
+        <p><a [href]="'https://chrome.google.com/webstore/detail/' + chromeExtensionId">前往Chrome商店</a></p>
+    </div>
 </div>

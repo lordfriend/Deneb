@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { PersistStorage } from '../../user-service/persist-storage';
+import { PersistStorage } from '../../user-service';
 import { Capture } from './settings';
+import download from 'downloadjs';
 
-export type PreviewImageParams = {bangumi_name: string, episode_no: number, currentPlayTime: number};
+export type PreviewImageParams = { bangumi_name: string, episode_no: number, currentPlayTime: number };
 
 export const IMAGE_PROPERTY_NAME = 'previewParams';
 
@@ -10,6 +11,7 @@ export interface PreviewContainer {
     /**
      * invoked by VideoCapture, implement class should use the given data uri generate a preview image.
      * @param dataURI - converted image by calling toDataURI with captured frame in canvas
+     * @param params
      */
     addImage(dataURI: string, params: PreviewImageParams);
 }
@@ -53,16 +55,18 @@ export class VideoCapture {
 
     download(bangumi_name: string, episode_no: number, currentPlayTime: number): void {
         let url = this.getCapturedData();
-        let hiddenAnchor = document.createElement('a');
+        console.log(/^data\:[\w+\-]+\/[\w+\-]+[,;]/.test(url));
+        // let hiddenAnchor = document.createElement('a');
         let filename = `${bangumi_name}_${episode_no}_${Math.round(currentPlayTime)}.${this.imageFormat}`;
-        hiddenAnchor.setAttribute('download', filename);
-        hiddenAnchor.setAttribute('href', url.replace(/^data:image\/[^;]]/, 'data:application/octet-stream'));
-        let clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: false
-        });
-        hiddenAnchor.dispatchEvent(clickEvent);
+        download(url, filename, 'application/octet-stream');
+        // hiddenAnchor.setAttribute('download', filename);
+        // hiddenAnchor.setAttribute('href', url.replace(/^data:image\/[^;]]/, 'data:application/octet-stream'));
+        // let clickEvent = new MouseEvent('click', {
+        //     view: window,
+        //     bubbles: true,
+        //     cancelable: false
+        // });
+        // hiddenAnchor.dispatchEvent(clickEvent);
     }
 
     registerPreviewContainer(container: PreviewContainer) {

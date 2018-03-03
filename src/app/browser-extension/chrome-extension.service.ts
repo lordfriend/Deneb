@@ -67,7 +67,7 @@ export class ChromeExtensionService {
         if (CHROME_EXTENSION_ID) {
             this.chromeExtensionId = CHROME_EXTENSION_ID;
         }
-        if (!!window && !!window.chrome && !!this.chromeExtensionId) {
+        if (!!window && !!window.chrome && !!window.chrome.runtime && !!this.chromeExtensionId) {
             this.isEnabled.filter(isEnabled => isEnabled)
                 .subscribe(() => {
                     this.invokeBangumiMethod('getAuthInfo', [])

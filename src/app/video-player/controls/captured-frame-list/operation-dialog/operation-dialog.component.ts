@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { IMAGE_PROPERTY_NAME } from '../../../core/video-capture.service';
 import { UIDialogRef } from 'deneb-ui';
-import { PersistStorage } from '../../../../user-service/persist-storage';
+import { PersistStorage } from '../../../../user-service';
 import { Capture } from '../../../core/settings';
+import download from 'downloadjs';
 
 export const RESULT_TWITTER = 'twitter';
 export const RESULT_DOWNLOAD = 'download';
@@ -46,16 +47,8 @@ export class CapturedImageOperationDialog implements AfterViewInit {
         event.stopPropagation();
         let dataURI = this.image.src;
         let {bangumi_name, episode_no, currentPlayTime} = this.image[IMAGE_PROPERTY_NAME];
-        let hiddenAnchor = document.createElement('a');
         let filename = `${bangumi_name}_${episode_no}_${Math.round(currentPlayTime)}.png`;
-        hiddenAnchor.setAttribute('download', filename);
-        hiddenAnchor.setAttribute('href', dataURI.replace(/^data:image\/[^;]]/, 'data:application/octet-stream'));
-        let clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: false
-        });
-        hiddenAnchor.dispatchEvent(clickEvent);
+        download(dataURI, filename, 'application/octet-stream');
         this._dialogRef.close({result: RESULT_DOWNLOAD, remove: this.autoRemove});
     }
 

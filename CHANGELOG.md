@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.3
+
+Fix bug on capture when file size is too large.
+
+## 3.2.2
+
+Fix bugs in chrome-extension.service which may cause crash in Android Chrome browser.
+
 ## 3.2.1
 
 Change tips for Android apps

@@ -43,7 +43,7 @@
         <span class="episode-no">{{episode.episode_no}}</span>
         <span class="episode-name" *ngIf="!!episode.name_cn || !!episode.name">{{episode.name_cn || episode.name}}</span>
     </h3>
-    <a class="feedback-button" (click)="feedback()" title="报告错误"><i class="icon flag"></i></a>
+    <button class="feedback-button ui small basic button" (click)="feedback()" title="报告错误"><i class="icon flag"></i>报告错误</button>
     <div class="ui divider">
     </div>
     <div class="bangumi-info">

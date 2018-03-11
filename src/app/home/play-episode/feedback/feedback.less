@@ -2,13 +2,15 @@
   display: block;
   box-sizing: border-box;
   text-align: left;
-  @media(max-width: 639px) {
+  @media(max-width: 639px) and (min-height: 400px) {
     width: 90%;
+    height: 360px;
   }
-  @media(min-width: 640px) {
+  @media(min-width: 640px) and (min-height: 400px) {
     width: 600px;
+    height: 300px;
   }
-  @media(min-height: 400px) {
+  @media(min-height: 400px) and (min-width: 425px) {
     height: 300px;
   }
   @media(max-height: 399px) {
@@ -30,6 +32,10 @@
 
 .ui.form {
   padding: 1rem 1.5rem;
+
+  .ui.questions.buttons {
+    flex-wrap: wrap;
+  }
 
   .footer {
     display: flex;

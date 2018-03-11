@@ -1,8 +1,11 @@
 <form class="ui form" [formGroup]="feedbackForm" novalidate>
     <h4 class="header">反馈问题</h4>
     <div class="field">
-        <div class="ui buttons">
-            <button class="ui button" [ngClass]="{active: pickedIndex === i}" *ngFor="let issue of issueList; index as i" (click)="pickIssue(i)">{{issue}}</button>
+        <div class="ui questions buttons">
+            <button class="ui button"
+                    [ngClass]="{active: pickedIndex === i}"
+                    *ngFor="let issue of issueList; index as i"
+                    (click)="pickIssue(i)">{{issue}}</button>
         </div>
     </div>
     <div class="field">

@@ -244,13 +244,13 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     /**
-     * pause the playback of current video. By checking the network state is HAVE_ENOUGH_DATA,
+     * pause the playback of current video. By checking the network state is HAVE_FUTURE_DATA,
      * the player will make a actual call of pause operation or set a pending state to PlayState.PAUSED.
      * This may help to release the sockets holding by Chrome.
      */
     pause() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-        if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
+        if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_FUTURE_DATA) {
             mediaElement.pause();
         } else {
             this.setPendingState(PlayState.PAUSED);
@@ -262,7 +262,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         if (this._stateSubject.getValue() === PlayState.INITIAL) {
             mediaElement.load();
         }
-        if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_ENOUGH_DATA) {
+        if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_FUTURE_DATA) {
             mediaElement.play();
         } else {
             this.setPendingState(PlayState.PLAYING);
@@ -461,7 +461,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'canplaythrough')
+            Observable.fromEvent(mediaElement, 'canplay')
                 .subscribe(() => {
                     this.lagged.emit(false);
                     this.watchForWaiting();

@@ -1,9 +1,10 @@
 <div class="bangumi-list-container" *ngIf="!name && !isLoading">
-    <div class="filter-container" (click)="onClickFilterContainer()">
+    <form class="filter-container" (click)="onClickFilterContainer()">
         <div class="ui container">
             <a class="sort-button anchor-button" (click)="onOrderChange($event)" [title]="sort === 'desc' ? '降序': '升序'">
                 <i class="sort content icon" [ngClass]="{ascending: sort === 'asc', descending: sort === 'desc'}"></i>
             </a>
+            <ui-toggle text="剧场版/OVA" [(ngModel)]="isMovie" name="isMovie"></ui-toggle>
             <div class="ui inline dropdown" uiDropdown="click" [stopPropagation]="true">
                 <div class="text">{{typeMenuLabel[type]}}</div>
                 <i class="dropdown icon"></i>
@@ -14,7 +15,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </form>
     <div class="timeline-container">
         <ui-timeline-meter [rowHeight]="cardHeight" [timestampList]="timestampList">
             <infinite-list [rowHeight]="cardHeight" [newScrollPosition]="lastScrollPosition" (scrollPosition)="onScrollPositionChange($event)">

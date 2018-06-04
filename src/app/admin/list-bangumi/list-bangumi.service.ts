@@ -6,4 +6,5 @@ export class ListBangumiService {
     orderBy: string;
     sort: string;
     type: number;
+    isMovie: boolean;
 }

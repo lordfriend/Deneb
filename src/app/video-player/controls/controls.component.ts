@@ -51,6 +51,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
     private _motion = new Subject();
     private _videoPlayer: VideoPlayer;
+    private _preventHide = false;
 
     showControls = true;
 
@@ -84,7 +85,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
 
     onClickVideo(event: Event) {
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
         this._videoPlayer.requestFocus();
         this._videoPlayer.togglePlayAndPause();
         this.reflectState = 'active';
@@ -105,6 +106,11 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
 
     onCancelNext() {
         this.hasNextEpisode = false;
+    }
+
+    keepShow(keep: boolean) {
+        this._preventHide = keep;
+        this.showControls = keep;
     }
 
     ngOnInit(): void {
@@ -131,6 +137,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
         );
         this._subscription.add(
             Observable.fromEvent(hostElement, 'mouseenter')
+                .filter(() => !this._preventHide)
                 .subscribe(
                     () => {
                         this.showControls = true;
@@ -139,6 +146,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
         );
         this._subscription.add(
             Observable.fromEvent(hostElement, 'mouseleave')
+                .filter(() => !this._preventHide)
                 .subscribe(
                     () => {
                         this.showControls = false;
@@ -152,7 +160,9 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
                 .timeout(CONTROL_FADE_OUT_TIME)
                 .do(() => {},
                     () => {
-                        this.showControls = false;
+                        if (!this._preventHide) {
+                            this.showControls = false;
+                        }
                     })
                 .retry()
                 .subscribe(

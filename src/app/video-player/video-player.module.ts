@@ -12,13 +12,13 @@ import { CapturedFrameList } from './controls/captured-frame-list/captured-frame
 import { VideoCaptureButton } from './controls/capture-button/capture-button.component';
 import { CapturedImageOperationDialog } from './controls/captured-frame-list/operation-dialog/operation-dialog.component';
 import { VideoPlayerConfigButton } from './controls/config-button/config-button.component';
-import { VideoPlayerConfigDialog } from './controls/config-button/config-dialog/config-dialog.component';
 import { UIToggleModule } from 'deneb-ui';
 import { FormsModule } from '@angular/forms';
 import { VideoTouchControls } from './touch-controls/touch-controls.component';
 import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
 import { VideoPlayerHelpButton } from "./controls/help-button/help-button.component";
 import { VideoNextEpisodeOverlay } from './next-episode-overlay/next-episode-overlay.component';
+import { VideoConfigPanelComponent } from './controls/config-button/config-panel/config-panel.component';
 
 @NgModule({
     declarations: [
@@ -34,10 +34,10 @@ import { VideoNextEpisodeOverlay } from './next-episode-overlay/next-episode-ove
         CapturedFrameList,
         CapturedImageOperationDialog,
         VideoPlayerConfigButton,
-        VideoPlayerConfigDialog,
         VideoPlayerHelpDialog,
         VideoPlayerHelpButton,
-        VideoNextEpisodeOverlay
+        VideoNextEpisodeOverlay,
+        VideoConfigPanelComponent
     ],
     providers: [
         VideoCapture
@@ -54,9 +54,9 @@ import { VideoNextEpisodeOverlay } from './next-episode-overlay/next-episode-ove
         VideoControls,
         VideoTouchControls,
         CapturedImageOperationDialog,
-        VideoPlayerConfigDialog,
         VideoPlayerHelpDialog,
-        VideoPlayerHelpButton
+        VideoPlayerHelpButton,
+        VideoConfigPanelComponent
     ]
 })
 export class VideoPlayerModule {

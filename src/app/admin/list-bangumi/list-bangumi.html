@@ -9,6 +9,9 @@
     <a class="sort-button anchor-button accessory-action" (click)="onOrderChange(orderBy, true)" [title]="sort === 'desc' ? '降序': '升序'">
         <i class="sort content icon" [ngClass]="{ascending: sort === 'asc', descending: sort === 'desc'}"></i>
     </a>
+    <form class="accessory-action is-movie-toggle">
+        <ui-toggle text="剧场版/OVA" [(ngModel)]="isMovie" name="isMovie"></ui-toggle>
+    </form>
     <div class="accessory-action ui inline dropdown" uiDropdown="click">
         <div class="text">{{orderByMenuLabel[orderBy]}}</div>
         <i class="dropdown icon"></i>

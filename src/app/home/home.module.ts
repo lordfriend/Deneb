@@ -17,7 +17,7 @@ import { BangumiCard } from './bangumi-card/bangumi-card.component';
 import { DenebCommonPipes } from '../pipes';
 import { ImageLoadingStrategy } from './bangumi-card/image-loading-strategy.service';
 import { UserCenter } from './user-center/user-center.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertDialogModule } from '../alert-dialog/alert-dialog.module';
 import { ResponsiveImageModule } from '../responsive-image/responsive-image.module';
 import { VideoPlayerModule } from '../video-player/video-player.module';
@@ -95,6 +95,7 @@ import { RevealExtraComponent } from './play-episode/reveal-extra/reveal-extra.c
         CommonModule,
         DenebCommonPipes,
         ReactiveFormsModule,
+        FormsModule,
         AlertDialogModule,
         ResponsiveImageModule,
         VideoPlayerModule,

@@ -22,6 +22,7 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     private _bangumiList: Bangumi[];
     private _allBangumiList: Bangumi[];
     private _toastRef: UIToastRef<UIToastComponent>;
+    private _isMovie: boolean;
 
     @ViewChild('searchBox') searchBox: ElementRef;
 
@@ -63,6 +64,19 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     timestampList: number[];
 
     lastScrollPosition: number;
+
+    get isMovie(): boolean {
+        if (typeof this._listBangumiService.isMovie !== 'undefined') {
+            return this._listBangumiService.isMovie;
+        }
+        return this._isMovie;
+    }
+
+    set isMovie(v: boolean) {
+        this._isMovie = v;
+        this._listBangumiService.isMovie = v;
+        this.filterBangumiList();
+    }
 
     constructor(private adminService: AdminService,
                 private router: Router,
@@ -183,6 +197,12 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
             return;
         }
         this.bangumiList = this._allBangumiList
+            .filter(bangumi => {
+                if (this.isMovie) {
+                    return bangumi.eps === 1;
+                }
+                return true;
+            })
             .filter(bangumi => {
                 if (this.type === -1) {
                     return true;

@@ -11,6 +11,7 @@ import { Home } from '../home.component';
 import { BangumiListService } from './bangumi-list.service';
 import { Observable } from 'rxjs/Observable';
 import { AuthError } from '../../../helpers/error';
+import { FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
     private _allBangumi: Bangumi[];
+    private _isMovie: boolean;
 
     name: string;
 
@@ -43,6 +45,19 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
     timestampList: number[];
 
     lastScrollPosition: number;
+
+    get isMovie(): boolean {
+        if (typeof this._bangumiListService.isMovie !== 'undefined') {
+            return this._bangumiListService.isMovie;
+        }
+        return this._isMovie;
+    }
+
+    set isMovie(v: boolean) {
+        this._isMovie = v;
+        this._bangumiListService.isMovie = v;
+        this.filterBangumi();
+    }
 
     @ViewChild(InfiniteList) infiniteList: InfiniteList;
 
@@ -130,6 +145,12 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
     filterBangumi() {
         this.bangumiList = this._allBangumi
             .filter(bangumi => {
+                if (this.isMovie) {
+                    return bangumi.eps === 1;
+                }
+                return true;
+            })
+            .filter(bangumi => {
                 if (this.name) {
                     return Bangumi.containKeyword(bangumi, this.name);
                 }
@@ -141,20 +162,13 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
                 }
                 return bangumi.type === this.type;
             });
-        this.timestampList = this._allBangumi
-            .filter(bangumi => {
-                if (this.type === -1) {
-                    return true;
-                }
-                return bangumi.type === this.type;
-            })
+        if (this.sort !== 'desc') {
+            this.bangumiList = this.bangumiList.reverse();
+        }
+        this.timestampList = this.bangumiList
             .map(bangumi => {
                 return bangumi.air_date ? Date.parse(bangumi.air_date) : Date.now();
             });
-        if (this.sort !== 'desc') {
-            this.bangumiList = this.bangumiList.reverse();
-            this.timestampList = this.timestampList.reverse();
-        }
     }
 
     onOrderChange(event: Event) {

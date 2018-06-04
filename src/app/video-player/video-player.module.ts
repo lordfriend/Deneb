@@ -12,7 +12,6 @@ import { CapturedFrameList } from './controls/captured-frame-list/captured-frame
 import { VideoCaptureButton } from './controls/capture-button/capture-button.component';
 import { CapturedImageOperationDialog } from './controls/captured-frame-list/operation-dialog/operation-dialog.component';
 import { VideoPlayerConfigButton } from './controls/config-button/config-button.component';
-import { VideoPlayerConfigDialog } from './controls/config-button/config-dialog/config-dialog.component';
 import { UIToggleModule } from 'deneb-ui';
 import { FormsModule } from '@angular/forms';
 import { VideoTouchControls } from './touch-controls/touch-controls.component';
@@ -35,7 +34,6 @@ import { VideoConfigPanelComponent } from './controls/config-button/config-panel
         CapturedFrameList,
         CapturedImageOperationDialog,
         VideoPlayerConfigButton,
-        // VideoPlayerConfigDialog,
         VideoPlayerHelpDialog,
         VideoPlayerHelpButton,
         VideoNextEpisodeOverlay,

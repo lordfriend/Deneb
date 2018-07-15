@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.3.0
+
+- Add toggle to filter movie or ova type in BangumiList and ListBangumi(inside home and admin).
+- replace video player config dialog with a popover.
+- fix #140
+- fix #141
+
 ## 3.2.5
 
 - Fix crash in rating component when rating is no defined

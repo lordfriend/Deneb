@@ -2,6 +2,20 @@
 <div class="content-area">
     <div class="ui segment">
         <h4>用户列表</h4>
+        <form (submit)="getUserList(userPage)">
+            <div class="ui compact selection dropdown" uiDropdown="click">
+                <div class="text">{{availableField[queryField]}}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" (click)="changeQueryField('name')">用户名</div>
+                    <div class="item" (click)="changeQueryField('id')">ID</div>
+                </div>
+            </div>
+            <div class="ui action input">
+                <input type="text" placeholder="输入过滤内容" name="query_value" [(ngModel)]="queryValue">
+                <button type="submit" class="ui button">查询</button>
+            </div>
+        </form>
         <table class="ui very basic table">
             <thead>
             <tr>

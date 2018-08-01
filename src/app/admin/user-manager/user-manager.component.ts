@@ -28,6 +28,10 @@ export class UserManager implements OnInit, OnDestroy {
 
     currentAdmin: User;
 
+    availableField = {'name': '用户名', 'id': 'ID'};
+    queryField = 'name';
+    queryValue: string;
+
     constructor(
         private _userService: UserService,
         private _userManageService: UserManagerSerivce,
@@ -56,13 +60,19 @@ export class UserManager implements OnInit, OnDestroy {
         this._subscription.unsubscribe();
     }
 
+    changeQueryField(field: string) {
+        this.queryField = field;
+    }
+
     getUserList(page) {
         let offset = (page - 1) * this.userCount;
         this._subscription.add(
             this._userManageService.listUser({
                 offset: offset,
                 count: this.userCount,
-                minlevel: 0
+                minlevel: 0,
+                query_field: this.queryField,
+                query_value: this.queryValue
             })
                 .subscribe(
                     (result) => {

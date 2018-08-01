@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.4.0
+
+- Add filter in user management
+- Fix a bug when metadata is unavailable, use shortcut may crash.
+
+## 3.3.1
+
+- remove query string in media URL. which is proofed as useless.
+
 ## 3.3.0
 
 - Add toggle to filter movie or ova type in BangumiList and ListBangumi(inside home and admin).

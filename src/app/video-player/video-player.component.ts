@@ -270,6 +270,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     togglePlayAndPause() {
+        if (Number.isNaN(this._durationSubject.getValue())) {
+            return;
+        }
         if (this._pendingState === PlayState.PLAYING || this._stateSubject.getValue() === PlayState.PLAYING) {
             this.pause();
         } else {
@@ -291,6 +294,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     fastForward(time: number) {
+        if (Number.isNaN(this._durationSubject.getValue())) {
+            return;
+        }
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         let currentTime = mediaElement.currentTime;
         let duration = mediaElement.duration;
@@ -302,6 +308,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     fastBackward(time: number) {
+        if (Number.isNaN(this._durationSubject.getValue())) {
+            return;
+        }
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         let currentTime = mediaElement.currentTime;
         let duration = mediaElement.duration;
@@ -501,7 +510,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     }
 
     private makeMediaUrl() {
-        this.mediaUrl = `${this.videoFile.url}?c=${Date.now()}`;
+        this.mediaUrl = `${this.videoFile.url}`;
         this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
         this._changeDetector.detectChanges();
     }

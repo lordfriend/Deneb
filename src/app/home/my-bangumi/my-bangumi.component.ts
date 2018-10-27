@@ -61,6 +61,17 @@ export class MyBangumiComponent implements OnInit, OnDestroy {
                     this.myBangumiList = bangumiList;
                 })
         );
+
+        this._subscription.add(
+            this._homeService.favoriteChecked
+                .subscribe((result) => {
+                    let bangumi = this.myBangumiList.find(bangumi => bangumi.id === result.bangumi_id);
+                    console.log(bangumi);
+                    if (bangumi) {
+                        bangumi.favorite_check_time = result.check_time;
+                    }
+                })
+        );
     }
 
     ngOnDestroy(): void {

@@ -8,6 +8,15 @@
                 <a class="item" [ngClass]="{active: favoriteStatus === 4}" (click)="onStatusChange(4)">搁置</a>
                 <a class="item" [ngClass]="{active: favoriteStatus === 5}" (click)="onStatusChange(5)">抛弃</a>
                 <div class="right menu">
+                    <div class="ui item inline dropdown" uiDropdown="click" [stopPropagation]="true">
+                        <div class="text">{{sortFieldLabel[sort_field]}}</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" (click)="onSortFieldChange('favorite_update_time')">按我修改的时间</div>
+                            <div class="item" (click)="onSortFieldChange('eps_update_time')">按最近更新的时间</div>
+                            <div class="item" (click)="onSortFieldChange('air_date')">按开播时间</div>
+                        </div>
+                    </div>
                     <a class="ui item sort-button anchor-button" (click)="onOrderChange($event)"
                        [title]="sort === 'desc' ? '降序': '升序'">
                         <i class="sort content icon"

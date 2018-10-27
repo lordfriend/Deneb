@@ -8,6 +8,7 @@ import { UserService } from '../../user-service';
 import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { AuthError } from '../../../helpers/error';
+import { WatchService } from '../watch.service';
 
 
 @Component({
@@ -39,6 +40,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
                 private _route: ActivatedRoute,
                 private _titleService: Title,
                 private _changeDetector: ChangeDetectorRef,
+                private _watchService: WatchService,
                 toast: UIToast) {
         super(homeService);
         this._toastRef = toast.makeText();
@@ -74,6 +76,9 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
             this._route.params
                 .flatMap((params) => {
                     return this.homeService.bangumi_detail(params['bangumi_id']);
+                })
+                .do(bangumi => {
+                    this.homeService.checkFavorite(bangumi.id);
                 })
                 .flatMap(bangumi => {
                     let bgmTitle = `${bangumi.name} - ${SITE_TITLE}`;

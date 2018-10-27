@@ -84,11 +84,13 @@ export class FavoriteChooser implements OnInit, OnDestroy {
                 this.isOnSynchronizing = false;
                 this.userFavoriteInfo = result;
                 this.bangumi.favorite_status = result.status.id;
+                this.homeService.changeFavorite();
             }, (error) => {
                 console.log(error);
                 if (error && error.status === 404) {
                     this.bangumi.favorite_status = 0;
                     this.userFavoriteInfo = null;
+                    this.homeService.changeFavorite();
                 }
                 this.isOnSynchronizing = false;
                 this._toastRef.show('更新失败');
@@ -109,6 +111,7 @@ export class FavoriteChooser implements OnInit, OnDestroy {
                         this.bangumi.favorite_status = 0;
                         this.userFavoriteInfo = null;
                         this._toastRef.show('已删除收藏');
+                        this.homeService.changeFavorite();
                     }, () => {
                         this.isOnSynchronizing = false;
                     })
@@ -121,6 +124,7 @@ export class FavoriteChooser implements OnInit, OnDestroy {
                         this.homeService.changeFavorite();
                         this.bangumi.favorite_status = undefined;
                         this._toastRef.show('已删除收藏');
+                        this.homeService.changeFavorite();
                     }, () => {
                         this.isOnSynchronizing = false;
                     })

@@ -15,6 +15,7 @@ let lastType: number;
 let lastScrollPosition: number = 0;
 let lastSort: string;
 let lastStatus: number;
+let lastSortField: string;
 
 @Component({
     selector: 'favorite-list',
@@ -35,11 +36,18 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
 
     sort = 'desc';
     type = -1;
+    sort_field = 'favorite_update_time';
 
     typeMenuLabel = {
         '-1': '全部',
         '2': '动画',
         '6': '电视剧'
+    };
+
+    sortFieldLabel = {
+        'favorite_update_time': '按我修改的时间',
+        'eps_update_time': '按最近更新的时间',
+        'air_date': '按开播时间'
     };
 
     cardHeight: number;
@@ -79,6 +87,9 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
         if (Number.isInteger(lastStatus)) {
             this.favoriteStatus = lastStatus;
         }
+        if (lastSortField) {
+            this.sort_field = lastSortField;
+        }
         this._toastRef = toastService.makeText();
     }
 
@@ -89,6 +100,9 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                     return true;
                 }
                 return bangumi.type === this.type;
+            })
+            .sort((b1, b2) => {
+                return b1[this.sort_field] - b2[this.sort_field];
             });
         this.timestampList = this._favoriteList
             .filter(bangumi => {
@@ -96,6 +110,9 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                     return true;
                 }
                 return bangumi.type === this.type;
+            })
+            .sort((b1, b2) => {
+                return b1[this.sort_field] - b2[this.sort_field];
             })
             .map(bangumi => {
                 return bangumi.air_date ? Date.parse(bangumi.air_date) : Date.now();
@@ -137,6 +154,12 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
     onTypeChange(type: number) {
         this.type = type;
         lastType = this.type;
+        this.filterFavorites();
+    }
+
+    onSortFieldChange(sortField: string) {
+        this.sort_field = sortField;
+        lastSortField = this.sort_field;
         this.filterFavorites();
     }
 

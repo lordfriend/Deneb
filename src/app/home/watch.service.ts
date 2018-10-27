@@ -45,6 +45,12 @@ export class WatchService extends BaseService {
             .catch(this.handleError);
     }
 
+    check_favorite(bangumi_id: string): Observable<any> {
+        return this._http.put(`${this._baseUrl}/favorite/check/${bangumi_id}`, null)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
     episode_history(bangumi_id: string, episode_id: string, last_watch_position: number, percentage: number, is_finished: boolean): Observable<any> {
         let body = JSON.stringify({
             bangumi_id: bangumi_id,

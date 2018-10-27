@@ -214,6 +214,9 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                     let episode_id = params['episode_id'];
                     return this.homeService.episode_detail(episode_id)
                 })
+                .do(episode => {
+                    this.homeService.checkFavorite(episode.bangumi_id);
+                })
                 .flatMap((episode: Episode) => {
                     this.episode = episode;
                     if (videoFileId) {

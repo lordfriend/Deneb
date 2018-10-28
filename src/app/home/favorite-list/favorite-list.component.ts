@@ -101,8 +101,14 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                 }
                 return bangumi.type === this.type;
             })
-            .sort((b1, b2) => {
-                return b1[this.sort_field] - b2[this.sort_field];
+            .sort((bgm1: Bangumi, bgm2: Bangumi) => {
+                if (this.sort_field === 'air_date') {
+                    let t1, t2;
+                    t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
+                    t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
+                    return this.sort === 'asc' ? t1 - t2 : t2 - t1;
+                }
+                return this.sort === 'asc' ? bgm1[this.sort_field] - bgm2[this.sort_field] : bgm2[this.sort_field] - bgm1[this.sort_field];
             });
         this.timestampList = this._favoriteList
             .filter(bangumi => {
@@ -111,16 +117,18 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                 }
                 return bangumi.type === this.type;
             })
-            .sort((b1, b2) => {
-                return b1[this.sort_field] - b2[this.sort_field];
+            .sort((bgm1: Bangumi, bgm2: Bangumi) => {
+                if (this.sort_field === 'air_date') {
+                    let t1, t2;
+                    t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
+                    t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
+                    return this.sort === 'asc' ? t1 - t2 : t2 - t1;
+                }
+                return this.sort === 'asc' ? bgm1[this.sort_field] - bgm2[this.sort_field] : bgm2[this.sort_field] - bgm1[this.sort_field];
             })
             .map(bangumi => {
                 return bangumi.air_date ? Date.parse(bangumi.air_date) : Date.now();
             });
-        if (this.sort !== 'desc') {
-            this.favoriteList = this.favoriteList.reverse();
-            this.timestampList = this.timestampList.reverse();
-        }
     }
 
     onClickFilterContainer() {
@@ -181,12 +189,7 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                     return this._homeService.myBangumi(status);
                 })
                 .subscribe((bangumiList) => {
-                    this._favoriteList = bangumiList.sort((bgm1: Bangumi, bgm2: Bangumi) => {
-                        let t1, t2;
-                        t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
-                        t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
-                        return this.sort === 'asc' ? t1 - t2 : t2 - t1;
-                    });
+                    this._favoriteList = bangumiList;
                     this.filterFavorites();
                     this.isLoading = false;
                 },

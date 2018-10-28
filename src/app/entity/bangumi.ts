@@ -37,6 +37,12 @@ export class Bangumi {
     // @Optional
     unwatched_count: number;
     // @Optional
+    favorite_update_time: number;
+    // @Optional
+    favorite_check_time: number;
+    // @Optional
+    eps_update_time; number;
+    // @Optional
     delete_mark: number;
 
     // @Optional

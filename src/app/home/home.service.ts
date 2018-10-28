@@ -58,12 +58,24 @@ export class HomeService extends BaseService {
 
     favoriteChanges: EventEmitter<any> = new EventEmitter<any>();
 
+    favoriteChecked: EventEmitter<{bangumi_id: string, check_time: number}> = new EventEmitter<{bangumi_id: string, check_time: number}>();
+
     episodeWatching(bangumi_id: string) {
         this.watchProgressChanges.emit(bangumi_id);
     }
 
     changeFavorite() {
         this.favoriteChanges.emit(null);
+    }
+
+    checkFavorite(bangumi_id: string) {
+        this._watchService.check_favorite(bangumi_id)
+            .subscribe((data) => {
+                this.favoriteChecked.emit({bangumi_id: bangumi_id, check_time: data.data});
+                console.log(`bangumi ${bangumi_id} checked`);
+            }, (error) => {
+                console.log(error);
+            });
     }
 
     /**

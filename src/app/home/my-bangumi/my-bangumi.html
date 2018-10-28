@@ -6,7 +6,8 @@
         <span class="bangumi-name">
             {{bangumi.name_cn}}
         </span>
-        <span *ngIf="bangumi.unwatched_count" class="ui orange small label">{{bangumi.unwatched_count}}</span>
+        <span *ngIf="bangumi.unwatched_count && bangumi.favorite_check_time < bangumi.eps_update_time" class="ui orange small label">{{bangumi.unwatched_count}}</span>
+        <span *ngIf="bangumi.unwatched_count && bangumi.favorite_check_time >= bangumi.eps_update_time" class="ui small undecorated label">{{bangumi.unwatched_count}}</span>
     </a>
 </div>
 <div class="empty-placeholder" *ngIf="myBangumiList && myBangumiList.length === 0">

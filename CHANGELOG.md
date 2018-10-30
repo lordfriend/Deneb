@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.5.1
+
+- Fix bug in favorite list, the timeline doesn't switch with the dropdown selector.
+
 ## 3.5.0
 
 - change my bangumi logic. now when user load bangumi-detal and play-episode component,

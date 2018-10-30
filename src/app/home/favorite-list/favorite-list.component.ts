@@ -127,7 +127,12 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                 return this.sort === 'asc' ? bgm1[this.sort_field] - bgm2[this.sort_field] : bgm2[this.sort_field] - bgm1[this.sort_field];
             })
             .map(bangumi => {
-                return bangumi.air_date ? Date.parse(bangumi.air_date) : Date.now();
+                if (this.sort_field === 'air_date') {
+                    return bangumi.air_date ? Date.parse(bangumi.air_date) : Date.now();
+                } else {
+                    return bangumi[this.sort_field];
+                }
+
             });
     }
 

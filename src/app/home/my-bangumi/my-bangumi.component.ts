@@ -58,7 +58,16 @@ export class MyBangumiComponent implements OnInit, OnDestroy {
                     return this._homeService.myBangumi(this.currentStatus)
                 })
                 .subscribe((bangumiList) => {
-                    this.myBangumiList = bangumiList;
+                    // desc , sort by favorite_update_time and air_date
+                    this.myBangumiList = bangumiList.sort((bgm1, bgm2) => {
+                        if (bgm1.favorite_update_time === bgm2.favorite_update_time) {
+                            let t1, t2;
+                            t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
+                            t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
+                            return t2 - t1;
+                        }
+                        return bgm2.favorite_update_time - bgm1.favorite_update_time;
+                    })
                 })
         );
 

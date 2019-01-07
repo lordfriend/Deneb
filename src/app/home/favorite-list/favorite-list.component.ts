@@ -102,7 +102,7 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                 return bangumi.type === this.type;
             })
             .sort((bgm1: Bangumi, bgm2: Bangumi) => {
-                if (this.sort_field === 'air_date') {
+                if (this.sort_field === 'air_date' || bgm1[this.sort_field] === bgm2[this.sort_field]) {
                     let t1, t2;
                     t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
                     t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();
@@ -118,7 +118,7 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
                 return bangumi.type === this.type;
             })
             .sort((bgm1: Bangumi, bgm2: Bangumi) => {
-                if (this.sort_field === 'air_date') {
+                if (this.sort_field === 'air_date' || bgm1[this.sort_field] === bgm2[this.sort_field]) {
                     let t1, t2;
                     t1 = bgm1.air_date ? Date.parse(bgm1.air_date).valueOf() : Date.now();
                     t2 = bgm2.air_date ? Date.parse(bgm2.air_date).valueOf() : Date.now();

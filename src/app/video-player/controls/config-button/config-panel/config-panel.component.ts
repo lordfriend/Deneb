@@ -1,5 +1,5 @@
 import { UIPopoverContent, UIPopoverRef } from 'deneb-ui';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnDestroy, Self } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { UserActionPanelComponent } from '../../../../home/user-action/user-action-panel/user-action-panel.component';
 import { Observable } from 'rxjs/Observable';
@@ -34,7 +34,8 @@ export class VideoConfigPanelComponent extends UIPopoverContent implements OnDes
         return this._autoPlayNext;
     }
 
-    constructor(popoverRef: UIPopoverRef<UserActionPanelComponent>,
+    constructor(@Self() private _selfElementRef: ElementRef,
+                popoverRef: UIPopoverRef<UserActionPanelComponent>,
                 private _persistStorage: PersistStorage) {
         super(popoverRef);
         let savedDirectDownload = this._persistStorage.getItem(Capture.DIRECT_DOWNLOAD, 'false');
@@ -47,8 +48,13 @@ export class VideoConfigPanelComponent extends UIPopoverContent implements OnDes
         super.ngAfterViewInit();
         this._subscription.add(
             Observable.fromEvent(document.body, 'click')
-                // .skip(1)
+                .filter((event: MouseEvent) => {
+                    const selfElement = this._selfElementRef.nativeElement as HTMLElement;
+                    const rect = selfElement.getBoundingClientRect();
+                    return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+                })
                 .subscribe(() => {
+                    // TODO: We need prevent clicking the player to avoid change playback state.
                     this.popoverRef.close(null);
                 })
         );

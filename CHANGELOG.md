@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.5.2
+
+- Fix bug that cause controls in config panel of video player cannot be clicked.
+- Sort bangumi by secondary property when the primary is equal in Favorite list
+
 ## 3.5.1
 
 - Fix bug in favorite list, the timeline doesn't switch with the dropdown selector.

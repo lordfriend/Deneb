@@ -43,7 +43,7 @@ import { BangumiStaffInfoComponent } from './bangumi-extra-info/bangumi-staff-in
 import { SynchronizeService } from './favorite-chooser/synchronize.service';
 import { UserActionComponent } from './user-action/user-action.component';
 import { UserActionPanelComponent } from './user-action/user-action-panel/user-action-panel.component';
-import { ChromeExtensionTipComponent } from './user-action/chrome-extension-tip/chrome-extension-tip.component';
+import { BrowserExtensionTipComponent } from './user-action/browser-extension-tip/browser-extension-tip.component';
 import { FeedbackComponent } from './play-episode/feedback/feedback.component';
 import { RevealExtraComponent } from './play-episode/reveal-extra/reveal-extra.component';
 
@@ -75,7 +75,7 @@ import { RevealExtraComponent } from './play-episode/reveal-extra/reveal-extra.c
         BangumiStaffInfoComponent,
         UserActionComponent,
         UserActionPanelComponent,
-        ChromeExtensionTipComponent,
+        BrowserExtensionTipComponent,
         FeedbackComponent,
         RevealExtraComponent
     ],
@@ -106,7 +106,7 @@ import { RevealExtraComponent } from './play-episode/reveal-extra/reveal-extra.c
         EditReviewDialogComponent,
         ConflictDialogComponent,
         UserActionPanelComponent,
-        ChromeExtensionTipComponent,
+        BrowserExtensionTipComponent,
         FeedbackComponent
     ]
 })

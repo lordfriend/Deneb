@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { ChromeExtensionService } from './chrome-extension.service';
+import { ExtensionRpcService } from './extension-rpc.service';
 
 @NgModule({
-    providers: [ChromeExtensionService]
+    providers: [ExtensionRpcService, ChromeExtensionService]
 })
 export class BrowserExtensionModule {
 

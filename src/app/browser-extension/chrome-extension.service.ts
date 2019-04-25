@@ -1,20 +1,10 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BangumiAuthDialogComponent } from './bangumi-auth-dialog/bangumi-auth-dialog.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Bangumi } from '../entity';
-
-export interface RPCMessage {
-    className: string;
-    method: string;
-    args: any[];
-}
-
-export interface RPCResult {
-    error: any | null;
-    result: any | null;
-}
-
+import { RPCResult } from './extension-rpc';
+import { ExtensionRpcService } from './extension-rpc.service';
 
 export interface IAuthInfo {
     id: string; // user's uid
@@ -52,8 +42,6 @@ export class ChromeExtensionService {
         return this._isEnabled;
     }
 
-    chromeExtensionId: string;
-
     get authInfo(): Observable<AuthInfo> {
         return this._authInfo.asObservable();
     }
@@ -62,22 +50,18 @@ export class ChromeExtensionService {
         return this._isBgmTvLogon.asObservable();
     }
 
-    constructor(private _ngZone: NgZone) {
-        console.log('chrome extension id:', CHROME_EXTENSION_ID);
-        if (CHROME_EXTENSION_ID) {
-            this.chromeExtensionId = CHROME_EXTENSION_ID;
-        }
-        if (!!window && !!window.chrome && !!window.chrome.runtime && !!this.chromeExtensionId) {
+    constructor(private _extensionRpcService: ExtensionRpcService) {
+        if (this._extensionRpcService.isExtensionEnabled()) {
             this.isEnabled.filter(isEnabled => isEnabled)
                 .subscribe(() => {
                     this.invokeBangumiMethod('getAuthInfo', [])
                         .subscribe(authInfo => {
-                            console.log(authInfo);
+                            // console.log(authInfo);
                             this._authInfo.next(authInfo);
                         });
                     this.invokeBangumiWebMethod('checkLoginStatus', [])
                         .subscribe(result => {
-                            console.log(result);
+                            // console.log(result);
                             if (result.isLogin) {
                                 this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
                             } else {
@@ -85,31 +69,29 @@ export class ChromeExtensionService {
                             }
                         });
                 });
-            this._ngZone.run(() => {
-                chrome.runtime.sendMessage(this.chromeExtensionId, {
-                    className: 'BackgroundCore',
-                    method: 'verify',
-                    args: []
-                }, (resp) => {
-                    console.log(resp);
-                    if (resp && resp.result === 'OK') {
+            this._extensionRpcService.invokeRPC('BackgroundCore', 'verify', [], 500)
+                .subscribe((resp) => {
+                    // console.log(resp);
+                    if (resp === 'OK') {
                         this._isEnabled.next(true);
                     } else {
                         this._isEnabled.next(false);
                     }
+                }, (err) => {
+                    console.log(err);
+                    this._isEnabled.next(false);
                 });
-            });
         } else {
             this._isEnabled.next(false);
         }
     }
 
     invokeBangumiMethod(method: string, args: any[]): Observable<any> {
-        return this.invokeRPC('BangumiAPIProxy', method, args);
+        return this._extensionRpcService.invokeRPC('BangumiAPIProxy', method, args);
     }
 
     invokeBangumiWebMethod(method: string, args: any[]): Observable<any> {
-        return this.invokeRPC('BangumiWebProxy', method, args);
+        return this._extensionRpcService.invokeRPC('BangumiWebProxy', method, args);
     }
 
     auth(username: string, password: string): Observable<any> {
@@ -120,7 +102,7 @@ export class ChromeExtensionService {
     }
 
     openBgmForResult(): Observable<any> {
-        return this.invokeRPC('BackgroundCore', 'openBgmForResult', [])
+        return this._extensionRpcService.invokeRPC('BackgroundCore', 'openBgmForResult', [])
             .do(() => {
                 this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
             });
@@ -134,42 +116,22 @@ export class ChromeExtensionService {
     }
 
     syncBangumi(bangumi: Bangumi): Observable<any> {
-        return this.invokeRPC('Synchronize', 'syncOne', [bangumi]);
+        return this._extensionRpcService.invokeRPC('Synchronize', 'syncOne', [bangumi]);
     }
 
     solveConflict(bangumi: Bangumi, bgmFavStatus: number, choice: string): Observable<any> {
-        return this.invokeRPC('Synchronize', 'solveConflict', [bangumi, bgmFavStatus, choice]);
+        return this._extensionRpcService.invokeRPC('Synchronize', 'solveConflict', [bangumi, bgmFavStatus, choice]);
     }
 
     updateFavoriteAndSync(bangumi: Bangumi, favStatus: any): Observable<any> {
-        return this.invokeRPC('Synchronize', 'updateFavorite', [bangumi, favStatus]);
+        return this._extensionRpcService.invokeRPC('Synchronize', 'updateFavorite', [bangumi, favStatus]);
     }
 
     deleteFavoriteAndSync(bangumi: Bangumi): Observable<any> {
-        return this.invokeRPC('Synchronize', 'deleteFavorite', [bangumi]);
+        return this._extensionRpcService.invokeRPC('Synchronize', 'deleteFavorite', [bangumi]);
     }
 
     syncProgress(bangumi: Bangumi): Observable<any> {
-        return this.invokeRPC('Synchronize', 'syncProgress', [bangumi]);
-    }
-
-    private invokeRPC(className: string, method: string, args: any[]): Observable<any> {
-        return new Observable<any>((observer) => {
-            chrome.runtime.sendMessage(this.chromeExtensionId, {
-                className: className,
-                method: method,
-                args: args
-            }, (resp: RPCResult) => {
-                this._ngZone.run(() => {
-                    if (resp && !resp.error) {
-                        observer.next(resp.result);
-                    } else {
-                        observer.error(resp ? resp.error : 'unknown error');
-                    }
-                    observer.complete();
-                });
-            });
-
-        });
+        return this._extensionRpcService.invokeRPC('Synchronize', 'syncProgress', [bangumi]);
     }
 }

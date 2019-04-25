@@ -28,7 +28,10 @@ const METADATA = {
     baseUrl: '/',
     GA: process.env.GA || '',
     customLoginStyle: loginStyleExsits,
-    chrome_extension_id: process.env.CHROME_EXTENSION_ID || ''
+    chrome_extension_id: process.env.CHROME_EXTENSION_ID || '',
+    firefox_extension_id: process.env.FIREFOX_EXTENSION_ID || '',
+    edge_extension_id: process.env.EDGE_EXTENSION_ID || '',
+    firefox_extension_url: process.env.FIREFOX_EXTENSION_URL || '',
 };
 
 console.log('CHROME_EXTENSION_ID: ', METADATA.chrome_extension_id);

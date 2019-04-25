@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChromeExtensionService, INITIAL_STATE_VALUE } from '../../browser-extension/chrome-extension.service';
 import { Subscription } from 'rxjs/Subscription';
+import { ExtensionRpcService } from '../../browser-extension/extension-rpc.service';
 import { User } from '../../entity';
 import { BaseError } from '../../../helpers/error';
 import { PersistStorage, UserService } from '../../user-service';
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { UserActionPanelComponent } from './user-action-panel/user-action-panel.component';
 import { isChrome } from '../../../helpers/browser-detect';
-import { ChromeExtensionTipComponent } from './chrome-extension-tip/chrome-extension-tip.component';
+import { BrowserExtensionTipComponent } from './browser-extension-tip/browser-extension-tip.component';
 
 @Component({
     selector: 'user-action',
@@ -36,6 +37,7 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('userActionLink') userActionLinkRef: ElementRef;
 
     constructor(private _chromeExtensionService: ChromeExtensionService,
+                private _extensionRpcService: ExtensionRpcService,
                 private _userService: UserService,
                 private _router: Router,
                 private _popover: UIPopover,
@@ -59,9 +61,6 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
             this._chromeExtensionService.isEnabled
                 .do(isEnabled => {
                     this.isBangumiEnabled = isEnabled;
-                    if (!isEnabled) {
-                        console.log('isEnabled');
-                    }
                 })
                 .filter(isEnabled => isEnabled)
                 .subscribe(() => {
@@ -110,8 +109,10 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
                 .timeout(1000)
                 .catch(() => {
                     let hasAcknowledged = this._persistStorage.getItem('USER_ACTION_HAS_ACKNOWLEDGED', null);
-                    if (isChrome && CHROME_EXTENSION_ID && !hasAcknowledged) {
-                        const popoverRef = this._popover.createPopover(userActionLinkElement, ChromeExtensionTipComponent, 'bottom-end');
+                    if (this._extensionRpcService.isExtensionEnabled() && !hasAcknowledged) {
+                        const popoverRef = this._popover.createPopover(userActionLinkElement, BrowserExtensionTipComponent, 'bottom-end');
+                        popoverRef.componentInstance.extensionId = this._extensionRpcService.extensionId;
+                        popoverRef.componentInstance.firefoxExtensionUrl = FIREFOX_EXTENSION_URL;
                         return popoverRef.afterClosed();
                     }
                 })

@@ -2,19 +2,31 @@ import { Component, OnDestroy } from '@angular/core';
 import { UIPopoverContent, UIPopoverRef } from 'deneb-ui';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { isChrome, isEdge, isFirefox } from '../../../../helpers/browser-detect';
 
 @Component({
     selector: 'chrome-extension-tip',
-    templateUrl: './chrome-extension-tip.html',
-    styleUrls: ['./chrome-extension-tip.less']
+    templateUrl: './browser-extension-tip.html',
+    styleUrls: ['./browser-extension-tip.less']
 })
-export class ChromeExtensionTipComponent extends UIPopoverContent implements OnDestroy {
+export class BrowserExtensionTipComponent extends UIPopoverContent implements OnDestroy {
     private _subscription = new Subscription();
 
-    chromeExtensionId = CHROME_EXTENSION_ID;
+    extensionId: string;
+    browserType: string;
+    firefoxExtensionUrl: string;
 
-    constructor(popoverRef: UIPopoverRef<ChromeExtensionTipComponent>) {
+    get installUrl(): string {
+        return {
+            'Chrome': 'https://chrome.google.com/webstore/detail/' + this.extensionId,
+            'Firefox': this.firefoxExtensionUrl,
+            'Edge': ''
+        }[this.browserType];
+    }
+
+    constructor(popoverRef: UIPopoverRef<BrowserExtensionTipComponent>) {
         super(popoverRef);
+        this.browserType = isChrome ? 'Chrome' : isFirefox ? 'Firefox' : isEdge ? 'Edge': 'Unsupported';
     }
     // inline install temporarily disabled
     // installExtension(event: Event) {

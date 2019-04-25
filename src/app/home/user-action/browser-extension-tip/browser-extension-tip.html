@@ -1,9 +1,9 @@
 <div class="ui-basic-popover">
     <div class="popover-title">Bangumi整合功能</div>
     <div class="popover-content">
-        现在你可以通过安装Chrome扩展的方式绑定Bangumi帐号，<br/>
+        现在你可以通过安装{{browserType}}扩展的方式绑定Bangumi帐号，<br/>
         这项增强的功能提供了评分到评论的一系列基于Bangumi帐号的社交服务。<br/>
-        <a [href]="'https://chrome.google.com/webstore/detail/' + chromeExtensionId">前往Chrome商店</a>
+        <a [href]="installUrl">前往{{browserType}}商店</a>
         <!--<a (click)="installExtension($event)"></a>-->
     </div>
     <div class="popover-footer">

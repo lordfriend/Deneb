@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.6.0
+
+- add tips to register to instruct user not using QQMail.
+- add fixsub source to libyk
+- change RPC mechanism for browser-extension communication in order to support new extension.
+
 ## 3.5.2
 
 - Fix bug that cause controls in config panel of video player cannot be clicked.

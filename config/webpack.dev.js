@@ -121,7 +121,10 @@ module.exports = function (metadata) {
                 'ENV': JSON.stringify(metadata.ENV),
                 'HMR': metadata.HMR,
                 'SITE_TITLE': JSON.stringify(metadata.title),
-                'CHROME_EXTENSION_ID': JSON.stringify(metadata.chrome_extension_id)
+                'CHROME_EXTENSION_ID': JSON.stringify(metadata.chrome_extension_id),
+                'FIREFOX_EXTENSION_ID': JSON.stringify(metadata.firefox_extension_id),
+                'EDGE_EXTENSION_ID': JSON.stringify(metadata.edge_extension_id),
+                'FIREFOX_EXTENSION_URL': JSON.stringify(metadata.firefox_extension_url)
             }),
 
             // Plugin: LoaderOptionsPlugin

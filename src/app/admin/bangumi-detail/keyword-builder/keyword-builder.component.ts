@@ -25,7 +25,7 @@ export class KeywordBuilder implements OnInit, OnDestroy {
 
     itemList: { title: string, eps_no: number }[];
 
-    availableTable = ['yyets', 'tokyo', 'dmhy'];
+    availableTable = ['yyets', 'tokyo', 'dmhy', 'fixsub'];
 
     availableFilter = AVAILABLE_FILTER;
     availableCategory = Object.keys(AVAILABLE_CATEGORY);

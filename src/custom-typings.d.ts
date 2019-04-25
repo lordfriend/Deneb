@@ -37,6 +37,9 @@ declare var ENV: string;
 declare var HMR: boolean;
 declare var SITE_TITLE: string;
 declare var CHROME_EXTENSION_ID: string;
+declare var FIREFOX_EXTENSION_ID: string;
+declare var EDGE_EXTENSION_ID: string;
+declare var FIREFOX_EXTENSION_URL: string;
 
 declare var System: SystemJS;
 
@@ -115,7 +118,14 @@ interface Document {
   mozRequestFullScreen(): void;
   msExitFullscreen(): void;
   mozCancelFullScreen(): void;
+  documentMode: any;
+}
+
+interface Window {
+    StyleMedia?: any;
 }
 
 declare var ga: Function;
 declare var ga_events: any[];
+// used for firefox detection
+declare var InstallTrigger: any;

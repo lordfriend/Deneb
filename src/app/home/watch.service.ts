@@ -1,7 +1,8 @@
-import { BaseService } from '../../helpers/base.service';
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { BaseService } from '../../helpers/base.service';
 import { PersistStorage } from '../user-service/persist-storage';
 
 export const PREFIX = 'watch_history';
@@ -34,21 +35,21 @@ export class WatchService extends BaseService {
 
     favorite_bangumi(bangumi_id: string, status: number): Observable<any> {
         let body = JSON.stringify({status: status});
-        return this._http.post(`${this._baseUrl}/favorite/bangumi/${bangumi_id}`, body, this._requestOptions)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.post(`${this._baseUrl}/favorite/bangumi/${bangumi_id}`, body, this._requestOptions).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),);
     }
 
     delete_favorite(bangumi_id: string): Observable<any> {
-        return this._http.delete(`${this._baseUrl}/favorite/bangumi/${bangumi_id}`)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.delete(`${this._baseUrl}/favorite/bangumi/${bangumi_id}`).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),);
     }
 
     check_favorite(bangumi_id: string): Observable<any> {
-        return this._http.put(`${this._baseUrl}/favorite/check/${bangumi_id}`, null)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.put(`${this._baseUrl}/favorite/check/${bangumi_id}`, null).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),);
     }
 
     episode_history(bangumi_id: string, episode_id: string, last_watch_position: number, percentage: number, is_finished: boolean): Observable<any> {
@@ -58,9 +59,9 @@ export class WatchService extends BaseService {
             is_finished: is_finished,
             percentage: percentage
         });
-        return this._http.post(`${this._baseUrl}/history/${episode_id}`, body, this._requestOptions)
-            .map(res => res.json())
-            .catch(this.handleError)
+        return this._http.post(`${this._baseUrl}/history/${episode_id}`, body, this._requestOptions).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),)
     }
 
     updateWatchProgress(bangumi_id: string, episode_id: string, last_watch_position: number, percentage: number, is_finished: boolean): void {
@@ -97,9 +98,9 @@ export class WatchService extends BaseService {
         let body = JSON.stringify({
             records: watchHistoryRecords
         });
-        this._http.post(`${this._baseUrl}/history/synchronize`, body, this._requestOptions)
-            .map(res => res.json())
-            .catch(this.handleError)
+        this._http.post(`${this._baseUrl}/history/synchronize`, body, this._requestOptions).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),)
             .subscribe(() => {
                 watchHistoryRecords.forEach(record => {
                     let key = `${PREFIX}:${record.episode_id}`;

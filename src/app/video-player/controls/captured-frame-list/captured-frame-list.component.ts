@@ -1,10 +1,12 @@
+
+import {fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+
+import {tap, mergeMap, filter, map} from 'rxjs/operators';
 import {
     AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output,
     ViewChild
 } from '@angular/core';
 import { PreviewContainer, VideoCapture, PreviewImageParams, IMAGE_PROPERTY_NAME } from '../../core/video-capture.service';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 import { UIDialog } from 'deneb-ui';
 import { CapturedImageOperationDialog } from './operation-dialog/operation-dialog.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -74,15 +76,15 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
     ngAfterViewInit(): void {
         let previewWrapperElement = this.previewWrapper.nativeElement as HTMLElement;
         this._subscription.add(
-            Observable.fromEvent(previewWrapperElement, 'click')
-                .map((event: Event) => {
+            observableFromEvent(previewWrapperElement, 'click').pipe(
+                map((event: Event) => {
                     event.preventDefault();
                     event.stopPropagation();
                     this._videoPlayer.requestFocus();
                     return event.target as HTMLElement;
-                })
-                .filter(element => element.tagName.toUpperCase() === 'IMG')
-                .flatMap(image => {
+                }),
+                filter(element => element.tagName.toUpperCase() === 'IMG'),
+                mergeMap(image => {
                     let nextSibling = image.nextSibling;
                     let dialogRef = this._dialogService.open(CapturedImageOperationDialog, {
                         stickyDialog: false,
@@ -90,13 +92,13 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
                     }, this._controls.controlWrapper);
 
                     dialogRef.componentInstance.image = image as HTMLImageElement;
-                    return dialogRef.afterClosed()
-                        .do((result: any) => {
+                    return dialogRef.afterClosed().pipe(
+                        tap((result: any) => {
                             if (!result || !result.remove) {
                                 previewWrapperElement.insertBefore(image, nextSibling);
                             }
-                        })
-                })
+                        }))
+                }),)
                 .subscribe((result) => {
                     if (result && result.remove) {
                         this._imageCount--;

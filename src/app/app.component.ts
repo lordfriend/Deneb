@@ -5,7 +5,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 import { AnalyticsService } from './analytics.service';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 
 require('./app.less');
 

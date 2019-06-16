@@ -1,8 +1,11 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {catchError, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
 import { User } from '../entity';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Observable } from 'rxjs/Rx';
 import { AuthError } from '../../helpers/error/AuthError';
 
 
@@ -26,13 +29,13 @@ export class Authentication implements CanActivate {
 
     private getUserInfo(): Observable<User> {
         if (this.user) {
-            return Observable.of(this.user);
+            return observableOf(this.user);
         } else {
-            return this._userService.getUserInfo()
-                .map((user: User) => {
+            return this._userService.getUserInfo().pipe(
+                map((user: User) => {
                     this.user = user;
                     return user;
-                });
+                }));
         }
     }
 
@@ -46,16 +49,16 @@ export class Authentication implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
         let sourceUrl = state.url;
-        return this.getUserInfo()
-            .map(() => {
+        return this.getUserInfo().pipe(
+            map(() => {
                 if (this.hasPermission(route)) {
                     return true;
                 } else {
                     this.router.navigate(['/error', {message: AuthError.PERMISSION_DENIED, status: 403}]);
                     return false;
                 }
-            })
-            .catch((error) => {
+            }),
+            catchError((error) => {
                 console.log(error, `Is AuthError: ${error instanceof AuthError}`);
                 if (error instanceof AuthError) {
                     if (sourceUrl === '/') {
@@ -66,7 +69,7 @@ export class Authentication implements CanActivate {
                 } else {
                     this.router.navigate(['/error', {message: error.message, status: error.status}]);
                 }
-                return Observable.of(false);
-            });
+                return observableOf(false);
+            }),);
     }
 }

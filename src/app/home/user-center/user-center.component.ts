@@ -1,7 +1,9 @@
+
+import {filter, mergeMap} from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '../../entity';
 import { UserService } from '../../user-service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { BaseError } from '../../../helpers/error';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -84,12 +86,12 @@ export class UserCenter implements OnInit, OnDestroy {
         if (searchString) {
             this.isAddingWebHook = true;
             this._subscription.add(
-                this._userCenterService.addWebHookToken(searchString.substring(1, searchString.length))
-                    .flatMap(() => {
+                this._userCenterService.addWebHookToken(searchString.substring(1, searchString.length)).pipe(
+                    mergeMap(() => {
                         this.isAddingWebHook = false;
                         this.isLoading = true;
                         return this._userCenterService.listWebHookToken();
-                    })
+                    }))
                     .subscribe((list) => {
                         this.isLoading = false;
                         this.webHookList = list;
@@ -107,11 +109,11 @@ export class UserCenter implements OnInit, OnDestroy {
 
     deleteWebHook(webHook: WebHook) {
         this._subscription.add(
-            this._userCenterService.deleteWebHookToken(webHook.id)
-                .flatMap(() => {
+            this._userCenterService.deleteWebHookToken(webHook.id).pipe(
+                mergeMap(() => {
                     this.isLoading = true;
                     return this._userCenterService.listWebHookToken();
-                })
+                }))
                 .subscribe((list) => {
                     this.isLoading = false;
                     this.webHookList = list;
@@ -125,8 +127,8 @@ export class UserCenter implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.buildForm();
         this._subscription.add(
-            this._userSerivce.userInfo
-                .filter(user => !!user)
+            this._userSerivce.userInfo.pipe(
+                filter(user => !!user))
                 .subscribe(
                     user => {
                         this.user = user;

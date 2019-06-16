@@ -6,7 +6,7 @@ import { register } from 'ts-node/dist/ts-node';
 import { AuthError } from '../../helpers/error/AuthError';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ClientError } from '../../helpers/error/ClientError';
 
 

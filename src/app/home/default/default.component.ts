@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {HomeService, HomeChild} from "../home.service";
 import {Bangumi} from "../../entity/bangumi";
 import {FAVORITE_LABEL} from '../../entity/constants';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Announce } from '../../entity/announce';
 import { PersistStorage } from '../../user-service/persist-storage';
 

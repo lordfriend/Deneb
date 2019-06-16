@@ -1,7 +1,10 @@
+
+import {fromEvent as observableFromEvent, Observable, Subscription} from 'rxjs';
+
+import {distinctUntilChanged, map, debounceTime, takeWhile, mergeMap, tap, filter} from 'rxjs/operators';
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {Bangumi} from '../../entity';
 import {AdminService} from '../admin.service';
-import {Observable, Subscription} from 'rxjs';
 import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
 import {BaseError} from '../../../helpers/error/BaseError';
 import {BangumiRaw} from '../../entity/bangumi-raw';
@@ -48,21 +51,21 @@ export class SearchBangumi implements AfterViewInit {
         let typePicker = <HTMLElement> this.typePicker.nativeElement;
 
         this._subscription.add(
-            Observable.fromEvent(typePicker, 'click')
-                .filter(() => !this.typePickerOpen)
-                .do((event: MouseEvent) => {
+            observableFromEvent(typePicker, 'click').pipe(
+                filter(() => !this.typePickerOpen),
+                tap((event: MouseEvent) => {
                     event.preventDefault();
                     event.stopPropagation();
                     this.typePickerOpen = true;
-                })
-                .flatMap(() => {
-                    return Observable.fromEvent(document.body, 'click')
-                        .do((event: MouseEvent) => {
+                }),
+                mergeMap(() => {
+                    return observableFromEvent(document.body, 'click').pipe(
+                        tap((event: MouseEvent) => {
                             event.preventDefault();
                             event.stopPropagation();
-                        })
-                        .takeWhile(() => this.typePickerOpen)
-                })
+                        }),
+                        takeWhile(() => this.typePickerOpen),)
+                }),)
                 .subscribe(
                     () => {
                         this.typePickerOpen = false;
@@ -71,11 +74,11 @@ export class SearchBangumi implements AfterViewInit {
         );
 
         this._subscription.add(
-            Observable.fromEvent(searchBox, 'keyup')
-                .debounceTime(500)
-                .map(() => (searchBox as HTMLInputElement).value)
-                .distinctUntilChanged()
-                .filter(name => !!name)
+            observableFromEvent(searchBox, 'keyup').pipe(
+                debounceTime(500),
+                map(() => (searchBox as HTMLInputElement).value),
+                distinctUntilChanged(),
+                filter(name => !!name),)
                 .subscribe(
                     (name: string) => {
                         this.currentPage = 1;

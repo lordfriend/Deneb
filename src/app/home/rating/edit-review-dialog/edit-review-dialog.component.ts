@@ -3,7 +3,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Bangumi } from '../../../entity';
 import { RATING_TEXT } from '../rating.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { SynchronizeService } from '../../favorite-chooser/synchronize.service';
 
 @Component({

@@ -1,8 +1,10 @@
+
+import {fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+
+import {filter} from 'rxjs/operators';
 import { UIPopoverContent, UIPopoverRef } from 'deneb-ui';
 import { Component, ElementRef, OnDestroy, Self } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
 import { UserActionPanelComponent } from '../../../../home/user-action/user-action-panel/user-action-panel.component';
-import { Observable } from 'rxjs/Observable';
 import { Capture, PlayList } from '../../../core/settings';
 import { PersistStorage } from '../../../../user-service';
 
@@ -47,12 +49,12 @@ export class VideoConfigPanelComponent extends UIPopoverContent implements OnDes
     ngAfterViewInit() {
         super.ngAfterViewInit();
         this._subscription.add(
-            Observable.fromEvent(document.body, 'click')
-                .filter((event: MouseEvent) => {
+            observableFromEvent(document.body, 'click').pipe(
+                filter((event: MouseEvent) => {
                     const selfElement = this._selfElementRef.nativeElement as HTMLElement;
                     const rect = selfElement.getBoundingClientRect();
                     return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
-                })
+                }))
                 .subscribe(() => {
                     // TODO: We need prevent clicking the player to avoid change playback state.
                     this.popoverRef.close(null);

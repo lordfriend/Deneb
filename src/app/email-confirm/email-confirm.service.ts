@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from '../../helpers/base.service';
 import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { BaseService } from '../../helpers/base.service';
 
 @Injectable()
 export class EmailConfirmService extends BaseService {
@@ -15,8 +16,8 @@ export class EmailConfirmService extends BaseService {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({token: token});
-        return this._http.post('/api/user/email/confirm', body, options)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.post('/api/user/email/confirm', body, options).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),);
     }
 }

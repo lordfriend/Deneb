@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { UserService } from '../user-service/user.service';
 import {BaseError} from '../../helpers/error/BaseError';

@@ -63,7 +63,6 @@
     "ng2-date-picker": "^2.6.2",
     "popper.js": "^1.12.9",
     "reflect-metadata": "^0.1.9",
-    "rxjs": "5.*",
     "semantic-ui-less": "^2.2.4",
     "web-animations-js": "^2.2.5",
     "zone.js": "~0.8"
@@ -99,6 +98,7 @@
     "parse5": "^3.0.1",
     "raw-loader": "^3.0.0",
     "rimraf": "^2.5.2",
+    "rxjs": "6",
     "semantic-ui-less-module-loader": "^1.0.0",
     "source-map-loader": "^0.1.5",
     "style-loader": "~0.23",

@@ -3,7 +3,7 @@ import { UIPopover, UIPopoverRef } from 'deneb-ui';
 import { VideoControls } from '../controls.component';
 import { VideoPlayer } from '../../video-player.component';
 import { VideoConfigPanelComponent } from './config-panel/config-panel.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'video-player-config-button',

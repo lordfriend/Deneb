@@ -1,8 +1,9 @@
+
+import {mergeMap, merge} from 'rxjs/operators';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Bangumi } from '../../entity/bangumi';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  BehaviorSubject } from 'rxjs';
 import { HomeService } from '../home.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { FAVORITE_LABEL } from '../../entity/constants';
 import { closest } from '../../../helpers/dom';
 
@@ -52,11 +53,11 @@ export class MyBangumiComponent implements OnInit, OnDestroy {
         );
 
         this._subscription.add(
-            this._statusSubject
-                .merge(this._homeService.favoriteChanges)
-                .flatMap(() => {
+            this._statusSubject.pipe(
+                merge(this._homeService.favoriteChanges),
+                mergeMap(() => {
                     return this._homeService.myBangumi(this.currentStatus)
-                })
+                }),)
                 .subscribe((bangumiList) => {
                     // desc , sort by favorite_update_time and air_date
                     this.myBangumiList = bangumiList.sort((bgm1, bgm2) => {

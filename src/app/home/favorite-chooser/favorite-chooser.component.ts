@@ -1,12 +1,13 @@
-import { Bangumi } from '../../entity';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs';
+import { filter, mergeMap, tap } from 'rxjs/operators';
+import { AuthInfo, ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
+import { Bangumi } from '../../entity';
 import { BANGUMI_TYPE, FAVORITE_LABEL } from '../../entity/constants';
-import { WatchService } from '../watch.service';
 import { HomeService } from '../home.service';
 import { EditReviewDialogComponent } from '../rating/edit-review-dialog/edit-review-dialog.component';
-import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { Subscription } from 'rxjs/Subscription';
-import { AuthInfo, ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
+import { WatchService } from '../watch.service';
 import { SynchronizeService } from './synchronize.service';
 
 @Component({
@@ -62,9 +63,9 @@ export class FavoriteChooser implements OnInit, OnDestroy {
         dialogRef.componentInstance.rating = this.userFavoriteInfo ? this.userFavoriteInfo.rating : 0;
         dialogRef.componentInstance.tags = this.userFavoriteInfo ? (Array.isArray(this.userFavoriteInfo.tags) ? this.userFavoriteInfo.tags.join(' ') : '') : '';
         dialogRef.componentInstance.bangumi = this.bangumi;
-        this._subscription.add(dialogRef.afterClosed()
-            .filter(result => !!result)
-            .flatMap((result) => {
+        this._subscription.add(dialogRef.afterClosed().pipe(
+            filter(result => !!result),
+            mergeMap((result) => {
                 this.isOnSynchronizing = true;
                 /**
                  * export interface FavoriteStatus {
@@ -75,10 +76,10 @@ export class FavoriteChooser implements OnInit, OnDestroy {
                  * }
                  */
                 return this._synchronize.updateFavorite(this.bangumi, result);
-            })
-            .flatMap(() => {
+            }),
+            mergeMap(() => {
                 return this._chromeExtensionService.invokeBangumiMethod('favoriteStatus', [this.bangumi.bgm_id]);
-            })
+            }),)
             .subscribe((result) => {
                 console.log(result);
                 this.isOnSynchronizing = false;
@@ -102,10 +103,10 @@ export class FavoriteChooser implements OnInit, OnDestroy {
         this.isOnSynchronizing = true;
         if (this.syncEnabled) {
             this._subscription.add(
-                this._synchronize.deleteFavorite(this.bangumi)
-                    .do(() => {
+                this._synchronize.deleteFavorite(this.bangumi).pipe(
+                    tap(() => {
                         this.homeService.changeFavorite();
-                    })
+                    }))
                     .subscribe(() => {
                         this.isOnSynchronizing = false;
                         this.bangumi.favorite_status = 0;
@@ -158,33 +159,33 @@ export class FavoriteChooser implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.isOnSynchronizing = true;
         this._subscription.add(
-            this._chromeExtensionService.isEnabled
-                .do(isEnabled => {
+            this._chromeExtensionService.isEnabled.pipe(
+                tap(isEnabled => {
                     this.isExtensionEnabled = isEnabled;
-                })
-                .filter(isEnabled => isEnabled)
-                .flatMap(() => {
+                }),
+                filter(isEnabled => isEnabled),
+                mergeMap(() => {
                     return this._chromeExtensionService.authInfo;
-                })
-                .do(authInfo => {
+                }),
+                tap(authInfo => {
                     this.authInfo = authInfo;
-                })
-                .filter(authInfo => !!authInfo)
-                .flatMap(() => {
+                }),
+                filter(authInfo => !!authInfo),
+                mergeMap(() => {
                     return this._chromeExtensionService.isBgmTvLogon;
-                })
-                .do(isLogin => {
+                }),
+                tap(isLogin => {
                     this.isBgmLogin = isLogin;
                     if (this.isBgmLogin === LOGON_STATUS.TRUE && !!this.authInfo) {
                         this.toggleButtonText = '收藏/评价';
                     } else {
                         this.toggleButtonText = '收藏';
                     }
-                })
-                .filter(isLogin => isLogin === LOGON_STATUS.TRUE)
-                .flatMap(() => {
+                }),
+                filter(isLogin => isLogin === LOGON_STATUS.TRUE),
+                mergeMap(() => {
                     return this._synchronize.syncBangumi(this.bangumi);
-                })
+                }),)
                 .subscribe(result => {
                     this.isOnSynchronizing = false;
                     this.userFavoriteInfo = result.data;

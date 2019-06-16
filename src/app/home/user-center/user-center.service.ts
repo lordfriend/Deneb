@@ -1,7 +1,10 @@
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+
+import {filter, take, mergeMap, catchError, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { BaseService } from '../../../helpers/base.service';
 import { Http } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
 import { PERM_NAME, WebHook } from '../../entity/web-hook';
 import { UIDialog } from 'deneb-ui';
 import { ConfirmDialogModal } from '../../confirm-dialog/confirm-dialog-modal.component';
@@ -21,9 +24,9 @@ export class UserCenterService extends BaseService {
     }
 
     listWebHookToken(): Observable<WebHook[]> {
-        return this._http.get('/api/web-hook/token')
-            .map(res => res.json().data)
-            .map(webHookList => {
+        return this._http.get('/api/web-hook/token').pipe(
+            map(res => res.json().data),
+            map(webHookList => {
                 return webHookList.map(webHook => {
                     if (webHook.permissions) {
                         webHook.permissions = JSON.parse(webHook.permissions as string) as string[];
@@ -33,8 +36,8 @@ export class UserCenterService extends BaseService {
                     webHook.permissions = webHook.permissions.map(perm_key => PERM_NAME[perm_key]);
                     return webHook;
                 });
-            })
-            .catch(this.handleError);
+            }),
+            catchError(this.handleError),);
     }
 
     addWebHookToken(querystring: string): Observable<any> {
@@ -42,14 +45,14 @@ export class UserCenterService extends BaseService {
         const token_id = params.get('token_id');
         const web_hook_id = params.get('web_hook_id');
         if (token_id && web_hook_id) {
-            return this._http.get(`/api/web-hook/${web_hook_id}`)
-                .map(res => {
+            return this._http.get(`/api/web-hook/${web_hook_id}`).pipe(
+                map(res => {
                     let result = res.json().data as any;
                     result.permissions = JSON.parse(result.permissions);
                     return result as WebHook;
-                })
-                .catch(this.handleError)
-                .flatMap((webHook: WebHook) => {
+                }),
+                catchError(this.handleError),
+                mergeMap((webHook: WebHook) => {
                     let permissionInfo = '<div>该WebHook将会需要以下权限</div><ul>' + webHook.permissions.map((permission_key) => {
                         return `<li>${PERMISSION_INFO[permission_key]}</li>`;
                     }).join('') + '</ul>';
@@ -65,23 +68,23 @@ export class UserCenterService extends BaseService {
                     dialogRef.componentInstance.title = '确定添加Web Hook吗？';
                     dialogRef.componentInstance.content = content;
 
-                    return dialogRef.afterClosed()
-                        .take(1)
-                        .filter(result => result === 'confirm')
-                        .flatMap(() => {
+                    return dialogRef.afterClosed().pipe(
+                        take(1),
+                        filter(result => result === 'confirm'),
+                        mergeMap(() => {
                             return this._http.post('/api/web-hook/token', null, {
                                 params: {
                                     token_id: token_id,
                                     web_hook_id: web_hook_id
                                 }
                             });
-                        })
-                        .map(res => res.json())
-                        .catch(this.handleError);
+                        }),
+                        map(res => res.json()),
+                        catchError(this.handleError),);
 
-                });
+                }),);
         } else {
-            return Observable.throw(new BaseError('Illegal Parameters', '参数不合法'));
+            return observableThrowError(new BaseError('Illegal Parameters', '参数不合法'));
         }
     }
 
@@ -90,8 +93,8 @@ export class UserCenterService extends BaseService {
             params: {
                 web_hook_id: web_hook_id
             }
-        })
-            .map(res => res.json())
-            .catch(this.handleError);
+        }).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),);
     }
 }

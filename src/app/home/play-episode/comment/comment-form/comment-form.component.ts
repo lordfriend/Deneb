@@ -5,7 +5,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChromeExtensionService } from '../../../../browser-extension/chrome-extension.service';
 import { Post } from '../comment.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'bangumi-comment-form',

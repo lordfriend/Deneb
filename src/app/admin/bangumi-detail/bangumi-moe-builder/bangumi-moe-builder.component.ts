@@ -1,6 +1,9 @@
+
+import {fromEvent as observableFromEvent, Observable, Subscription} from 'rxjs';
+
+import {mergeMap, filter, distinctUntilChanged, debounceTime, map} from 'rxjs/operators';
 import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
-import {Observable, Subscription} from 'rxjs';
 import {Bangumi} from '../../../entity/bangumi';
 import {BangumiMoeService} from './bangumi-moe.service';
 import {Tag, Torrent} from './bangum-moe-entity';
@@ -105,18 +108,18 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(): void {
         let searchBox = this.searchBox.nativeElement;
         this._subscription.add(
-            Observable.fromEvent(searchBox, 'input')
-                .map(() => {
+            observableFromEvent(searchBox, 'input').pipe(
+                map(() => {
                     return (searchBox as HTMLInputElement).value;
-                })
-                .debounceTime(500)
-                .distinctUntilChanged()
-                .filter(value => !!value)
-                .flatMap(
+                }),
+                debounceTime(500),
+                distinctUntilChanged(),
+                filter(value => !!value),
+                mergeMap(
                     (name: string) => {
                         return this._bangumiMoeService.searchTag(name)
                     }
-                )
+                ),)
                 .subscribe(
                     (result: {success: boolean, found: boolean, tag: Tag[]}) => {
                         this.searchResultTags = result.tag;

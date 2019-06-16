@@ -1,14 +1,15 @@
+
+import {interval as observableInterval,  Subscription ,  Observable ,  Subject } from 'rxjs';
+
+import {mergeMap, map, take} from 'rxjs/operators';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HomeService } from '../home.service';
 import { Bangumi } from '../../entity/bangumi';
-import { Subscription } from 'rxjs/Subscription';
 import { Home } from '../home.component';
 import { InfiniteList, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { CARD_HEIGHT_REM } from '../bangumi-card/bangumi-card.component';
 import { getRemPixel } from '../../../helpers/dom';
 import { BaseError } from '../../../helpers/error/BaseError';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
 
 let lastType: number;
@@ -141,11 +142,11 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
         let totalDistance = lastScrollPosition;
         const co = totalDistance / ((step - 1) * (step -1));
         this._subscription.add(
-            Observable.interval(30)
-                .take(step)
-                .map((t) => {
+            observableInterval(30).pipe(
+                take(step),
+                map((t) => {
                     return Math.floor(totalDistance - co * t * t);
-                })
+                }),)
                 .subscribe((d) => {
                     this.lastScrollPosition = d;
                 })
@@ -188,11 +189,11 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this._subscription.add(
-            this._statusSubject.asObservable()
-                .flatMap((status) => {
+            this._statusSubject.asObservable().pipe(
+                mergeMap((status) => {
                     this.isLoading = true;
                     return this._homeService.myBangumi(status);
-                })
+                }))
                 .subscribe((bangumiList) => {
                     this._favoriteList = bangumiList;
                     this.filterFavorites();

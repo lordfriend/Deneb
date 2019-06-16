@@ -1,13 +1,13 @@
+
+import {mergeMap, filter} from 'rxjs/operators';
 import {
     AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,
     ViewEncapsulation
 } from '@angular/core';
 import { ChromeExtensionService, IAuthInfo } from '../../../browser-extension/chrome-extension.service';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  BehaviorSubject ,  Observable } from 'rxjs';
 import { ResponsiveService } from '../../../responsive-image/responsive.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
 import { PersistStorage } from '../../../user-service';
 
 export interface PostUser {
@@ -247,11 +247,11 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this._subscription.add(
-            this.isVisible
-                .filter(visible => visible)
-                .flatMap(() => {
+            this.isVisible.pipe(
+                filter(visible => visible),
+                mergeMap(() => {
                     return this._chromeExtensionService.authInfo;
-                })
+                }),)
                 .subscribe((authInfo) => {
                     this.authInfo = authInfo as IAuthInfo;
                     this.freshCommentList();

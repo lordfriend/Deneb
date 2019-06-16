@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { VideoFile } from '../../entity/video-file';
 import { VideoPlayer } from '../../video-player/video-player.component';
@@ -95,8 +97,8 @@ export class PreviewVideoComponent implements OnInit, OnDestroy {
 
         let videoPathDir = videoPath.substring(0, videoPath.indexOf('/'));
 
-        this._http.get(`//${staticDomain}/video/preview-video/${videoPathDir}/manifest.json`)
-            .map(res => res.json() as PVManifest[])
+        this._http.get(`//${staticDomain}/video/preview-video/${videoPathDir}/manifest.json`).pipe(
+            map(res => res.json() as PVManifest[]))
             .subscribe((mainfest: PVManifest[]) => {
                 this.manifest = mainfest;
                 this.currentPV = this.manifest[0];

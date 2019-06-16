@@ -1,5 +1,7 @@
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+
+import {fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+
+import {map, tap, filter} from 'rxjs/operators';
 import { VideoPlayer } from '../video-player.component';
 import { VideoCapture } from './video-capture.service';
 
@@ -30,45 +32,45 @@ export class VideoPlayerShortcuts {
             videoPlayer.currentTime.subscribe(t => this.currentTime = t)
         );
         this._subscription.add(
-            Observable.fromEvent(_hostElement, 'focus')
+            observableFromEvent(_hostElement, 'focus')
                 .subscribe(() => {
                     this.focus = true
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(_hostElement, 'blur')
+            observableFromEvent(_hostElement, 'blur')
                 .subscribe(() => {
                     this.focus = false
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(_hostElement, 'keydown')
-                .filter(() => this.focus)
-                .filter((event: KeyboardEvent) => {
+            observableFromEvent(_hostElement, 'keydown').pipe(
+                filter(() => this.focus),
+                filter((event: KeyboardEvent) => {
                     return Object.keys(KEY_MAP)
                         .map(name => KEY_MAP[name])
                         .some(code => event.which === code)
-                })
+                }),)
                 .subscribe((event: KeyboardEvent) => {
                     event.preventDefault();
                     event.stopPropagation();
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(_hostElement, 'keyup')
-                .filter(() => this.focus)
-                .filter((event: KeyboardEvent) => {
+            observableFromEvent(_hostElement, 'keyup').pipe(
+                filter(() => this.focus),
+                filter((event: KeyboardEvent) => {
                     return Object.keys(KEY_MAP)
                         .map(name => KEY_MAP[name])
                         .some(code => event.which === code)
-                })
-                .do((event: KeyboardEvent) => {
+                }),
+                tap((event: KeyboardEvent) => {
                     event.preventDefault();
                     event.stopPropagation();
-                })
-                .map((event: KeyboardEvent) => {
+                }),
+                map((event: KeyboardEvent) => {
                     return event.which;
-                })
+                }),)
                 .subscribe((code: number) => {
                     switch (code) {
                         case KEY_MAP.ENTER:

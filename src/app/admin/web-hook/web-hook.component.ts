@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { WebHookService } from './web-hook.service';
-import { Subscription } from 'rxjs/Subscription';
-import { WebHook } from '../../entity/web-hook';
-import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { getRemPixel } from '../../../helpers/dom';
-import { EditWebHookComponent } from './edit-web-hook/edit-web-hook.component';
-import { BaseError } from '../../../helpers/error/BaseError';
 import { Title } from '@angular/platform-browser';
+import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
+import { getRemPixel } from '../../../helpers/dom';
+import { BaseError } from '../../../helpers/error/BaseError';
+import { WebHook } from '../../entity/web-hook';
+import { EditWebHookComponent } from './edit-web-hook/edit-web-hook.component';
+import { WebHookService } from './web-hook.service';
 
 const CARD_HEIGHT_REM = 12;
 
@@ -39,11 +40,11 @@ export class WebHookComponent implements OnInit, OnDestroy {
     addWebHook() {
         const dialogRef = this._dialog.open(EditWebHookComponent, {stickyDialog: true, backdrop: true});
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter(result => !!result)
-                .flatMap((result) => {
+            dialogRef.afterClosed().pipe(
+                filter(result => !!result),
+                mergeMap((result) => {
                     return this._webHookService.registerWebHook(result.result);
-                })
+                }),)
                 .subscribe(() => {
                     this.refreshList();
                 }, (error: BaseError) => {
@@ -56,15 +57,15 @@ export class WebHookComponent implements OnInit, OnDestroy {
         const dialogRef = this._dialog.open(EditWebHookComponent, {stickyDialog: true, backdrop: true});
         dialogRef.componentInstance.webHook = webHook;
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter(result => !!result)
-                .flatMap((result) => {
+            dialogRef.afterClosed().pipe(
+                filter(result => !!result),
+                mergeMap((result) => {
                     if (result.deleteWebHook) {
                         return this._webHookService.deleteWebHook(webHook.id);
                     } else {
                         return this._webHookService.updateWebHook(webHook.id, result.result);
                     }
-                })
+                }),)
                 .subscribe(() => {
                     this.refreshList();
                 }, (error: BaseError) => {

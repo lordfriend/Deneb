@@ -1,10 +1,12 @@
+
+import {interval as observableInterval, fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+
+import {takeUntil, mergeMap, tap, map, filter} from 'rxjs/operators';
 import {
     AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, OnInit,
     Output, Self,
     ViewChild
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 import { VideoPlayerHelpers } from '../../core/helpers';
 import { VideoPlayer } from '../../video-player.component';
 
@@ -92,37 +94,37 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         let tipElement = this.tipRef.nativeElement as HTMLElement;
         if (this.notMobileDevice) {
             this._subscription.add(
-                Observable.fromEvent(hostElement, 'mousedown')
-                    .filter(() => {
+                observableFromEvent(hostElement, 'mousedown').pipe(
+                    filter(() => {
                         return !Number.isNaN(this.duration);
-                    })
-                    .map((event: MouseEvent) => {
+                    }),
+                    map((event: MouseEvent) => {
                         return {rect: hostElement.getBoundingClientRect(), event: event};
-                    })
-                    .do(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
+                    }),
+                    tap(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
                         event.preventDefault();
                         this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.clientX);
                         this.startDrag();
                         this.updateTip(rect, event, tipElement);
                         this.pointOpacity = 1;
-                    })
-                    .flatMap(() => {
-                        return Observable.fromEvent(document, 'mousemove')
-                            .map((event: MouseEvent) => {
+                    }),
+                    mergeMap(() => {
+                        return observableFromEvent(document, 'mousemove').pipe(
+                            map((event: MouseEvent) => {
                                 return {rect: hostElement.getBoundingClientRect(), event: event};
-                            })
-                            .takeUntil(Observable.fromEvent(document, 'mouseup')
-                                .map((event: MouseEvent) => {
+                            }),
+                            takeUntil(observableFromEvent(document, 'mouseup').pipe(
+                                map((event: MouseEvent) => {
                                     return {rect: hostElement.getBoundingClientRect(), event: event};
-                                })
-                                .do(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
+                                }),
+                                tap(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
                                     this._videoPlayer.seek(VideoPlayerHelpers.calcSliderRatio(rect, event.clientX));
                                     this.stopDrag();
                                     if (!this.isEventInRect(rect, event)) {
                                         this.pointOpacity = 0;
                                     }
-                                }));
-                    })
+                                }),)),);
+                    }),)
                     .subscribe(
                         ({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
                             this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.clientX);
@@ -132,68 +134,68 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
             );
 
             this._subscription.add(
-                Observable.fromEvent(hostElement, 'mousemove')
-                    .filter(() => !Number.isNaN(this.duration))
-                    .filter(() => !this._isDragging)
-                    .map((event: MouseEvent) => {
+                observableFromEvent(hostElement, 'mousemove').pipe(
+                    filter(() => !Number.isNaN(this.duration)),
+                    filter(() => !this._isDragging),
+                    map((event: MouseEvent) => {
                         return {rect: hostElement.getBoundingClientRect(), event: event};
-                    })
-                    .filter(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
+                    }),
+                    filter(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
                         return this.isEventInRect(rect, event);
-                    })
+                    }),)
                     .subscribe(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
                         this.updateTip(rect, event, tipElement);
                     })
             );
             this._subscription.add(
-                Observable.fromEvent(hostElement, 'mouseenter')
-                    .filter(() => !this._isDragging)
-                    .map((event: MouseEvent) => {
+                observableFromEvent(hostElement, 'mouseenter').pipe(
+                    filter(() => !this._isDragging),
+                    map((event: MouseEvent) => {
                         return {rect: hostElement.getBoundingClientRect(), event: event};
-                    })
+                    }),)
                     .subscribe(({rect, event}: { rect: ClientRect, event: MouseEvent }) => {
                         this.updateTip(rect, event, tipElement);
                         this.pointOpacity = 1;
                     })
             );
             this._subscription.add(
-                Observable.fromEvent(hostElement, 'mouseleave')
-                    .filter(() => !this._isDragging)
+                observableFromEvent(hostElement, 'mouseleave').pipe(
+                    filter(() => !this._isDragging))
                     .subscribe(() => {
                         this.pointOpacity = 0;
                     })
             );
         } else {
             this._subscription.add(
-                Observable.fromEvent(hostElement, 'touchstart')
-                    .filter(() => {
+                observableFromEvent(hostElement, 'touchstart').pipe(
+                    filter(() => {
                         return this.controlVisibleState;
-                    })
-                    .filter(() => {
+                    }),
+                    filter(() => {
                         return !Number.isNaN(this.duration);
-                    })
-                    .map((event: TouchEvent) => {
+                    }),
+                    map((event: TouchEvent) => {
                         return {rect: hostElement.getBoundingClientRect(), event: event};
-                    })
-                    .do(({rect, event}: { rect: ClientRect, event: TouchEvent }) => {
+                    }),
+                    tap(({rect, event}: { rect: ClientRect, event: TouchEvent }) => {
                         event.preventDefault();
                         this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX);
                         this.startDrag();
-                    })
-                    .flatMap(() => {
-                        return Observable.fromEvent(document, 'touchmove')
-                            .map((event: TouchEvent) => {
+                    }),
+                    mergeMap(() => {
+                        return observableFromEvent(document, 'touchmove').pipe(
+                            map((event: TouchEvent) => {
                                 return {rect: hostElement.getBoundingClientRect(), event: event};
-                            })
-                            .takeUntil(Observable.fromEvent(document, 'touchend')
-                                .map((event: TouchEvent) => {
+                            }),
+                            takeUntil(observableFromEvent(document, 'touchend').pipe(
+                                map((event: TouchEvent) => {
                                     return {rect: hostElement.getBoundingClientRect(), event: event};
-                                })
-                                .do(({rect, event}: { rect: ClientRect, event: TouchEvent }) => {
+                                }),
+                                tap(({rect, event}: { rect: ClientRect, event: TouchEvent }) => {
                                     this._videoPlayer.seek(VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX));
                                     this.stopDrag();
-                                }));
-                    })
+                                }),)),);
+                    }),)
                     .subscribe(({rect, event}: { rect: ClientRect, event: TouchEvent }) => {
                         this._dragProgressRatio = VideoPlayerHelpers.calcSliderRatio(rect, event.changedTouches[0].clientX);
                     })
@@ -201,10 +203,10 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
         }
 
         this._subscription.add(
-            Observable.interval(100)
-                .filter(() => {
+            observableInterval(100).pipe(
+                filter(() => {
                     return this._isDragging || this._isSeeking;
-                })
+                }))
                 .subscribe(() => {
                     this.motion.emit(1);
                 })

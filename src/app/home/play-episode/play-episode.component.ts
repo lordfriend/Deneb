@@ -1,8 +1,11 @@
+
+import {of as observableOf, throwError as observableThrowError,  Subscription, Subject ,  Observable } from 'rxjs';
+
+import {catchError, throttleTime, tap, mergeMap, filter} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild, PipeTransform, Pipe } from '@angular/core';
 import { Episode, Bangumi } from "../../entity";
 import { HomeService, HomeChild } from "../home.service";
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, Subject } from 'rxjs/Rx';
 import { Title } from '@angular/platform-browser';
 import { WatchService } from '../watch.service';
 import { WatchProgress } from '../../entity/watch-progress';
@@ -11,7 +14,6 @@ import { VideoFile } from '../../entity/video-file';
 import { ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { SynchronizeService } from '../favorite-chooser/synchronize.service';
-import { Observable } from 'rxjs/Observable';
 import { FeedbackComponent } from './feedback/feedback.component';
 
 export const MIN_WATCHED_PERCENTAGE = 0.95;
@@ -71,11 +73,11 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     feedback() {
         let dialogRef = this._dialogService.open(FeedbackComponent, {stickyDialog: true, backdrop: false});
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter(result => !!result)
-                .flatMap((result) => {
+            dialogRef.afterClosed().pipe(
+                filter(result => !!result),
+                mergeMap((result) => {
                     return this.homeService.sendFeedback(this.episode.id, this.currentVideoFile.id, result);
-                })
+                }),)
                 .subscribe(() => {
                     this._toastRef.show('已收到您的反馈');
                 })
@@ -148,14 +150,14 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
             this.episode.watch_progress.watch_status = this.isFinished ? WatchProgress.WATCHED : WatchProgress.WATCHING;
             if (this.episode.watch_progress.watch_status === WatchProgress.WATCHED) {
                 this._subscription.add(
-                    this.canSync()
-                        .flatMap((result) => {
+                    this.canSync().pipe(
+                        mergeMap((result) => {
                             if (result.canSync) {
                                 return this._chromeExtensionService.invokeBangumiMethod('updateEpisodeStatus', [this.episode.bgm_eps_id, 'watched']);
                             } else {
-                                return Observable.throw(result.canSync);
+                                return observableThrowError(result.canSync);
                             }
-                        })
+                        }))
                         .subscribe((result) => {
                             console.log('episode progress synchronized', result);
                             this._toastRef.show('已与Bangumi同步');
@@ -182,16 +184,16 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                 });
             if (otherWatched && this.episode.bangumi.favorite_status !== Bangumi.WATCHED) {
                 this._subscription.add(
-                    this.canSync()
-                        .flatMap(result => {
+                    this.canSync().pipe(
+                        mergeMap(result => {
                             if (result.canSync) {
-                                return this._synchronizeService.updateFavoriteStatus(bangumi, Bangumi.WATCHED)
-                                    .do(() => {
+                                return this._synchronizeService.updateFavoriteStatus(bangumi, Bangumi.WATCHED).pipe(
+                                    tap(() => {
                                         this._toastRef.show('已与Bangumi同步');
-                                    });
+                                    }));
                             }
                             return this._watchService.favorite_bangumi(this.episode.bangumi_id, Bangumi.WATCHED);
-                        })
+                        }))
                         .subscribe(() => {
                             this.episode.bangumi.favorite_status = Bangumi.WATCHED;
                             this.homeService.changeFavorite();
@@ -209,15 +211,15 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
             videoFileId = params.get('video_id');
         }
         this._subscription.add(
-            this._route.params
-                .flatMap((params) => {
+            this._route.params.pipe(
+                mergeMap((params) => {
                     let episode_id = params['episode_id'];
                     return this.homeService.episode_detail(episode_id)
-                })
-                .do(episode => {
+                }),
+                tap(episode => {
                     this.homeService.checkFavorite(episode.bangumi_id);
-                })
-                .flatMap((episode: Episode) => {
+                }),
+                mergeMap((episode: Episode) => {
                     this.episode = episode;
                     if (videoFileId) {
                         this.currentVideoFile = this.episode.video_files
@@ -229,7 +231,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                             .find(videoFile => videoFile.status === VideoFile.STATUS_DOWNLOADED);
                     }
                     return this.homeService.bangumi_detail(episode.bangumi_id);
-                })
+                }),)
                 .subscribe(
                     (bangumi: Bangumi) => {
                         this.isBangumiReady = true;
@@ -245,8 +247,8 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         );
 
         this._subscription.add(
-            this.positionChange
-                .throttleTime(5000)
+            this.positionChange.pipe(
+                throttleTime(5000))
                 // .filter(() => {
                 //     return !this.isUpdateHistory;
                 // })
@@ -259,16 +261,16 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                 )
         );
         this._subscription.add(
-            this._chromeExtensionService.isEnabled
-                .filter(enabled => enabled)
-                .flatMap(() => {
+            this._chromeExtensionService.isEnabled.pipe(
+                filter(enabled => enabled),
+                mergeMap(() => {
                     return this._chromeExtensionService.authInfo;
-                })
-                .filter(authInfo => !!authInfo)
-                .flatMap(() => {
+                }),
+                filter(authInfo => !!authInfo),
+                mergeMap(() => {
                     return this._chromeExtensionService.isBgmTvLogon;
-                })
-                .filter(isLogon => isLogon === LOGON_STATUS.TRUE)
+                }),
+                filter(isLogon => isLogon === LOGON_STATUS.TRUE),)
                 .subscribe(() => {
                     this.commentEnabled = true;
                 })
@@ -280,27 +282,27 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
     }
 
     private canSync(): Observable<any> {
-        return this._chromeExtensionService.isEnabled
-            .flatMap((isEnabled) => {
+        return this._chromeExtensionService.isEnabled.pipe(
+            mergeMap((isEnabled) => {
                 if (!isEnabled) {
-                    return Observable.throw({canSync: false});
+                    return observableThrowError({canSync: false});
                 }
                 return this._chromeExtensionService.authInfo;
-            })
-            .flatMap((authInfo) => {
+            }),
+            mergeMap((authInfo) => {
                 if (!authInfo) {
-                    return Observable.throw({canSync: false});
+                    return observableThrowError({canSync: false});
                 }
                 return this._chromeExtensionService.isBgmTvLogon;
-            })
-            .flatMap((isBgmLogon) => {
+            }),
+            mergeMap((isBgmLogon) => {
                 if (isBgmLogon !== LOGON_STATUS.TRUE) {
-                    return Observable.throw({canSync: false});
+                    return observableThrowError({canSync: false});
                 }
-                return Observable.of({canSync: true});
-            })
-            .catch((error) => {
-                return Observable.of(error);
-            });
+                return observableOf({canSync: true});
+            }),
+            catchError((error) => {
+                return observableOf(error);
+            }),);
     }
 }

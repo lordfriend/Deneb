@@ -1,8 +1,10 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Title } from '@angular/platform-browser';
 import { PERM_NAME, WebHook } from '../../entity/web-hook';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
 
@@ -30,8 +32,8 @@ export class WebHookComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this._subscription.add(
-            this._http.get('/api/web-hook/')
-                .map((res) => {
+            this._http.get('/api/web-hook/').pipe(
+                map((res) => {
                     return (res.json().data as any[]).map(webHook => {
                         if (webHook.permissions) {
                             webHook.permissions = JSON.parse(webHook.permissions as string) as string[];
@@ -41,7 +43,7 @@ export class WebHookComponent implements OnInit, OnDestroy {
                         webHook.permissions = webHook.permissions.map(perm_key => PERM_NAME[perm_key]);
                         return webHook as WebHook;
                     });
-                })
+                }))
                 .subscribe((webHookList) => {
                     this.webHookList = webHookList;
                 }, (err: Response) => {

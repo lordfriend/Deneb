@@ -1,15 +1,16 @@
-import {Injectable, EventEmitter} from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
-import {BaseService} from "../../helpers/base.service";
-import {Observable} from "rxjs/Observable";
-import {Episode} from '../entity/episode';
-import {Bangumi} from "../entity/bangumi";
-import {Router, NavigationEnd} from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable } from "rxjs";
+import { catchError, map } from 'rxjs/operators';
+import { BaseService } from "../../helpers/base.service";
 // import {homeRoutes} from './home.routes';
-import {queryString} from '../../helpers/url'
-import { WatchService } from './watch.service';
-import { WatchProgress } from "../entity/watch-progress";
+import { queryString } from '../../helpers/url'
 import { Announce } from '../entity/announce';
+import { Bangumi } from "../entity/bangumi";
+import { Episode } from '../entity/episode';
+import { WatchProgress } from "../entity/watch-progress";
+import { WatchService } from './watch.service';
 
 @Injectable()
 export class HomeService extends BaseService {
@@ -90,32 +91,32 @@ export class HomeService extends BaseService {
         if (days) {
             queryUrl = queryUrl + '?days=' + days;
         }
-        return this._http.get(queryUrl)
-            .map(res => <Episode[]> res.json().data)
-            .catch(this.handleError);
+        return this._http.get(queryUrl).pipe(
+            map(res => <Episode[]> res.json().data),
+            catchError(this.handleError),);
     }
 
     onAir(type: number): Observable<Bangumi[]> {
-        return this._http.get(`${this._baseUrl}/on_air?type=${type}`)
-            .map(res => <Bangumi[]> res.json().data)
-            .catch(this.handleError);
+        return this._http.get(`${this._baseUrl}/on_air?type=${type}`).pipe(
+            map(res => <Bangumi[]> res.json().data),
+            catchError(this.handleError),);
     }
 
     episode_detail(episode_id: string): Observable<Episode> {
-        return this._http.get(`${this._baseUrl}/episode/${episode_id}`)
-            .map(res => <Episode> res.json())
-            .map(episode => this.synchronizeWatchProgressWithLocal(episode))
-            .catch(this.handleError);
+        return this._http.get(`${this._baseUrl}/episode/${episode_id}`).pipe(
+            map(res => <Episode> res.json()),
+            map(episode => this.synchronizeWatchProgressWithLocal(episode)),
+            catchError(this.handleError),);
     }
 
     bangumi_detail(bangumi_id: string): Observable<Bangumi> {
-        return this._http.get(`${this._baseUrl}/bangumi/${bangumi_id}`)
-            .map(res => <Bangumi> res.json().data)
-            .map(bangumi => {
+        return this._http.get(`${this._baseUrl}/bangumi/${bangumi_id}`).pipe(
+            map(res => <Bangumi> res.json().data),
+            map(bangumi => {
                 bangumi.episodes = bangumi.episodes.map(episode => this.synchronizeWatchProgressWithLocal(episode));
                 return bangumi;
-            })
-            .catch(this.handleError);
+            }),
+            catchError(this.handleError),);
     }
 
     listBangumi(params: {
@@ -126,21 +127,21 @@ export class HomeService extends BaseService {
         sort: string,
         type?: number}): Observable<{ data: Bangumi[], total: number }> {
         let query = queryString(params);
-        return this._http.get(`${this._baseUrl}/bangumi?${query}`)
-            .map(res => res.json() as {data: Bangumi[], total: number})
-            .catch(this.handleError);
+        return this._http.get(`${this._baseUrl}/bangumi?${query}`).pipe(
+            map(res => res.json() as {data: Bangumi[], total: number}),
+            catchError(this.handleError),);
     }
 
     myBangumi(status: number): Observable<Bangumi[]> {
-        return this._http.get(`${this._baseUrl}/my_bangumi?status=${status}`)
-            .map(res => <Bangumi[]> res.json().data)
-            .catch(this.handleError);
+        return this._http.get(`${this._baseUrl}/my_bangumi?status=${status}`).pipe(
+            map(res => <Bangumi[]> res.json().data),
+            catchError(this.handleError),);
     }
 
     listAnnounce(): Observable<Announce[]> {
-        return this._http.get(`${this._baseUrl}/announce`)
-            .map(res => res.json().data as Announce[])
-            .catch(this.handleError);
+        return this._http.get(`${this._baseUrl}/announce`).pipe(
+            map(res => res.json().data as Announce[]),
+            catchError(this.handleError),);
     }
 
     sendFeedback(episode_id: string, video_file_id: string, message: string): Observable<any> {
@@ -151,9 +152,9 @@ export class HomeService extends BaseService {
             video_file_id: video_file_id,
             message: message
         });
-        return this._http.post(`${this._baseUrl}/feedback`, body, requestOptions)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.post(`${this._baseUrl}/feedback`, body, requestOptions).pipe(
+            map(res => res.json()),
+            catchError(this.handleError),);
     }
 
     private synchronizeWatchProgressWithLocal(episode: Episode): Episode {

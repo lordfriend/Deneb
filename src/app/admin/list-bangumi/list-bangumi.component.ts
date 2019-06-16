@@ -1,9 +1,12 @@
+
+import {fromEvent as observableFromEvent, Observable, Subscription} from 'rxjs';
+
+import {distinctUntilChanged, debounceTime} from 'rxjs/operators';
 import {Bangumi} from '../../entity';
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {AdminService} from '../admin.service';
-import {Observable, Subscription} from 'rxjs';
 import {getRemPixel} from '../../../helpers/dom';
 import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
 import {BaseError} from '../../../helpers/error/BaseError';
@@ -147,9 +150,9 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     ngAfterViewInit(): void {
         let searchBox = this.searchBox.nativeElement;
         this._subscription.add(
-            Observable.fromEvent(searchBox, 'keyup')
-                .debounceTime(500)
-                .distinctUntilChanged()
+            observableFromEvent(searchBox, 'keyup').pipe(
+                debounceTime(500),
+                distinctUntilChanged(),)
                 .subscribe(() => {
                     this.name = searchBox.value;
                     this.filterBangumiList();

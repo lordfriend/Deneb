@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { passwordMatch } from '../form-utils/validators';
 import { URLSearchParams } from '@angular/http';
 import { Router } from '@angular/router';

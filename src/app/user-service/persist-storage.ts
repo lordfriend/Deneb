@@ -1,8 +1,9 @@
+
+import {distinctUntilChanged, map, filter} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
 import { storageAPI } from '../../helpers/localstorage';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import { Subject ,  Observable } from 'rxjs';
 
 export const PREFIX = 'ps';
 
@@ -103,14 +104,14 @@ export class PersistStorage {
     }
 
     subscribe(key: string): Observable<string> {
-        return this._itemChange.asObservable()
-            .filter((item) => {
+        return this._itemChange.asObservable().pipe(
+            filter((item) => {
                 return item.key === key;
-            })
-            .map(({value}) => {
+            }),
+            map(({value}) => {
                 return value;
-            })
-            .distinctUntilChanged();
+            }),
+            distinctUntilChanged(),);
     }
 
     private clear() {

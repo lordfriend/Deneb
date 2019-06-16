@@ -1,16 +1,23 @@
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import {
-    AfterViewInit, Component, ElementRef, Injector, OnDestroy, OnInit, Self, ViewChild,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    Injector,
+    OnDestroy,
+    OnInit,
+    Self,
+    ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { VideoPlayer } from '../video-player.component';
-import { PlayState } from '../core/state';
+import { fromEvent as observableFromEvent, Subject, Subscription } from 'rxjs';
+
+import { filter, merge, retry, tap, timeout } from 'rxjs/operators';
+import { PersistStorage } from '../../user-service/persist-storage';
 import { CONTROL_FADE_OUT_TIME } from '../core/helpers';
 import { PlayList } from "../core/settings";
-import { PersistStorage } from '../../user-service/persist-storage';
+import { PlayState } from '../core/state';
+import { VideoPlayer } from '../video-player.component';
 
 @Component({
     selector: 'video-controls',
@@ -115,8 +122,8 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this._videoPlayer = this._injector.get(VideoPlayer);
-        this._videoPlayer.pendingState
-            .merge(this._videoPlayer.state)
+        this._videoPlayer.pendingState.pipe(
+            merge(this._videoPlayer.state))
             .subscribe((state) => {
                 this.pendingPlayState = state;
                 if (state === PlayState.PLAY_END) {
@@ -132,12 +139,12 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(): void {
         let hostElement = this._hostRef.nativeElement;
         this._subscription.add(
-            Observable.fromEvent(hostElement, 'mousedown')
+            observableFromEvent(hostElement, 'mousedown')
                 .subscribe((event: MouseEvent) => event.preventDefault())
         );
         this._subscription.add(
-            Observable.fromEvent(hostElement, 'mouseenter')
-                .filter(() => !this._preventHide)
+            observableFromEvent(hostElement, 'mouseenter').pipe(
+                filter(() => !this._preventHide))
                 .subscribe(
                     () => {
                         this.showControls = true;
@@ -145,8 +152,8 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
                 )
         );
         this._subscription.add(
-            Observable.fromEvent(hostElement, 'mouseleave')
-                .filter(() => !this._preventHide)
+            observableFromEvent(hostElement, 'mouseleave').pipe(
+                filter(() => !this._preventHide))
                 .subscribe(
                     () => {
                         this.showControls = false;
@@ -155,16 +162,16 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
         );
 
         this._subscription.add(
-            this._motion.asObservable()
-                .merge(Observable.fromEvent(hostElement, 'mousemove'))
-                .timeout(CONTROL_FADE_OUT_TIME)
-                .do(() => {},
+            this._motion.asObservable().pipe(
+                merge(observableFromEvent(hostElement, 'mousemove')),
+                timeout(CONTROL_FADE_OUT_TIME),
+                tap(() => {},
                     () => {
                         if (!this._preventHide) {
                             this.showControls = false;
                         }
-                    })
-                .retry()
+                    }),
+                retry(),)
                 .subscribe(
                     () => {
                         this.showControls = true;

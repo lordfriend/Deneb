@@ -4,7 +4,7 @@ import { UIDialogRef } from 'deneb-ui';
 import { Announce } from '../../../entity/announce';
 import moment from 'moment';
 import { ECalendarValue, IDatePickerConfig } from 'ng2-date-picker';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 export function rangeLimit(group: FormGroup) {
     let start_time = group.get('start_time').value;

@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs';
@@ -14,8 +16,8 @@ export class BangumiMoeService {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({_ids: tags});
-        return this._http.post(`${this._baseUrl}/tag/fetch`, body, options)
-            .map(res => res.json() as Tag[]);
+        return this._http.post(`${this._baseUrl}/tag/fetch`, body, options).pipe(
+            map(res => res.json() as Tag[]));
     }
 
     popoluarBangumTags(): Observable<Tag[]> {
@@ -38,8 +40,8 @@ export class BangumiMoeService {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({tag_id: tag_ids});
-        return this._http.post(`/api/feed/bangumi-moe/torrent/search`, body, options)
-            .map(res => res.json() as {count: number, page_count: number, torrents: Torrent[]});
+        return this._http.post(`/api/feed/bangumi-moe/torrent/search`, body, options).pipe(
+            map(res => res.json() as {count: number, page_count: number, torrents: Torrent[]}));
     }
 
     searchTag(name: string): Observable<{success: boolean, found: boolean, tag: Tag[]}> {
@@ -58,7 +60,7 @@ export class BangumiMoeService {
             payload: payload,
             method: method
         });
-        return this._http.post('/api/feed/bangumi-moe', body, options)
-            .map(res => res.json() as T);
+        return this._http.post('/api/feed/bangumi-moe', body, options).pipe(
+            map(res => res.json() as T));
     }
 }

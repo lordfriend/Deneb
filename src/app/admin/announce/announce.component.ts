@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Announce } from '../../entity/announce';
-import { Subscription } from 'rxjs/Subscription';
-import { AnnounceService } from './announce.service';
-import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { EditAnnounceComponent } from './edit-announce/edit-announce.component';
 import { Title } from '@angular/platform-browser';
+import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
+import { Announce } from '../../entity/announce';
+import { AnnounceService } from './announce.service';
+import { EditAnnounceComponent } from './edit-announce/edit-announce.component';
 import { EditBangumiRecommendComponent } from './edit-bangumi-recommend/edit-bangumi-recommend.component';
 
 
@@ -39,11 +40,11 @@ export class AnnounceComponent implements OnInit, OnDestroy {
     addAnnounce() {
         const dialogRef = this._dialog.open(EditAnnounceComponent, {stickyDialog: true, backdrop: true});
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter(result => !!result)
-                .flatMap((info) => {
+            dialogRef.afterClosed().pipe(
+                filter(result => !!result),
+                mergeMap((info) => {
                     return this._announceService.addAnnounce(info as Announce);
-                })
+                }),)
                 .subscribe(() => {
                     this._toastRef.show('添加成功');
                     this.refreshAnnounce(this.announcePage);
@@ -55,11 +56,11 @@ export class AnnounceComponent implements OnInit, OnDestroy {
         const dialogRef = this._dialog.open(EditAnnounceComponent, {stickyDialog: true, backdrop: true});
         dialogRef.componentInstance.announce = announce;
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter(result => !!result)
-                .flatMap((info) => {
+            dialogRef.afterClosed().pipe(
+                filter(result => !!result),
+                mergeMap((info) => {
                     return this._announceService.updateAnnounce(announce.id, info as Announce);
-                })
+                }),)
                 .subscribe(() => {
                     this._toastRef.show('更新成功');
                     this.refreshAnnounce(this.announcePage);
@@ -70,11 +71,11 @@ export class AnnounceComponent implements OnInit, OnDestroy {
         const dialogRef = this._dialog.open(EditBangumiRecommendComponent, {stickyDialog: true, backdrop: true});
         dialogRef.componentInstance.announce = announce;
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter(result => !!result)
-                .flatMap((info) => {
+            dialogRef.afterClosed().pipe(
+                filter(result => !!result),
+                mergeMap((info) => {
                     return this._announceService.updateAnnounce(announce.id, info as Announce);
-                })
+                }),)
                 .subscribe(() => {
                     this._toastRef.show('更新成功');
                     this.refreshRecommend(this.recommendPage);

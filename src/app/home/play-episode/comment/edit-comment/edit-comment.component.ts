@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { ChromeExtensionService } from '../../../../browser-extension/chrome-extension.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'bangumi-edit-comment',

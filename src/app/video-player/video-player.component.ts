@@ -1,3 +1,7 @@
+
+import {interval as observableInterval, fromEvent as observableFromEvent,  Subscription ,  Observable ,  BehaviorSubject ,  Subject } from 'rxjs';
+
+import {timeout, map, filter, merge} from 'rxjs/operators';
 import {
     AfterViewInit, ChangeDetectorRef,
     Component, ComponentFactoryResolver,
@@ -10,9 +14,6 @@ import {
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReadyState, PlayState } from './core/state';
 import { FullScreenAPI } from './core/full-screen-api';
 import { VideoFile } from '../entity/video-file';
@@ -23,7 +24,6 @@ import { VideoTouchControls } from './touch-controls/touch-controls.component';
 import { VideoPlayerShortcuts } from './core/shortcuts';
 import { UIDialog } from 'deneb-ui';
 import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
-import { Subject } from 'rxjs/Subject';
 
 let nextId = 0;
 
@@ -384,11 +384,11 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this.shortcuts = new VideoPlayerShortcuts(hostElement, this, this._videoCapture);
 
         this._subscription.add(
-            Observable.fromEvent(window, 'resize')
-                .merge(this.fullscreenAPI.onChangeFullscreen)
-                .filter(() => {
+            observableFromEvent(window, 'resize').pipe(
+                merge(this.fullscreenAPI.onChangeFullscreen),
+                filter(() => {
                     return Boolean(this.videoFile && this.videoFile.resolution_w && this.videoFile.resolution_h);
-                })
+                }),)
                 .subscribe(() => {
                     this.togglePlayerDimension(hostElement);
                 })
@@ -397,7 +397,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this.togglePlayerDimension(hostElement);
 
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'durationchange')
+            observableFromEvent(mediaElement, 'durationchange')
                 .subscribe(() => {
                     let duration = mediaElement.duration;
                     this._durationSubject.next(duration);
@@ -405,7 +405,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'loadedmetadata')
+            observableFromEvent(mediaElement, 'loadedmetadata')
                 .subscribe(() => {
                     if (this.startPosition) {
                         mediaElement.currentTime = this.startPosition;
@@ -414,7 +414,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'timeupdate')
+            observableFromEvent(mediaElement, 'timeupdate')
                 .subscribe(() => {
                     let currentTime = mediaElement.currentTime;
                     this._currentTimeSubject.next(currentTime);
@@ -422,7 +422,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'progress')
+            observableFromEvent(mediaElement, 'progress')
                 .subscribe(() => {
                     let end = mediaElement.buffered.length - 1;
                     if (end >= 0) {
@@ -431,19 +431,19 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'play')
+            observableFromEvent(mediaElement, 'play')
                 .subscribe(() => {
                     this._stateSubject.next(PlayState.PLAYING);
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'pause')
+            observableFromEvent(mediaElement, 'pause')
                 .subscribe(() => {
                     this._stateSubject.next(PlayState.PAUSED);
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'ended')
+            observableFromEvent(mediaElement, 'ended')
                 .subscribe(
                     () => {
                         this._stateSubject.next(PlayState.PLAY_END);
@@ -451,26 +451,26 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 )
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'seeking')
+            observableFromEvent(mediaElement, 'seeking')
                 .subscribe(() => {
                     this._seeking.next(true);
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'seeked')
+            observableFromEvent(mediaElement, 'seeked')
                 .subscribe(() => {
                     this._seeking.next(false);
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'volumechange')
+            observableFromEvent(mediaElement, 'volumechange')
                 .subscribe(() => {
                     this._volume.next(mediaElement.volume);
                     this._muted.next(mediaElement.muted);
                 })
         );
         this._subscription.add(
-            Observable.fromEvent(mediaElement, 'canplay')
+            observableFromEvent(mediaElement, 'canplay')
                 .subscribe(() => {
                     this.lagged.emit(false);
                     this.watchForWaiting();
@@ -518,12 +518,12 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private watchForWaiting() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         this._waitingSubscription.unsubscribe();
-        this._waitingSubscription = Observable.interval(100)
-            .map(() => {
+        this._waitingSubscription = observableInterval(100).pipe(
+            map(() => {
                 return mediaElement.readyState < ReadyState.HAVE_FUTURE_DATA;
-            })
-            .filter(waiting => !waiting)
-            .timeout(this._tolerateWaitingTime)
+            }),
+            filter(waiting => !waiting),
+            timeout(this._tolerateWaitingTime),)
             .subscribe(() => {
             }, () => {
                 this.lagged.emit(true);

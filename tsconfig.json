@@ -11,9 +11,7 @@
     "noEmit": true,
     "importHelpers": true,
     "strictNullChecks": false,
-    "paths": {
-      "*": ["node_modules/@types"]
-    },
+    "typeRoots": ["node_modules/@types"],
     "lib": [
       "dom",
       "es6"
@@ -21,7 +19,8 @@
   },
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "src/main.browser.aot.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "forkChecker": true,

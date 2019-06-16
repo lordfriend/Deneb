@@ -24,7 +24,8 @@
     "node_modules",
     "dist",
     "src/**/*.spec.ts",
-    "src/**/*.e2e.ts"
+    "src/**/*.e2e.ts",
+    "src/main.browser.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "forkChecker": true,

@@ -1,14 +1,14 @@
 /**
  * @author: @AngularClass
  */
-var fs = require('fs');
-var helpers = require('./config/helpers');
+const fs = require('fs');
+const helpers = require('./config/helpers');
 
 /**
  * check custom login style exists
  */
 
-var loginStyleExsits;
+let loginStyleExsits;
 try {
     loginStyleExsits = fs.statSync(helpers.root('src/assets/css/login.css')).isFile();
     console.log('login style file existence: ' + loginStyleExsits);
@@ -46,11 +46,11 @@ switch (ENV) {
         METADATA.HMR = false;
         module.exports = require('./config/webpack.prod')(METADATA);
         break;
-    case 'test':
-    case 'testing':
-        METADATA.ENV = ENV || 'test';
-        module.exports = require('./config/webpack.test')(METADATA);
-        break;
+    // case 'test':
+    // case 'testing':
+    //     METADATA.ENV = ENV || 'test';
+    //     module.exports = require('./config/webpack.test')(METADATA);
+    //     break;
     case 'dev':
     case 'development':
     default:

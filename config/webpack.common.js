@@ -62,13 +62,14 @@ module.exports = function (metadata) {
                 // See: https://github.com/webpack/raw-loader
                 {
                     test: /\.html$/,
-                    use: 'raw-loader',
+                    use: 'html-loader',
                     exclude: [helpers.root('src/index.html')]
                 },
                 {
                     test: /.less$/,
                     use: [
-                        'raw-loader',
+                        'to-string-loader',
+                        'css-loader',
                         'less-loader'
                     ],
                     include: [/src[\/\\]app[\/\\]/]

@@ -1,10 +1,9 @@
-
+import { HttpClient } from '@angular/common/http';
 import {throwError as observableThrowError,  Observable } from 'rxjs';
 
 import {filter, take, mergeMap, catchError, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { BaseService } from '../../../helpers/base.service';
-import { Http } from '@angular/http';
 import { PERM_NAME, WebHook } from '../../entity/web-hook';
 import { UIDialog } from 'deneb-ui';
 import { ConfirmDialogModal } from '../../confirm-dialog/confirm-dialog-modal.component';
@@ -18,14 +17,19 @@ const PERMISSION_INFO = {
 @Injectable()
 export class UserCenterService extends BaseService {
 
-    constructor(private _http: Http,
+    constructor(private _http: HttpClient,
                 private _dialogService: UIDialog) {
         super()
     }
 
+    /**
+     * List web hook by user_id, actually this API will return all web_hook which user has a token associated with.
+     * Note that the returned webhook is not exactly a webhook object. permissions is a string need deserialize by JSON.parse
+     * @returns {Observable<WebHook[]>}
+     */
     listWebHookToken(): Observable<WebHook[]> {
-        return this._http.get('/api/web-hook/token').pipe(
-            map(res => res.json().data),
+        return this._http.get<{ data: any[], total: number}>('/api/web-hook/token').pipe(
+            map(res => res.data),
             map(webHookList => {
                 return webHookList.map(webHook => {
                     if (webHook.permissions) {
@@ -45,9 +49,10 @@ export class UserCenterService extends BaseService {
         const token_id = params.get('token_id');
         const web_hook_id = params.get('web_hook_id');
         if (token_id && web_hook_id) {
-            return this._http.get(`/api/web-hook/${web_hook_id}`).pipe(
+            // TODO this API is not documented in the API document. We should properly document this API.
+            return this._http.get<{ data: any }>(`/api/web-hook/${web_hook_id}`).pipe(
                 map(res => {
-                    let result = res.json().data as any;
+                    let result = res.data;
                     result.permissions = JSON.parse(result.permissions);
                     return result as WebHook;
                 }),
@@ -72,14 +77,13 @@ export class UserCenterService extends BaseService {
                         take(1),
                         filter(result => result === 'confirm'),
                         mergeMap(() => {
-                            return this._http.post('/api/web-hook/token', null, {
+                            return this._http.post<any>('/api/web-hook/token', null, {
                                 params: {
                                     token_id: token_id,
                                     web_hook_id: web_hook_id
                                 }
                             });
                         }),
-                        map(res => res.json()),
                         catchError(this.handleError),);
 
                 }),);
@@ -89,12 +93,11 @@ export class UserCenterService extends BaseService {
     }
 
     deleteWebHookToken(web_hook_id: string): Observable<any> {
-        return this._http.delete('/api/web-hook/token', {
+        return this._http.delete<any>('/api/web-hook/token', {
             params: {
                 web_hook_id: web_hook_id
             }
         }).pipe(
-            map(res => res.json()),
             catchError(this.handleError),);
     }
 }

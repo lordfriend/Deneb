@@ -1,6 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { UserService } from './user.service';
-import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { Authentication } from './authentication.service';
 import { PersistStorage } from './persist-storage';
@@ -12,7 +12,7 @@ import { PersistStorage } from './persist-storage';
         PersistStorage
     ],
     imports: [
-        HttpModule,
+        HttpClientModule,
         RouterModule
     ]
 })

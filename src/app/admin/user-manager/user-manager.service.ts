@@ -1,44 +1,45 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { BaseService } from '../../../helpers/base.service';
 import { queryString } from '../../../helpers/url'
-import { User } from '../../entity/user';
+import { User } from '../../entity';
 
 @Injectable()
 export class UserManagerSerivce extends BaseService {
     private _baseUrl = '/api/user-manage';
 
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
         super()
     }
 
-    listUser(params: {count: number, offset: number, minlevel?: number, query_field?: string, query_value?: string}): Observable<{data: User[], total: number}> {
+    listUser(params: {
+        count: number,
+        offset: number,
+        minlevel?: number,
+        query_field?: string,
+        query_value?: string
+    }): Observable<{data: User[], total: number}> {
         let queryParams = queryString(params);
-        return this._http.get(`${this._baseUrl}/?${queryParams}`).pipe(
-            map(res => res.json() as {data: User[], total: number}),
+        return this._http.get<{data: User[], total: number}>(`${this._baseUrl}/?${queryParams}`).pipe(
             catchError(this.handleError),);
     }
 
     promoteUser(user_id: string, toLevel: number): Observable<any> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
-        let body = JSON.stringify({id: user_id, to_level: toLevel});
-        return this._http.post(`${this._baseUrl}/promote`, body, options).pipe(
-            map(res => res.json()),
+        return this._http.post<any>(`${this._baseUrl}/promote`, {id: user_id, to_level: toLevel}).pipe(
             catchError(this.handleError),);
     }
 
     listUnusedInviteCode(): Observable<string[]> {
-        return this._http.get(`${this._baseUrl}/invite/unused`).pipe(
-            map(res => res.json().data as string[]),
+        return this._http.get<{data: string[]}>(`${this._baseUrl}/invite/unused`).pipe(
+            map(res => res.data),
             catchError(this.handleError),);
     }
 
     createInviteCode(num: number = 1): Observable<string[]> {
-        return this._http.post(`${this._baseUrl}/invite?num=${num}`, null).pipe(
-            map(res => res.json().data as string[]),
+        return this._http.post<{data: string[]}>(`${this._baseUrl}/invite?num=${num}`, null).pipe(
+            map(res => res.data),
             catchError(this.handleError),);
     }
 }

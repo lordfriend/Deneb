@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { Home } from './home.component';
 import { DefaultComponent } from './default/default.component';
 import { PlayEpisode } from './play-episode/play-episode.component';
@@ -6,7 +7,6 @@ import { BangumiDetail } from './bangumi-detail/bangumi-detail.components';
 import { FavoriteChooser } from './favorite-chooser/favorite-chooser.component';
 import { NgModule } from '@angular/core';
 import { HomeService } from './home.service';
-import { HttpModule } from '@angular/http';
 import { UIModule } from 'deneb-ui';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -90,7 +90,7 @@ import { RevealExtraComponent } from './play-episode/reveal-extra/reveal-extra.c
     imports: [
         RouterModule.forChild(homeRoutes),
         BrowserModule,
-        HttpModule,
+        HttpClientModule,
         UIModule,
         CommonModule,
         DenebCommonPipes,

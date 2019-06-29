@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { BaseService } from '../../../helpers/base.service';
@@ -9,14 +9,19 @@ import { WebHook } from '../../entity/web-hook';
 export class WebHookService extends BaseService {
     private _baseUrl = '/api/web-hook';
 
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
         super();
     }
 
+    /**
+     * list all Web hooks, we use any as data's type because it's actually not exactly the same data type as WebHook,
+     * permission is a string which should be further processed to string array.
+     * @returns {Observable<WebHook[]>}
+     */
     listWebHook(): Observable<WebHook[]> {
-        return this._http.get(`${this._baseUrl}/`).pipe(
+        return this._http.get<{data: any[], total: number}>(`${this._baseUrl}/`).pipe(
             map((res) => {
-                return (res.json().data as any[]).map(webHook => {
+                return res.data.map(webHook => {
                     if (webHook.permissions) {
                         webHook.permissions = JSON.parse(webHook.permissions as string) as string[];
                     } else {
@@ -29,28 +34,19 @@ export class WebHookService extends BaseService {
     }
 
     registerWebHook(webHook: any): Observable<any> {
-        let header = new Headers({'Content-Type': 'application/json;utf-8'});
-        let requestOptions = new RequestOptions({headers: header});
         webHook.permissions = JSON.stringify(webHook.permissions);
-        let body = JSON.stringify(webHook);
-        return this._http.post(`${this._baseUrl}/register`, body, requestOptions).pipe(
-            map(res => res.json()),
+        return this._http.post<any>(`${this._baseUrl}/register`, webHook).pipe(
             catchError(this.handleError),);
     }
 
     updateWebHook(webHookId: string, webHook: any): Observable<any> {
-        let header = new Headers({'Content-Type': 'application/json;utf-8'});
-        let requestOptions = new RequestOptions({headers: header});
         webHook.permissions = JSON.stringify(webHook.permissions);
-        let body = JSON.stringify(webHook);
-        return this._http.put(`${this._baseUrl}/${webHookId}`, body, requestOptions).pipe(
-            map(res => res.json()),
+        return this._http.put<any>(`${this._baseUrl}/${webHookId}`, webHook).pipe(
             catchError(this.handleError),);
     }
 
     deleteWebHook(webHookId: string): Observable<any> {
-        return this._http.delete(`${this._baseUrl}/${webHookId}`).pipe(
-            map(res => res.json()),
+        return this._http.delete<any>(`${this._baseUrl}/${webHookId}`).pipe(
             catchError(this.handleError),);
     }
 }

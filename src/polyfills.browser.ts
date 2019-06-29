@@ -28,6 +28,7 @@ import 'zone.js/dist/zone';
 
 import 'intersection-observer';
 import 'web-animations-js';
+import 'url-ployfill';
 
 if ('production' === ENV) {
   // Production

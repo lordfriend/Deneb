@@ -1,4 +1,4 @@
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { animate, keyframes, state, style, transition, trigger, AnimationEvent } from '@angular/animations';
 import {
     AfterViewInit,
     Component,
@@ -48,6 +48,9 @@ import { VideoPlayer } from '../video-player.component';
                 style({opacity: 0.5, transform: 'scale(2)', offset: 0.6}),
                 style({opacity: 0, transform: 'scale(2)', offset: 1})
             ]))),
+            transition("active => *", [
+                style({opacity: 0})
+            ])
         ])
     ],
     host: {
@@ -63,7 +66,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     showControls = true;
 
     pendingPlayState: PlayState;
-    reflectState: string = 'inactive';
+    reflectAnimationState: string = 'inactive';
 
     isPlayEnd: boolean;
     hasNextEpisode: boolean;
@@ -95,11 +98,13 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
         // event.stopPropagation();
         this._videoPlayer.requestFocus();
         this._videoPlayer.togglePlayAndPause();
-        this.reflectState = 'active';
+        this.reflectAnimationState = 'active';
     }
 
-    reflectAnimationCallback() {
-        this.reflectState = 'inactive';
+    reflectAnimationCallback(event: AnimationEvent) {
+        if (event.toState === 'active') {
+            this.reflectAnimationState = 'inactive';
+        }
     }
 
     onMotion() {

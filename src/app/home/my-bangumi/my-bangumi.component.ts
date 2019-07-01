@@ -1,11 +1,10 @@
-
-import {mergeMap, merge} from 'rxjs/operators';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { Bangumi } from '../../entity/bangumi';
-import { Subscription ,  BehaviorSubject } from 'rxjs';
-import { HomeService } from '../home.service';
-import { FAVORITE_LABEL } from '../../entity/constants';
+import { BehaviorSubject, merge, Subscription } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { closest } from '../../../helpers/dom';
+import { Bangumi } from '../../entity';
+import { FAVORITE_LABEL } from '../../entity/constants';
+import { HomeService } from '../home.service';
 
 @Component({
     selector: 'my-bangumi',
@@ -53,11 +52,13 @@ export class MyBangumiComponent implements OnInit, OnDestroy {
         );
 
         this._subscription.add(
-            this._statusSubject.pipe(
-                merge(this._homeService.favoriteChanges),
-                mergeMap(() => {
-                    return this._homeService.myBangumi(this.currentStatus)
-                }),)
+            merge(
+                this._homeService.favoriteChanges,
+                this._statusSubject)
+                .pipe(
+                    mergeMap(() => {
+                        return this._homeService.myBangumi(this.currentStatus)
+                    }),)
                 .subscribe((bangumiList) => {
                     // desc , sort by favorite_update_time and air_date
                     this.myBangumiList = bangumiList.sort((bgm1, bgm2) => {

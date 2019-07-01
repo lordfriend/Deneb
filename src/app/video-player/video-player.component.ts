@@ -49,7 +49,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     private _buffered = new BehaviorSubject(0);
     private _volume = new BehaviorSubject(1);
     private _muted = new BehaviorSubject(false);
-    private _seeking = new Subject();
+    private _seeking = new Subject<boolean>();
 
     private _pendingState = PlayState.INVALID;
 

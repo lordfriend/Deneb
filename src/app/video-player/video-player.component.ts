@@ -259,11 +259,18 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     play() {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        let rst: Promise<void>;
         if (this._stateSubject.getValue() === PlayState.INITIAL) {
             mediaElement.load();
         }
         if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_FUTURE_DATA) {
-            mediaElement.play();
+            // TODO: We could add some handler for playback start and error situations.
+            rst = mediaElement.play();
+            rst.then(() => {
+                console.log('play start');
+            }, (reason) => {
+                console.log(reason);
+            })
         } else {
             this.setPendingState(PlayState.PLAYING);
         }

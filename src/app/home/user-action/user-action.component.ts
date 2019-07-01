@@ -1,5 +1,5 @@
 
-import {fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+import { fromEvent as observableFromEvent, Subscription, Observable, throwError } from 'rxjs';
 
 import {catchError, timeout, mergeMap, filter, tap} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -117,10 +117,12 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
                         popoverRef.componentInstance.firefoxExtensionUrl = FIREFOX_EXTENSION_URL;
                         return popoverRef.afterClosed();
                     }
+                    return throwError('extension not enabled');
                 }),)
                 .subscribe(() => {
                     this._persistStorage.setItem('USER_ACTION_HAS_ACKNOWLEDGED', 'true');
-                }, () => {
+                }, (error) => {
+                    console.log(error);
                 })
         );
     }

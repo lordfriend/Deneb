@@ -112,6 +112,7 @@
     "url-loader": "^0.5.7",
     "webpack": "~4.29",
     "webpack-cli": "~3.2",
+    "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.7.1",
     "webpack-merge": "~4.2"
   },

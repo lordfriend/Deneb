@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Observable } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 import { BaseService } from "../../helpers/base.service";
 // import {homeRoutes} from './home.routes';
 import { queryString } from '../../helpers/url'
-import { Announce } from '../entity/announce';
 import { Bangumi, Episode } from "../entity";
+import { Announce } from '../entity/announce';
 import { WatchProgress } from "../entity/watch-progress";
 import { WatchService } from './watch.service';
 
@@ -15,11 +16,13 @@ import { WatchService } from './watch.service';
 export class HomeService extends BaseService {
 
     private _baseUrl = '/api/home';
+    private _toastRef: UIToastRef<UIToastComponent>;
 
     constructor(private _http: HttpClient,
                 private _router: Router,
-                private _watchService: WatchService) {
+                private _watchService: WatchService,) {
         super();
+
         // let childRoutes = homeRoutes[0].children;
         this._router.events.subscribe(
             (event) => {
@@ -40,7 +43,7 @@ export class HomeService extends BaseService {
                     }
                 }
             }
-        )
+        );
     }
 
     private parseUrl(url: string) {
@@ -54,19 +57,7 @@ export class HomeService extends BaseService {
 
     childRouteChanges: EventEmitter<any> = new EventEmitter();
 
-    watchProgressChanges: EventEmitter<string> = new EventEmitter<string>();
-
-    favoriteChanges: EventEmitter<any> = new EventEmitter<any>();
-
     favoriteChecked: EventEmitter<{bangumi_id: string, check_time: number}> = new EventEmitter<{bangumi_id: string, check_time: number}>();
-
-    episodeWatching(bangumi_id: string) {
-        this.watchProgressChanges.emit(bangumi_id);
-    }
-
-    changeFavorite() {
-        this.favoriteChanges.emit(null);
-    }
 
     checkFavorite(bangumi_id: string) {
         this._watchService.check_favorite(bangumi_id)

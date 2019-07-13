@@ -1,10 +1,9 @@
-import { UIDialogRef, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UIDialogRef, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs';
 import { Bangumi } from '../../../entity';
 import { RATING_TEXT } from '../rating.component';
-import { Subscription } from 'rxjs';
-import { SynchronizeService } from '../../favorite-chooser/synchronize.service';
 
 @Component({
     selector: 'edit-review-dialog',
@@ -40,7 +39,6 @@ export class EditReviewDialogComponent implements OnInit, OnDestroy {
 
     constructor(private _dialogRef: UIDialogRef<EditReviewDialogComponent>,
                 private _fb: FormBuilder,
-                private _synchronizeService: SynchronizeService,
                 toast: UIToast) {
         this._toastRef = toast.makeText();
     }

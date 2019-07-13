@@ -7,6 +7,7 @@ const chalk = require('chalk');
  * Webpack Plugins
  */
 const DefinePlugin = require('webpack/lib/DefinePlugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 let PROXY_SETTINGS;
 try {
@@ -79,6 +80,9 @@ module.exports = function(metadata) {
                 'EDGE_EXTENSION_ID': JSON.stringify(metadata.edge_extension_id),
                 'FIREFOX_EXTENSION_URL': JSON.stringify(metadata.firefox_extension_url)
             }),
+            new ForkTsCheckerWebpackPlugin({
+                tsconfig: helpers.root('tsconfig.json')
+            })
         ],
         devServer: {
             port: metadata.port,

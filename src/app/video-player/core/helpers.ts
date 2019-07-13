@@ -1,3 +1,5 @@
+import { ComponentRef, EmbeddedViewRef } from '@angular/core';
+
 export const CONTROL_FADE_OUT_TIME = 3000;
 
 export class VideoPlayerHelpers {
@@ -47,4 +49,10 @@ export class VideoPlayerHelpers {
         }
         return `${mm}:${ss}`;
     }
+}
+
+
+/** Gets the root HTMLElement for an instantiated component. */
+export function getComponentRootNode(componentRef: ComponentRef<any>): HTMLElement {
+    return (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
 }

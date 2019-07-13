@@ -1,34 +1,53 @@
-
-import {interval as observableInterval, fromEvent as observableFromEvent,  Subscription ,  Observable ,  BehaviorSubject ,  Subject } from 'rxjs';
-
-import {timeout, map, filter, merge} from 'rxjs/operators';
 import {
-    AfterViewInit, ChangeDetectorRef,
-    Component, ComponentFactoryResolver,
-    ElementRef, EventEmitter, HostBinding, HostListener, Injector,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ComponentFactoryResolver,
+    ElementRef,
+    EventEmitter,
+    HostBinding,
+    Injector,
     Input,
     OnChanges,
-    OnDestroy, OnInit, Output,
+    OnDestroy,
+    OnInit,
+    Output,
     Self,
     SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import { ReadyState, PlayState } from './core/state';
-import { FullScreenAPI } from './core/full-screen-api';
-import { VideoFile } from '../entity/video-file';
-import { VideoPlayerHelpers } from './core/helpers';
-import { VideoControls } from './controls/controls.component';
-import { VideoCapture } from './core/video-capture.service';
-import { VideoTouchControls } from './touch-controls/touch-controls.component';
-import { VideoPlayerShortcuts } from './core/shortcuts';
 import { UIDialog } from 'deneb-ui';
+import {
+    BehaviorSubject,
+    fromEvent as observableFromEvent,
+    interval as observableInterval,
+    Observable,
+    Subject,
+    Subscription,
+    merge
+} from 'rxjs';
+
+import { filter, map, timeout } from 'rxjs/operators';
+import { Bangumi, Episode } from '../entity';
+import { VideoFile } from '../entity/video-file';
+import { VideoControls } from './controls/controls.component';
+import { FullScreenAPI } from './core/full-screen-api';
+import { VideoPlayerHelpers } from './core/helpers';
+import { VideoPlayerShortcuts } from './core/shortcuts';
+import { PlayState, ReadyState } from './core/state';
+import { VideoCapture } from './core/video-capture.service';
 import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
+import { VideoTouchControls } from './touch-controls/touch-controls.component';
+import { VideoInfo } from './core/interfaces';
 
 let nextId = 0;
 
 export const MAX_TOLERATE_WAITING_TIME = 10000;
 export const INITIAL_TOLERATE_WAITING_TIME = 5000;
+
+export const MIN_FLOAT_PLAYER_HEIGHT = 180;
+export const MIN_FLOAT_PLAYER_WIDTH = 320;
 
 @Component({
     selector: 'video-player',
@@ -117,6 +136,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
     @HostBinding('class.fullscreen')
     isFullscreen: boolean;
 
+    @HostBinding('class.float-play')
+    isFloatPlay: boolean;
+
     mediaUrl: string;
     mediaType: string;
 
@@ -130,7 +152,6 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      */
     playerMeasuredWidth: number;
     playerMeasuredHeight: number;
-
 
     /**
      * currentTime of media element.
@@ -193,12 +214,12 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                 private _dialogService: UIDialog) {
     }
 
-    setPendingState(state: number) {
+    setPendingState(state: number): void {
         this._pendingStateSubject.next(state);
         this._pendingState = state;
     }
 
-    setVolume(vol: number) {
+    setVolume(vol: number): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         if (mediaElement && vol >= 0 && vol <= 1) {
             mediaElement.volume = vol;
@@ -212,7 +233,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    volumeUp(delta: number) {
+    volumeUp(delta: number): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         let currentVolume = mediaElement.volume;
         if (mediaElement) {
@@ -224,7 +245,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    volumeDown(delta: number) {
+    volumeDown(delta: number): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         let currentVolume = mediaElement.volume;
         if (mediaElement) {
@@ -236,7 +257,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    toggleMuted() {
+    toggleMuted(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         if (mediaElement) {
             this.setMuted(!mediaElement.muted);
@@ -248,7 +269,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      * the player will make a actual call of pause operation or set a pending state to PlayState.PAUSED.
      * This may help to release the sockets holding by Chrome.
      */
-    pause() {
+    pause(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         if (mediaElement && mediaElement.readyState >= ReadyState.HAVE_FUTURE_DATA) {
             mediaElement.pause();
@@ -257,7 +278,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    play() {
+    play(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         let rst: Promise<void>;
         if (this._stateSubject.getValue() === PlayState.INITIAL) {
@@ -276,7 +297,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    togglePlayAndPause() {
+    togglePlayAndPause(): void {
         if (Number.isNaN(this._durationSubject.getValue())) {
             return;
         }
@@ -287,7 +308,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    seek(playProgressRatio) {
+    seek(playProgressRatio): void {
         const mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         // ended state must be retrieved before set currentTime.
         let isPlayBackEnded = mediaElement.ended;
@@ -300,7 +321,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    fastForward(time: number) {
+    fastForward(time: number): void {
         if (Number.isNaN(this._durationSubject.getValue())) {
             return;
         }
@@ -314,7 +335,7 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    fastBackward(time: number) {
+    fastBackward(time: number): void {
         if (Number.isNaN(this._durationSubject.getValue())) {
             return;
         }
@@ -328,16 +349,22 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    toggleFullscreen() {
+    toggleFullscreen(): void {
         this.fullscreenAPI.toggleFullscreen();
     }
 
-    requestFocus() {
+    toggleFloatPlay(): void {
+        this.isFloatPlay = !this.isFloatPlay;
+        const hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
+        this.togglePlayerDimension(hostElement);
+    }
+
+    requestFocus(): void {
         let hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
         hostElement.focus();
     }
 
-    openHelpDialog() {
+    openHelpDialog(): void {
         let dialogRef;
 
         if (this.fullscreenAPI.isFullscreen) {
@@ -356,8 +383,22 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         );
     }
 
-    playNextEpisode() {
+    playNextEpisode(): void {
         this.onPlayNextEpisode.emit(this.nextEpisodeId);
+    }
+
+    /**
+     * Invoked by VideoPlayerService
+     */
+    setData(episode: Episode, bangumi: Bangumi, nextEpisode: Episode, videoFile: VideoFile, startPosition: number): void {
+        this.bangumiName = bangumi.name_cn || bangumi.name;
+        this.episodeNo = episode.episode_no;
+        this.nextEpisodeId = nextEpisode.id;
+        this.nextEpisodeName = nextEpisode.name;
+        this.nextEpisodeNameCN = nextEpisode.name_cn;
+        this.videoFile = videoFile;
+        this.startPosition = startPosition;
+        this._initiatePlayer();
     }
 
     ngOnInit(): void {
@@ -391,8 +432,10 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this.shortcuts = new VideoPlayerShortcuts(hostElement, this, this._videoCapture);
 
         this._subscription.add(
-            observableFromEvent(window, 'resize').pipe(
-                merge(this.fullscreenAPI.onChangeFullscreen),
+            merge(
+                observableFromEvent(window, 'resize'),
+                this.fullscreenAPI.onChangeFullscreen)
+            .pipe(
                 filter(() => {
                     return Boolean(this.videoFile && this.videoFile.resolution_w && this.videoFile.resolution_h);
                 }),)
@@ -509,11 +552,15 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     ngOnChanges(changes: SimpleChanges): void {
         if ('videoFile' in changes) {
-            let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
-            this.makeMediaUrl();
-            mediaElement.load();
-            this.play();
+            this._initiatePlayer();
         }
+    }
+
+    private _initiatePlayer() {
+        let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
+        this.makeMediaUrl();
+        mediaElement.load();
+        this.play();
     }
 
     private makeMediaUrl() {
@@ -540,6 +587,11 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
             });
     }
 
+    /**
+     * measure the required size base on viewport size and video resolution.
+     * The applied size may not necessarily the same
+     * @returns {{width: number; height: number}}
+     */
     private measurePlayerSize(): {width: number, height: number} {
         let viewportWidth = document.documentElement.clientWidth;
         let viewportHeight = document.documentElement.clientHeight;
@@ -567,8 +619,25 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     private togglePlayerDimension(hostElement: HTMLElement): void {
         let {width, height} = this.measurePlayerSize();
-        this.playerMeasuredWidth = width;
-        this.playerMeasuredHeight = height;
+        const viewportWidth = document.documentElement.clientWidth;
+        const viewportHeight = document.documentElement.clientHeight;
+        // for those portrait screen like most mobile devices, we don't apply a PIP style float play
+        if (this.isFloatPlay && viewportWidth > 0.8 * viewportHeight) {
+
+            if (viewportWidth / viewportHeight > width / height) {
+                // We want the float player be 1/3 of the measured width, but not less than the minimal.
+                this.playerMeasuredWidth = Math.max(MIN_FLOAT_PLAYER_WIDTH, width * 0.4);
+                this.playerMeasuredHeight = height / width * this.playerMeasuredWidth;
+            } else {
+                // We want the float player be 1/3 of the measured height, but not less than the minimal.
+                this.playerMeasuredHeight = Math.max(MIN_FLOAT_PLAYER_HEIGHT, height * 0.4);
+                this.playerMeasuredWidth = width / height * this.playerMeasuredHeight;
+            }
+
+        } else {
+            this.playerMeasuredWidth = width;
+            this.playerMeasuredHeight = height;
+        }
         if (!this.isFullscreen && !!this.playerMeasuredWidth && !!this.playerMeasuredHeight) {
             hostElement.style.width = `${this.playerMeasuredWidth}px`;
             hostElement.style.height = `${this.playerMeasuredHeight}px`;

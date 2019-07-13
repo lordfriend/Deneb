@@ -2,8 +2,7 @@
        preload="none"
        crossorigin
        playsinline
-       [id]="playerId"
-       [poster]="thumbnail">
+       [id]="playerId">
     <source [src]="mediaUrl" [type]="mediaType">
 </video>
 <div class="overlay" #overlay [ngClass]="{show: showLoader}">

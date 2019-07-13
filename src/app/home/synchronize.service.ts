@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core';
 import { UIDialog } from 'deneb-ui';
 import { Observable, of as observableOf, throwError as observableThrowError } from 'rxjs';
+import { switchMap } from 'rxjs/internal/operators';
 
-import { catchError, mergeMap, tap } from 'rxjs/operators';
-import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
-import { Bangumi } from '../../entity';
-import { WatchService } from '../watch.service';
-import { ConflictDialogComponent } from './conflict-dialog/conflict-dialog.component';
+import { catchError, tap } from 'rxjs/operators';
+import { ChromeExtensionService } from '../browser-extension/chrome-extension.service';
+import { Bangumi } from '../entity';
+import { ConflictDialogComponent } from './favorite-chooser/conflict-dialog/conflict-dialog.component';
 
+/**
+ * Synchronize with bgm.tv, need browser extension support
+ */
 @Injectable()
 export class SynchronizeService {
 
     private _cache = new Map<string, any>();
 
-    constructor(private _watchService: WatchService,
-                private _dialog: UIDialog,
-                private _chromeExtensionService: ChromeExtensionService,) {
+    constructor(private _dialog: UIDialog,
+                private _chromeExtensionService: ChromeExtensionService) {
+
     }
 
     updateFavorite(bangumi: Bangumi, favStatus: any): Observable<any> {
@@ -43,7 +46,7 @@ export class SynchronizeService {
             });
         }
         return this._chromeExtensionService.invokeBangumiMethod('favoriteStatus', [bangumi.id]).pipe(
-            mergeMap((userFavoriteInfo) => {
+            switchMap((userFavoriteInfo) => {
                 return this.updateFavorite(bangumi, {
                     interest: status,
                     rating: userFavoriteInfo.rating,
@@ -64,22 +67,22 @@ export class SynchronizeService {
             }),)
     }
 
-    syncBangumi(bangumi: Bangumi) {
+    syncBangumi(bangumi: Bangumi): Observable<any> {
         let cachedItem = this._cache.get(bangumi.id);
         if (cachedItem) {
             return observableOf(cachedItem);
         }
         return this._chromeExtensionService.syncBangumi(bangumi).pipe(
-            mergeMap((result) => {
+            switchMap((result) => {
                 if (result.status === 1) {
                     let dialogRef = this._dialog.open(ConflictDialogComponent, {stickyDialog: true, backdrop: true});
                     dialogRef.componentInstance.bangumiName = bangumi.name_cn || bangumi.name;
                     dialogRef.componentInstance.siteStatus = result.diff.albireo;
                     dialogRef.componentInstance.bgmStatus = result.diff.bgm;
                     return dialogRef.afterClosed().pipe(
-                        mergeMap((choice) => {
+                        switchMap((choice) => {
                             return this._chromeExtensionService.solveConflict(bangumi, result.diff.bgm, choice).pipe(
-                                mergeMap((data) => {
+                                switchMap((data) => {
                                     if (choice === 'site') {
                                         return observableOf({status: 0, data: data});
                                     }
@@ -91,13 +94,13 @@ export class SynchronizeService {
                     return observableOf(result);
                 }
             }),
-            mergeMap((result) => {
+            switchMap((result) => {
                 if (result.data && result.data.status && result.data.status.id) {
                     bangumi.favorite_status = result.data.status.id;
                 }
                 if (Array.isArray(bangumi.episodes) && bangumi.episodes.length > 0) {
                     return this.syncProgress(bangumi).pipe(
-                        mergeMap((progressResult) => {
+                        switchMap((progressResult) => {
                             return observableOf(Object.assign({progressResult: progressResult}, result));
                         }));
                 }

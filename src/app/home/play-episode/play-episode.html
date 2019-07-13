@@ -1,20 +1,8 @@
 <div class="ui active inverted dimmer loading-wrapper" *ngIf="!episode">
     <div class="ui medium loader"></div>
 </div>
-<div class="theater-backdrop" *ngIf="episode" (click)="focusVideoPlayer($event)">
-    <video-player class="player-width player-height"
-                  [videoFile]="currentVideoFile"
-                  [startPosition]="episode.watch_progress?.last_watch_position"
-                  [thumbnail]="episode.thumbnail"
-                  [bangumiName]="episode.bangumi.name_cn || episode.bangumi.name"
-                  [episodeNo]="episode.episode_no"
-                  [nextEpisodeId]="nextEpisode?.id"
-                  [nextEpisodeName]="nextEpisode?.name"
-                  [nextEpisodeNameCN]="nextEpisode?.name_cn"
-                  [nextEpisodeThumbnail]="nextEpisode?.thumbnail_image?.url"
-                  (onProgress)="onWatchPositionUpdate($event)"
-                  (onDurationUpdate)="onDurationUpdate($event)"
-                  (onPlayNextEpisode)="onPlayNext($event)"></video-player>
+<div class="theater-backdrop" (click)="focusVideoPlayer($event)" #videoPlayerContainer>
+    <!-- video player will be here -->
 </div>
 <div class="ui container video-file-picker-container" *ngIf="!!episode && episode.video_files.length > 1">
     <div class="video-file-picker dropdown-picker">

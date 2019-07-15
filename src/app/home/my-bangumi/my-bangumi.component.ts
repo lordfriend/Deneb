@@ -49,7 +49,11 @@ export class MyBangumiComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this._subscription.add(
             this._videoPlayerService.onWatchStatusChanges
-                .pipe(filter(episode => episode.watch_progress && episode.watch_progress.watch_status === WatchProgress.WATCHED))
+                .pipe(filter(episode => {
+                    return episode.watch_progress
+                        && (episode.watch_progress.watch_status === WatchProgress.WATCHED
+                            || episode.watch_progress.watch_status === WatchProgress.WATCHING);
+                }))
                 .subscribe(episode => {
                     let bangumi = this.myBangumiList.find(bangumi => bangumi.id === episode.bangumi_id);
                     if (bangumi && bangumi.unwatched_count > 0) {

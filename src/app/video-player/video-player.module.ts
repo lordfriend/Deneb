@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { FloatControlsComponent } from './float-controls/float-controls.component';
 import { VideoPlayer } from './video-player.component';
 import { VideoControls } from './controls/controls.component';
 import { VideoPlayerScrubBar } from './controls/scrub-bar/scrub-bar.component';
@@ -38,7 +39,8 @@ import { VideoPlayerService } from './video-player.service';
         VideoPlayerHelpDialog,
         VideoPlayerHelpButton,
         VideoNextEpisodeOverlay,
-        VideoConfigPanelComponent
+        VideoConfigPanelComponent,
+        FloatControlsComponent
     ],
     providers: [
         VideoCapture,
@@ -59,7 +61,8 @@ import { VideoPlayerService } from './video-player.service';
         CapturedImageOperationDialog,
         VideoPlayerHelpDialog,
         VideoPlayerHelpButton,
-        VideoConfigPanelComponent
+        VideoConfigPanelComponent,
+        FloatControlsComponent
     ]
 })
 export class VideoPlayerModule {

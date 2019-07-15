@@ -6,6 +6,7 @@ import {
     Injectable,
     Injector,
 } from '@angular/core';
+import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, switchMap, throttleTime } from 'rxjs/internal/operators';
 import { Bangumi, Episode } from '../entity';
@@ -14,7 +15,6 @@ import { WatchProgress } from '../entity/watch-progress';
 import { MIN_WATCHED_PERCENTAGE } from '../home/play-episode/play-episode.component';
 import { WatchService } from '../home/watch.service';
 import { getComponentRootNode } from './core/helpers';
-import { VideoInfo } from './core/interfaces';
 import { PlayState } from './core/state';
 import { VideoPlayer } from './video-player.component';
 
@@ -28,16 +28,15 @@ export class VideoPlayerService {
     /**
      * must unsubscribe when VideoPlayer destroyed.
      */
-    private _videoPlayerSubscription = new Subscription();
+    private _videoPlayerSubscription: Subscription;
 
     private _state: PlayState = PlayState.INITIAL;
     private _pendingState: PlayState = PlayState.INVALID;
 
-    private _videoInfo: VideoInfo = null;
-
     private _episode: Episode;
     private _bangumi: Bangumi;
     private _nextEpisode: Episode;
+    private _videoFileId: string;
 
     private _watchStatusChanges = new Subject<Episode>();
     private _bangumiFavoriteChanges = new Subject<Bangumi>();
@@ -66,7 +65,8 @@ export class VideoPlayerService {
     constructor(private _componentFactoryResolver: ComponentFactoryResolver,
                 private _injector: Injector,
                 private _appRef: ApplicationRef,
-                private _watchService: WatchService) {
+                private _watchService: WatchService,
+                private _router: Router) {
     }
 
     public onLoadAndPlay(container: ElementRef,
@@ -79,23 +79,17 @@ export class VideoPlayerService {
         // create video player component if not exists.
         if (!this._videoPlayerComponentRef) {
             this._createNewPlayer();
-            this._eventSubscribe();
         }
-        if (lastContainer !== container) {
-            if (this._episode.id === episode.id) {
-                // is the same video, reattach video player.
-                const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
-                containerElement.appendChild(getComponentRootNode(this._videoPlayerComponentRef));
-                this.leaveFloatPlay()
-            } else {
-                this._initializeData(episode, bangumi, nextEpisode, videoFile);
+        if (this._videoPlayerComponentRef.instance.isFloatPlay) {
+            if (lastContainer !== container) {
+                this._reAttachPlayer();
             }
+            this.leaveFloatPlay(false);
+        }
+        if (this._episode && this._episode.id === episode.id) {
+            // same video situation
         } else {
-            if (this._episode.id !== episode.id) {
-                this._initializeData(episode, bangumi, nextEpisode, videoFile);
-                // we have the same container but different videoInfo, consider play next episode scenario
-                //TODO: reset player state
-            }
+            this._initializeData(episode, bangumi, nextEpisode, videoFile);
         }
     }
 
@@ -137,18 +131,43 @@ export class VideoPlayerService {
      * leave the float play state,
      * this method may be invoked by PlayEpisode component directly without container destroyed.
      */
-    public leaveFloatPlay(): void {
+    public leaveFloatPlay(checkUrl?: boolean): void {
+        if (checkUrl) {
+            const tree = this._router.parseUrl(window.location.pathname);
+            const urlSegments = tree.root.children[PRIMARY_OUTLET].segments;
+            if (urlSegments[0].path !== 'play'
+                || urlSegments[1].path !== this._episode.id
+                || (tree.queryParams['video_id'] && tree.queryParams['video_id'] !== this._videoFileId)) {
+                this._router.navigateByUrl(`/play/${this._episode.id}?video_id=${this._videoFileId}`);
+                return;
+            }
+        }
+
         const videoPlayer = this._videoPlayerComponentRef.instance;
         videoPlayer.toggleFloatPlay();
-        // remove size styles
-        const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
-        containerElement.style.removeProperty('width');
-        containerElement.style.removeProperty('height');
+        if (this._currentViewContainer) {
+            // remove size styles
+            const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
+            containerElement.style.removeProperty('width');
+            containerElement.style.removeProperty('height');
+        }
     }
 
     public requestFocus(): void {
         const videoPlayer = this._videoPlayerComponentRef.instance;
         videoPlayer.requestFocus();
+    }
+
+    /**
+     * When a video player needed destroyed, all its related resources need release.
+     * This is not the lifecycle callback of the service.
+     */
+    public onDestroy() {
+        this._unloadCurrentPlayer();
+        this._currentViewContainer = null;
+        this._episode = null;
+        this._bangumi = null;
+        this._nextEpisode = null;
     }
 
     private _createNewPlayer(): void {
@@ -160,20 +179,28 @@ export class VideoPlayerService {
         this._appRef.attachView(this._videoPlayerComponentRef.hostView);
         const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
         containerElement.appendChild(getComponentRootNode(this._videoPlayerComponentRef));
+        this._eventSubscribe();
+    }
+
+    private _reAttachPlayer():void {
+        const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
+        containerElement.appendChild(getComponentRootNode(this._videoPlayerComponentRef));
     }
 
     private _initializeData(episode: Episode, bangumi: Bangumi, nextEpisode: Episode, videoFile: VideoFile) {
         let startPosition = 0;
-        if (this._episode.watch_progress) {
-            startPosition =  this._episode.watch_progress.last_watch_position;
+        if (episode.watch_progress) {
+            startPosition =  episode.watch_progress.last_watch_position;
         }
         this._episode = Object.assign({}, episode);
         this._bangumi = Object.assign({}, bangumi);
         this._nextEpisode = Object.assign({}, nextEpisode);
+        this._videoFileId = videoFile.id;
         this._videoPlayerComponentRef.instance.setData(this._episode, this._bangumi, this._nextEpisode, videoFile, startPosition);
     }
 
     private _eventSubscribe() {
+        this._videoPlayerSubscription = new Subscription();
         const videoPlayer = this._videoPlayerComponentRef.instance;
         this._videoPlayerSubscription.add(
             videoPlayer.state.subscribe(s => {
@@ -262,11 +289,5 @@ export class VideoPlayerService {
         this._pendingState = PlayState.INVALID;
         this._videoPlayerComponentRef.destroy();
         this._videoPlayerComponentRef = null;
-    }
-
-    onDestroy() {
-        this._unloadCurrentPlayer();
-        this._currentViewContainer = null;
-        this._videoInfo = null;
     }
 }

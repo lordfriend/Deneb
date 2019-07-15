@@ -37,9 +37,9 @@ import { VideoPlayerHelpers } from './core/helpers';
 import { VideoPlayerShortcuts } from './core/shortcuts';
 import { PlayState, ReadyState } from './core/state';
 import { VideoCapture } from './core/video-capture.service';
+import { FloatControlsComponent } from './float-controls/float-controls.component';
 import { VideoPlayerHelpDialog } from './help-dialog/help-dialog.component';
 import { VideoTouchControls } from './touch-controls/touch-controls.component';
-import { VideoInfo } from './core/interfaces';
 
 let nextId = 0;
 
@@ -357,6 +357,19 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this.isFloatPlay = !this.isFloatPlay;
         const hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
         this.togglePlayerDimension(hostElement);
+        this.controlContainer.remove(0);
+        if (this.isFloatPlay) {
+            const factory = this._componentFactoryResolver.resolveComponentFactory(FloatControlsComponent);
+            const componentRef = factory.create(this._injector);
+            componentRef.instance.videoTitle = `${this.bangumiName} ${this.episodeNo}`;
+            this.controlContainer.insert(componentRef.hostView);
+        } else {
+            if (VideoPlayerHelpers.isMobileDevice()) {
+                this.controlContainer.createComponent(this._componentFactoryResolver.resolveComponentFactory(VideoTouchControls));
+            } else {
+                this.controlContainer.createComponent(this._componentFactoryResolver.resolveComponentFactory(VideoControls));
+            }
+        }
     }
 
     requestFocus(): void {
@@ -391,6 +404,11 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
      * Invoked by VideoPlayerService
      */
     setData(episode: Episode, bangumi: Bangumi, nextEpisode: Episode, videoFile: VideoFile, startPosition: number): void {
+        let lastVideoFileId;
+        if (this.videoFile) {
+            lastVideoFileId = this.videoFile.id;
+        }
+
         this.bangumiName = bangumi.name_cn || bangumi.name;
         this.episodeNo = episode.episode_no;
         this.nextEpisodeId = nextEpisode.id;
@@ -398,6 +416,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this.nextEpisodeNameCN = nextEpisode.name_cn;
         this.videoFile = videoFile;
         this.startPosition = startPosition;
+        if (lastVideoFileId !== videoFile.id) {
+            this._resetPlayer();
+        }
         this._initiatePlayer();
     }
 
@@ -556,20 +577,28 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
     }
 
-    private _initiatePlayer() {
+    private _initiatePlayer(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         this.makeMediaUrl();
         mediaElement.load();
         this.play();
     }
 
-    private makeMediaUrl() {
+    private _resetPlayer(): void {
+        this._currentTimeSubject.next(0);
+        this._durationSubject.next(NaN);
+        this._stateSubject.next(PlayState.INITIAL);
+        this._pendingStateSubject.next(PlayState.INVALID);
+        this._buffered.next(0);
+    }
+
+    private makeMediaUrl(): void {
         this.mediaUrl = `${this.videoFile.url}`;
         this.mediaType = 'video/' + VideoPlayerHelpers.getExtname(this.videoFile.url);
         this._changeDetector.detectChanges();
     }
 
-    private watchForWaiting() {
+    private watchForWaiting(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         this._waitingSubscription.unsubscribe();
         this._waitingSubscription = observableInterval(100).pipe(

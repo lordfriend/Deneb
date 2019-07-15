@@ -10,9 +10,9 @@ import {
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import { fromEvent as observableFromEvent, Subject, Subscription } from 'rxjs';
+import { fromEvent as observableFromEvent, merge, Subject, Subscription } from 'rxjs';
 
-import { filter, merge, retry, tap, timeout } from 'rxjs/operators';
+import { filter, retry, tap, timeout } from 'rxjs/operators';
 import { PersistStorage } from '../../user-service/persist-storage';
 import { CONTROL_FADE_OUT_TIME } from '../core/helpers';
 import { PlayList } from "../core/settings";
@@ -72,7 +72,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
     hasNextEpisode: boolean;
 
     get reflectIconClass(): string {
-        switch(this.pendingPlayState) {
+        switch (this.pendingPlayState) {
             case PlayState.PLAYING:
                 return 'play';
             case PlayState.PAUSED:
@@ -127,18 +127,21 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this._videoPlayer = this._injector.get(VideoPlayer);
-        this._videoPlayer.pendingState.pipe(
-            merge(this._videoPlayer.state))
-            .subscribe((state) => {
-                this.pendingPlayState = state;
-                if (state === PlayState.PLAY_END) {
-                    let autoPlayNext = this._persistStorage.getItem(PlayList.AUTO_PLAY_NEXT, 'true') === 'true';
-                    this.hasNextEpisode = !!this._videoPlayer.nextEpisodeId && autoPlayNext;
-                    this.isPlayEnd = true;
-                } else {
-                    this.isPlayEnd = false;
-                }
-            });
+        this._subscription.add(
+            merge(
+                this._videoPlayer.pendingState,
+                this._videoPlayer.state)
+                .subscribe((state) => {
+                    this.pendingPlayState = state;
+                    if (state === PlayState.PLAY_END) {
+                        let autoPlayNext = this._persistStorage.getItem(PlayList.AUTO_PLAY_NEXT, 'true') === 'true';
+                        this.hasNextEpisode = !!this._videoPlayer.nextEpisodeId && autoPlayNext;
+                        this.isPlayEnd = true;
+                    } else {
+                        this.isPlayEnd = false;
+                    }
+                })
+        );
     }
 
     ngAfterViewInit(): void {
@@ -167,16 +170,19 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
         );
 
         this._subscription.add(
-            this._motion.asObservable().pipe(
-                merge(observableFromEvent(hostElement, 'mousemove')),
-                timeout(CONTROL_FADE_OUT_TIME),
-                tap(() => {},
-                    () => {
-                        if (!this._preventHide) {
-                            this.showControls = false;
-                        }
-                    }),
-                retry(),)
+            merge(
+                this._motion.asObservable(),
+                observableFromEvent(hostElement, 'mousemove'))
+                .pipe(
+                    timeout(CONTROL_FADE_OUT_TIME),
+                    tap(() => {
+                        },
+                        () => {
+                            if (!this._preventHide) {
+                                this.showControls = false;
+                            }
+                        }),
+                    retry(),)
                 .subscribe(
                     () => {
                         this.showControls = true;

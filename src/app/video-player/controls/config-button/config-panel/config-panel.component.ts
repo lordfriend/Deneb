@@ -5,7 +5,7 @@ import {filter} from 'rxjs/operators';
 import { UIPopoverContent, UIPopoverRef } from 'deneb-ui';
 import { Component, ElementRef, OnDestroy, Self } from '@angular/core';
 import { UserActionPanelComponent } from '../../../../home/user-action/user-action-panel/user-action-panel.component';
-import { Capture, PlayList } from '../../../core/settings';
+import { Capture, FloatPlayer, PlayList } from '../../../core/settings';
 import { PersistStorage } from '../../../../user-service';
 
 @Component({
@@ -17,6 +17,8 @@ export class VideoConfigPanelComponent extends UIPopoverContent implements OnDes
     private _subscription = new Subscription();
     private _directDownload: boolean;
     private _autoPlayNext: boolean;
+    private _autoFloatPlayWhenScroll: boolean;
+    private _autoFloatPlayWhenLeave: boolean;
 
     set directDownload(v: boolean) {
         this._directDownload = v;
@@ -36,14 +38,36 @@ export class VideoConfigPanelComponent extends UIPopoverContent implements OnDes
         return this._autoPlayNext;
     }
 
+    set autoFloatPlayWhenScroll(v: boolean) {
+        this._autoFloatPlayWhenScroll = v;
+        this._persistStorage.setItem(FloatPlayer.AUTO_FLOAT_WHEN_SCROLL, v + '');
+    }
+
+    get autoFloatPlayWhenScroll(): boolean {
+        return this._autoFloatPlayWhenScroll;
+    }
+
+    set autoFloatPlayWhenLeave(v: boolean) {
+        this._autoFloatPlayWhenLeave = v;
+        this._persistStorage.setItem(FloatPlayer.AUTO_FLOAT_WHEN_LEAVE, v + '');
+    }
+
+    get autoFloatPlayWhenLeave(): boolean {
+        return this._autoFloatPlayWhenLeave;
+    }
+
     constructor(@Self() private _selfElementRef: ElementRef,
                 popoverRef: UIPopoverRef<UserActionPanelComponent>,
                 private _persistStorage: PersistStorage) {
         super(popoverRef);
-        let savedDirectDownload = this._persistStorage.getItem(Capture.DIRECT_DOWNLOAD, 'false');
-        let autoPlayNext = this._persistStorage.getItem(PlayList.AUTO_PLAY_NEXT, 'true');
+        const savedDirectDownload = this._persistStorage.getItem(Capture.DIRECT_DOWNLOAD, 'false');
+        const autoPlayNext = this._persistStorage.getItem(PlayList.AUTO_PLAY_NEXT, 'true');
+        const autoFloatPlayWhenScroll = this._persistStorage.getItem(FloatPlayer.AUTO_FLOAT_WHEN_SCROLL, 'true');
+        const autoFloatPlayWhenLeave = this._persistStorage.getItem(FloatPlayer.AUTO_FLOAT_WHEN_LEAVE, 'true');
         this._directDownload = savedDirectDownload === 'true';
         this._autoPlayNext = autoPlayNext === 'true';
+        this._autoFloatPlayWhenScroll = autoFloatPlayWhenScroll === 'true';
+        this._autoFloatPlayWhenLeave = autoFloatPlayWhenLeave === 'true';
     }
 
     ngAfterViewInit() {

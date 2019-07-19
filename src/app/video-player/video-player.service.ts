@@ -16,7 +16,9 @@ import { VideoFile } from '../entity/video-file';
 import { WatchProgress } from '../entity/watch-progress';
 import { MIN_WATCHED_PERCENTAGE } from '../home/play-episode/play-episode.component';
 import { WatchService } from '../home/watch.service';
+import { PersistStorage } from '../user-service';
 import { getComponentRootNode } from './core/helpers';
+import { FloatPlayer } from './core/settings';
 import { PlayState } from './core/state';
 import { VideoPlayer } from './video-player.component';
 
@@ -39,6 +41,8 @@ export class VideoPlayerService {
     private _bangumi: Bangumi;
     private _nextEpisode: Episode;
     private _videoFileId: string;
+    private _autoFloatPlayWhenScroll: boolean;
+    private _autoFloatPlayWhenLeave: boolean;
 
     private _watchStatusChanges = new Subject<Episode>();
     private _bangumiFavoriteChanges = new Subject<Bangumi>();
@@ -82,7 +86,18 @@ export class VideoPlayerService {
                 private _injector: Injector,
                 private _appRef: ApplicationRef,
                 private _watchService: WatchService,
-                private _router: Router) {
+                private _router: Router,
+                private _persistent: PersistStorage) {
+        this._persistent.subscribe(FloatPlayer.AUTO_FLOAT_WHEN_SCROLL)
+            .subscribe(v => {
+                this._autoFloatPlayWhenScroll = v === 'true';
+            });
+        this._persistent.subscribe(FloatPlayer.AUTO_FLOAT_WHEN_LEAVE)
+            .subscribe(v => {
+                this._autoFloatPlayWhenLeave = v === 'true';
+            });
+        this._autoFloatPlayWhenScroll = this._persistent.getItem(FloatPlayer.AUTO_FLOAT_WHEN_SCROLL, 'true') === 'true';
+        this._autoFloatPlayWhenLeave = this._persistent.getItem(FloatPlayer.AUTO_FLOAT_WHEN_LEAVE, 'true') === 'true';
     }
 
     public onLoadAndPlay(container: ElementRef,
@@ -102,7 +117,6 @@ export class VideoPlayerService {
             }
             this.leaveFloatPlay(false, true);
         }
-        console.log(episode);
         if (this._episode && this._episode.id === episode.id) {
             // same video situation
         } else {
@@ -115,7 +129,7 @@ export class VideoPlayerService {
      * if the video playback state is playing, we enter a float play state, otherwise just destroy the player
      */
     public onContainerDestroyed(): void {
-        if (this._state != PlayState.PLAYING && this._pendingState != PlayState.PLAYING) {
+        if ((this._state != PlayState.PLAYING && this._pendingState != PlayState.PLAYING) || !this._autoFloatPlayWhenLeave ) {
             this.onDestroy();
         } else {
             const videoPlayerElement = getComponentRootNode(this._videoPlayerComponentRef);
@@ -132,11 +146,15 @@ export class VideoPlayerService {
      * this method may be invoked by PlayEpisode component directly without container destroyed.
      */
     public enterFloatPlay(): void {
-        if (this._state !== PlayState.PLAYING && this._pendingState !== PlayState.PLAYING) {
+        if (this._state !== PlayState.PLAYING
+            && this._pendingState !== PlayState.PLAYING) {
             return;
         }
         const videoPlayer = this._videoPlayerComponentRef.instance;
         if (videoPlayer.isFloatPlay) {
+            return;
+        }
+        if (this._currentViewContainer && !this._autoFloatPlayWhenScroll) {
             return;
         }
         // const lastMeasuredPlayerWidth = videoPlayer.playerMeasuredWidth;
@@ -185,7 +203,7 @@ export class VideoPlayerService {
     public closeFloatPlayer() {
         if (this._currentContainerIsPlayEpisode()) {
             // if currently in PlayEpisode component, disable auto float until user enable.
-            // TODO: an local persistent disable option
+            this._persistent.setItem(FloatPlayer.AUTO_FLOAT_WHEN_SCROLL, 'false');
             this.leaveFloatPlay(false, true);
             return;
         }

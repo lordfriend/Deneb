@@ -65,7 +65,7 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit, OnCha
     private _isVisible = new BehaviorSubject<boolean>(false);
 
     @Input()
-    bgmEpsId: number
+    bgmEpsId: number;
 
     posts: Post[];
 

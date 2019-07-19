@@ -1,9 +1,9 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/internal/operators';
+import { fromEvent as observableFromEvent, Subscription } from 'rxjs';
+import { debounceTime, switchMap, throttleTime } from 'rxjs/internal/operators';
 
 import { filter, mergeMap, tap } from 'rxjs/operators';
 import { ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
@@ -22,9 +22,10 @@ export const MIN_WATCHED_PERCENTAGE = 0.95;
     templateUrl: './play-episode.html',
     styleUrls: ['./play-episode.less']
 })
-export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
+export class PlayEpisode extends HomeChild implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
+    private _isScrolling = false;
 
     episode: Episode;
 
@@ -102,6 +103,10 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
         );
         this._subscription.add(
             this._route.params.pipe(
+                tap(() => {
+                    // scrollBackToTop;
+                    document.documentElement.scrollTop = 0;
+                }),
                 switchMap((params) => {
                     let episode_id = params['episode_id'];
                     return this.homeService.episode_detail(episode_id)
@@ -115,8 +120,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                         this.currentVideoFile = this.episode.video_files
                             .filter(videoFile => videoFile.status === VideoFile.STATUS_DOWNLOADED)
                             .find(videoFile => videoFile.id === videoFileId);
-                    }
-                    if (!this.currentVideoFile) {
+                    } else {
                         this.currentVideoFile = this.episode.video_files
                             .find(videoFile => videoFile.status === VideoFile.STATUS_DOWNLOADED);
                     }
@@ -151,6 +155,31 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy {
                 filter(isLogon => isLogon === LOGON_STATUS.TRUE),)
                 .subscribe(() => {
                     this.commentEnabled = true;
+                })
+        );
+    }
+
+    ngAfterViewInit(): void {
+        const containerElement = this.videoPlayerContainer.nativeElement as HTMLElement;
+        this._subscription.add(
+            this._videoPlayerService.onScrolling
+                .subscribe(isScrolling => {
+                    this._isScrolling = isScrolling;
+                })
+        );
+        this._subscription.add(
+            observableFromEvent(window, 'scroll')
+                .pipe(
+                    filter(() => !this._isScrolling))
+                .subscribe(() => {
+                    const rect = containerElement.getBoundingClientRect();
+                    // console.log(rect.bottom);
+                    const navHeight = 50;
+                    if (rect.bottom < navHeight && !this._videoPlayerService.isFloating) {
+                        this._videoPlayerService.enterFloatPlay();
+                    } else if (rect.bottom > navHeight && this._videoPlayerService.isFloating) {
+                        this._videoPlayerService.leaveFloatPlay(false, true);
+                    }
                 })
         );
     }

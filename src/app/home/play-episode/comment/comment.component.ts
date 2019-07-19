@@ -1,12 +1,17 @@
-
-import {mergeMap, filter} from 'rxjs/operators';
 import {
-    AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    Input, OnChanges,
+    OnDestroy,
+    OnInit, SimpleChanges,
+    ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import { ChromeExtensionService, IAuthInfo } from '../../../browser-extension/chrome-extension.service';
 import { FormGroup } from '@angular/forms';
-import { Subscription ,  BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
+import { ChromeExtensionService, IAuthInfo } from '../../../browser-extension/chrome-extension.service';
 import { ResponsiveService } from '../../../responsive-image/responsive.service';
 import { PersistStorage } from '../../../user-service';
 
@@ -55,12 +60,12 @@ export const COMMENT_SORT_ORDER = 'comment_sort_order';
     styleUrls: ['./comment.less'],
     encapsulation: ViewEncapsulation.None
 })
-export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CommentComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private _subscription = new Subscription();
     private _isVisible = new BehaviorSubject<boolean>(false);
 
     @Input()
-    bgmEpsId: number;
+    bgmEpsId: number
 
     posts: Post[];
 
@@ -249,11 +254,15 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
         this._subscription.add(
             this.isVisible.pipe(
                 filter(visible => visible),
+                filter(() => {
+                    return !!this.bgmEpsId;
+                }),
                 mergeMap(() => {
                     return this._chromeExtensionService.authInfo;
                 }),)
                 .subscribe((authInfo) => {
                     this.authInfo = authInfo as IAuthInfo;
+                    console.log('bgmId', this.bgmEpsId);
                     this.freshCommentList();
                 })
         );
@@ -267,6 +276,15 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             unobserveOnVisible: true
         });
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if ('bgmEpsId' in changes
+            && changes['bgmEpsId'].currentValue
+            && changes['bgmEpsId'].previousValue
+            && !this.isLoading) {
+            this.freshCommentList();
+        }
     }
 
     ngOnDestroy(): void {

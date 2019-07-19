@@ -64,11 +64,18 @@ export class FloatControlsComponent implements OnInit, AfterViewInit, OnDestroy 
         this._motion.next(1);
     }
 
+    close(event: Event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const videoPlayerService = this._injector.get(VideoPlayerService);
+        videoPlayerService.closeFloatPlayer();
+    }
+
     leaveFloat(event: Event) {
         event.preventDefault();
         event.stopPropagation();
         const videoPlayerService = this._injector.get(VideoPlayerService);
-        videoPlayerService.leaveFloatPlay(true);
+        videoPlayerService.leaveFloatPlay(true, false);
     }
 
     ngOnInit(): void {

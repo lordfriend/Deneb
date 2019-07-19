@@ -8,7 +8,9 @@ import {
 } from '@angular/core';
 import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { interval as observableInterval } from 'rxjs/index';
 import { filter, map, switchMap, throttleTime } from 'rxjs/internal/operators';
+import { take } from 'rxjs/operators';
 import { Bangumi, Episode } from '../entity';
 import { VideoFile } from '../entity/video-file';
 import { WatchProgress } from '../entity/watch-progress';
@@ -42,6 +44,13 @@ export class VideoPlayerService {
     private _bangumiFavoriteChanges = new Subject<Bangumi>();
     private _playNextEpisode = new Subject<string>();
 
+    /*  */
+    private _onScrolling = new Subject<boolean>();
+
+    get onScrolling(): Observable<boolean> {
+        return this._onScrolling.asObservable();
+    }
+
     /**
      * Current watching Episode watch status changed. (only emits when WATCHING and WATCHED)
      * @type {Subject<Episode>}
@@ -60,6 +69,13 @@ export class VideoPlayerService {
 
     get onPlayNextEpisode(): Observable<string> {
         return this._playNextEpisode.asObservable();
+    }
+
+    get isFloating(): boolean {
+        if (!this._videoPlayerComponentRef) {
+            return false;
+        }
+        return this._videoPlayerComponentRef.instance.isFloatPlay;
     }
 
     constructor(private _componentFactoryResolver: ComponentFactoryResolver,
@@ -84,8 +100,9 @@ export class VideoPlayerService {
             if (lastContainer !== container) {
                 this._reAttachPlayer();
             }
-            this.leaveFloatPlay(false);
+            this.leaveFloatPlay(false, true);
         }
+        console.log(episode);
         if (this._episode && this._episode.id === episode.id) {
             // same video situation
         } else {
@@ -115,13 +132,19 @@ export class VideoPlayerService {
      * this method may be invoked by PlayEpisode component directly without container destroyed.
      */
     public enterFloatPlay(): void {
+        if (this._state !== PlayState.PLAYING && this._pendingState !== PlayState.PLAYING) {
+            return;
+        }
         const videoPlayer = this._videoPlayerComponentRef.instance;
-        const lastMeasuredPlayerWidth = videoPlayer.playerMeasuredWidth;
+        if (videoPlayer.isFloatPlay) {
+            return;
+        }
+        // const lastMeasuredPlayerWidth = videoPlayer.playerMeasuredWidth;
         const lastMeasuredPlayerHeight = videoPlayer.playerMeasuredHeight;
         // apply size styles for container for the case container not destroyed
         if (this._currentViewContainer) {
             const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
-            containerElement.style.width = `${lastMeasuredPlayerWidth}px`;
+            // containerElement.style.width = `${lastMeasuredPlayerWidth}px`;
             containerElement.style.height = `${lastMeasuredPlayerHeight}px`;
         }
         videoPlayer.toggleFloatPlay();
@@ -131,7 +154,7 @@ export class VideoPlayerService {
      * leave the float play state,
      * this method may be invoked by PlayEpisode component directly without container destroyed.
      */
-    public leaveFloatPlay(checkUrl?: boolean): void {
+    public leaveFloatPlay(checkUrl: boolean, skipScroll: boolean): void {
         if (checkUrl) {
             const tree = this._router.parseUrl(window.location.pathname);
             const urlSegments = tree.root.children[PRIMARY_OUTLET].segments;
@@ -142,15 +165,31 @@ export class VideoPlayerService {
                 return;
             }
         }
-
         const videoPlayer = this._videoPlayerComponentRef.instance;
+        if (!videoPlayer.isFloatPlay) {
+            return;
+        }
+        if (this._currentContainerIsPlayEpisode() && !skipScroll) {
+            this._scrollToTop();
+            return;
+        }
         videoPlayer.toggleFloatPlay();
         if (this._currentViewContainer) {
             // remove size styles
             const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
-            containerElement.style.removeProperty('width');
+            // containerElement.style.removeProperty('width');
             containerElement.style.removeProperty('height');
         }
+    }
+
+    public closeFloatPlayer() {
+        if (this._currentContainerIsPlayEpisode()) {
+            // if currently in PlayEpisode component, disable auto float until user enable.
+            // TODO: an local persistent disable option
+            this.leaveFloatPlay(false, true);
+            return;
+        }
+        this.onDestroy();
     }
 
     public requestFocus(): void {
@@ -168,6 +207,47 @@ export class VideoPlayerService {
         this._episode = null;
         this._bangumi = null;
         this._nextEpisode = null;
+    }
+
+    private _scrollToTop() {
+        const step = 10;
+        const totalDistance = document.documentElement.scrollTop;
+        const co = totalDistance / ((step - 1) * (step -1));
+        this._onScrolling.next(true);
+        observableInterval(30).pipe(
+            take(step),
+            map((t) => {
+                return Math.floor(totalDistance - co * t * t);
+            }),)
+            .subscribe((d) => {
+                console.log('d', d);
+                document.documentElement.scrollTop = d;
+            }, () => {}, () => {
+                console.log('scroll finished');
+                this._videoPlayerComponentRef.instance.toggleFloatPlay();
+                if (this._currentViewContainer) {
+                    // remove size styles
+                    const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
+                    // containerElement.style.removeProperty('width');
+                    containerElement.style.removeProperty('height');
+                }
+                this._onScrolling.next(false);
+            });
+    }
+
+    /**
+     * detect whether current container is play episode.
+     * @returns {boolean}
+     */
+    private _currentContainerIsPlayEpisode(): boolean {
+        if (!this._currentViewContainer) {
+            return false;
+        }
+        const container = this._currentViewContainer.nativeElement as HTMLElement;
+        if (!container){
+            return false;
+        }
+        return container.classList.contains('theater-backdrop');
     }
 
     private _createNewPlayer(): void {
@@ -283,8 +363,10 @@ export class VideoPlayerService {
     private _unloadCurrentPlayer() {
         this._videoPlayerSubscription.unsubscribe();
         this._appRef.detachView(this._videoPlayerComponentRef.hostView);
-        const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
-        containerElement.removeChild(getComponentRootNode(this._videoPlayerComponentRef));
+        if (this._currentViewContainer) {
+            const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
+            containerElement.removeChild(getComponentRootNode(this._videoPlayerComponentRef));
+        }
         this._state = PlayState.INITIAL;
         this._pendingState = PlayState.INVALID;
         this._videoPlayerComponentRef.destroy();

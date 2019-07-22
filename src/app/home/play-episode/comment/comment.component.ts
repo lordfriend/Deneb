@@ -87,7 +87,7 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit, OnCha
         return this._isVisible.asObservable();
     }
 
-    @ViewChild('headDivider') headDividerRef: ElementRef;
+    @ViewChild('headDivider', {static: false}) headDividerRef: ElementRef;
 
     constructor(private _chromeExtensionService: ChromeExtensionService,
                 private _persistStorage: PersistStorage,

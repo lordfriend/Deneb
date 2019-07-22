@@ -37,7 +37,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy, AfterVi
 
     currentVideoFile: VideoFile;
 
-    @ViewChild('videoPlayerContainer') videoPlayerContainer: ElementRef;
+    @ViewChild('videoPlayerContainer', {static: true}) videoPlayerContainer: ElementRef;
 
     constructor(homeService: HomeService,
                 private _watchService: WatchService,

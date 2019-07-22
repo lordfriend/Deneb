@@ -61,7 +61,7 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
         this.filterBangumi();
     }
 
-    @ViewChild(InfiniteList) infiniteList: InfiniteList;
+    @ViewChild(InfiniteList, {static: true}) infiniteList: InfiniteList;
 
     constructor(homeService: HomeService,
                 private _homeComponent: Home,

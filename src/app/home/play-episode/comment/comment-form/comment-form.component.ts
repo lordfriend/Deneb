@@ -39,7 +39,7 @@ export class CommentFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     newCommentForm: FormGroup;
 
-    @ViewChild('textarea') textareaRef: ElementRef;
+    @ViewChild('textarea', {static: false}) textareaRef: ElementRef;
 
     constructor(private _fb: FormBuilder,
                 private _chromeExtensionService: ChromeExtensionService) {

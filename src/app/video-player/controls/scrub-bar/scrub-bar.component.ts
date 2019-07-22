@@ -50,7 +50,7 @@ export class VideoPlayerScrubBar implements AfterViewInit, OnInit, OnDestroy {
     pointTransform: string;
     pointOpacity: number;
 
-    @ViewChild('tip') tipRef: ElementRef;
+    @ViewChild('tip', {static: false}) tipRef: ElementRef;
 
     get playProgressPercentage(): number {
         if (this._isDragging) {

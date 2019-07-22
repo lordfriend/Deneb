@@ -14,7 +14,7 @@ export class ForgetPass implements OnDestroy {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
-    @ViewChild('emailInput') emailInput: ElementRef;
+    @ViewChild('emailInput', {static: false}) emailInput: ElementRef;
 
     result = false;
     isPending = false;
@@ -40,7 +40,7 @@ export class ForgetPass implements OnDestroy {
             .subscribe(
                 () => {
                     this.isPending = false;
-                    this._toastRef.show(`重置密码链接发送到${value}`)
+                    this._toastRef.show(`重置密码链接发送到${value}`);
                     this.result = true;
                 },
                 (error: BaseError) => {

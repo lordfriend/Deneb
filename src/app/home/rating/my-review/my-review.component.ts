@@ -33,7 +33,7 @@ export class MyReviewComponent implements AfterViewInit, OnChanges {
     @Output()
     editReview = new EventEmitter<any>();
 
-    @ViewChild('reviewText') reviewTextRef: ElementRef;
+    @ViewChild('reviewText', {static: false}) reviewTextRef: ElementRef;
 
     get ratingScore(): string {
         if (!this.rating) {

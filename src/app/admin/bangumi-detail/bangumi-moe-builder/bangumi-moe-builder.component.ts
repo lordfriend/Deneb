@@ -19,7 +19,7 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
-    @ViewChild('searchBox') searchBox: ElementRef;
+    @ViewChild('searchBox', {static: false}) searchBox: ElementRef;
 
     @Input()
     bangumi: Bangumi;
@@ -61,8 +61,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     this.langTags = tags.filter(tag => tag.type === 'lang');
                     this.miscTags = tags.filter(tag => tag.type === 'misc');
                 },
-                (error: Response) => {
-                    this._toastRef.show(error.json());
+                (error) => {
+                    this._toastRef.show(error);
                 }
             )
         );
@@ -72,8 +72,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     (tags: Tag[]) => {
                         this.categoryTags = tags;
                     },
-                    (error: Response) => {
-                        this._toastRef.show(error.json());
+                    (error) => {
+                        this._toastRef.show(error);
                     }
                 )
         );
@@ -83,8 +83,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     (tags: Tag[]) => {
                         this.popularTeamTags = tags;
                     },
-                    (error: Response) => {
-                        this._toastRef.show(error.json());
+                    (error) => {
+                        this._toastRef.show(error);
                     }
                 )
         );
@@ -94,8 +94,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     (tags: Tag[]) => {
                         this.popularBangumiTags = tags;
                     },
-                    (error: Response) => {
-                        this._toastRef.show(error.json());
+                    (error) => {
+                        this._toastRef.show(error);
                     }
                 )
         );

@@ -1,10 +1,9 @@
-
-import {map} from 'rxjs/operators';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Http } from '@angular/http';
 import { VideoFile } from '../../entity/video-file';
 import { VideoPlayer } from '../../video-player/video-player.component';
-import { Http } from '@angular/http';
-import { animate, transition, trigger, state, style } from '@angular/animations';
 
 export interface PVManifest {
     name: string,
@@ -48,9 +47,9 @@ export class PreviewVideoComponent implements OnInit, OnDestroy {
 
     currentPVState = 'enter';
 
-    @ViewChild(VideoPlayer) videoPlayer: VideoPlayer;
+    @ViewChild(VideoPlayer, {static: true}) videoPlayer: VideoPlayer;
 
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
     }
 
     focusVideoPlayer(event: Event) {
@@ -97,8 +96,7 @@ export class PreviewVideoComponent implements OnInit, OnDestroy {
 
         let videoPathDir = videoPath.substring(0, videoPath.indexOf('/'));
 
-        this._http.get(`//${staticDomain}/video/preview-video/${videoPathDir}/manifest.json`).pipe(
-            map(res => res.json() as PVManifest[]))
+        this._http.get<PVManifest[]>(`//${staticDomain}/video/preview-video/${videoPathDir}/manifest.json`)
             .subscribe((mainfest: PVManifest[]) => {
                 this.manifest = mainfest;
                 this.currentPV = this.manifest[0];

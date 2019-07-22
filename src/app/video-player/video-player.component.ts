@@ -144,8 +144,8 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     playerId = 'videoPlayerId' + (nextId++);
 
-    @ViewChild('media') mediaRef: ElementRef;
-    @ViewChild('overlay', {read: ViewContainerRef}) controlContainer: ViewContainerRef;
+    @ViewChild('media', {static: true}) mediaRef: ElementRef;
+    @ViewChild('overlay', {read: ViewContainerRef, static: true}) controlContainer: ViewContainerRef;
 
     /**
      * measured dimension according current viewport size

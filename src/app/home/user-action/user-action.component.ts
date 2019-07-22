@@ -36,7 +36,7 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
         url: string
     };
 
-    @ViewChild('userActionLink') userActionLinkRef: ElementRef;
+    @ViewChild('userActionLink', {static: false}) userActionLinkRef: ElementRef;
 
     constructor(private _chromeExtensionService: ChromeExtensionService,
                 private _extensionRpcService: ExtensionRpcService,

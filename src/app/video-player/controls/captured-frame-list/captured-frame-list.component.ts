@@ -45,7 +45,7 @@ export class CapturedFrameList implements OnInit, AfterViewInit, OnDestroy, Prev
         return this.showControls && this._imageCount > 0 ? 'in' : 'out';
     }
 
-    @ViewChild('wrapper') previewWrapper: ElementRef;
+    @ViewChild('wrapper', {static: false}) previewWrapper: ElementRef;
 
     constructor(private _videoPlayer: VideoPlayer,
                 private _videoCapture: VideoCapture,

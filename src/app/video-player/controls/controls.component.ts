@@ -13,7 +13,7 @@ import {
 import { fromEvent as observableFromEvent, merge, Subject, Subscription } from 'rxjs';
 
 import { filter, retry, tap, timeout } from 'rxjs/operators';
-import { PersistStorage } from '../../user-service/persist-storage';
+import { PersistStorage } from '../../user-service';
 import { CONTROL_FADE_OUT_TIME } from '../core/helpers';
 import { PlayList } from "../core/settings";
 import { PlayState } from '../core/state';
@@ -86,7 +86,7 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
         return this.showControls ? 'in' : 'out';
     }
 
-    @ViewChild('controlWrapper', {read: ViewContainerRef}) controlWrapper: ViewContainerRef;
+    @ViewChild('controlWrapper', {read: ViewContainerRef, static: false}) controlWrapper: ViewContainerRef;
 
     constructor(@Self() private _hostRef: ElementRef,
                 private _injector: Injector,

@@ -31,7 +31,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
     orientation: 'landscape' | 'portrait';
     coverRevealerHeight: string;
 
-    @ViewChild('bangumiCover') bangumiCoverRef: ElementRef;
+    @ViewChild('bangumiCover', {static: false}) bangumiCoverRef: ElementRef;
 
     isExtraInfoEnabled = false;
     extraInfo: any;

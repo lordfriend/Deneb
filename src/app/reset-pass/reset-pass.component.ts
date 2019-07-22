@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { passwordMatch } from '../form-utils/validators';
-import { URLSearchParams } from '@angular/http';
+import { passwordMatch } from '../form-utils';
 import { Router } from '@angular/router';
-import { UserService } from '../user-service/user.service';
+import { UserService } from '../user-service';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { BaseError } from '../../helpers/error/BaseError';
+import { BaseError } from '../../helpers/error';
 @Component({
     selector: 'reset-pass',
     templateUrl: './reset-pass.html',

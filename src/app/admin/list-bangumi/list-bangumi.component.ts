@@ -27,7 +27,7 @@ export class ListBangumi implements AfterViewInit, OnDestroy, OnInit {
     private _toastRef: UIToastRef<UIToastComponent>;
     private _isMovie: boolean;
 
-    @ViewChild('searchBox') searchBox: ElementRef;
+    @ViewChild('searchBox', {static: false}) searchBox: ElementRef;
 
     name: string;
     total: number = 0;

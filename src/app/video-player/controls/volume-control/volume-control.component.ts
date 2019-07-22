@@ -41,7 +41,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     @Output()
     motion = new EventEmitter<any>();
 
-    @ViewChild('slider') slider: ElementRef;
+    @ViewChild('slider', {static: false}) slider: ElementRef;
 
     constructor(private _videoPlayer: VideoPlayer) {
     }

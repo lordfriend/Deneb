@@ -56,7 +56,7 @@ export class FavoriteListComponent implements OnInit, OnDestroy {
 
     lastScrollPosition: number;
 
-    @ViewChild(InfiniteList) infiniteList: InfiniteList;
+    @ViewChild(InfiniteList, {static: true}) infiniteList: InfiniteList;
 
     constructor(private _homeService: HomeService,
                 private _homeComponent: Home,

@@ -20,8 +20,8 @@ export class SearchBangumi implements AfterViewInit {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
-    @ViewChild('searchBox') searchBox: ElementRef;
-    @ViewChild('typePicker') typePicker: ElementRef;
+    @ViewChild('searchBox', {static: false}) searchBox: ElementRef;
+    @ViewChild('typePicker', {static: false}) typePicker: ElementRef;
 
     name: string;
     bangumiType: number = 2;

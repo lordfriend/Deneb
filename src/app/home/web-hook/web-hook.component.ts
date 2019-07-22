@@ -1,12 +1,11 @@
-
-import {map} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Http, Response } from '@angular/http';
 import { Title } from '@angular/platform-browser';
-import { PERM_NAME, WebHook } from '../../entity/web-hook';
-import { Subscription } from 'rxjs';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
+import { PERM_NAME, WebHook } from '../../entity/web-hook';
 
 @Component({
     selector: 'web-hook',
@@ -22,7 +21,7 @@ export class WebHookComponent implements OnInit, OnDestroy {
 
     isBgmEnabled: boolean;
 
-    constructor(private _http: Http,
+    constructor(private _http: HttpClient,
                 private _chromeExtensionService: ChromeExtensionService,
                 toastService: UIToast,
                 titleService: Title) {
@@ -32,9 +31,9 @@ export class WebHookComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this._subscription.add(
-            this._http.get('/api/web-hook/').pipe(
+            this._http.get<{data: any[]}>('/api/web-hook/').pipe(
                 map((res) => {
-                    return (res.json().data as any[]).map(webHook => {
+                    return res.data.map(webHook => {
                         if (webHook.permissions) {
                             webHook.permissions = JSON.parse(webHook.permissions as string) as string[];
                         } else {
@@ -46,9 +45,9 @@ export class WebHookComponent implements OnInit, OnDestroy {
                 }))
                 .subscribe((webHookList) => {
                     this.webHookList = webHookList;
-                }, (err: Response) => {
+                }, (err) => {
                     if (err.status && err.status !== 502 && err.status !== 504) {
-                        this._toastRef.show(err.json().message);
+                        this._toastRef.show(err.message);
                     } else {
                         this._toastRef.show('网络错误');
                     }

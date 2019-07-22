@@ -18,7 +18,7 @@ export const KEY_ESC = 27;
 export class VideoPlayerHelpDialog implements OnInit, AfterViewInit, OnDestroy {
     private _subscription = new Subscription();
 
-    @ViewChild('closeButton') closeButton: ElementRef;
+    @ViewChild('closeButton', {static: false}) closeButton: ElementRef;
 
     constructor(private _dialogRef: UIDialogRef<VideoPlayerHelpDialog>) {
     }

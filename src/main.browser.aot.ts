@@ -1,23 +1,19 @@
-import './assets/semantic-ui';
+import { enableProdMode } from '@angular/core';
 /*
  * Providers provided by Angular
  */
-import {platformBrowser} from '@angular/platform-browser';
-import {decorateModuleRef} from './app/environment';
+import { platformBrowser } from '@angular/platform-browser';
+import { AppModule } from './app';
+import './assets/semantic-ui';
 
-/*
-* App Component
-* our top level component that holds all of our components
-*/
-import {AppModuleNgFactory} from '../compiled/src/app/app.module.ngfactory';
+enableProdMode();
 
 /*
  * Bootstrap our Angular app with a top level NgModule
  */
 export function main(): Promise<any> {
   return platformBrowser()
-    .bootstrapModuleFactory(AppModuleNgFactory)
-    .then(decorateModuleRef)
+    .bootstrapModule(AppModule)
     .catch((err) => console.error(err));
 }
 

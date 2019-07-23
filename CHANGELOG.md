@@ -1,11 +1,18 @@
 # Changelog
 ## 4.0.0
 
-### Refactor building scripts in order to upgrade to Angular 7+
+### Refactor building scripts in order to upgrade to Angular 8.1.2
 
-Now a new building script using webpack 4 is used for building Angular 7+.
-Main different is the removal of compression-webpack-plugin which require an external step to compress the assets.
+Now a new building script using webpack 4 is used for building Angular 8.1.2;
 All test configuration files which is actually never used are removed for good.
+
+Compression-webpack-plugin now use Brotli compression algorithm.
+
+### Refactor VideoPlayer and play-episode to support float player (aka picture-in-picture) mode
+
+### Bug Fix
+
+
 
 ## 3.6.0
 

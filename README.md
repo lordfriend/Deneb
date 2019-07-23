@@ -2,7 +2,7 @@
 
 ## Building requirements
 
-Nodejs 7.0 and above, npm 3 and above, Yarn (I recommend this package manager to manage npm packages)
+Nodejs 12.0 and above, npm 3 and above, Yarn (I recommend this package manager to manage npm packages)
 
 ## Development
 

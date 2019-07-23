@@ -1,5 +1,5 @@
 const webpackMerge            = require('webpack-merge');
-const ngw                     = require('@ngtools/webpack');
+const {AngularCompilerPlugin} = require('@ngtools/webpack');
 const UglifyJsPlugin          = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const cssnano                 = require('cssnano');
@@ -7,17 +7,24 @@ const cssnano                 = require('cssnano');
 const commonConfig            = require('./webpack.common');
 const helpers                 = require('./helpers');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
-// const CompressionPlugin = require('compression-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+
+const buildOptimizer = {
+    loader: '@angular-devkit/build-optimizer/webpack-loader',
+    options: {
+        sourceMap: true
+    }
+};
 
 module.exports = function(metadata) {
-    return webpackMerge(commonConfig, {
+    return webpackMerge(commonConfig(metadata), {
         mode: 'production',
-
         output: {
             path: helpers.root('dist'),
             publicPath: '/',
-            filename: '[hash].js',
-            chunkFilename: '[id].[hash].chunk.js'
+            filename: '[name].[chunkhash].js',
+            sourceMapFilename: '[file].map',
+            chunkFilename: '[id].[chunkhash].chunk.js'
         },
 
         optimization: {
@@ -48,7 +55,14 @@ module.exports = function(metadata) {
             rules: [
                 {
                     test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-                    loader: '@ngtools/webpack'
+                    use: [
+                        buildOptimizer,
+                        '@ngtools/webpack'
+                    ]
+                },
+                {
+                    test: /\.js$/,
+                    use: [buildOptimizer]
                 }
             ]
         },
@@ -68,9 +82,21 @@ module.exports = function(metadata) {
                 'EDGE_EXTENSION_ID': JSON.stringify(metadata.edge_extension_id),
                 'FIREFOX_EXTENSION_URL': JSON.stringify(metadata.firefox_extension_url)
             }),
-            new ngw.AngularCompilerPlugin({
-                tsConfigPath: helpers.root('tsconfig.aot.json'),
-                entryModule: helpers.root('src', 'app', 'app.module#AppModule')
+            new AngularCompilerPlugin({
+                tsConfigPath: helpers.root('tsconfig.webpack.json'),
+                entryModule: helpers.root('src/app/app.module#AppModule'),
+                sourceMap: true,
+                skipCodeGeneration: false,
+                discoverLazyRoutes: true
+            }),
+            new CompressionPlugin({
+                filename: '[path].br[query]',
+                algorithm: 'brotliCompress',
+                test: /\.(js|css|html|svg)$/,
+                compressionOptions: { level: 11 },
+                threshold: 10240,
+                minRatio: 0.8,
+                deleteOriginalAssets: false,
             })
         ],
         node: {

@@ -18,10 +18,6 @@ import '@angular/router';
 
 import 'hammerjs';
 
-// deneb-ui
-
-import 'deneb-ui';
-
 if ('production' === ENV) {
   // Production
 

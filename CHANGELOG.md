@@ -12,7 +12,7 @@ Compression-webpack-plugin now use Brotli compression algorithm.
 
 ### Bug Fix
 
-
+- fix #156
 
 ## 3.6.0
 

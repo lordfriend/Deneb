@@ -37,7 +37,7 @@ export class SynchronizeService {
 
     updateFavoriteStatus(bangumi: Bangumi, status: number): Observable<any> {
         let cachedItem = this._cache.get(bangumi.id);
-        if (cachedItem) {
+        if (cachedItem && cachedItem.data) {
             return this.updateFavorite(bangumi, {
                 interest: status,
                 rating: cachedItem.data.rating,

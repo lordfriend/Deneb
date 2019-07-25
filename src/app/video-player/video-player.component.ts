@@ -548,7 +548,12 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
                     if (this._pendingState !== PlayState.INVALID) {
                         switch (this._pendingState) {
                             case PlayState.PLAYING:
-                                mediaElement.play();
+                                mediaElement.play()
+                                    .then(() => {
+                                        console.log('play start');
+                                    }, (reason) => {
+                                        console.log(reason);
+                                    });
                                 this.setPendingState(PlayState.INVALID);
                                 break;
                             case PlayState.PAUSED:

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
@@ -8,23 +8,20 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "noEmitHelpers": true,
-    "noEmit": true,
     "importHelpers": true,
     "strictNullChecks": false,
     "typeRoots": ["node_modules/@types"],
     "lib": [
       "dom",
-      "es6"
+      "es2018"
     ]
   },
   "exclude": [
     "node_modules",
-    "dist",
-    "src/main.browser.aot.ts"
+    "dist"
   ],
-  "awesomeTypescriptLoaderOptions": {
-    "forkChecker": true,
-    "useWebpackText": true
+  "angularCompilerOptions": {
+    "skipMetadataEmit": true
   },
   "compileOnSave": false,
   "buildOnSave": false,

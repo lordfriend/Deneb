@@ -7,8 +7,6 @@ import { AnalyticsService } from './analytics.service';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-require('./app.less');
-
 /*
  * App Component
  * Top Level Component

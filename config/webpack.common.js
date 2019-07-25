@@ -9,9 +9,8 @@ module.exports = function (metadata) {
     const isDev = metadata.ENV === 'development';
     return {
         entry: {
-            vendor: './src/vendor.ts',
             polyfills: './src/polyfills.browser.ts',
-            main: isDev ? './src/main.browser.ts' : './src/main.browser.aot.ts'
+            main: './src/main.browser.ts'
         },
 
         resolve: {
@@ -112,8 +111,8 @@ module.exports = function (metadata) {
 
         plugins: [
             new MiniCssExtractPlugin({
-                filename: isDev ? '[name].css' : '[name].[hash].css',
-                chunkFilename: isDev ? '[id].css' : '[id].[hash].css'
+                filename: isDev ? '[name].bundle.css' : '[name].[chunkhash].bundle.css',
+                chunkFilename: isDev ? '[name].chunk.css' : '[name].[chunkhash].chunk.css'
             }),
             new CopyWebpackPlugin([{
                 from: 'src/assets',

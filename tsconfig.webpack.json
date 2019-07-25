@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "ESNext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
@@ -11,7 +11,7 @@
     "importHelpers": true,
     "strictNullChecks": false,
     "lib": [
-      "es6",
+      "es2018",
       "dom"
     ],
     "typeRoots": ["node_modules/@types"]
@@ -20,8 +20,7 @@
     "node_modules",
     "dist",
     "src/**/*.spec.ts",
-    "src/**/*.e2e.ts",
-    "src/main.browser.ts"
+    "src/**/*.e2e.ts"
   ],
   "angularCompilerOptions": {
     "skipMetadataEmit": true

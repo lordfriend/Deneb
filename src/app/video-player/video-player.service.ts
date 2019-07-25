@@ -175,7 +175,13 @@ export class VideoPlayerService {
     public leaveFloatPlay(checkUrl: boolean, skipScroll: boolean): void {
         if (checkUrl) {
             const tree = this._router.parseUrl(window.location.pathname);
-            const urlSegments = tree.root.children[PRIMARY_OUTLET].segments;
+            console.log(tree);
+            const children = tree.root.children[PRIMARY_OUTLET];
+            if (!children) {
+                this._router.navigateByUrl(`/play/${this._episode.id}?video_id=${this._videoFileId}`);
+                return;
+            }
+            const urlSegments = children.segments;
             if (urlSegments[0].path !== 'play'
                 || urlSegments[1].path !== this._episode.id
                 || (tree.queryParams['video_id'] && tree.queryParams['video_id'] !== this._videoFileId)) {

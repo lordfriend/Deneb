@@ -7,7 +7,7 @@ const chalk = require('chalk');
  * Webpack Plugins
  */
 const DefinePlugin = require('webpack/lib/DefinePlugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const { AngularCompilerPlugin } = require('@ngtools/webpack');
 
 let PROXY_SETTINGS;
 try {
@@ -54,19 +54,8 @@ module.exports = function(metadata) {
         module: {
             rules: [
                 {
-                    test: /\.ts$/,
-                    loaders: [
-                        {
-                            loader: 'ts-loader',
-                            options: {
-                                configFile: helpers.root('tsconfig.json'),
-                                transpileOnly: true
-                            }
-                        },
-                        'angular2-template-loader',
-                        'angular-router-loader'
-                    ],
-                    exclude: [/node_modules/]
+                    test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+                    use: '@ngtools/webpack'
                 }
             ]
         },
@@ -80,9 +69,16 @@ module.exports = function(metadata) {
                 'EDGE_EXTENSION_ID': JSON.stringify(metadata.edge_extension_id),
                 'FIREFOX_EXTENSION_URL': JSON.stringify(metadata.firefox_extension_url)
             }),
-            new ForkTsCheckerWebpackPlugin({
-                tsconfig: helpers.root('tsconfig.json')
-            })
+            new AngularCompilerPlugin({
+                tsConfigPath: helpers.root('tsconfig.json'),
+                entryModule: helpers.root('src/app/app.module#AppModule'),
+                sourceMap: true,
+                skipCodeGeneration: false,
+                discoverLazyRoutes: true
+            }),
+            // new ForkTsCheckerWebpackPlugin({
+            //     tsconfig: helpers.root('tsconfig.json')
+            // })
         ],
         devServer: {
             port: metadata.port,

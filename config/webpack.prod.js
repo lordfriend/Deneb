@@ -1,18 +1,21 @@
 const webpackMerge            = require('webpack-merge');
-const {AngularCompilerPlugin} = require('@ngtools/webpack');
-const UglifyJsPlugin          = require('uglifyjs-webpack-plugin');
+const { AngularCompilerPlugin } = require('@ngtools/webpack');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const cssnano                 = require('cssnano');
+// const ClosurePlugin           = require('closure-webpack-plugin');
 
 const commonConfig            = require('./webpack.common');
 const helpers                 = require('./helpers');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const buildOptimizer = {
     loader: '@angular-devkit/build-optimizer/webpack-loader',
     options: {
-        sourceMap: true
+        sourceMap: false
     }
 };
 
@@ -22,9 +25,9 @@ module.exports = function(metadata) {
         output: {
             path: helpers.root('dist'),
             publicPath: '/',
-            filename: '[name].[chunkhash].js',
+            filename: '[name].[chunkhash].bundle.js',
             sourceMapFilename: '[file].map',
-            chunkFilename: '[id].[chunkhash].chunk.js'
+            chunkFilename: '[name].[chunkhash].chunk.js'
         },
 
         optimization: {
@@ -34,11 +37,17 @@ module.exports = function(metadata) {
             },
             runtimeChunk: 'single',
             minimizer: [
-                new UglifyJsPlugin({
-                    cache: true,
-                    parallel: true
+                new TerserPlugin({
+                    cache: false,
+                    parallel: true,
+                    sourceMap: false,
+                    extractComments: true,
+                    terserOptions: {
+                        ecma: 6,
+                        module: true,
+                        toplevel: true
+                    }
                 }),
-
                 new OptimizeCSSAssetsPlugin({
                     cssProcessor: cssnano,
                     cssProcessorOptions: {
@@ -85,7 +94,7 @@ module.exports = function(metadata) {
             new AngularCompilerPlugin({
                 tsConfigPath: helpers.root('tsconfig.webpack.json'),
                 entryModule: helpers.root('src/app/app.module#AppModule'),
-                sourceMap: true,
+                sourceMap: false,
                 skipCodeGeneration: false,
                 discoverLazyRoutes: true
             }),
@@ -97,6 +106,17 @@ module.exports = function(metadata) {
                 threshold: 10240,
                 minRatio: 0.8,
                 deleteOriginalAssets: false,
+            }),
+            new CompressionPlugin({
+                test: /\.(js|css|html|svg)$/,
+                threshold: 10240,
+                minRatio: 0.8,
+                deleteOriginalAssets: false,
+            }),
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+                reportFilename: helpers.root('report', 'bundle-report.html'),
+                openAnalyzer: false
             })
         ],
         node: {

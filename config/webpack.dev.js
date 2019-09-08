@@ -44,7 +44,7 @@ module.exports = function(metadata) {
             path: helpers.root('dist'),
             // publicPath: '/',
             filename: '[name].bundle.js',
-            chunkFilename: '[id].chunk.js'
+            chunkFilename: '[name].chunk.js'
         },
 
         optimization: {
@@ -55,7 +55,8 @@ module.exports = function(metadata) {
             rules: [
                 {
                     test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-                    use: '@ngtools/webpack'
+                    use: '@ngtools/webpack',
+                    exclude: [/src[\/\\]service-worker[\/\\]/]
                 }
             ]
         },
@@ -75,10 +76,7 @@ module.exports = function(metadata) {
                 sourceMap: true,
                 skipCodeGeneration: false,
                 discoverLazyRoutes: true
-            }),
-            // new ForkTsCheckerWebpackPlugin({
-            //     tsconfig: helpers.root('tsconfig.json')
-            // })
+            })
         ],
         devServer: {
             port: metadata.port,

@@ -9,6 +9,7 @@ module.exports = function (metadata) {
     const isDev = metadata.ENV === 'development';
     return {
         entry: {
+            'sw-register': './src/service-worker/register.ts',
             polyfills: './src/polyfills.browser.ts',
             main: './src/main.browser.ts'
         },
@@ -129,7 +130,7 @@ module.exports = function (metadata) {
                 },
                 metadata: metadata,
                 inject: 'body'
-            }),
+            })
         ],
         // Include polyfills or mocks for various node stuff
         // Description: Node configuration

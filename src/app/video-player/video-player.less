@@ -18,6 +18,13 @@
     height: 720px;
   }
 
+  &.is-portrait:not(.fullscreen):not(.float-play) {
+    position: fixed;
+    top: 50px; // navbar height
+    left: 0;
+    z-index: 204;
+  }
+
   &.fullscreen {
     position: fixed;
     top: 0;
@@ -33,6 +40,10 @@
     right: 1rem;
     bottom: 1rem;
     z-index: 204;
+    //&.is-portrait {
+    //  bottom: inherit;
+    //  top: 3.5rem;
+    //}
   }
 }
 

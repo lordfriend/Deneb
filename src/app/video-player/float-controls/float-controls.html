@@ -1,6 +1,6 @@
 <div class="float-controls-wrapper" [@controlState]="controlState" (click)="leaveFloat($event)">
     <div class="top-section">
-        <div class="video-title">
+        <div class="video-title" #titleRef>
             {{videoTitle}}
         </div>
         <a class="video-close-button">
@@ -14,6 +14,6 @@
         <div class="time-indicator interact-element">{{currentTimeClock}} / {{durationClock}}</div>
     </div>
 </div>
-<div class="scrub-wrapper interact-element">
-    <video-player-scrub-bar (motion)="onMotion()" [showControls]="true"></video-player-scrub-bar>
+<div class="progress-bar-wrapper interact-element">
+    <non-interactive-progress-bar></non-interactive-progress-bar>
 </div>

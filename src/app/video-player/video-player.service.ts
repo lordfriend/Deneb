@@ -17,10 +17,10 @@ import { WatchProgress } from '../entity/watch-progress';
 import { MIN_WATCHED_PERCENTAGE } from '../home/play-episode/play-episode.component';
 import { WatchService } from '../home/watch.service';
 import { PersistStorage } from '../user-service';
-import { getComponentRootNode } from './core/helpers';
+import { getComponentRootNode, VideoPlayerHelpers } from './core/helpers';
 import { FloatPlayer } from './core/settings';
 import { PlayState } from './core/state';
-import { VideoPlayer } from './video-player.component';
+import { FLOAT_PLAYER_SCALE_RATIO, VideoPlayer } from './video-player.component';
 
 @Injectable({
     providedIn: 'root'
@@ -47,9 +47,13 @@ export class VideoPlayerService {
     private _watchStatusChanges = new Subject<Episode>();
     private _bangumiFavoriteChanges = new Subject<Bangumi>();
     private _playNextEpisode = new Subject<string>();
+    private _playerMeasuredWidth: number;
+    private _playerMeasuredHeight: number;
 
     /*  */
     private _onScrolling = new Subject<boolean>();
+
+    isPortrait: boolean;
 
     get onScrolling(): Observable<boolean> {
         return this._onScrolling.asObservable();
@@ -105,6 +109,7 @@ export class VideoPlayerService {
                          bangumi: Bangumi,
                          nextEpisode: Episode,
                          videoFile: VideoFile): void {
+        this.isPortrait = VideoPlayerHelpers.isPortrait();
         const lastContainer = this._currentViewContainer;
         this._currentViewContainer = container;
         // create video player component if not exists.
@@ -132,12 +137,17 @@ export class VideoPlayerService {
         if ((this._state != PlayState.PLAYING && this._pendingState != PlayState.PLAYING) || !this._autoFloatPlayWhenLeave ) {
             this.onDestroy();
         } else {
-            const videoPlayerElement = getComponentRootNode(this._videoPlayerComponentRef);
-            const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
-            containerElement.removeChild(videoPlayerElement);
-            document.body.appendChild(videoPlayerElement);
-            this._currentViewContainer = null;
-            this.enterFloatPlay();
+            if (this.isPortrait && this._isFloatPlayerTooSmall()) {
+                // just do not create float player when screen is too small.
+                this.onDestroy();
+            } else {
+                const videoPlayerElement = getComponentRootNode(this._videoPlayerComponentRef);
+                const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
+                containerElement.removeChild(videoPlayerElement);
+                document.body.appendChild(videoPlayerElement);
+                this._currentViewContainer = null;
+                this.enterFloatPlay();
+            }
         }
     }
 
@@ -160,7 +170,7 @@ export class VideoPlayerService {
         // const lastMeasuredPlayerWidth = videoPlayer.playerMeasuredWidth;
         const lastMeasuredPlayerHeight = videoPlayer.playerMeasuredHeight;
         // apply size styles for container for the case container not destroyed
-        if (this._currentViewContainer) {
+        if (this._currentViewContainer && !this.isPortrait) {
             const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
             // containerElement.style.width = `${lastMeasuredPlayerWidth}px`;
             containerElement.style.height = `${lastMeasuredPlayerHeight}px`;
@@ -198,7 +208,7 @@ export class VideoPlayerService {
             return;
         }
         videoPlayer.toggleFloatPlay();
-        if (this._currentViewContainer) {
+        if (this._currentViewContainer && !this.isPortrait) {
             // remove size styles
             const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
             // containerElement.style.removeProperty('width');
@@ -382,6 +392,21 @@ export class VideoPlayerService {
                     }
                 })
         );
+
+        this._videoPlayerSubscription.add(
+            videoPlayer.onPlayerDimensionChanged.pipe(
+                filter(dimen => dimen && dimen.length == 2 && dimen[0] > 0 && dimen[1] > 0))
+                .subscribe(dimen => {
+                    console.log(dimen, this._currentViewContainer);
+                    this._playerMeasuredWidth = dimen[0];
+                    this._playerMeasuredHeight = dimen[1];
+                    if (this._currentViewContainer && this.isPortrait) {
+                        const containerElement = this._currentViewContainer.nativeElement as HTMLElement;
+                        containerElement.style.width = `${this._playerMeasuredWidth}px`;
+                        containerElement.style.height = `${this._playerMeasuredHeight}px`;
+                    }
+                })
+        );
     }
 
     private _unloadCurrentPlayer() {
@@ -395,5 +420,24 @@ export class VideoPlayerService {
         this._pendingState = PlayState.INVALID;
         this._videoPlayerComponentRef.destroy();
         this._videoPlayerComponentRef = null;
+    }
+
+    private _isFloatPlayerTooSmall(): boolean {
+        const scaledPlayerWidth = this._playerMeasuredWidth * FLOAT_PLAYER_SCALE_RATIO;
+        const testStr = 'xaxaxaxaxaxaxaxaxa';
+        const dv = document.createElement('div');
+        //font-size: 1.2rem;
+        //padding: 0.1em 1em;
+        //white-space: nowrap;
+        dv.style.fontSize = '1.2rem';
+        dv.style.padding = '0.1em 1em';
+        dv.style.whiteSpace = 'nowrap';
+        dv.style.position = 'absolute';
+        dv.style.top = '-1.2rem';
+        dv.textContent = testStr;
+        document.body.appendChild(dv);
+        const rect =  dv.getBoundingClientRect();
+        document.body.removeChild(dv);
+        return rect.width > scaledPlayerWidth;
     }
 }

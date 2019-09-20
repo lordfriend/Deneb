@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
@@ -9,6 +9,7 @@ import { filter, mergeMap, tap } from 'rxjs/operators';
 import { ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
 import { Bangumi, Episode } from "../../entity";
 import { VideoFile } from '../../entity/video-file';
+import { VideoPlayerHelpers } from '../../video-player/core/helpers';
 import { VideoPlayerService } from '../../video-player/video-player.service';
 import { HomeChild, HomeService } from "../home.service";
 import { WatchService } from '../watch.service';
@@ -36,6 +37,14 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy, AfterVi
     commentEnabled: boolean;
 
     currentVideoFile: VideoFile;
+
+    /**
+     * determine if the screen is in portrait orientation.
+     * consider w/h <= 0.65 is portrait.
+     * @returns {boolean}
+     */
+    @HostBinding('class.is-portrait')
+    isPortrait: boolean;
 
     @ViewChild('videoPlayerContainer', {static: true}) videoPlayerContainer: ElementRef;
 
@@ -157,31 +166,38 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy, AfterVi
                     this.commentEnabled = true;
                 })
         );
+
+        this.isPortrait = VideoPlayerHelpers.isPortrait();
     }
 
     ngAfterViewInit(): void {
         const containerElement = this.videoPlayerContainer.nativeElement as HTMLElement;
+
         this._subscription.add(
             this._videoPlayerService.onScrolling
                 .subscribe(isScrolling => {
                     this._isScrolling = isScrolling;
                 })
         );
-        this._subscription.add(
-            observableFromEvent(window, 'scroll')
-                .pipe(
-                    filter(() => !this._isScrolling))
-                .subscribe(() => {
-                    const rect = containerElement.getBoundingClientRect();
-                    // console.log(rect.bottom);
-                    const navHeight = 50;
-                    if (rect.bottom < navHeight && !this._videoPlayerService.isFloating) {
-                        this._videoPlayerService.enterFloatPlay();
-                    } else if (rect.bottom > navHeight && this._videoPlayerService.isFloating) {
-                        this._videoPlayerService.leaveFloatPlay(false, true);
-                    }
-                })
-        );
+
+        // we only apply the float player for non-portrait screen when scrolling down.
+        if (!this.isPortrait) {
+            this._subscription.add(
+                observableFromEvent(window, 'scroll')
+                    .pipe(
+                        filter(() => !this._isScrolling))
+                    .subscribe(() => {
+                        const rect = containerElement.getBoundingClientRect();
+                        // console.log(rect.bottom);
+                        const navHeight = 50;
+                        if (rect.bottom < navHeight && !this._videoPlayerService.isFloating) {
+                            this._videoPlayerService.enterFloatPlay();
+                        } else if (rect.bottom > navHeight && this._videoPlayerService.isFloating) {
+                            this._videoPlayerService.leaveFloatPlay(false, true);
+                        }
+                    })
+            );
+        }
     }
 
     ngOnDestroy(): void {

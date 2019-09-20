@@ -3,7 +3,7 @@ import {
     ChangeDetectorRef,
     Component,
     ComponentFactoryResolver,
-    ElementRef,
+    ElementRef, EmbeddedViewRef,
     EventEmitter,
     HostBinding,
     Injector,
@@ -33,7 +33,7 @@ import { Bangumi, Episode } from '../entity';
 import { VideoFile } from '../entity/video-file';
 import { VideoControls } from './controls/controls.component';
 import { FullScreenAPI } from './core/full-screen-api';
-import { VideoPlayerHelpers } from './core/helpers';
+import { getComponentRootNode, VideoPlayerHelpers } from './core/helpers';
 import { VideoPlayerShortcuts } from './core/shortcuts';
 import { PlayState, ReadyState } from './core/state';
 import { VideoCapture } from './core/video-capture.service';
@@ -46,8 +46,7 @@ let nextId = 0;
 export const MAX_TOLERATE_WAITING_TIME = 10000;
 export const INITIAL_TOLERATE_WAITING_TIME = 5000;
 
-export const MIN_FLOAT_PLAYER_HEIGHT = 180;
-export const MIN_FLOAT_PLAYER_WIDTH = 320;
+export const FLOAT_PLAYER_SCALE_RATIO = 0.4;
 
 @Component({
     selector: 'video-player',
@@ -122,6 +121,9 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     @Output()
     lagged = new EventEmitter<boolean>();
+
+    @Output()
+    onPlayerDimensionChanged = new EventEmitter<number[]>();
 
     /**
      * emit next episode id
@@ -205,6 +207,14 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
             return false;
         }
     }
+
+    /**
+     * determine if the screen is in portrait orientation.
+     * consider w/h <= 0.65 is portrait.
+     * @returns {boolean}
+     */
+    @HostBinding('class.is-portrait')
+    isPortrait: boolean;
 
     constructor(@Self() public videoPlayerRef: ElementRef,
                 private _changeDetector: ChangeDetectorRef,
@@ -357,13 +367,19 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         this.isFloatPlay = !this.isFloatPlay;
         const hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
         this.togglePlayerDimension(hostElement);
+        // remove current controls
+        const controlRef = this.controlContainer.get(0);
         this.controlContainer.remove(0);
+        const controlElement = (controlRef as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+        controlElement.parentNode.removeChild(controlElement);
+        // const containerElement = this.controlContainer.element.nativeElement as HTMLElement;
         if (this.isFloatPlay) {
             const factory = this._componentFactoryResolver.resolveComponentFactory(FloatControlsComponent);
             const componentRef = factory.create(this._injector);
             componentRef.instance.videoTitle = `${this.bangumiName} ${this.episodeNo}`;
             this.controlContainer.insert(componentRef.hostView);
         } else {
+            // TODO isMobileDevice is somewhat confusion. we should use isTouchDevice
             if (VideoPlayerHelpers.isMobileDevice()) {
                 this.controlContainer.createComponent(this._componentFactoryResolver.resolveComponentFactory(VideoTouchControls));
             } else {
@@ -432,12 +448,13 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
         }
         componentRef = controlsComponentFactory.create(this._injector);
         this.controlContainer.insert(componentRef.hostView);
+        // this is not content related. so can be determined here.
+        this.isPortrait = VideoPlayerHelpers.isPortrait();
     }
 
     ngAfterViewInit(): void {
         let mediaElement = this.mediaRef.nativeElement as HTMLMediaElement;
         let hostElement = this.videoPlayerRef.nativeElement as HTMLElement;
-
         this._videoCapture.registerVideoElement(mediaElement as HTMLVideoElement);
 
         // init fullscreen API
@@ -653,25 +670,15 @@ export class VideoPlayer implements AfterViewInit, OnInit, OnDestroy, OnChanges 
 
     private togglePlayerDimension(hostElement: HTMLElement): void {
         let {width, height} = this.measurePlayerSize();
-        const viewportWidth = document.documentElement.clientWidth;
-        const viewportHeight = document.documentElement.clientHeight;
         // for those portrait screen like most mobile devices, we don't apply a PIP style float play
-        if (this.isFloatPlay && viewportWidth > 0.8 * viewportHeight) {
-
-            if (viewportWidth / viewportHeight > width / height) {
-                // We want the float player be 1/3 of the measured width, but not less than the minimal.
-                this.playerMeasuredWidth = Math.max(MIN_FLOAT_PLAYER_WIDTH, width * 0.4);
-                this.playerMeasuredHeight = height / width * this.playerMeasuredWidth;
-            } else {
-                // We want the float player be 1/3 of the measured height, but not less than the minimal.
-                this.playerMeasuredHeight = Math.max(MIN_FLOAT_PLAYER_HEIGHT, height * 0.4);
-                this.playerMeasuredWidth = width / height * this.playerMeasuredHeight;
-            }
-
+        if (this.isFloatPlay) {
+            this.playerMeasuredWidth = width * FLOAT_PLAYER_SCALE_RATIO;
+            this.playerMeasuredHeight = height * FLOAT_PLAYER_SCALE_RATIO;
         } else {
             this.playerMeasuredWidth = width;
             this.playerMeasuredHeight = height;
         }
+        this.onPlayerDimensionChanged.emit([this.playerMeasuredWidth, this.playerMeasuredHeight]);
         if (!this.isFullscreen && !!this.playerMeasuredWidth && !!this.playerMeasuredHeight) {
             hostElement.style.width = `${this.playerMeasuredWidth}px`;
             hostElement.style.height = `${this.playerMeasuredHeight}px`;

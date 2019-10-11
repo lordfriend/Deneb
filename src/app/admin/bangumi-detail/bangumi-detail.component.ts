@@ -1,21 +1,22 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Title} from '@angular/platform-browser';
-import {Bangumi, Episode} from '../../entity';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs/Rx';
-import {AdminService} from '../admin.service';
-import {UIDialog, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
-import {BangumiBasic} from './bangumi-basic/bangumi-basic.component';
-import {BaseError} from '../../../helpers/error/BaseError';
-import {KeywordBuilder} from './keyword-builder/keyword-builder.component';
-import {EpisodeDetail} from './episode-detail/episode-detail.component';
-import {BangumiMoeBuilder} from './bangumi-moe-builder/bangumi-moe-builder.component';
-import {VideoFileModal} from './video-file-modal/video-file-modal.component';
-import { UserManagerSerivce } from '../user-manager/user-manager.service';
-import { User } from '../../entity/user';
-import { AnnounceService } from '../announce/announce.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
+import { BaseError } from '../../../helpers/error';
+import { Bangumi, Episode } from '../../entity';
 import { Announce } from '../../entity/announce';
+import { User } from '../../entity';
+import { AdminService } from '../admin.service';
+import { AnnounceService } from '../announce/announce.service';
 import { EditBangumiRecommendComponent } from '../announce/edit-bangumi-recommend/edit-bangumi-recommend.component';
+import { UserManagerSerivce } from '../user-manager/user-manager.service';
+import { BangumiBasic } from './bangumi-basic/bangumi-basic.component';
+import { BangumiMoeBuilder } from './bangumi-moe-builder/bangumi-moe-builder.component';
+import { EpisodeDetail } from './episode-detail/episode-detail.component';
+import { KeywordBuilder } from './keyword-builder/keyword-builder.component';
+import { VideoFileModal } from './video-file-modal/video-file-modal.component';
 
 export enum AnnounceStatus {
     NOT_SET, NOT_YET, ANNOUNCING, EXPIRED
@@ -93,11 +94,11 @@ export class BangumiDetail implements OnInit, OnDestroy {
                 })
         );
         this._subscription.add(
-            this._route.params
-                .flatMap((params) => {
+            this._route.params.pipe(
+                mergeMap((params) => {
                     let id = params['id'];
                     return this._adminService.getBangumi(id);
-                })
+                }))
                 .subscribe(
                     (bangumi: Bangumi) => {
                         this.bangumi = bangumi;
@@ -120,9 +121,9 @@ export class BangumiDetail implements OnInit, OnDestroy {
         dialogRef.componentInstance.adminList = this.adminList;
         this._subscription.add(
             dialogRef
-                .afterClosed()
-                .filter((basicInfo: any) => !!basicInfo)
-                .flatMap(
+                .afterClosed().pipe(
+                filter((basicInfo: any) => !!basicInfo),
+                mergeMap(
                     (basicInfo: any) => {
                         this.isLoading = true;
                         this.bangumi.name = basicInfo.name as string;
@@ -136,7 +137,7 @@ export class BangumiDetail implements OnInit, OnDestroy {
                         this.bangumi.alert_timeout = basicInfo.alert_timeout as number;
                         return this._adminService.updateBangumi(this.bangumi);
                     }
-                )
+                ),)
                 .subscribe(
                     () => {
                         this.isLoading = false;
@@ -155,13 +156,13 @@ export class BangumiDetail implements OnInit, OnDestroy {
         dialogRef.componentInstance.keyword = this.bangumi[siteName];
         dialogRef.componentInstance.siteName = siteName;
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter((result: any) => !!result)
-                .flatMap((result: any) => {
+            dialogRef.afterClosed().pipe(
+                filter((result: any) => !!result),
+                mergeMap((result: any) => {
                     this.isLoading = true;
                     this.bangumi[siteName] = result.keyword as string;
                     return this._adminService.updateBangumi(this.bangumi);
-                })
+                }),)
                 .subscribe(
                     () => {
                         this.isLoading = false;
@@ -179,13 +180,13 @@ export class BangumiDetail implements OnInit, OnDestroy {
         let dialogRef = this._uiDialog.open(BangumiMoeBuilder, {stickyDialog: true, backdrop: true});
         dialogRef.componentInstance.bangumi = this.bangumi;
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter((result: any) => !!result)
-                .flatMap((result: any) => {
+            dialogRef.afterClosed().pipe(
+                filter((result: any) => !!result),
+                mergeMap((result: any) => {
                     this.isLoading = true;
                     this.bangumi.bangumi_moe = result.result as string;
                     return this._adminService.updateBangumi(this.bangumi);
-                })
+                }),)
                 .subscribe(
                     () => {
                         this.isLoading = false;
@@ -204,12 +205,12 @@ export class BangumiDetail implements OnInit, OnDestroy {
         dialogRef.componentInstance.episode = episode;
         dialogRef.componentInstance.bangumi_id = this.bangumi.id;
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter((result: boolean) => result)
-                .flatMap(() => {
+            dialogRef.afterClosed().pipe(
+                filter((result: boolean) => result),
+                mergeMap(() => {
                     this.isLoading = true;
                     return this._adminService.getBangumi(this.bangumi.id);
-                })
+                }),)
                 .subscribe(
                     (bangumi: Bangumi) => {
                         this.isLoading = false;
@@ -230,11 +231,11 @@ export class BangumiDetail implements OnInit, OnDestroy {
 
     deleteEpisode(episode_id: string) {
         this._subscription.add(
-            this._adminService.deleteEpisode(episode_id)
-                .flatMap(() => {
+            this._adminService.deleteEpisode(episode_id).pipe(
+                mergeMap(() => {
                     this._toastRef.show(`删除成功`);
                     return this._adminService.getBangumi(this.bangumi.id);
-                })
+                }))
                 .subscribe(
                     (bangumi) => {
                         this.bangumi = bangumi;
@@ -268,14 +269,14 @@ export class BangumiDetail implements OnInit, OnDestroy {
             dialogRef.componentInstance.announce = this.announceList[0];
         }
         this._subscription.add(
-            dialogRef.afterClosed()
-                .filter(result => !!result)
-                .flatMap((info) => {
+            dialogRef.afterClosed().pipe(
+                filter(result => !!result),
+                mergeMap((info) => {
                     if (this.announceList.length > 0) {
                         return this._announceService.updateAnnounce(this.announceList[0].id, info as Announce);
                     }
                     return this._announceService.addAnnounce(info as Announce);
-                })
+                }),)
                 .subscribe(() => {
                     this._toastRef.show('添加成功');
                     this.fetchAnnounceList(this.bangumi.id);

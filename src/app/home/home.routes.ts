@@ -25,7 +25,7 @@ export const homeRoutes: Routes = [
                 path: 'play/:episode_id',
                 component: PlayEpisode,
                 data: {
-                    refresh: true
+                    refresh: false
                 }
             },
             {

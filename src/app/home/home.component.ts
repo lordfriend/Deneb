@@ -1,7 +1,8 @@
+
+import {fromEvent as observableFromEvent,  Observable, Subscription } from 'rxjs';
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { HomeService } from './home.service';
-import { Observable, Subscription } from "rxjs/Rx";
 import { Bangumi, User } from '../entity';
 import { Router } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -134,7 +135,7 @@ export class Home implements OnInit, OnDestroy {
                     }
                 }
             ));
-        this._subscription.add(Observable.fromEvent(window, 'resize')
+        this._subscription.add(observableFromEvent(window, 'resize')
             .subscribe(
                 () => {
                     this.checkOverlapMode();

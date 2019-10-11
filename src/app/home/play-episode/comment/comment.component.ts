@@ -1,13 +1,18 @@
 import {
-    AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    Input, OnChanges,
+    OnDestroy,
+    OnInit, SimpleChanges,
+    ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import { ChromeExtensionService, IAuthInfo } from '../../../browser-extension/chrome-extension.service';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
+import { ChromeExtensionService, IAuthInfo } from '../../../browser-extension/chrome-extension.service';
 import { ResponsiveService } from '../../../responsive-image/responsive.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
 import { PersistStorage } from '../../../user-service';
 
 export interface PostUser {
@@ -55,7 +60,7 @@ export const COMMENT_SORT_ORDER = 'comment_sort_order';
     styleUrls: ['./comment.less'],
     encapsulation: ViewEncapsulation.None
 })
-export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CommentComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private _subscription = new Subscription();
     private _isVisible = new BehaviorSubject<boolean>(false);
 
@@ -82,7 +87,7 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
         return this._isVisible.asObservable();
     }
 
-    @ViewChild('headDivider') headDividerRef: ElementRef;
+    @ViewChild('headDivider', {static: false}) headDividerRef: ElementRef;
 
     constructor(private _chromeExtensionService: ChromeExtensionService,
                 private _persistStorage: PersistStorage,
@@ -247,13 +252,17 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this._subscription.add(
-            this.isVisible
-                .filter(visible => visible)
-                .flatMap(() => {
+            this.isVisible.pipe(
+                filter(visible => visible),
+                filter(() => {
+                    return !!this.bgmEpsId;
+                }),
+                mergeMap(() => {
                     return this._chromeExtensionService.authInfo;
-                })
+                }),)
                 .subscribe((authInfo) => {
                     this.authInfo = authInfo as IAuthInfo;
+                    console.log('bgmId', this.bgmEpsId);
                     this.freshCommentList();
                 })
         );
@@ -267,6 +276,15 @@ export class CommentComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             unobserveOnVisible: true
         });
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if ('bgmEpsId' in changes
+            && changes['bgmEpsId'].currentValue
+            && changes['bgmEpsId'].previousValue
+            && !this.isLoading) {
+            this.freshCommentList();
+        }
     }
 
     ngOnDestroy(): void {

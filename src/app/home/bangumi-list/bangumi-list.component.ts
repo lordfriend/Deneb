@@ -1,7 +1,10 @@
+
+import {interval as observableInterval,  Subscription ,  Observable } from 'rxjs';
+
+import {map, take} from 'rxjs/operators';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HomeChild, HomeService } from '../home.service';
 import { Bangumi } from '../../entity/bangumi';
-import { Subscription } from 'rxjs/Rx';
 import { ActivatedRoute } from '@angular/router';
 import { BaseError } from '../../../helpers/error/BaseError';
 import { InfiniteList, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
@@ -9,7 +12,6 @@ import { CARD_HEIGHT_REM } from '../bangumi-card/bangumi-card.component';
 import { getRemPixel } from '../../../helpers/dom';
 import { Home } from '../home.component';
 import { BangumiListService } from './bangumi-list.service';
-import { Observable } from 'rxjs/Observable';
 import { AuthError } from '../../../helpers/error';
 import { FormGroup } from '@angular/forms';
 
@@ -59,7 +61,7 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
         this.filterBangumi();
     }
 
-    @ViewChild(InfiniteList) infiniteList: InfiniteList;
+    @ViewChild(InfiniteList, {static: true}) infiniteList: InfiniteList;
 
     constructor(homeService: HomeService,
                 private _homeComponent: Home,
@@ -99,11 +101,11 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
         let totalDistance = this._bangumiListService.scrollPosition;
         const co = totalDistance / ((step - 1) * (step -1));
         this._subscription.add(
-            Observable.interval(30)
-                .take(step)
-                .map((t) => {
+            observableInterval(30).pipe(
+                take(step),
+                map((t) => {
                     return Math.floor(totalDistance - co * t * t);
-                })
+                }),)
                 .subscribe((d) => {
                     this.lastScrollPosition = d;
                 })
@@ -122,8 +124,8 @@ export class BangumiList extends HomeChild implements OnInit, OnDestroy {
                 count: -1,
                 order_by: 'air_date',
                 sort: 'desc'
-            })
-            .map((result) => result.data)
+            }).pipe(
+            map((result) => result.data))
             .subscribe(
                 (bangumiList) => {
                     this._allBangumi = bangumiList;

@@ -5,7 +5,7 @@ import { User } from '../entity';
 import { AuthError } from '../../helpers/error/AuthError';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 
 
 @Component({

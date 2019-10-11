@@ -1,7 +1,10 @@
+
+import {fromEvent as observableFromEvent,  Observable, Subscription } from 'rxjs';
+
+import {filter, tap, mergeMap} from 'rxjs/operators';
 import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HomeChild, HomeService } from "../home.service";
 import { Bangumi, User } from "../../entity";
-import { Observable, Subscription } from "rxjs/Rx";
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { UserService } from '../../user-service';
@@ -28,7 +31,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
     orientation: 'landscape' | 'portrait';
     coverRevealerHeight: string;
 
-    @ViewChild('bangumiCover') bangumiCoverRef: ElementRef;
+    @ViewChild('bangumiCover', {static: false}) bangumiCoverRef: ElementRef;
 
     isExtraInfoEnabled = false;
     extraInfo: any;
@@ -73,26 +76,26 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this._subscription.add(
-            this._route.params
-                .flatMap((params) => {
+            this._route.params.pipe(
+                mergeMap((params) => {
                     return this.homeService.bangumi_detail(params['bangumi_id']);
-                })
-                .do(bangumi => {
+                }),
+                tap(bangumi => {
                     this.homeService.checkFavorite(bangumi.id);
-                })
-                .flatMap(bangumi => {
+                }),
+                mergeMap(bangumi => {
                     let bgmTitle = `${bangumi.name} - ${SITE_TITLE}`;
                     this._titleService.setTitle(bgmTitle);
                     this.bangumi = bangumi;
                     return this._chromeExtensionService.isEnabled
-                })
-                .do(isEnabled => {
+                }),
+                tap(isEnabled => {
                     this.isExtraInfoEnabled = isEnabled;
-                })
-                .filter(isEnabled => isEnabled)
-                .flatMap(() => {
+                }),
+                filter(isEnabled => isEnabled),
+                mergeMap(() => {
                     return this._chromeExtensionService.invokeBangumiMethod('bangumiDetail', [this.bangumi.bgm_id]);
-                })
+                }),)
                 .subscribe((extraInfo) => {
                     // console.log(extraInfo);
                     this.extraInfo = extraInfo;
@@ -108,7 +111,7 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
         this.checkViewport();
 
         this._subscription.add(
-            Observable.fromEvent(window, 'resize')
+            observableFromEvent(window, 'resize')
                 .subscribe(
                     () => {
                         this.checkViewport();

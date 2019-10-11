@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { UserService } from '../user-service/user.service';
 import { User } from '../entity/user';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'admin',

@@ -1,8 +1,10 @@
+
+import {fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+
+import {skip} from 'rxjs/operators';
 import { UIPopoverContent, UIPopoverRef } from 'deneb-ui';
 import { Component, Input, OnDestroy } from '@angular/core';
 import { User } from '../../../entity';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'user-action-panel',
@@ -40,8 +42,8 @@ export class UserActionPanelComponent extends UIPopoverContent implements OnDest
     ngAfterViewInit() {
         super.ngAfterViewInit();
         this._subscription.add(
-            Observable.fromEvent(document.body, 'click')
-                .skip(1)
+            observableFromEvent(document.body, 'click').pipe(
+                skip(1))
                 .subscribe(() => {
                     this.popoverRef.close(null);
                 })

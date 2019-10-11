@@ -1,10 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Announce } from '../../../entity/announce';
-import moment from 'moment';
-import { Subscription } from 'rxjs/Subscription';
 import { UIDialogRef } from 'deneb-ui';
+import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 import { Bangumi } from '../../../entity';
+import { Announce } from '../../../entity/announce';
 
 export const MAX_DATE_RANGE = 7; // days
 

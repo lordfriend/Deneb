@@ -1,7 +1,8 @@
+
+import {tap, filter} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 import { BangumiAuthDialogComponent } from './bangumi-auth-dialog/bangumi-auth-dialog.component';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Bangumi } from '../entity';
 import { RPCResult } from './extension-rpc';
 import { ExtensionRpcService } from './extension-rpc.service';
@@ -52,7 +53,7 @@ export class ChromeExtensionService {
 
     constructor(private _extensionRpcService: ExtensionRpcService) {
         if (this._extensionRpcService.isExtensionEnabled()) {
-            this.isEnabled.filter(isEnabled => isEnabled)
+            this.isEnabled.pipe(filter(isEnabled => isEnabled))
                 .subscribe(() => {
                     this.invokeBangumiMethod('getAuthInfo', [])
                         .subscribe(authInfo => {
@@ -95,24 +96,24 @@ export class ChromeExtensionService {
     }
 
     auth(username: string, password: string): Observable<any> {
-        return this.invokeBangumiMethod('auth', [username, password])
-            .do(data => {
+        return this.invokeBangumiMethod('auth', [username, password]).pipe(
+            tap(data => {
                 this._authInfo.next(data);
-            });
+            }));
     }
 
     openBgmForResult(): Observable<any> {
-        return this._extensionRpcService.invokeRPC('BackgroundCore', 'openBgmForResult', [])
-            .do(() => {
+        return this._extensionRpcService.invokeRPC('BackgroundCore', 'openBgmForResult', []).pipe(
+            tap(() => {
                 this._isBgmTvLogon.next(LOGON_STATUS.TRUE);
-            });
+            }));
     }
 
     revokeAuth(): Observable<any> {
-        return this.invokeBangumiMethod('revokeAuth', [])
-            .do(() => {
+        return this.invokeBangumiMethod('revokeAuth', []).pipe(
+            tap(() => {
                 this._authInfo.next(null);
-            });
+            }));
     }
 
     syncBangumi(bangumi: Bangumi): Observable<any> {

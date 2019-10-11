@@ -1,6 +1,8 @@
+
+import {interval as observableInterval,  Subscription ,  Observable } from 'rxjs';
+
+import {take} from 'rxjs/operators';
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 import { VideoPlayer } from '../video-player.component';
 
 export const countDownTimer = 8; // unit second
@@ -56,8 +58,8 @@ export class VideoNextEpisodeOverlay implements OnInit, OnDestroy {
         this.nextEpisodeThumbnail = this._videoPlayer.nextEpisodeThumbnail;
 
         this._subscription.add(
-            Observable.interval(50)
-                .take(countDownTimer * 20)
+            observableInterval(50).pipe(
+                take(countDownTimer * 20))
                 .subscribe((t) => {
                     this.progress = - ((t + 1) / (countDownTimer * 20)) * this.circumference;
                 }, () => {

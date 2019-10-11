@@ -1,6 +1,9 @@
+
+import {fromEvent as observableFromEvent, Observable, Subscription} from 'rxjs';
+
+import {mergeMap, filter, distinctUntilChanged, debounceTime, map} from 'rxjs/operators';
 import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
-import {Observable, Subscription} from 'rxjs';
 import {Bangumi} from '../../../entity/bangumi';
 import {BangumiMoeService} from './bangumi-moe.service';
 import {Tag, Torrent} from './bangum-moe-entity';
@@ -16,7 +19,7 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
-    @ViewChild('searchBox') searchBox: ElementRef;
+    @ViewChild('searchBox', {static: false}) searchBox: ElementRef;
 
     @Input()
     bangumi: Bangumi;
@@ -58,8 +61,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     this.langTags = tags.filter(tag => tag.type === 'lang');
                     this.miscTags = tags.filter(tag => tag.type === 'misc');
                 },
-                (error: Response) => {
-                    this._toastRef.show(error.json());
+                (error) => {
+                    this._toastRef.show(error);
                 }
             )
         );
@@ -69,8 +72,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     (tags: Tag[]) => {
                         this.categoryTags = tags;
                     },
-                    (error: Response) => {
-                        this._toastRef.show(error.json());
+                    (error) => {
+                        this._toastRef.show(error);
                     }
                 )
         );
@@ -80,8 +83,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     (tags: Tag[]) => {
                         this.popularTeamTags = tags;
                     },
-                    (error: Response) => {
-                        this._toastRef.show(error.json());
+                    (error) => {
+                        this._toastRef.show(error);
                     }
                 )
         );
@@ -91,8 +94,8 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
                     (tags: Tag[]) => {
                         this.popularBangumiTags = tags;
                     },
-                    (error: Response) => {
-                        this._toastRef.show(error.json());
+                    (error) => {
+                        this._toastRef.show(error);
                     }
                 )
         );
@@ -105,18 +108,18 @@ export class BangumiMoeBuilder implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(): void {
         let searchBox = this.searchBox.nativeElement;
         this._subscription.add(
-            Observable.fromEvent(searchBox, 'input')
-                .map(() => {
+            observableFromEvent(searchBox, 'input').pipe(
+                map(() => {
                     return (searchBox as HTMLInputElement).value;
-                })
-                .debounceTime(500)
-                .distinctUntilChanged()
-                .filter(value => !!value)
-                .flatMap(
+                }),
+                debounceTime(500),
+                distinctUntilChanged(),
+                filter(value => !!value),
+                mergeMap(
                     (name: string) => {
                         return this._bangumiMoeService.searchTag(name)
                     }
-                )
+                ),)
                 .subscribe(
                     (result: {success: boolean, found: boolean, tag: Tag[]}) => {
                         this.searchResultTags = result.tag;

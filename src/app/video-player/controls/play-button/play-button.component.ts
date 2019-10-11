@@ -1,7 +1,8 @@
-import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { VideoPlayer } from '../../video-player.component';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { filter, merge } from 'rxjs/operators';
 import { PlayState } from '../../core/state';
-import { Subscription } from 'rxjs/Subscription';
+import { VideoPlayer } from '../../video-player.component';
 
 @Component({
     selector: 'video-play-button',
@@ -67,9 +68,9 @@ export class VideoPlayButton implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this._subscription.add(
-            this._videoPlayer.pendingState
-                .filter(state => state !== PlayState.INVALID)
-                .merge(this._videoPlayer.state)
+            this._videoPlayer.pendingState.pipe(
+                filter(state => state !== PlayState.INVALID),
+                merge(this._videoPlayer.state),)
                 .subscribe((state) => {
                     this.state = state;
                 })

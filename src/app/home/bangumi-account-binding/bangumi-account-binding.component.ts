@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
+import { Subscription } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
 import {
     ChromeExtensionService,
     IAuthInfo,
     INITIAL_STATE_VALUE,
     LOGON_STATUS
 } from '../../browser-extension/chrome-extension.service';
-import { Subscription } from 'rxjs/Subscription';
-import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'bangumi-account-binding',
@@ -67,10 +68,10 @@ export class BangumiAccountBindingComponent implements OnInit, OnDestroy {
 
     loginInBgmTv() {
         this._subscription.add(
-            this._chromeExtensionService.openBgmForResult()
-                .flatMap(() => {
+            this._chromeExtensionService.openBgmForResult().pipe(
+                mergeMap(() => {
                     return this._chromeExtensionService.invokeBangumiWebMethod('clearCache', []);
-                })
+                }))
                 .subscribe(() => {
                     this._toastRef.show('已完成登录');
                 }, () => {
@@ -85,8 +86,8 @@ export class BangumiAccountBindingComponent implements OnInit, OnDestroy {
             password: ['', Validators.required]
         });
         this._subscription.add(
-            this._chromeExtensionService.authInfo
-                .filter(authInfo => authInfo !== INITIAL_STATE_VALUE)
+            this._chromeExtensionService.authInfo.pipe(
+                filter(authInfo => authInfo !== INITIAL_STATE_VALUE))
                 .subscribe(authInfo => {
                     console.log(authInfo);
                     this.isLoading = false;

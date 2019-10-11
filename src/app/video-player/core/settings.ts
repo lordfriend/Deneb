@@ -12,3 +12,10 @@ export class PlayList {
     static prefix = `${PREFIX}:${PlayList.className}`;
     static AUTO_PLAY_NEXT = `${PlayList.prefix}:AutoPlayNext`;
 }
+
+export class FloatPlayer {
+    static className = 'FloatPlayer';
+    static prefix = `${PREFIX}:${FloatPlayer.className}`;
+    static AUTO_FLOAT_WHEN_SCROLL = `${FloatPlayer.prefix}:AutoFloatWhenScroll`;
+    static AUTO_FLOAT_WHEN_LEAVE = `${FloatPlayer.prefix}:AutoFloatWhenLeave`;
+}

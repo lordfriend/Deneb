@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { UserService } from '../user-service/user.service';
 import {BaseError} from '../../helpers/error/BaseError';
@@ -14,7 +14,7 @@ export class ForgetPass implements OnDestroy {
     private _subscription = new Subscription();
     private _toastRef: UIToastRef<UIToastComponent>;
 
-    @ViewChild('emailInput') emailInput: ElementRef;
+    @ViewChild('emailInput', {static: false}) emailInput: ElementRef;
 
     result = false;
     isPending = false;
@@ -40,7 +40,7 @@ export class ForgetPass implements OnDestroy {
             .subscribe(
                 () => {
                     this.isPending = false;
-                    this._toastRef.show(`重置密码链接发送到${value}`)
+                    this._toastRef.show(`重置密码链接发送到${value}`);
                     this.result = true;
                 },
                 (error: BaseError) => {

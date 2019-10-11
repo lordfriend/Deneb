@@ -1,13 +1,15 @@
+
+import { fromEvent as observableFromEvent, Subscription, Observable, throwError } from 'rxjs';
+
+import {catchError, timeout, mergeMap, filter, tap} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChromeExtensionService, INITIAL_STATE_VALUE } from '../../browser-extension/chrome-extension.service';
-import { Subscription } from 'rxjs/Subscription';
 import { ExtensionRpcService } from '../../browser-extension/extension-rpc.service';
 import { User } from '../../entity';
 import { BaseError } from '../../../helpers/error';
 import { PersistStorage, UserService } from '../../user-service';
 import { UIPopover, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { UserActionPanelComponent } from './user-action-panel/user-action-panel.component';
 import { isChrome } from '../../../helpers/browser-detect';
 import { BrowserExtensionTipComponent } from './browser-extension-tip/browser-extension-tip.component';
@@ -34,7 +36,7 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
         url: string
     };
 
-    @ViewChild('userActionLink') userActionLinkRef: ElementRef;
+    @ViewChild('userActionLink', {static: false}) userActionLinkRef: ElementRef;
 
     constructor(private _chromeExtensionService: ChromeExtensionService,
                 private _extensionRpcService: ExtensionRpcService,
@@ -58,11 +60,11 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this._subscription.add(
-            this._chromeExtensionService.isEnabled
-                .do(isEnabled => {
+            this._chromeExtensionService.isEnabled.pipe(
+                tap(isEnabled => {
                     this.isBangumiEnabled = isEnabled;
-                })
-                .filter(isEnabled => isEnabled)
+                }),
+                filter(isEnabled => isEnabled),)
                 .subscribe(() => {
                     this._subscription.add(
                         this._chromeExtensionService.authInfo
@@ -86,15 +88,15 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(): void {
         let userActionLinkElement = this.userActionLinkRef.nativeElement;
         this._subscription.add(
-            Observable.fromEvent(userActionLinkElement, 'click')
-                .flatMap(() => {
+            observableFromEvent(userActionLinkElement, 'click').pipe(
+                mergeMap(() => {
                     const popoverRef = this._popover.createPopover(userActionLinkElement, UserActionPanelComponent, 'bottom-end');
                     popoverRef.componentInstance.user = this.user;
                     popoverRef.componentInstance.isBangumiEnabled = this.isBangumiEnabled;
                     popoverRef.componentInstance.bgmAccountInfo = this.bgmAccountInfo;
                     return popoverRef.afterClosed();
-                })
-                .filter(result => !!result)
+                }),
+                filter(result => !!result),)
                 .subscribe((result) => {
                     if (result === 'logout') {
                         this.logout();
@@ -104,10 +106,10 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
         );
 
         this._subscription.add(
-            this._chromeExtensionService.isEnabled
-                .filter(isEnabled => isEnabled)
-                .timeout(1000)
-                .catch(() => {
+            this._chromeExtensionService.isEnabled.pipe(
+                filter(isEnabled => isEnabled),
+                timeout(1000),
+                catchError(() => {
                     let hasAcknowledged = this._persistStorage.getItem('USER_ACTION_HAS_ACKNOWLEDGED', null);
                     if (this._extensionRpcService.isExtensionEnabled() && !hasAcknowledged) {
                         const popoverRef = this._popover.createPopover(userActionLinkElement, BrowserExtensionTipComponent, 'bottom-end');
@@ -115,10 +117,12 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
                         popoverRef.componentInstance.firefoxExtensionUrl = FIREFOX_EXTENSION_URL;
                         return popoverRef.afterClosed();
                     }
-                })
+                    return throwError('extension not enabled');
+                }),)
                 .subscribe(() => {
                     this._persistStorage.setItem('USER_ACTION_HAS_ACKNOWLEDGED', 'true');
-                }, () => {
+                }, (error) => {
+                    console.log(error);
                 })
         );
     }

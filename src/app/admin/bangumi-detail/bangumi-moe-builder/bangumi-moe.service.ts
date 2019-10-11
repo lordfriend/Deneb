@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs';
 import {Tag, Torrent} from './bangum-moe-entity';
 
@@ -7,15 +7,11 @@ import {Tag, Torrent} from './bangum-moe-entity';
 export class BangumiMoeService {
     private _baseUrl = 'https://bangumi.moe/api';
 
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
     }
 
     fetchTagData(tags: string): Observable<Tag[]> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
-        let body = JSON.stringify({_ids: tags});
-        return this._http.post(`${this._baseUrl}/tag/fetch`, body, options)
-            .map(res => res.json() as Tag[]);
+        return this._http.post<Tag[]>(`${this._baseUrl}/tag/fetch`, {_ids: tags});
     }
 
     popoluarBangumTags(): Observable<Tag[]> {
@@ -35,11 +31,10 @@ export class BangumiMoeService {
     }
 
     searchTorrent(tag_ids: string[], page: number): Observable<{count: number, page_count: number, torrents: Torrent[]}> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
-        let body = JSON.stringify({tag_id: tag_ids});
-        return this._http.post(`/api/feed/bangumi-moe/torrent/search`, body, options)
-            .map(res => res.json() as {count: number, page_count: number, torrents: Torrent[]});
+        return this._http.post<{count: number, page_count: number, torrents: Torrent[]}>(
+            `/api/feed/bangumi-moe/torrent/search`,{
+                tag_id: tag_ids
+            });
     }
 
     searchTag(name: string): Observable<{success: boolean, found: boolean, tag: Tag[]}> {
@@ -51,14 +46,10 @@ export class BangumiMoeService {
     }
 
     private userProxy<T>(url: string, method: string, payload?: any): Observable<T> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
-        let body = JSON.stringify({
+        return this._http.post<T>('/api/feed/bangumi-moe', {
             url: url,
             payload: payload,
             method: method
         });
-        return this._http.post('/api/feed/bangumi-moe', body, options)
-            .map(res => res.json() as T);
     }
 }

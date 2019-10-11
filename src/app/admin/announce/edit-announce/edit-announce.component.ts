@@ -2,9 +2,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UIDialogRef } from 'deneb-ui';
 import { Announce } from '../../../entity/announce';
-import moment from 'moment';
 import { ECalendarValue, IDatePickerConfig } from 'ng2-date-picker';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
+import * as moment from 'moment';
 
 export function rangeLimit(group: FormGroup) {
     let start_time = group.get('start_time').value;

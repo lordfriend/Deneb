@@ -1,7 +1,9 @@
+
+import {fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+
+import {filter} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Self, ViewChild } from '@angular/core';
 import { UIDialogRef } from 'deneb-ui';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 
 export const KEY_ESC = 27;
 
@@ -16,7 +18,7 @@ export const KEY_ESC = 27;
 export class VideoPlayerHelpDialog implements OnInit, AfterViewInit, OnDestroy {
     private _subscription = new Subscription();
 
-    @ViewChild('closeButton') closeButton: ElementRef;
+    @ViewChild('closeButton', {static: false}) closeButton: ElementRef;
 
     constructor(private _dialogRef: UIDialogRef<VideoPlayerHelpDialog>) {
     }
@@ -29,10 +31,10 @@ export class VideoPlayerHelpDialog implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
         this._subscription.add(
-            Observable.fromEvent(document, 'keyup')
-                .filter((event: KeyboardEvent) => {
+            observableFromEvent(document, 'keyup').pipe(
+                filter((event: KeyboardEvent) => {
                     return event.which === KEY_ESC;
-                })
+                }))
                 .subscribe(() => {
                     this._dialogRef.close('esc');
                 })

@@ -1,38 +1,43 @@
 import { Injectable } from '@angular/core';
-import { WatchService } from '../watch.service';
-import { ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
 import { UIDialog } from 'deneb-ui';
-import { Observable } from 'rxjs/Observable';
-import { ConflictDialogComponent } from './conflict-dialog/conflict-dialog.component';
-import { Bangumi } from '../../entity';
+import { Observable, of as observableOf, throwError as observableThrowError } from 'rxjs';
+import { switchMap } from 'rxjs/internal/operators';
 
+import { catchError, tap } from 'rxjs/operators';
+import { ChromeExtensionService } from '../browser-extension/chrome-extension.service';
+import { Bangumi } from '../entity';
+import { ConflictDialogComponent } from './favorite-chooser/conflict-dialog/conflict-dialog.component';
+
+/**
+ * Synchronize with bgm.tv, need browser extension support
+ */
 @Injectable()
 export class SynchronizeService {
 
     private _cache = new Map<string, any>();
 
-    constructor(private _watchService: WatchService,
-                private _dialog: UIDialog,
-                private _chromeExtensionService: ChromeExtensionService,) {
+    constructor(private _dialog: UIDialog,
+                private _chromeExtensionService: ChromeExtensionService) {
+
     }
 
     updateFavorite(bangumi: Bangumi, favStatus: any): Observable<any> {
-        return this._chromeExtensionService.updateFavoriteAndSync(bangumi, favStatus)
-            .do(() => {
+        return this._chromeExtensionService.updateFavoriteAndSync(bangumi, favStatus).pipe(
+            tap(() => {
                 this._cache.delete(bangumi.id);
-            });
+            }));
     }
 
     deleteFavorite(bangumi: Bangumi): Observable<any> {
-        return this._chromeExtensionService.deleteFavoriteAndSync(bangumi)
-            .do(() => {
+        return this._chromeExtensionService.deleteFavoriteAndSync(bangumi).pipe(
+            tap(() => {
                 this._cache.delete(bangumi.id);
-            });
+            }));
     }
 
     updateFavoriteStatus(bangumi: Bangumi, status: number): Observable<any> {
         let cachedItem = this._cache.get(bangumi.id);
-        if (cachedItem) {
+        if (cachedItem && cachedItem.data) {
             return this.updateFavorite(bangumi, {
                 interest: status,
                 rating: cachedItem.data.rating,
@@ -40,16 +45,16 @@ export class SynchronizeService {
                 tags: cachedItem.data.tag.join(',')
             });
         }
-        return this._chromeExtensionService.invokeBangumiMethod('favoriteStatus', [bangumi.id])
-            .flatMap((userFavoriteInfo) => {
+        return this._chromeExtensionService.invokeBangumiMethod('favoriteStatus', [bangumi.id]).pipe(
+            switchMap((userFavoriteInfo) => {
                 return this.updateFavorite(bangumi, {
                     interest: status,
                     rating: userFavoriteInfo.rating,
                     comment: userFavoriteInfo.comment,
                     tags: userFavoriteInfo.tag.join(',')
                 });
-            })
-            .catch((error) => {
+            }),
+            catchError((error) => {
                 if (error.status === 404) {
                     return this.updateFavorite(bangumi, {
                         interest: status,
@@ -58,49 +63,49 @@ export class SynchronizeService {
                         tags: ''
                     });
                 }
-                return Observable.throw(error);
-            })
+                return observableThrowError(error);
+            }),)
     }
 
-    syncBangumi(bangumi: Bangumi) {
+    syncBangumi(bangumi: Bangumi): Observable<any> {
         let cachedItem = this._cache.get(bangumi.id);
         if (cachedItem) {
-            return Observable.of(cachedItem);
+            return observableOf(cachedItem);
         }
-        return this._chromeExtensionService.syncBangumi(bangumi)
-            .flatMap((result) => {
+        return this._chromeExtensionService.syncBangumi(bangumi).pipe(
+            switchMap((result) => {
                 if (result.status === 1) {
                     let dialogRef = this._dialog.open(ConflictDialogComponent, {stickyDialog: true, backdrop: true});
                     dialogRef.componentInstance.bangumiName = bangumi.name_cn || bangumi.name;
                     dialogRef.componentInstance.siteStatus = result.diff.albireo;
                     dialogRef.componentInstance.bgmStatus = result.diff.bgm;
-                    return dialogRef.afterClosed()
-                        .flatMap((choice) => {
-                            return this._chromeExtensionService.solveConflict(bangumi, result.diff.bgm, choice)
-                                .flatMap((data) => {
+                    return dialogRef.afterClosed().pipe(
+                        switchMap((choice) => {
+                            return this._chromeExtensionService.solveConflict(bangumi, result.diff.bgm, choice).pipe(
+                                switchMap((data) => {
                                     if (choice === 'site') {
-                                        return Observable.of({status: 0, data: data});
+                                        return observableOf({status: 0, data: data});
                                     }
-                                    return Observable.of({status: 0, data: result.data});
-                                });
-                        });
+                                    return observableOf({status: 0, data: result.data});
+                                }));
+                        }));
                 } else {
                     this._cache.set(bangumi.id, result);
-                    return Observable.of(result);
+                    return observableOf(result);
                 }
-            })
-            .flatMap((result) => {
+            }),
+            switchMap((result) => {
                 if (result.data && result.data.status && result.data.status.id) {
                     bangumi.favorite_status = result.data.status.id;
                 }
                 if (Array.isArray(bangumi.episodes) && bangumi.episodes.length > 0) {
-                    return this.syncProgress(bangumi)
-                        .flatMap((progressResult) => {
-                            return Observable.of(Object.assign({progressResult: progressResult}, result));
-                        });
+                    return this.syncProgress(bangumi).pipe(
+                        switchMap((progressResult) => {
+                            return observableOf(Object.assign({progressResult: progressResult}, result));
+                        }));
                 }
-                return Observable.of(result);
-            });
+                return observableOf(result);
+            }),);
     }
 
     syncProgress(bangumi: Bangumi): Observable<any> {

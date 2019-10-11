@@ -28,7 +28,7 @@ export class CapturedImageOperationDialog implements AfterViewInit {
         return this._autoRemove;
     }
 
-    @ViewChild('imageWrapper') imageWrapper: ElementRef;
+    @ViewChild('imageWrapper', {static: false}) imageWrapper: ElementRef;
 
     constructor(private _dialogRef: UIDialogRef<CapturedImageOperationDialog>,
                 private _persistStorage: PersistStorage) {

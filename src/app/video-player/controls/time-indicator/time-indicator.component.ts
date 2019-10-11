@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VideoPlayer } from '../../video-player.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { VideoPlayerHelpers } from '../../core/helpers';
 
 @Component({

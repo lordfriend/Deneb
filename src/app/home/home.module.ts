@@ -1,3 +1,5 @@
+import { HttpClientModule } from '@angular/common/http';
+import { FavoriteManagerService } from './favorite-manager.service';
 import { Home } from './home.component';
 import { DefaultComponent } from './default/default.component';
 import { PlayEpisode } from './play-episode/play-episode.component';
@@ -6,7 +8,6 @@ import { BangumiDetail } from './bangumi-detail/bangumi-detail.components';
 import { FavoriteChooser } from './favorite-chooser/favorite-chooser.component';
 import { NgModule } from '@angular/core';
 import { HomeService } from './home.service';
-import { HttpModule } from '@angular/http';
 import { UIModule } from 'deneb-ui';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -40,7 +41,7 @@ import { BangumiAccountBindingComponent } from './bangumi-account-binding/bangum
 import { ConflictDialogComponent } from './favorite-chooser/conflict-dialog/conflict-dialog.component';
 import { BangumiCharacterComponent } from './bangumi-extra-info/bangumi-character/bangumi-character.component';
 import { BangumiStaffInfoComponent } from './bangumi-extra-info/bangumi-staff-info/bangumi-staff-info.component';
-import { SynchronizeService } from './favorite-chooser/synchronize.service';
+import { SynchronizeService } from './synchronize.service';
 import { UserActionComponent } from './user-action/user-action.component';
 import { UserActionPanelComponent } from './user-action/user-action-panel/user-action-panel.component';
 import { BrowserExtensionTipComponent } from './user-action/browser-extension-tip/browser-extension-tip.component';
@@ -85,12 +86,13 @@ import { RevealExtraComponent } from './play-episode/reveal-extra/reveal-extra.c
         ImageLoadingStrategy,
         BangumiListService,
         UserCenterService,
-        SynchronizeService
+        SynchronizeService,
+        FavoriteManagerService
     ],
     imports: [
         RouterModule.forChild(homeRoutes),
         BrowserModule,
-        HttpModule,
+        HttpClientModule,
         UIModule,
         CommonModule,
         DenebCommonPipes,

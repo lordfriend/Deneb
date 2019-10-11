@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UIDialogRef } from 'deneb-ui';
 import { AbstractControl, Form, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { WebHook } from '../../../entity/web-hook';
 
 export function sharedSecretValidator(isEditMode: boolean) {

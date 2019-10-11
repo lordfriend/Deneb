@@ -1,0 +1,19 @@
+<div class="float-controls-wrapper" [@controlState]="controlState" (click)="leaveFloat($event)">
+    <div class="top-section">
+        <div class="video-title" #titleRef>
+            {{videoTitle}}
+        </div>
+        <a class="video-close-button">
+            <a class="close-button" (click)="close($event)"><i class="remove icon"></i></a>
+        </a>
+    </div>
+    <div class="center-section">
+        <video-play-button [controlVisibleState]="showControls" class="interact-element"></video-play-button>
+    </div>
+    <div class="bottom-section">
+        <div class="time-indicator interact-element">{{currentTimeClock}} / {{durationClock}}</div>
+    </div>
+</div>
+<div class="progress-bar-wrapper interact-element">
+    <non-interactive-progress-bar></non-interactive-progress-bar>
+</div>

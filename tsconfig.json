@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
@@ -8,24 +8,21 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "noEmitHelpers": true,
-    "noEmit": true,
     "importHelpers": true,
     "strictNullChecks": false,
-    "paths": {
-      "*": ["node_modules/@types"]
-    },
+    "typeRoots": ["node_modules/@types"],
     "lib": [
       "dom",
-      "es6"
+      "es2018"
     ]
   },
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "src/service-worker"
   ],
-  "awesomeTypescriptLoaderOptions": {
-    "forkChecker": true,
-    "useWebpackText": true
+  "angularCompilerOptions": {
+    "skipMetadataEmit": true
   },
   "compileOnSave": false,
   "buildOnSave": false,

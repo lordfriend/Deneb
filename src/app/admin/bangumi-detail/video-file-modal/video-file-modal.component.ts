@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {UIDialogRef, UIToast, UIToastComponent, UIToastRef} from 'deneb-ui';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {VideoFile} from '../../../entity/video-file';
 import {Episode} from '../../../entity/episode';
 import {AdminService} from '../../admin.service';

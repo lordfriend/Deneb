@@ -1,7 +1,7 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { VideoCapture } from '../../core/video-capture.service';
 import { VideoPlayer } from '../../video-player.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { PersistStorage } from '../../../user-service/persist-storage';
 import { Capture } from '../../core/settings';
 

@@ -1,7 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { UIPopoverContent, UIPopoverRef } from 'deneb-ui';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { Subscription ,  Observable } from 'rxjs';
 import { isChrome, isEdge, isFirefox } from '../../../../helpers/browser-detect';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { isChrome, isEdge, isFirefox } from '../../helpers/browser-detect';
 
 const MESSAGE_TYPE_EXT = 'SADR_FROM_EXT';

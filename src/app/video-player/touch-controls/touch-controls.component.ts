@@ -1,9 +1,10 @@
+
+import {retry, tap, timeout} from 'rxjs/operators';
 import {AfterViewInit, Component, ElementRef, Injector, OnDestroy, OnInit, Self, ViewChild} from '@angular/core';
 import { CONTROL_FADE_OUT_TIME, VideoPlayerHelpers } from '../core/helpers';
 import { VideoPlayer } from '../video-player.component';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  Subject } from 'rxjs';
 import * as Hammer from 'hammerjs';
-import { Subject } from 'rxjs/Subject';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import {closest} from "../../../helpers/dom";
 
@@ -82,13 +83,13 @@ export class VideoTouchControls implements OnInit, OnDestroy, AfterViewInit {
         this._hammerManager.on('tap', this._tapHandlerBinding);
 
         this._subscription.add(
-            this._motion.asObservable()
-                .timeout(this._fadeOutTime)
-                .do(() => {},
+            this._motion.asObservable().pipe(
+                timeout(this._fadeOutTime),
+                tap(() => {},
                     () => {
                         this.showControls = false;
-                    })
-                .retry()
+                    }),
+                retry(),)
                 .subscribe(
                     () => {
                         this.showControls = true;

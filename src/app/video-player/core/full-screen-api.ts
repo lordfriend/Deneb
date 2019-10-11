@@ -1,5 +1,6 @@
+
+import {fromEvent as observableFromEvent,  Observable } from 'rxjs';
 import { VideoPlayerHelpers } from './helpers';
-import { Observable } from 'rxjs/Observable';
 import { EventEmitter } from '@angular/core';
 export const BROWSER_FULLSCREEN_API = {
     w3: {
@@ -90,7 +91,7 @@ export class FullScreenAPI {
                 fsElemDispatcher = _hostElement;
         }
 
-        Observable.fromEvent(fsElemDispatcher, this.polyfill.onchange).subscribe(() => {
+        observableFromEvent(fsElemDispatcher, this.polyfill.onchange).subscribe(() => {
             this.isFullscreen = !!document[ this.polyfill.element ];
             this.onChangeFullscreen.next(this.isFullscreen);
         });

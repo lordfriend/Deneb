@@ -1,9 +1,11 @@
+
+import {interval as observableInterval, fromEvent as observableFromEvent,  Observable ,  Subscription } from 'rxjs';
+
+import {takeUntil, mergeMap, tap, distinctUntilChanged} from 'rxjs/operators';
 import {
     AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output,
     ViewChild
 } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { VideoPlayerHelpers } from '../../core/helpers';
 import { VideoPlayer } from '../../video-player.component';
 
@@ -39,7 +41,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     @Output()
     motion = new EventEmitter<any>();
 
-    @ViewChild('slider') slider: ElementRef;
+    @ViewChild('slider', {static: false}) slider: ElementRef;
 
     constructor(private _videoPlayer: VideoPlayer) {
     }
@@ -52,16 +54,16 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
 
     ngOnInit(): void {
         this._subscription.add(
-            this._videoPlayer.volume
-                .distinctUntilChanged()
+            this._videoPlayer.volume.pipe(
+                distinctUntilChanged())
                 .subscribe((vol: number) => {
                     this._volume = vol;
                     this.motion.emit(1);
                 })
         );
         this._subscription.add(
-            this._videoPlayer.muted
-                .distinctUntilChanged()
+            this._videoPlayer.muted.pipe(
+                distinctUntilChanged())
                 .subscribe((muted: boolean) => {
                     this.muted = muted;
                     this.motion.emit(1);
@@ -72,19 +74,19 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
     ngAfterViewInit(): void {
         let sliderElement = this.slider.nativeElement as HTMLElement;
         this._subscription.add(
-            Observable.fromEvent(sliderElement, 'mousedown')
-                .do((event: MouseEvent) => {
+            observableFromEvent(sliderElement, 'mousedown').pipe(
+                tap((event: MouseEvent) => {
                     this.unmute();
                     this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement.getBoundingClientRect(), event.clientX));
                     this.startDrag();
-                })
-                .flatMap(() => {
-                    return Observable.fromEvent(document, 'mousemove')
-                        .takeUntil(Observable.fromEvent(document, 'mouseup')
-                            .do(() => {
+                }),
+                mergeMap(() => {
+                    return observableFromEvent(document, 'mousemove').pipe(
+                        takeUntil(observableFromEvent(document, 'mouseup').pipe(
+                            tap(() => {
                                 this.stopDrag();
-                            }));
-                })
+                            }))));
+                }),)
                 .subscribe((event: MouseEvent) => {
                     this.unmute();
                     this._videoPlayer.setVolume(VideoPlayerHelpers.calcSliderRatio(sliderElement.getBoundingClientRect(), event.clientX));
@@ -98,7 +100,7 @@ export class VideoVolumeControl implements AfterViewInit, OnInit, OnDestroy {
 
     private startDrag() {
         this._isDragging = true;
-        this._dragEventEmitSubscription = Observable.interval(100).subscribe(() => {
+        this._dragEventEmitSubscription = observableInterval(100).subscribe(() => {
             this.motion.emit(1);
         })
     }

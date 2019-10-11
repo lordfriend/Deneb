@@ -37,16 +37,16 @@
     "postinstall": "node scripts/font-fix.js"
   },
   "dependencies": {
-    "@angular/animations": "~8.2.5",
-    "@angular/common": "~8.2.5",
-    "@angular/compiler": "~8.2.5",
-    "@angular/compiler-cli": "~8.2.5",
-    "@angular/core": "~8.2.5",
-    "@angular/forms": "~8.2.5",
-    "@angular/platform-browser": "~8.2.5",
-    "@angular/platform-browser-dynamic": "~8.2.5",
-    "@angular/platform-server": "~8.2.5",
-    "@angular/router": "~8.2.5",
+    "@angular/animations": "~8.2.10",
+    "@angular/common": "~8.2.10",
+    "@angular/compiler": "~8.2.10",
+    "@angular/compiler-cli": "~8.2.10",
+    "@angular/core": "~8.2.10",
+    "@angular/forms": "~8.2.10",
+    "@angular/platform-browser": "~8.2.10",
+    "@angular/platform-browser-dynamic": "~8.2.10",
+    "@angular/platform-server": "~8.2.10",
+    "@angular/router": "~8.2.10",
     "core-js": "~2.6",
     "deneb-ui": "^1.0.0",
     "downloadjs": "^1.4.7",
@@ -121,7 +121,7 @@
     "url": "https://github.com/lordfriend/Deneb/issues"
   },
   "engines": {
-    "node": ">= 4.2.1",
+    "node": ">= 10",
     "npm": ">= 3"
   },
   "sideEffects": [

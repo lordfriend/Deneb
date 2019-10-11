@@ -1,4 +1,8 @@
 # Changelog
+
+## 4.0.1
+Fix Reference error: ngI18nClosureMode is not defined by updating Angular to 8.2.10
+
 ## 4.0.0
 
 ### Refactor building scripts in order to upgrade to Angular 8.1.2

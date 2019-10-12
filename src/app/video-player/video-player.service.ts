@@ -185,7 +185,6 @@ export class VideoPlayerService {
     public leaveFloatPlay(checkUrl: boolean, skipScroll: boolean): void {
         if (checkUrl) {
             const tree = this._router.parseUrl(window.location.pathname);
-            console.log(tree);
             const children = tree.root.children[PRIMARY_OUTLET];
             if (!children) {
                 this._router.navigateByUrl(`/play/${this._episode.id}?video_id=${this._videoFileId}`);
@@ -254,10 +253,8 @@ export class VideoPlayerService {
                 return Math.floor(totalDistance - co * t * t);
             }),)
             .subscribe((d) => {
-                console.log('d', d);
                 document.documentElement.scrollTop = d;
             }, () => {}, () => {
-                console.log('scroll finished');
                 this._videoPlayerComponentRef.instance.toggleFloatPlay();
                 if (this._currentViewContainer) {
                     // remove size styles
@@ -397,7 +394,6 @@ export class VideoPlayerService {
             videoPlayer.onPlayerDimensionChanged.pipe(
                 filter(dimen => dimen && dimen.length == 2 && dimen[0] > 0 && dimen[1] > 0))
                 .subscribe(dimen => {
-                    console.log(dimen, this._currentViewContainer);
                     this._playerMeasuredWidth = dimen[0];
                     this._playerMeasuredHeight = dimen[1];
                     if (this._currentViewContainer && this.isPortrait) {

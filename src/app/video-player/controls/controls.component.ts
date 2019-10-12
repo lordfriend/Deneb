@@ -146,6 +146,10 @@ export class VideoControls implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit(): void {
         let hostElement = this._hostRef.nativeElement;
+        // It’s a Chrome bug that calling mousemove.preventDefault prevents text selection, drag-and-drop,
+        // and scrolling (see issue 485892 [https://bugs.chromium.org/p/chromium/issues/detail?id=485892#c7]).
+        // The mousemove event is defined as having no default action.
+        // Thus, the only standards-compliant way of preventing these default behaviors is to do it on mousedown.
         this._subscription.add(
             observableFromEvent(hostElement, 'mousedown')
                 .subscribe((event: MouseEvent) => event.preventDefault())

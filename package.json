@@ -64,8 +64,8 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-optimizer": "^0.801.2",
-    "@ngtools/webpack": "~8.3.3",
+    "@angular-devkit/build-optimizer": "^0.803.9",
+    "@ngtools/webpack": "~8.3.9",
     "@types/chrome": "^0.0.58",
     "@types/downloadjs": "^1.4.0",
     "@types/hammerjs": "^2.0.33",

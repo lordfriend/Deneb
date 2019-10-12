@@ -2,7 +2,8 @@
 
 ## 4.0.2
 
-Add .gitlab-ci.yml
+- Add .gitlab-ci.yml in order to utilize gitlab pipelines
+- Add a GLOBAL to fix `ngI18nClosureMode` is not defined issue.
 
 ## 4.0.1
 

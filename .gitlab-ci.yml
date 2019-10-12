@@ -1,5 +1,8 @@
 image: "node:alpine"
 build_and_deploy:
+  only:
+    refs:
+      - master
   artifacts:
     paths:
       - dist/

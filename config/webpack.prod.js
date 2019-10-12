@@ -89,6 +89,7 @@ module.exports = function (metadata) {
             new DefinePlugin({
                 'ENV': JSON.stringify(metadata.ENV),
                 'ngDevMode': false,
+                'ngI18nClosureMode': false,
                 'HMR': metadata.HMR,
                 'SITE_TITLE': JSON.stringify(metadata.title),
                 'process.env': {

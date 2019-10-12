@@ -1,6 +1,6 @@
 {
   "name": "Deneb",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "description": "Web client for Albireo",
   "author": "Nyasoft<about@nya.io>",
   "homepage": "https://github.com/lordfriend/Deneb",
@@ -64,8 +64,8 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-optimizer": "^0.801.2",
-    "@ngtools/webpack": "~8.3.3",
+    "@angular-devkit/build-optimizer": "^0.803.9",
+    "@ngtools/webpack": "~8.3.9",
     "@types/chrome": "^0.0.58",
     "@types/downloadjs": "^1.4.0",
     "@types/hammerjs": "^2.0.33",

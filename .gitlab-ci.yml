@@ -1,0 +1,12 @@
+image: "node:alpine"
+build_and_deploy:
+  only:
+    refs:
+      - master
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 day
+  script:
+    - yarn install
+    - npm run build:aot:prod

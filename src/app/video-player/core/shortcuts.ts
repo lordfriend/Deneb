@@ -3,6 +3,7 @@ import {fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rx
 
 import {map, tap, filter} from 'rxjs/operators';
 import { VideoPlayer } from '../video-player.component';
+import { VideoPlayerService } from '../video-player.service';
 import { VideoCapture } from './video-capture.service';
 
 export const KEY_MAP = {
@@ -74,7 +75,9 @@ export class VideoPlayerShortcuts {
                 .subscribe((code: number) => {
                     switch (code) {
                         case KEY_MAP.ENTER:
-                            videoPlayer.toggleFullscreen();
+                            if (!videoPlayer.isFloatPlay) {
+                                videoPlayer.toggleFullscreen();
+                            }
                             break;
                         case KEY_MAP.SPACE:
                             videoPlayer.togglePlayAndPause();
@@ -97,10 +100,14 @@ export class VideoPlayerShortcuts {
                             videoPlayer.toggleMuted();
                             break;
                         case KEY_MAP.C:
-                            captureService.capture(videoPlayer.bangumiName, videoPlayer.episodeNo, this.currentTime);
+                            if (!videoPlayer.isFloatPlay) {
+                                captureService.capture(videoPlayer.bangumiName, videoPlayer.episodeNo, this.currentTime);
+                            }
                             break;
                         case KEY_MAP.FORWARD_SLASH:
-                            videoPlayer.openHelpDialog();
+                            if (!videoPlayer.isFloatPlay) {
+                                videoPlayer.openHelpDialog();
+                            }
                             break;
                         // no default
                     }

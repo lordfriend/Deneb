@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.3
+
+fix double-clicking float player resulted bug.
+
 ## 4.0.2
 
 - Add .gitlab-ci.yml in order to utilize gitlab pipelines

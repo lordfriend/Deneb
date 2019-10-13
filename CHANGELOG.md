@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.4
+
+fix a bug in admin/search-banugmi
+
 ## 4.0.3
 
 fix double-clicking float player resulted bug.

@@ -20,7 +20,8 @@ export class AdminService extends BaseService {
 
     queryBangumi(bgmId: number): Observable<BangumiRaw> {
         let queryUrl = this.baseUrl + '/query/' + bgmId;
-        return this.http.get<BangumiRaw>(queryUrl).pipe(
+        return this.http.get<any>(queryUrl).pipe(
+            map<any, BangumiRaw>(res => new BangumiRaw(res)),
             catchError(this.handleError));
     }
 

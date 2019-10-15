@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.5
+
+fix a bug in favorite-manager.service, result user cannot change favorite when without using browser extension.
+
 ## 4.0.4
 
 fix bug in admin/search-bangumi

@@ -84,7 +84,7 @@ export class FavoriteManagerService extends BaseService {
                         })
                     );
                 } else {
-                    return this._watchService.favorite_bangumi(bangumi.id, bangumi.status);
+                    return this._watchService.favorite_bangumi(bangumi.id, bangumi.favorite_status);
                 }
             }),
             tap(() => {

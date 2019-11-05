@@ -98,12 +98,6 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy, AfterVi
     }
 
     ngOnInit(): void {
-        let searchStr = window.location.search;
-        let videoFileId = null;
-        if (!!searchStr) {
-            let params = new URLSearchParams(searchStr);
-            videoFileId = params.get('video_id');
-        }
         this._subscription.add(
             this._videoPlayerService.onPlayNextEpisode
                 .subscribe(episodeId => {
@@ -124,6 +118,12 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy, AfterVi
                     this.homeService.checkFavorite(episode.bangumi_id);
                 }),
                 switchMap((episode: Episode) => {
+                    let searchStr = window.location.search;
+                    let videoFileId = null;
+                    if (!!searchStr) {
+                        let params = new URLSearchParams(searchStr);
+                        videoFileId = params.get('video_id');
+                    }
                     this.episode = episode;
                     if (videoFileId) {
                         this.currentVideoFile = this.episode.video_files

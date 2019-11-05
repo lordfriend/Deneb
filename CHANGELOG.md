@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.6
+
+- fix a bug in PlayEpisode, when the video_id exists on the route parameter. the currentVideoFile may be null. which
+ cause the onLoadAndPlay get a null VideoFile.
+
 ## 4.0.5
 
 fix a bug in favorite-manager.service, result user cannot change favorite when without using browser extension.

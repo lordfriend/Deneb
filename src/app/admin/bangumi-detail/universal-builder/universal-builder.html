@@ -1,0 +1,47 @@
+<div class="universal-builder-container">
+    <div class="search-bar">
+        <div class="ui large label">
+            <i class="rss icon"></i>
+            Universal
+        </div>
+        <div class="input-box-wrapper ui left action input">
+            <div class="ui basic dropdown button" uiDropdown="click">
+                <div class="text">{{mode}}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" *ngFor="let mode of availableMode" (click)="selectMode(mode)">{{mode}}</div>
+                </div>
+            </div>
+            <input type="text" [formControl]="keywordControl" name="query" placeholder="请输入搜索关键词" (keyup.enter)="testFeed()">
+        </div>
+        <button class="ui primary button test-button" type="button" (click)="testFeed()">Test</button>
+    </div>
+    <div class="search-result-wrapper" *ngIf="itemList && itemList.length > 0">
+        <table class="search-result ui striped table">
+            <thead>
+            <tr>
+                <th>标题</th>
+                <th>集数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of itemList">
+                <td>{{item.title}}</td>
+                <td class="eps-no-list">
+                    <span class="ui label" *ngFor="let eps_no of item.eps_no_list">{{eps_no}}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footer">
+        <button class="ui button negative"
+                *ngIf="isEdit"
+                confirmDialog
+                [dialogTitle]="'确定要删除' + mode + '来源吗？'"
+                dialogContent="该操作立即生效，你可以在编辑番組界面重新添加该来源"
+                (onConfirm)="delete()">删除</button>
+        <button class="ui button" (click)="cancel()">取消</button>
+        <button class="ui primary button" (click)="save()">保存</button>
+    </div>
+</div>

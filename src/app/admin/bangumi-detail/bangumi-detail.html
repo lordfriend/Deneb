@@ -83,11 +83,30 @@
         <a class="edit-button anchor-button" (click)="editBasicInfo()"><i class="edit icon"></i></a>
     </div>
     <div class="download-info">
+        <h4 class="section-header">抓取来源(Universal)</h4>
+        <div class="universal-entry entry" *ngFor="let universal of bangumi.universal | parseJson">
+            <div class="entry-key">{{universal.mode}}</div>
+            <div class="entry-value">
+                <div class="ui horizontal label">
+                    {{universal.keyword}}
+                </div>
+                <a class="edit-button anchor-button" (click)="editBangumiUniversal(universal.mode)"><i class="edit icon"></i></a>
+            </div>
+        </div>
+        <a class="anchor-button add-universal-button"
+           *ngIf="availableModeCount > 0"
+           (click)="editBangumiUniversal()"><i class="plus icon"></i>添加来源</a>
+        <div class="ui inverted dimmer" [ngClass]="{active: !modeList}">
+            <div class="ui large loader"></div>
+        </div>
+    </div>
+    <div class="download-info">
         <h4 class="section-header">抓取来源</h4>
+        <div class="ui warning message">DMHY, ACG.RIP, NYAA在未来的版本将会默认被禁用，请使用Universal</div>
         <div class="bangumi-moe-entry entry">
             <div class="entry-key">BANGUMI.MOE</div>
             <div class="entry-value">
-                <div class="ui horizontal label" *ngFor="let tag of bangumi.bangumi_moe | bangumiMoe">
+                <div class="ui horizontal label" *ngFor="let tag of bangumi.bangumi_moe | parseJson">
                     {{tag.locale.zh_cn || tag.name}}
                 </div>
                 <a class="edit-button anchor-button" (click)="editBangumiMoe()"><i class="edit icon"></i></a>

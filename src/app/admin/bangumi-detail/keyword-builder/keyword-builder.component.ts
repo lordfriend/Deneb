@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FeedService } from './feed.service';
+import { FeedService } from '../feed.service';
 import { FormControl } from '@angular/forms';
 import { UIDialogRef, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Subscription } from 'rxjs';

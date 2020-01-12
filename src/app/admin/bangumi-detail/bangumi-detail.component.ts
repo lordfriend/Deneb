@@ -15,7 +15,9 @@ import { UserManagerSerivce } from '../user-manager/user-manager.service';
 import { BangumiBasic } from './bangumi-basic/bangumi-basic.component';
 import { BangumiMoeBuilder } from './bangumi-moe-builder/bangumi-moe-builder.component';
 import { EpisodeDetail } from './episode-detail/episode-detail.component';
+import { FeedService } from './feed.service';
 import { KeywordBuilder } from './keyword-builder/keyword-builder.component';
+import { UniversalBuilderComponent } from './universal-builder/universal-builder.component';
 import { VideoFileModal } from './video-file-modal/video-file-modal.component';
 
 export enum AnnounceStatus {
@@ -68,11 +70,15 @@ export class BangumiDetail implements OnInit, OnDestroy {
 
     AnnounceStatus = AnnounceStatus;
 
+    modeList: string[];
+    availableModeCount: number;
+
     constructor(private _route: ActivatedRoute,
                 private _router: Router,
                 private _adminService: AdminService,
                 private _userManagerService: UserManagerSerivce,
                 private _announceService: AnnounceService,
+                private _feedService: FeedService,
                 private _uiDialog: UIDialog,
                 titleService: Title,
                 toastService: UIToast
@@ -102,12 +108,22 @@ export class BangumiDetail implements OnInit, OnDestroy {
                 .subscribe(
                     (bangumi: Bangumi) => {
                         this.bangumi = bangumi;
+                        this.updateAvailableModeCount();
                         this.fetchAnnounceList(bangumi.id);
                     },
                     (error: BaseError) => {
                         this._toastRef.show(error.message);
                     }
                 )
+        );
+        this._subscription.add(
+            this._feedService.getUniversalMeta()
+                .subscribe((metaList) => {
+                    this.modeList = metaList;
+                    this.updateAvailableModeCount();
+                }, (error) => {
+                    this._toastRef.show(error.message);
+                })
         );
     }
 
@@ -197,6 +213,30 @@ export class BangumiDetail implements OnInit, OnDestroy {
                         this._toastRef.show(error.message);
                     }
                 )
+        );
+    }
+
+    editBangumiUniversal(mode?: string) {
+        let dialogRef = this._uiDialog.open(UniversalBuilderComponent, {stickyDialog: true, backdrop: true});
+        dialogRef.componentInstance.bangumi = this.bangumi;
+        dialogRef.componentInstance.modeList = this.modeList;
+        dialogRef.componentInstance.mode = mode;
+        this._subscription.add(
+            dialogRef.afterClosed().pipe(
+                filter((result: any) => !!result),
+                mergeMap((result: any) => {
+                    this.isLoading = true;
+                    this.bangumi.universal = JSON.stringify(result.result);
+                    return this._adminService.updateBangumi(this.bangumi);
+                }),)
+                .subscribe(() => {
+                    this.isLoading = false;
+                    this._toastRef.show('更新成功');
+                    this.updateAvailableModeCount();
+                }, (error) => {
+                    this.isLoading = false;
+                    this._toastRef.show(error.message);
+                })
         );
     }
 
@@ -309,14 +349,17 @@ export class BangumiDetail implements OnInit, OnDestroy {
         );
     }
 
-    // getVideoFiles(episode: Episode) {
-    //     this._subscription.add(
-    //         this._adminService.getEpisodeVideoFiles(episode.id)
-    //             .subscribe(
-    //                 (videoFiles => {
-    //                     episode.video_files = videoFiles;
-    //                 })
-    //             )
-    //     );
-    // }
+    private updateAvailableModeCount() {
+        if (!this.modeList) {
+            return;
+        }
+        if (!this.bangumi.universal) {
+            this.availableModeCount = this.modeList.length;
+        } else {
+            let universalList = JSON.parse(this.bangumi.universal);
+            this.availableModeCount = this.modeList.filter(m => {
+                return !universalList.some(u => u.mode === m);
+            }).length;
+        }
+    }
 }

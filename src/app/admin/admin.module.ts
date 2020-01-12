@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Admin } from './admin.component';
+import { UniversalBuilderComponent } from './bangumi-detail/universal-builder/universal-builder.component';
 import { SearchBangumi } from './search-bangumi';
 import { ListBangumi } from './list-bangumi/list-bangumi.component';
 import { BangumiDetail } from './bangumi-detail';
@@ -11,7 +12,7 @@ import { AdminService } from './admin.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { adminRoutes } from './admin.routes';
-import { FeedService } from './bangumi-detail/keyword-builder/feed.service';
+import { FeedService } from './bangumi-detail/feed.service';
 import { AdminNavbar } from './admin-navbar/admin-navbar.component';
 import { BangumiCard } from './bangumi-card/bangumi-card.component';
 import { UIModule } from 'deneb-ui';
@@ -22,7 +23,7 @@ import { BangumiStatusNamePipe, VideoFileStatusNamePipe } from './bangumi-pipes/
 import { LibykPipe } from './bangumi-pipes/libyk-pipe';
 import { BangumiMoeBuilder } from './bangumi-detail/bangumi-moe-builder/bangumi-moe-builder.component';
 import { BangumiMoeService } from './bangumi-detail/bangumi-moe-builder/bangumi-moe.service';
-import { BangumiMoePipe } from './bangumi-pipes/bangumi-moe-pipe';
+import { ParseJsonPipe } from './bangumi-pipes/parse-json.pipe';
 import { ConfirmDialogModule } from '../confirm-dialog';
 import { TaskManager } from './task-manager/task-manager.component';
 import { UserManager } from './user-manager/user-manager.component';
@@ -61,7 +62,7 @@ import { EditBangumiRecommendComponent } from './announce/edit-bangumi-recommend
         BangumiStatusNamePipe,
         LibykPipe,
         NyaaPipe,
-        BangumiMoePipe,
+        ParseJsonPipe,
         BangumiBasic,
         BangumiMoeBuilder,
         VideoFileStatusNamePipe,
@@ -74,7 +75,8 @@ import { EditBangumiRecommendComponent } from './announce/edit-bangumi-recommend
         WebHookComponent,
         WebHookCardComponent,
         EditWebHookComponent,
-        EditBangumiRecommendComponent
+        EditBangumiRecommendComponent,
+        UniversalBuilderComponent
     ],
     providers: [
         AdminService,
@@ -109,7 +111,8 @@ import { EditBangumiRecommendComponent } from './announce/edit-bangumi-recommend
         VideoFileModal,
         EditAnnounceComponent,
         EditWebHookComponent,
-        EditBangumiRecommendComponent
+        EditBangumiRecommendComponent,
+        UniversalBuilderComponent
     ]
 })
 export class AdminModule {

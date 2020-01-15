@@ -33,6 +33,9 @@ export class KeywordBuilder implements OnInit, OnDestroy {
 
     keywordControl: FormControl;
 
+    isSearching: boolean;
+    noResultFound: boolean;
+
     constructor(private _feedService: FeedService,
                 private _dialogRef: UIDialogRef<KeywordBuilder>,
                 toast: UIToast) {
@@ -53,12 +56,17 @@ export class KeywordBuilder implements OnInit, OnDestroy {
     }
 
     testFeed() {
+        this.isSearching = true;
+        this.noResultFound = false;
         if (this.siteName === 'dmhy') {
             this._subscription.add(
                 this._feedService.queryDmhy(this.keywordControl.value)
                     .subscribe((result) => {
                         this.itemList = result;
+                        this.noResultFound = this.itemList.length === 0;
+                        this.isSearching = false;
                     }, (error) => {
+                        this.isSearching = false;
                         this._toastRef.show(error.message);
                     })
             );
@@ -67,7 +75,10 @@ export class KeywordBuilder implements OnInit, OnDestroy {
                 this._feedService.queryAcgrip(this.keywordControl.value)
                     .subscribe((result) => {
                         this.itemList = result;
+                        this.noResultFound = this.itemList.length === 0;
+                        this.isSearching = false;
                     }, (error) => {
+                        this.isSearching = false;
                         this._toastRef.show(error.message);
                     })
             );
@@ -76,7 +87,10 @@ export class KeywordBuilder implements OnInit, OnDestroy {
                 this._feedService.queryLibyk_so({t: this.libykCriteria.t, q: this.keywordControl.value})
                     .subscribe((result) => {
                         this.itemList = result;
+                        this.noResultFound = this.itemList.length === 0;
+                        this.isSearching = false;
                     }, (error) => {
+                        this.isSearching = false;
                         this._toastRef.show(error.message);
                     })
             );
@@ -89,7 +103,10 @@ export class KeywordBuilder implements OnInit, OnDestroy {
                 this._feedService.queryNyaa(params.toString())
                     .subscribe((result) => {
                         this.itemList = result;
+                        this.noResultFound = this.itemList.length === 0;
+                        this.isSearching = false;
                     }, (error) => {
+                        this.isSearching = false;
                         this._toastRef.show(error.message);
                     })
             );

@@ -32,6 +32,9 @@ export class UniversalBuilderComponent implements OnInit, OnDestroy {
 
     isEdit: boolean;
 
+    isSearching: boolean;
+    noResultFound: boolean;
+
     constructor(private _feedService: FeedService,
                 private _dialogRef: UIDialogRef<UniversalBuilderComponent>,
                 toast: UIToast) {
@@ -111,6 +114,8 @@ export class UniversalBuilderComponent implements OnInit, OnDestroy {
     }
 
     testFeed(): void {
+        this.isSearching = true;
+        this.noResultFound = false;
         const keyword = this.keywordControl.value;
         if (!keyword) {
             this._toastRef.show('请输入关键字');
@@ -120,7 +125,10 @@ export class UniversalBuilderComponent implements OnInit, OnDestroy {
             this._feedService.queryUniversal(this.mode, keyword)
                 .subscribe((result) => {
                     this.itemList = result;
+                    this.noResultFound = this.itemList.length === 0;
+                    this.isSearching = false;
                 }, (error) => {
+                    this.isSearching = false;
                     this._toastRef.show(error.message);
                 })
         );

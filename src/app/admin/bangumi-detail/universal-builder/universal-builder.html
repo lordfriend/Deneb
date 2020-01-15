@@ -16,8 +16,8 @@
         </div>
         <button class="ui primary button test-button" type="button" (click)="testFeed()">Test</button>
     </div>
-    <div class="search-result-wrapper" *ngIf="itemList && itemList.length > 0">
-        <table class="search-result ui striped table">
+    <div class="search-result-wrapper">
+        <table class="search-result ui striped table" *ngIf="itemList && itemList.length > 0">
             <thead>
             <tr>
                 <th>标题</th>
@@ -33,6 +33,14 @@
             </tr>
             </tbody>
         </table>
+        <div class="ui active inverted dimmer searching-wrapper" *ngIf="isSearching">
+            <div class="ui text loader">
+                搜索中...
+            </div>
+        </div>
+        <div class="ui active inverted dimmer no-result-wrapper" *ngIf="noResultFound">
+            <div class="no-result-tip">没有匹配到结果</div>
+        </div>
     </div>
     <div class="footer">
         <button class="ui button negative"

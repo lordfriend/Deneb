@@ -1,7 +1,7 @@
 
 import {tap, filter} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable ,  BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { BangumiAuthDialogComponent } from './bangumi-auth-dialog/bangumi-auth-dialog.component';
 import { Bangumi } from '../entity';
 import { RPCResult } from './extension-rpc';
@@ -37,7 +37,7 @@ export class ChromeExtensionService {
 
     private _authInfo = new BehaviorSubject<AuthInfo>(INITIAL_STATE_VALUE);
     private _isBgmTvLogon = new BehaviorSubject<LOGON_STATUS>(LOGON_STATUS.UNSURE);
-    private _isEnabled = new BehaviorSubject<boolean>(false);
+    private _isEnabled = new Subject<boolean>();
 
     get isEnabled(): Observable<boolean> {
         return this._isEnabled;
@@ -72,7 +72,7 @@ export class ChromeExtensionService {
                 });
             this._extensionRpcService.invokeRPC('BackgroundCore', 'verify', [], 500)
                 .subscribe((resp) => {
-                    // console.log(resp);
+                    console.log(resp);
                     if (resp === 'OK') {
                         this._isEnabled.next(true);
                     } else {

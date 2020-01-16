@@ -1,7 +1,8 @@
 
 import { fromEvent as observableFromEvent, Subscription, Observable, throwError } from 'rxjs';
+import { map } from 'rxjs/internal/operators';
 
-import {catchError, timeout, mergeMap, filter, tap} from 'rxjs/operators';
+import { mergeMap, filter, tap} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChromeExtensionService, INITIAL_STATE_VALUE } from '../../browser-extension/chrome-extension.service';
 import { ExtensionRpcService } from '../../browser-extension/extension-rpc.service';
@@ -11,7 +12,6 @@ import { PersistStorage, UserService } from '../../user-service';
 import { UIPopover, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Router } from '@angular/router';
 import { UserActionPanelComponent } from './user-action-panel/user-action-panel.component';
-import { isChrome } from '../../../helpers/browser-detect';
 import { BrowserExtensionTipComponent } from './browser-extension-tip/browser-extension-tip.component';
 
 @Component({
@@ -107,17 +107,18 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this._subscription.add(
             this._chromeExtensionService.isEnabled.pipe(
-                filter(isEnabled => isEnabled),
-                timeout(1000),
-                catchError(() => {
-                    let hasAcknowledged = this._persistStorage.getItem('USER_ACTION_HAS_ACKNOWLEDGED', null);
-                    if (this._extensionRpcService.isExtensionEnabled() && !hasAcknowledged) {
-                        const popoverRef = this._popover.createPopover(userActionLinkElement, BrowserExtensionTipComponent, 'bottom-end');
-                        popoverRef.componentInstance.extensionId = this._extensionRpcService.extensionId;
-                        popoverRef.componentInstance.firefoxExtensionUrl = FIREFOX_EXTENSION_URL;
-                        return popoverRef.afterClosed();
+                map((isEnabled) => {
+                    if (!isEnabled) {
+                        let hasAcknowledged = this._persistStorage.getItem('USER_ACTION_HAS_ACKNOWLEDGED', null);
+                        if (this._extensionRpcService.isExtensionEnabled() && !hasAcknowledged) {
+                            const popoverRef = this._popover.createPopover(userActionLinkElement, BrowserExtensionTipComponent, 'bottom-end');
+                            popoverRef.componentInstance.extensionId = this._extensionRpcService.extensionId;
+                            popoverRef.componentInstance.firefoxExtensionUrl = FIREFOX_EXTENSION_URL;
+                            return popoverRef.afterClosed();
+                        }
+                    } else {
+                        return throwError('extension not enabled');
                     }
-                    return throwError('extension not enabled');
                 }),)
                 .subscribe(() => {
                     this._persistStorage.setItem('USER_ACTION_HAS_ACKNOWLEDGED', 'true');

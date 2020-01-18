@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
+import { ChromeExtensionService, ENABLED_STATUS } from '../../browser-extension/chrome-extension.service';
 import { PERM_NAME, WebHook } from '../../entity/web-hook';
 
 @Component({
@@ -56,7 +56,7 @@ export class WebHookComponent implements OnInit, OnDestroy {
         this._subscription.add(
             this._chromeExtensionService.isEnabled
                 .subscribe(isEnabled => {
-                    this.isBgmEnabled = isEnabled;
+                    this.isBgmEnabled = isEnabled === ENABLED_STATUS.TRUE;
                 })
         );
     }

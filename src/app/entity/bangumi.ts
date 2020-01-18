@@ -22,6 +22,7 @@ export class Bangumi {
     libyk_so: string;
     bangumi_moe: string;
     nyaa: string;
+    universal: string;
     status: number;
     create_time: number;
     update_time: number;

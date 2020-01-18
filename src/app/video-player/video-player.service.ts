@@ -9,7 +9,7 @@ import {
 import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { interval as observableInterval } from 'rxjs/index';
-import { filter, map, switchMap, throttleTime } from 'rxjs/internal/operators';
+import { filter, map, switchMap, tap, throttleTime } from 'rxjs/internal/operators';
 import { take } from 'rxjs/operators';
 import { Bangumi, Episode } from '../entity';
 import { VideoFile } from '../entity/video-file';
@@ -343,16 +343,20 @@ export class VideoPlayerService {
                 }),
                 map(({position, duration}) => {
                     // update episode watch progress
+                    let isFinished: boolean;
                     if (!this._episode.watch_progress) {
                         this._episode.watch_progress = new WatchProgress();
                         this._episode.watch_progress.bangumi_id = this._bangumi.id;
                         this._episode.watch_progress.episode_id = this._episode.id;
                         this._episode.watch_progress.watch_status = WatchProgress.WATCHING;
+                        isFinished = position / duration >= MIN_WATCHED_PERCENTAGE;
                         this._watchStatusChanges.next(Object.assign({}, this._episode));
+                    } else if (this._episode.watch_progress.watch_status === WatchProgress.WATCHED) {
+                        isFinished = true;
                     }
+                    console.log(this._episode.watch_progress);
                     this._episode.watch_progress.last_watch_position = position;
                     const percentage = position / duration;
-                    const isFinished = position / duration >= MIN_WATCHED_PERCENTAGE;
                     if (this._episode.watch_progress.watch_status !== WatchProgress.WATCHED
                         && isFinished) {
                         this._episode.watch_progress.watch_status = WatchProgress.WATCHED;
@@ -372,6 +376,10 @@ export class VideoPlayerService {
 
         this._videoPlayerSubscription.add(
             this.onWatchStatusChanges.pipe(
+                tap(episode => {
+                    const episodeOfBangumi = this._bangumi.episodes.find(e => e.id === this._episode.id);
+                    episodeOfBangumi.watch_progress = episode.watch_progress;
+                }),
                 filter(episode => {
                     return episode.watch_progress.watch_status === WatchProgress.WATCHED
                         && this._bangumi.favorite_status !== WatchProgress.WATCHED;

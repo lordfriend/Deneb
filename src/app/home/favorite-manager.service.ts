@@ -4,7 +4,12 @@ import { Observable, of as observableOf, Subject, throwError as observableThrowE
 import { filter, map, switchMap, tap } from 'rxjs/internal/operators';
 import { catchError } from 'rxjs/operators';
 import { BaseService } from '../../helpers/base.service';
-import { ChromeExtensionService, LOGON_STATUS } from '../browser-extension/chrome-extension.service';
+import {
+    ChromeExtensionService,
+    ENABLED_STATUS,
+    INITIAL_STATE_VALUE,
+    LOGON_STATUS
+} from '../browser-extension/chrome-extension.service';
 import { Bangumi } from '../entity';
 import { WatchProgress } from '../entity/watch-progress';
 import { VideoPlayerService } from '../video-player/video-player.service';
@@ -121,18 +126,21 @@ export class FavoriteManagerService extends BaseService {
 
     private canSync(): Observable<{ canSync: boolean }> {
         return this._chromeExtensionService.isEnabled.pipe(
+            filter(isEnabled => isEnabled !== ENABLED_STATUS.UNSURE),
             switchMap((isEnabled) => {
-                if (!isEnabled) {
+                if (isEnabled === ENABLED_STATUS.FALSE) {
                     return observableThrowError({canSync: false});
                 }
                 return this._chromeExtensionService.authInfo;
             }),
+            filter(authInfo => authInfo !== INITIAL_STATE_VALUE),
             switchMap((authInfo) => {
                 if (!authInfo) {
                     return observableThrowError({canSync: false});
                 }
                 return this._chromeExtensionService.isBgmTvLogon;
             }),
+            filter(isBgmLogon => isBgmLogon !== LOGON_STATUS.UNSURE),
             switchMap((isBgmLogon) => {
                 if (isBgmLogon !== LOGON_STATUS.TRUE) {
                     return observableThrowError({canSync: false});

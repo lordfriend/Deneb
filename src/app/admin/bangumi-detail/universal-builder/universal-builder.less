@@ -1,13 +1,19 @@
-.keyword-builder-container {
+.universal-builder-container {
   text-align: left;
   @media(max-width: 767px) {
-    width: 90%;
+    width: 100%;
   }
-  @media(min-width: 768px) {
-    width: 768px;
+  @media(min-width: 768px) and (max-width: 991px) {
+    width: 723px;
   }
-  @media(min-height: 640px) {
-    height: 640px;
+  @media(min-width: 992px) and (max-width: 1200px) {
+    width: 933px;
+  }
+  @media(min-width: 1201px) {
+    width: 1127px;
+  }
+  @media(min-height: 700px) {
+    height: 80%;
   }
   @media(max-height: 639px) {
     height: 100%;
@@ -22,7 +28,6 @@
   background-color: #fff;
   overflow: hidden;
   padding-top: 4rem;
-
   .ui.dropdown .menu {
     z-index: 300;
   }
@@ -56,10 +61,6 @@
   padding-bottom: 5rem;
   overflow-y: scroll;
   overflow-x: auto;
-  .table {
-    width: 100%;
-    overflow: visible;
-  }
 }
 .no-result-wrapper,
 .searching-wrapper{

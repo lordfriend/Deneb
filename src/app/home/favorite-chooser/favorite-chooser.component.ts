@@ -3,7 +3,12 @@ import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators';
 import { filter, mergeMap, tap } from 'rxjs/operators';
-import { AuthInfo, ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
+import {
+    AuthInfo,
+    ChromeExtensionService,
+    ENABLED_STATUS,
+    LOGON_STATUS
+} from '../../browser-extension/chrome-extension.service';
 import { Bangumi } from '../../entity';
 import { BANGUMI_TYPE, FAVORITE_LABEL } from '../../entity/constants';
 import { FavoriteManagerService } from '../favorite-manager.service';
@@ -135,9 +140,9 @@ export class FavoriteChooser implements OnInit, OnDestroy {
         this._subscription.add(
             this._chromeExtensionService.isEnabled.pipe(
                 tap(isEnabled => {
-                    this.isExtensionEnabled = isEnabled;
+                    this.isExtensionEnabled = isEnabled === ENABLED_STATUS.TRUE;
                 }),
-                filter(isEnabled => isEnabled),
+                filter(isEnabled => isEnabled === ENABLED_STATUS.TRUE),
                 switchMap(() => {
                     return this._chromeExtensionService.authInfo;
                 }),

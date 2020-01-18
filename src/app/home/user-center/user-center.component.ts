@@ -12,7 +12,7 @@ import { ClientError } from '../../../helpers/error/ClientError';
 import { UserCenterService } from './user-center.service';
 import { WebHook } from '../../entity/web-hook';
 import { Title } from '@angular/platform-browser';
-import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
+import { ChromeExtensionService, ENABLED_STATUS } from '../../browser-extension/chrome-extension.service';
 
 export const MAIL_SEND_INTERVAL = 60;
 
@@ -159,7 +159,7 @@ export class UserCenter implements OnInit, OnDestroy {
         this._subscription.add(
             this._chromeExtensionService.isEnabled
                 .subscribe(isEnabled => {
-                    this.isBgmEnabled = isEnabled;
+                    this.isBgmEnabled = isEnabled === ENABLED_STATUS.TRUE;
                 })
         );
     }

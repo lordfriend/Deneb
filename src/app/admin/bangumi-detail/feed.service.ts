@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { BaseService } from '../../../../helpers/base.service';
+import { BaseService } from '../../../helpers/base.service';
+import { Item } from '../../entity/item';
 
 @Injectable()
 export class FeedService extends BaseService {
@@ -33,6 +34,18 @@ export class FeedService extends BaseService {
 
   queryNyaa(qs: string): Observable<{title: string, eps_no: number}[]> {
       return this.http.post<{data: {title: string, eps_no: number}[], status: number}>(`${this.baseUrl}/nyaa`, {qs: qs}).pipe(
+          map(res => res.data),
+          catchError(this.handleError),);
+  }
+
+  queryUniversal<T>(mode: string, keyword: string): Observable<Array<Item>> {
+      return this.http.post<{data: Array<Item>, status: number}>(`${this.baseUrl}/universal`, {mode, keyword}).pipe(
+          map(res => res.data),
+          catchError(this.handleError),);
+  }
+
+  getUniversalMeta(): Observable<Array<string>> {
+      return this.http.get<{data: string[], status: number}>(`${this.baseUrl}/universal/meta`).pipe(
           map(res => res.data),
           catchError(this.handleError),);
   }

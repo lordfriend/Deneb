@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.1.0
+
+### New Feature
+
+Add support for Universal Source, this feature require Albireo version >= 3.0.0.
+
+### bugfix
+
+- Fix a bug that user-action component always report extension not enabled.
+- Fix a bug(#177) that cause episode watch_progress cannot be synchronized with Sadr extension when episode finish playing.
+- Fix a bug(#166) that cause Admin/Bangumi List to freeze when trying to type in search box while the bangumi is still loading.
+
+
 ## 4.0.7
 
 - fix bug that angular doesn't run in production mode.

@@ -8,6 +8,9 @@ Add support for Universal Source, this feature require Albireo version >= 3.0.0.
 
 ### bugfix
 
+- Fix a bug that user-action component always report extension not enabled.
+- Fix a bug(#177) that cause episode watch_progress cannot be synchronized with Sadr extension when episode finish playing.
+
 
 ## 4.0.7
 

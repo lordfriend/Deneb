@@ -8,7 +8,7 @@ import { Bangumi, User } from "../../entity";
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { UserService } from '../../user-service';
-import { ChromeExtensionService } from '../../browser-extension/chrome-extension.service';
+import { ChromeExtensionService, ENABLED_STATUS } from '../../browser-extension/chrome-extension.service';
 import { UIDialog, UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { AuthError } from '../../../helpers/error';
 import { WatchService } from '../watch.service';
@@ -90,9 +90,9 @@ export class BangumiDetail extends HomeChild implements OnInit, OnDestroy {
                     return this._chromeExtensionService.isEnabled
                 }),
                 tap(isEnabled => {
-                    this.isExtraInfoEnabled = isEnabled;
+                    this.isExtraInfoEnabled = isEnabled === ENABLED_STATUS.TRUE;
                 }),
-                filter(isEnabled => isEnabled),
+                filter(isEnabled => isEnabled === ENABLED_STATUS.TRUE),
                 mergeMap(() => {
                     return this._chromeExtensionService.invokeBangumiMethod('bangumiDetail', [this.bangumi.bgm_id]);
                 }),)

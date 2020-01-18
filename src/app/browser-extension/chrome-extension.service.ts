@@ -31,15 +31,19 @@ export enum LOGON_STATUS {
     UNSURE, TRUE, FALSE
 }
 
+export enum ENABLED_STATUS {
+    UNSURE, TRUE, FALSE
+}
+
 
 @Injectable()
 export class ChromeExtensionService {
 
     private _authInfo = new BehaviorSubject<AuthInfo>(INITIAL_STATE_VALUE);
     private _isBgmTvLogon = new BehaviorSubject<LOGON_STATUS>(LOGON_STATUS.UNSURE);
-    private _isEnabled = new Subject<boolean>();
+    private _isEnabled = new BehaviorSubject<ENABLED_STATUS>(ENABLED_STATUS.UNSURE);
 
-    get isEnabled(): Observable<boolean> {
+    get isEnabled(): Observable<ENABLED_STATUS> {
         return this._isEnabled;
     }
 
@@ -53,7 +57,7 @@ export class ChromeExtensionService {
 
     constructor(private _extensionRpcService: ExtensionRpcService) {
         if (this._extensionRpcService.isExtensionEnabled()) {
-            this.isEnabled.pipe(filter(isEnabled => isEnabled))
+            this.isEnabled.pipe(filter(isEnabled => isEnabled === ENABLED_STATUS.TRUE))
                 .subscribe(() => {
                     this.invokeBangumiMethod('getAuthInfo', [])
                         .subscribe(authInfo => {
@@ -72,18 +76,18 @@ export class ChromeExtensionService {
                 });
             this._extensionRpcService.invokeRPC('BackgroundCore', 'verify', [], 500)
                 .subscribe((resp) => {
-                    console.log(resp);
+                    // console.log(resp);
                     if (resp === 'OK') {
-                        this._isEnabled.next(true);
+                        this._isEnabled.next(ENABLED_STATUS.TRUE);
                     } else {
-                        this._isEnabled.next(false);
+                        this._isEnabled.next(ENABLED_STATUS.FALSE);
                     }
                 }, (err) => {
                     console.log(err);
-                    this._isEnabled.next(false);
+                    this._isEnabled.next(ENABLED_STATUS.FALSE);
                 });
         } else {
-            this._isEnabled.next(false);
+            this._isEnabled.next(ENABLED_STATUS.FALSE);
         }
     }
 

@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ChromeExtensionService } from '../../../browser-extension/chrome-extension.service';
+import { ChromeExtensionService, ENABLED_STATUS } from '../../../browser-extension/chrome-extension.service';
 import { Subscription } from 'rxjs';
 import { UIToast, UIToastComponent, UIToastRef } from 'deneb-ui';
 import { Bangumi } from '../../../entity';
@@ -52,7 +52,7 @@ export class RevealExtraComponent implements OnInit, OnDestroy {
         this._subscription.add(
             this._chromeExtensionService.isEnabled
                 .subscribe((isEnabled) => {
-                    this.isEnabled = isEnabled;
+                    this.isEnabled = isEnabled === ENABLED_STATUS.TRUE;
                 })
         );
     }

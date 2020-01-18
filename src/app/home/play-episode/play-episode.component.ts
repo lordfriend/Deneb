@@ -6,7 +6,7 @@ import { fromEvent as observableFromEvent, Subscription } from 'rxjs';
 import { debounceTime, switchMap, throttleTime } from 'rxjs/internal/operators';
 
 import { filter, mergeMap, tap } from 'rxjs/operators';
-import { ChromeExtensionService, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
+import { ChromeExtensionService, ENABLED_STATUS, LOGON_STATUS } from '../../browser-extension/chrome-extension.service';
 import { Bangumi, Episode } from "../../entity";
 import { VideoFile } from '../../entity/video-file';
 import { VideoPlayerHelpers } from '../../video-player/core/helpers';
@@ -153,7 +153,7 @@ export class PlayEpisode extends HomeChild implements OnInit, OnDestroy, AfterVi
 
         this._subscription.add(
             this._chromeExtensionService.isEnabled.pipe(
-                filter(enabled => enabled),
+                filter(enabled => enabled === ENABLED_STATUS.TRUE),
                 switchMap(() => {
                     return this._chromeExtensionService.authInfo;
                 }),

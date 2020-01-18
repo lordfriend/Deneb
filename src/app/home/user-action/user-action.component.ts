@@ -4,7 +4,11 @@ import { map } from 'rxjs/internal/operators';
 
 import { mergeMap, filter, tap} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ChromeExtensionService, INITIAL_STATE_VALUE } from '../../browser-extension/chrome-extension.service';
+import {
+    ChromeExtensionService,
+    ENABLED_STATUS,
+    INITIAL_STATE_VALUE
+} from '../../browser-extension/chrome-extension.service';
 import { ExtensionRpcService } from '../../browser-extension/extension-rpc.service';
 import { User } from '../../entity';
 import { BaseError } from '../../../helpers/error';
@@ -62,9 +66,9 @@ export class UserActionComponent implements OnInit, OnDestroy, AfterViewInit {
         this._subscription.add(
             this._chromeExtensionService.isEnabled.pipe(
                 tap(isEnabled => {
-                    this.isBangumiEnabled = isEnabled;
+                    this.isBangumiEnabled = isEnabled === ENABLED_STATUS.TRUE;
                 }),
-                filter(isEnabled => isEnabled),)
+                filter(isEnabled => isEnabled === ENABLED_STATUS.TRUE),)
                 .subscribe(() => {
                     this._subscription.add(
                         this._chromeExtensionService.authInfo

@@ -1,6 +1,6 @@
 <admin-navbar navTitle="已保存的新番">
     <div class="ui icon input action-item search-action">
-        <input type="text" placeholder="按名称过滤" #searchBox>
+        <input type="text" placeholder="按名称过滤" #searchBox [disabled]="isLoading || !bangumiList || bangumiList.length === 0">
         <i class="search icon"></i>
     </div>
     <a class="action-item anchor-button" (click)="addBangumi()">

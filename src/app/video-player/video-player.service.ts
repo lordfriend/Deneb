@@ -343,18 +343,16 @@ export class VideoPlayerService {
                 }),
                 map(({position, duration}) => {
                     // update episode watch progress
-                    let isFinished: boolean;
+                    let isFinished = position / duration >= MIN_WATCHED_PERCENTAGE;
                     if (!this._episode.watch_progress) {
                         this._episode.watch_progress = new WatchProgress();
                         this._episode.watch_progress.bangumi_id = this._bangumi.id;
                         this._episode.watch_progress.episode_id = this._episode.id;
                         this._episode.watch_progress.watch_status = WatchProgress.WATCHING;
-                        isFinished = position / duration >= MIN_WATCHED_PERCENTAGE;
                         this._watchStatusChanges.next(Object.assign({}, this._episode));
                     } else if (this._episode.watch_progress.watch_status === WatchProgress.WATCHED) {
                         isFinished = true;
                     }
-                    console.log(this._episode.watch_progress);
                     this._episode.watch_progress.last_watch_position = position;
                     const percentage = position / duration;
                     if (this._episode.watch_progress.watch_status !== WatchProgress.WATCHED

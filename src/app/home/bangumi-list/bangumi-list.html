@@ -24,8 +24,11 @@
         </ui-timeline-meter>
     </div>
 </div>
-<div class="search-result" *ngIf="!!name && !isLoading">
+<div class="search-result" *ngIf="!!name && !isLoading && bangumiList.length > 0">
     <bangumi-card *ngFor="let bangumi of bangumiList" [bangumi]="bangumi"></bangumi-card>
+</div>
+<div class="no-result-container" *ngIf="!isLoading && (!bangumiList || bangumiList.length === 0)">
+    <div class="no-result-tips"><i class="warning circle icon"></i>没有找到相关番组</div>
 </div>
 <div class="loading-container" *ngIf="isLoading">
     <div class="ui inverted massive text active loader">Loading...</div>

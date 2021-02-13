@@ -74,6 +74,37 @@
   background-color: #f0f0f0;
   overflow-x: hidden;
   overflow-y: auto;
+  .empty-result-placeholder {
+    margin: .5em -1.14285714em 0;
+    font-size: 1rem;
+    padding: 1.5em 1.14em 0.5em;
+    color: #4c4c4c;
+  }
+}
+
+.no-result-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  .no-result-tips {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 12em;
+    height: 2em;
+    font-size: 4rem;
+    color: #9f9f9f;
+  }
+
+  @media (max-width: 672px) {
+    .no-result-tips {
+      font-size: 2rem;
+    }
+  }
 }
 
 .loading-container {

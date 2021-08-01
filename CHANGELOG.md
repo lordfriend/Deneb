@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.2
+
+Add a placeholder for search result of bangumi list when no result is found.
+
+## 4.1.1
+
+fix bug #179 The episode watch status (color bar) doesn't change to lime color when this episode is finished. The sychronize also doesn't work for this.
+
 ## 4.1.0
 
 ### New Feature

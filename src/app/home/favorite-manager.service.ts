@@ -101,7 +101,7 @@ export class FavoriteManagerService extends BaseService {
     manuallyDeleteFavorite(bangumi: Bangumi): Observable<any> {
         return this.canSync().pipe(
             switchMap(result => {
-                if (result.canSync) {
+                if (!result.canSync) {
                     return this._watchService.delete_favorite(bangumi.id);
                 } else {
                     return this._synchronizeService.deleteFavorite(bangumi);

@@ -1,5 +1,7 @@
 # Web App client for [Albireo](https://github.com/lordfriend/Albireo)
 
+**This project is discontinued, I will suggest you upgrade to https://github.com/irohalab/mira-ui which has an upgrade angular version support**
+
 ## Building requirements
 
 Nodejs 12.0 and above, npm 3 and above, Yarn (I recommend this package manager to manage npm packages)
